@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d %contextName [%t] %level %logger{36} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="VANILLA-CHRONICLE" class="com.higherfrequencytrading.chronology.logback.VanillaChronicleAppender">
+        <path>/tmp/chronicle-logback/vanilla-chronicle</path>
+    </appender>
+
+    <!--
+    <appender name="VANILLA-CHRONICLE-CONNECT" class="com.higherfrequencytrading.chronology.logback.VanillaChronicleAppender">
+        <path>/tmp/chronicle-logback/vanilla-chronicle-connect</path>
+        <connect>localhost:9700</connect>
+    </appender>
+
+    <appender name="VANILLA-CHRONICLE-LISTEN" class="com.higherfrequencytrading.chronology.logback.VanillaChronicleAppender">
+        <path>/tmp/chronicle-logback/vanilla-chronicle-listen</path>
+        <listen>localhost:9701</listen>
+    </appender>
+    -->
+
+    <logger name="vanilla-chronicle" level="DEBUG">
+        <appender-ref ref="VANILLA-CHRONICLE"/>
+    </logger>
+
+    <!--
+    <logger name="VANILLA-CHRONICLE-CONNECT" level="DEBUG">
+        <appender-ref ref="vanilla-chronicle-connect"/>
+    </logger>
+
+    <logger name="VANILLA-CHRONICLE-LISTEN" level="DEBUG">
+        <appender-ref ref="vanilla-chronicle-listen"/>
+    </logger>
+    -->
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>
