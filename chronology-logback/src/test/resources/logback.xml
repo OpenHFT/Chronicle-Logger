@@ -8,7 +8,9 @@
     </appender>
 
     <appender name="VANILLA-CHRONICLE" class="com.higherfrequencytrading.chronology.logback.VanillaChronicleAppender">
-        <path>/tmp/chronicle-logback/vanilla-chronicle</path>
+        <path>${java.io.tmpdir}/chronicle-logback/vanilla-chronicle</path>
+        <includeCallerData>true</includeCallerData>
+        <includeMappedDiagnosticContext>true</includeMappedDiagnosticContext>
     </appender>
 
     <!--
