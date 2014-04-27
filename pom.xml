@@ -29,6 +29,7 @@
 
     <modules>
         <module>chronology-logback</module>
+        <module>chronology-slf4j</module>
     </modules>
 
     <scm>
