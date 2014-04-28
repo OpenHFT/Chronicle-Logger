@@ -1,5 +1,6 @@
 package com.higherfrequencytrading.chronology.logback;
 
+import ch.qos.logback.classic.Level;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.lang.io.Bytes;
@@ -12,9 +13,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.management.ManagementFactory;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  *
@@ -25,22 +23,24 @@ public class ChronicleTestBase {
     //
     // *************************************************************************
 
-    protected static String basePath(String type) {
+    protected static Level[] LOG_LEVELS = new Level[] {
+        Level.TRACE,
+        Level.DEBUG,
+        Level.INFO,
+        Level.WARN,
+        Level.ERROR
+    };
+
+    protected static String rootPath() {
         return System.getProperty("java.io.tmpdir")
-                + File.separator
-                + "chronicle"
-                + File.separator
-                + type
-                + File.separator
-                + new SimpleDateFormat("yyyyMMdd").format(new Date())
-                + File.separator
-                + ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+            + File.separator
+            + "chronicle-logback";
     }
 
-    protected static String basePath(String type, String loggerName) {
-        return basePath(type)
-                + File.separator
-                + loggerName;
+    protected static String basePath(String type) {
+        return rootPath()
+            + File.separator
+            + type;
     }
 
     // *************************************************************************
@@ -49,20 +49,18 @@ public class ChronicleTestBase {
 
     /**
      * @param type
-     * @param id
      * @return
      */
-    protected IndexedChronicle getIndexedChronicle(String type, String id) throws IOException {
-        return new IndexedChronicle(basePath(type, id));
+    protected IndexedChronicle getIndexedChronicle(String type) throws IOException {
+        return new IndexedChronicle(basePath(type));
     }
 
     /**
      * @param type
-     * @param id
      * @return
      */
-    protected VanillaChronicle getVanillaChronicle(String type, String id) throws IOException {
-        return new VanillaChronicle(basePath(type, id));
+    protected VanillaChronicle getVanillaChronicle(String type) throws IOException {
+        return new VanillaChronicle(basePath(type));
     }
 
     // *************************************************************************

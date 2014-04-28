@@ -226,6 +226,7 @@ public class ChronicleAppenderHelper {
                 this.message    = in.readUTF();
 
                 // Args
+                // TODO: should this.args be null ?
                 this.args = new Object[in.readInt()];
                 for(int i=0;i<this.args.length;i++) {
                     this.args[i] = in.readObject();
@@ -240,6 +241,7 @@ public class ChronicleAppenderHelper {
                 }
 
                 // Caller Data
+                // TODO: should this.callerData be null ?
                 this.callerData = new StackTraceElement[in.readInt()];
                 for(int i=0;i<this.callerData.length;i++) {
                     this.callerData[i] = in.readObject(StackTraceElement.class);
