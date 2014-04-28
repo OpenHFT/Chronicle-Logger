@@ -3,20 +3,12 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <!--
     <parent>
         <groupId>com.higherfrequencytrading</groupId>
         <artifactId>closed-hft-root-parent-pom</artifactId>
         <version>1.0.5</version>
     </parent>
-    -->
 
-    <parent>
-        <groupId>net.openhft</groupId>
-        <artifactId>root-parent-pom</artifactId>
-        <version>1.0.1</version>
-        <relativePath/>
-    </parent>
         
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.higherfrequencytrading</groupId>
@@ -30,6 +22,7 @@
     <modules>
         <module>chronology-logback</module>
         <module>chronology-slf4j</module>
+        <module>chronology-tools</module>
     </modules>
 
     <scm>
