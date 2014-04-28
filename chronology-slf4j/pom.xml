@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>net.openhft</groupId>
-        <artifactId>root-parent-pom</artifactId>
-        <version>1.0.1</version>
+        <groupId>com.higherfrequencytrading</groupId>
+        <artifactId>closed-hft-root-parent-pom</artifactId>
+        <version>1.0.5</version>
         <relativePath/>
     </parent>
 
@@ -23,6 +23,13 @@
                 <artifactId>third-party-bom</artifactId>
                 <type>pom</type>
                 <version>3.3.1</version>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>java-parent-pom</artifactId>
+                <type>pom</type>
+                <version>1.0.1</version>
                 <scope>import</scope>
             </dependency>
             <dependency>
@@ -66,6 +73,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <!--<version>2.16</version>-->
                 <configuration>
                     <systemPropertyVariables>
                         <slf4j.chronicle.vanilla.properties>
@@ -86,5 +94,23 @@
         </plugins>
     </build>
 
+    <!-- THIS COULD BE MOVED INTO THE SETTINGS FILE LATER -->
+    <repositories>
+        <repository>
+            <id>close-hft-nexus-snapshots</id>
+            <name>Snapshot Repository</name>
+            <url>http://dev.higherfrequencytrading.com:8081/nexus/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>close-hft-nexus-release</id>
+            <url>http://dev.higherfrequencytrading.com:8081/nexus/content/repositories/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
 </project>
