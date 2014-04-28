@@ -20,6 +20,7 @@
     <description>High Performance Logging</description>
 
     <modules>
+        <module>chronology</module>
         <module>chronology-logback</module>
         <module>chronology-slf4j</module>
         <module>chronology-tools</module>
