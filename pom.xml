@@ -21,8 +21,10 @@
 
     <modules>
         <module>chronology</module>
-        <module>chronology-logback</module>
         <module>chronology-slf4j</module>
+        <module>chronology-logback</module>
+        <module>chronology-log4j-1</module>
+        <module>chronology-log4j-2</module>
         <module>chronology-tools</module>
     </modules>
 
