@@ -33,6 +33,11 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>com.higherfrequencytrading</groupId>
+                <artifactId>chronology</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle</artifactId>
                 <version>3.0.1</version>
@@ -41,6 +46,10 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>com.higherfrequencytrading</groupId>
+            <artifactId>chronology</artifactId>
+        </dependency>
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle</artifactId>
