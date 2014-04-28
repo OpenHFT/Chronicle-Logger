@@ -7,7 +7,7 @@ import net.openhft.chronicle.IndexedChronicle;
 
 import java.io.IOException;
 
-public class IndexedChronicleAppender extends AbstractChronicleAppender {
+public class IndexedChronicleAppender extends ChronicleAppender {
 
     private ChronicleConfig config;
     private Object lock;

@@ -1,17 +1,13 @@
 package com.higherfrequencytrading.chronology.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 
 import java.io.IOException;
-import java.util.Map;
 
-public abstract class AbstractChronicleAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
-    public static final int VERSION = 1;
-
+public abstract class ChronicleAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private String path;
     private boolean includeCallerData;
     private boolean includeMDC;
@@ -19,7 +15,7 @@ public abstract class AbstractChronicleAppender extends UnsynchronizedAppenderBa
     private Chronicle chronicle;
     private ExcerptAppender appender;
 
-    public AbstractChronicleAppender() {
+    protected ChronicleAppender() {
         this.path = null;
         this.includeCallerData = true;
         this.includeMDC = true;
@@ -99,58 +95,10 @@ public abstract class AbstractChronicleAppender extends UnsynchronizedAppenderBa
 
     @Override
     protected void append(final ILoggingEvent event) {
-        this.appender.startExcerpt();
-        this.appender.writeInt(VERSION);
-        this.appender.writeLong(event.getTimeStamp());
-        this.appender.writeInt(event.getLevel().levelInt);
-        this.appender.writeUTF(event.getThreadName());
-        this.appender.writeUTF(event.getLoggerName());
-        this.appender.writeUTF(event.getMessage());
-
-        // Args
-        Object[] args = event.getArgumentArray();
-        int argsLen = null != args ? args.length : 0;
-
-        appender.writeInt(argsLen);
-        for(int i=0; i < argsLen; i++) {
-            appender.writeObject(args[i]);
-        }
-
-        if(this.includeMDC) {
-            // Mapped Diagnostic Context http://logback.qos.ch/manual/mdc.html
-            final Map<String, String> mdcProps = event.getMDCPropertyMap();
-            this.appender.writeInt(null != mdcProps ? mdcProps.size() : 0);
-            if(mdcProps != null) {
-                for (Map.Entry<String, String> entry : mdcProps.entrySet()) {
-                    this.appender.writeUTF(entry.getKey());
-                    this.appender.writeUTF(entry.getValue());
-                }
-            }
-        } else {
-            this.appender.writeInt(0);
-        }
-
-        if(this.includeCallerData) {
-            Object[] callerData = event.getCallerData();
-            int callerDataLen = null != callerData ? callerData.length : 0;
-
-            appender.writeInt(callerDataLen);
-            for(int i=0; i < callerDataLen; i++) {
-                appender.writeObject(callerData[i]);
-            }
-
-        } else {
-            this.appender.writeInt(0);
-        }
-
-        IThrowableProxy throwableProxy = event.getThrowableProxy();
-        if(throwableProxy != null) {
-            this.appender.writeBoolean(true);
-            this.appender.writeObject(throwableProxy);
-        } else {
-            this.appender.writeBoolean(false);
-        }
-
-        this.appender.finish();
+        ChronicleAppenderHelper.write(
+            this.appender,
+            event,
+            this.includeMDC,
+            this.includeCallerData);
     }
 }
