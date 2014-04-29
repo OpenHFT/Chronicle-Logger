@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+    <appender name  = "VANILLA-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.log4j1.VanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/vanilla-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+    </appender>
+
+    <appender name  = "STDOUT"
+              class = "org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
+        </layout>
+    </appender>
+
+    <logger name="vanilla-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="VANILLA-CHRONICLE"/>
+    </logger>
+
+    <root>
+        <level value="debug" />
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</log4j:configuration>

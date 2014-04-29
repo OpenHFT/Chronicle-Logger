@@ -99,7 +99,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <logback.configuration>
-                            ${project.basedir}/src/test/resources/logback.xml
+                            ${project.basedir}/src/test/resources/log4j.xml
                         </logback.configuration>
                     </systemPropertyVariables>
                 </configuration>

@@ -100,7 +100,7 @@ public abstract class ChronicleAppender extends AppenderSkeleton implements Appe
     }
 
     protected void createAppender() {
-        if(this.chronicle != null) {
+        if(this.chronicle == null) {
             try {
                 this.chronicle = createChronicle();
                 this.appender  = this.chronicle.createAppender();
