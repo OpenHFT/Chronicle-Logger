@@ -17,7 +17,7 @@ import java.io.Serializable;
 /**
  *
  */
-public class ChronicleTestBase {
+public class ChronologyTestBase {
 
     // *************************************************************************
     //

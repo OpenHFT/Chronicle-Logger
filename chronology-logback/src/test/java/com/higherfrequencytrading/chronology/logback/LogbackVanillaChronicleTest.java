@@ -1,7 +1,8 @@
 package com.higherfrequencytrading.chronology.logback;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.ILoggingEvent;
+import com.higherfrequencytrading.chronology.Chronology;
+import com.higherfrequencytrading.chronology.ChronologyLogEvent;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.lang.io.IOTools;
@@ -13,12 +14,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-public class LogbackVanillaChronicleTest extends ChronicleTestBase {
+public class LogbackVanillaChronicleTest extends ChronologyTestBase {
 
     // *************************************************************************
     //
@@ -58,56 +56,15 @@ public class LogbackVanillaChronicleTest extends ChronicleTestBase {
 
         for(Level level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
-            ILoggingEvent evt = ChronicleAppenderHelper.read(tailer);
+            ChronologyLogEvent evt = ChronicleAppenderHelper.read(tailer);
             assertNotNull(evt);
+            assertEquals(evt.getVersion(), Chronology.VERSION);
+            assertEquals(evt.getType(), Chronology.TYPE_LOGBACK);
             assertTrue(evt.getTimeStamp() >= timestamp);
             assertEquals(level.levelStr,evt.getMessage());
-            assertEquals(threadId,evt.getThreadName());
+            assertEquals(threadId, evt.getThreadName());
             assertNotNull(evt.getArgumentArray());
             assertEquals(0, evt.getArgumentArray().length);
-            assertNotNull(evt.getCallerData());
-            assertTrue(evt.getCallerData().length > 0);
-            assertNull(evt.getThrowableProxy());
-
-            tailer.finish();
-        }
-
-        tailer.close();
-        chronicle.close();
-    }
-
-
-    @Test
-    public void testAppenderReduced() throws IOException {
-        final String testId    = "vanilla-chronicle-reduced";
-        final String threadId  = testId + "-th";
-        final long   timestamp = System.currentTimeMillis();
-
-        Thread.currentThread().setName(threadId);
-
-        Logger l = LoggerFactory.getLogger(testId);
-
-        l.trace(Level.TRACE.levelStr);
-        l.debug(Level.DEBUG.levelStr);
-        l.info(Level.INFO.levelStr);
-        l.warn(Level.WARN.levelStr);
-        l.error(Level.ERROR.levelStr);
-
-        VanillaChronicle chronicle = getVanillaChronicle(testId);
-        ExcerptTailer    tailer    = chronicle.createTailer().toStart();
-
-        for(Level level : LOG_LEVELS) {
-            assertTrue(tailer.nextIndex());
-            ILoggingEvent evt = ChronicleAppenderHelper.read(tailer);
-            assertNotNull(evt);
-            assertTrue(evt.getTimeStamp() >= timestamp);
-            assertEquals(level.levelStr,evt.getMessage());
-            assertEquals(threadId,evt.getThreadName());
-            assertNotNull(evt.getArgumentArray());
-            assertEquals(0, evt.getArgumentArray().length);
-            assertNotNull(evt.getCallerData());
-            assertEquals(0, evt.getCallerData().length);
-            assertNull(evt.getThrowableProxy());
 
             tailer.finish();
         }

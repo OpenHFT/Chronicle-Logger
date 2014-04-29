@@ -2,22 +2,13 @@ package com.higherfrequencytrading.chronology.logback;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.LoggerContextVO;
+import com.higherfrequencytrading.chronology.Chronology;
+import com.higherfrequencytrading.chronology.ChronologyLogEvent;
+import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.ExcerptTailer;
-import net.openhft.lang.io.Bytes;
-import net.openhft.lang.io.serialization.BytesMarshallable;
-import net.openhft.lang.model.constraints.NotNull;
-import org.slf4j.Marker;
-import org.slf4j.helpers.MessageFormatter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ChronicleAppenderHelper {
-
-    public static final int VERSION = 1;
 
     /**
      * Write ILoggingEvent to an Excerpt
@@ -29,9 +20,10 @@ public class ChronicleAppenderHelper {
      */
     public static void write(final ExcerptAppender appender, final ILoggingEvent event, boolean includeMDC, boolean includeCallerData) {
         appender.startExcerpt();
-        appender.writeInt(VERSION);
+        appender.writeByte(Chronology.VERSION);
+        appender.writeByte(Chronology.TYPE_LOGBACK);
         appender.writeLong(event.getTimeStamp());
-        appender.writeInt(event.getLevel().levelInt);
+        appender.writeInt(toChronologyLogLevel(event.getLevel()));
         appender.writeUTF(event.getThreadName());
         appender.writeUTF(event.getLoggerName());
         appender.writeUTF(event.getMessage());
@@ -45,6 +37,7 @@ public class ChronicleAppenderHelper {
             appender.writeObject(args[i]);
         }
 
+        /*
         if(includeMDC) {
             // Mapped Diagnostic Context http://logback.qos.ch/manual/mdc.html
             final Map<String, String> mdcProps = event.getMDCPropertyMap();
@@ -79,18 +72,19 @@ public class ChronicleAppenderHelper {
         } else {
             appender.writeBoolean(false);
         }
+        */
 
         appender.finish();
     }
 
     /**
-     * Read an ILoggingEvent from an Excerpt
+     * Read an ChronologyLogEvent from an Excerpt
      *
      * @param tailer    the ExcerptTailer
      * @return          the ILoggingEvent
      */
-    public static ILoggingEvent read(final ExcerptTailer tailer) {
-        final MarshallableLoggingEvent event = new MarshallableLoggingEvent();
+    public static ChronologyLogEvent read(final ExcerptTailer tailer) {
+        final ChronologyLogEvent event = new ChronologyLogEvent();
         event.readMarshallable(tailer);
 
         return event;
@@ -100,125 +94,31 @@ public class ChronicleAppenderHelper {
     //
     // *************************************************************************
 
-    /**
-     * A wrapper BytesMarshallable class for ILoggingEvent
-     */
-    private static final class MarshallableLoggingEvent implements ILoggingEvent, BytesMarshallable {
-
-        private long timestamp;
-        private int level;
-        private String threadName;
-        private String loggerName;
-        private String message;
-        private String fmtMessage;
-        private Object[] args;
-        private StackTraceElement[] callerData;
-        private Map<String,String> mdc;
-        private IThrowableProxy throwableProxy;
-
-        public MarshallableLoggingEvent() {
-            this.timestamp      = -1;
-            this.level          = -1;
-            this.threadName     = null;
-            this.loggerName     = null;
-            this.message        = null;
-            this.fmtMessage     = null;
-            this.args           = null;
-            this.callerData     = null;
-            this.mdc            = null;
-            this.throwableProxy = null;
+    public static int toChronologyLogLevel(final Level level) {
+        switch(level.levelInt) {
+            case Level.DEBUG_INT:
+                return ChronologyLogLevel.DEBUG.levelInt;
+            case Level.TRACE_INT:
+                return ChronologyLogLevel.TRACE.levelInt;
+            case Level.INFO_INT:
+                return ChronologyLogLevel.INFO.levelInt;
+            case Level.WARN_INT:
+                return ChronologyLogLevel.WARN.levelInt;
+            case Level.ERROR_INT:
+                return ChronologyLogLevel.ERROR.levelInt;
+            default:
+                throw new IllegalArgumentException(level.levelInt + " not a valid level value");
         }
+    }
 
-        // *********************************************************************
-        //
-        // *********************************************************************
+    // *************************************************************************
+    //
+    // *************************************************************************
 
-        @Override
-        public long getTimeStamp() {
-            return this.timestamp;
-        }
-
-        @Override
-        public String getThreadName() {
-            return this.threadName;
-        }
-
-        @Override
-        public Level getLevel() {
-            return Level.toLevel(this.level);
-        }
-
-        @Override
-        public String getMessage() {
-            return this.message;
-        }
-
-        @Override
-        public Object[] getArgumentArray() {
-            return this.args;
-        }
-
-        @Override
-        public String getFormattedMessage() {
-            if(this.fmtMessage == null) {
-                this.fmtMessage = MessageFormatter.arrayFormat(this.message, this.args).getMessage();
-            }
-
-            return this.fmtMessage;
-        }
-
-        @Override
-        public String getLoggerName() {
-            return this.loggerName;
-        }
-
-        @Override
-        public IThrowableProxy getThrowableProxy() {
-            return this.throwableProxy;
-        }
-
-        @Override
-        public StackTraceElement[] getCallerData() {
-            return this.callerData;
-        }
-
-        @Override
-        public boolean hasCallerData() {
-            return this.callerData != null && this.callerData.length > 0;
-        }
-
-        @Override
-        public Map<String, String> getMDCPropertyMap() {
-            return this.mdc;
-        }
-
-        @Override
-        public Marker getMarker() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public LoggerContextVO getLoggerContextVO() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void prepareForDeferredProcessing() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Map<String, String> getMdc() {
-            throw new UnsupportedOperationException();
-        }
-
-        // *********************************************************************
-        //
-        // *********************************************************************
-
+    /*
         @Override
         public void readMarshallable(@NotNull Bytes in) throws IllegalStateException {
-            if(in.readInt() == VERSION) {
+            if(in.readInt() == Chronology.VERSION) {
                 this.timestamp  = in.readLong();
                 this.level      = in.readInt();
                 this.threadName = in.readUTF();
@@ -255,10 +155,5 @@ public class ChronicleAppenderHelper {
                 throw new UnsupportedClassVersionError();
             }
         }
-
-        @Override
-        public void writeMarshallable(@NotNull Bytes out) {
-            throw new UnsupportedOperationException();
-        }
-    }
+    */
 }
