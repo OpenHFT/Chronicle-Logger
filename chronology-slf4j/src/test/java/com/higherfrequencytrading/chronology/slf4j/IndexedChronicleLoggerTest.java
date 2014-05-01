@@ -134,7 +134,7 @@ public class IndexedChronicleLoggerTest extends ChronicleTestBase {
         assertTrue(tailer.nextIndex());
         assertEquals(Chronology.VERSION, tailer.readByte());
         assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
-        assertTrue(timestamp < tailer.readLong());
+        assertTrue(timestamp <= tailer.readLong());
         assertEquals(ChronologyLogLevel.DEBUG.levelInt, tailer.readInt());
         assertEquals(theradName, tailer.readUTF());
         assertEquals(loggerName, tailer.readUTF());
@@ -144,7 +144,7 @@ public class IndexedChronicleLoggerTest extends ChronicleTestBase {
         assertTrue(tailer.nextIndex());
         assertEquals(Chronology.VERSION, tailer.readByte());
         assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
-        assertTrue(timestamp < tailer.readLong());
+        assertTrue(timestamp <= tailer.readLong());
         assertEquals(ChronologyLogLevel.INFO.levelInt, tailer.readInt());
         assertEquals(theradName, tailer.readUTF());
         assertEquals(loggerName, tailer.readUTF());
@@ -154,7 +154,7 @@ public class IndexedChronicleLoggerTest extends ChronicleTestBase {
         assertTrue(tailer.nextIndex());
         assertEquals(Chronology.VERSION, tailer.readByte());
         assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
-        assertTrue(timestamp < tailer.readLong());
+        assertTrue(timestamp <= tailer.readLong());
         assertEquals(ChronologyLogLevel.WARN.levelInt, tailer.readInt());
         assertEquals(theradName, tailer.readUTF());
         assertEquals(loggerName, tailer.readUTF());
@@ -164,7 +164,7 @@ public class IndexedChronicleLoggerTest extends ChronicleTestBase {
         assertTrue(tailer.nextIndex());
         assertEquals(Chronology.VERSION, tailer.readByte());
         assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
-        assertTrue(timestamp < tailer.readLong());
+        assertTrue(timestamp <= tailer.readLong());
         assertEquals(ChronologyLogLevel.ERROR.levelInt, tailer.readInt());
         assertEquals(theradName, tailer.readUTF());
         assertEquals(loggerName, tailer.readUTF());
