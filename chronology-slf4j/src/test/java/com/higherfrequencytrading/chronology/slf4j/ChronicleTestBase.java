@@ -33,9 +33,7 @@ public class ChronicleTestBase {
                 + File.separator
                 + type
                 + File.separator
-                + new SimpleDateFormat("yyyyMMdd").format(new Date())
-                + File.separator
-                + ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+                + new SimpleDateFormat("yyyyMMdd").format(new Date());
     }
 
     protected static String basePath(String type, String loggerName) {
