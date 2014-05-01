@@ -12,7 +12,7 @@
     <name>ClosedHFT/Chronology/chronology-tools</name>
     <groupId>com.higherfrequencytrading</groupId>
     <artifactId>chronology-tools</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <dependencyManagement>
         <dependencies>
@@ -118,9 +118,4 @@
             </releases>
         </repository>
     </repositories>
-
-
-  <scm>
-    <tag>chronology-parent-1.0.0</tag>
-  </scm>
 </project>

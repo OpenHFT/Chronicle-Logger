@@ -12,7 +12,7 @@
     <name>ClosedHFT/Chronology/chronology-slf4j</name>
     <groupId>com.higherfrequencytrading</groupId>
     <artifactId>chronology-slf4j</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <dependencyManagement>
         <dependencies>
@@ -117,9 +117,4 @@
             </releases>
         </repository>
     </repositories>
-
-
-  <scm>
-    <tag>chronology-parent-1.0.0</tag>
-  </scm>
 </project>

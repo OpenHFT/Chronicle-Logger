@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.higherfrequencytrading</groupId>
     <artifactId>chronology-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ClosedHFT/Chronology</name>
@@ -30,7 +30,7 @@
         <url>scm:git:git@github.com:ClosedHFT/Chronology.git</url>
         <connection>scm:git:git@github.com:ClosedHFT/Chronology.git</connection>
         <developerConnection>scm:git:git@github.com:ClosedHFT/Chronology.git</developerConnection>
-        <tag>chronology-parent-1.0.0</tag>
+        <tag>master</tag>
     </scm>
 
 
