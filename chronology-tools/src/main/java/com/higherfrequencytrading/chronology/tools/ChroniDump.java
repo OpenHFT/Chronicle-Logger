@@ -1,6 +1,6 @@
-package com.higherfrequencytrading.chronology.slf4j.tools;
+package com.higherfrequencytrading.chronology.tools;
 
-import com.higherfrequencytrading.chronology.slf4j.ChronicleLogReader;
+import com.higherfrequencytrading.chronology.ChronologyLogReader;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.lang.io.Bytes;
@@ -19,9 +19,9 @@ public class ChroniDump {
     //
     // *************************************************************************
 
-    private static final ChronicleLogReader HEXDUMP = new ChronicleLogReader() {
+    private static final ChronologyLogReader HEXDUMP = new ChronologyLogReader() {
         @Override
-        public void read(Bytes bytes) {
+        public void read(final Bytes bytes) {
             StringBuilder result = new StringBuilder();
 
             for (long i = 0; bytes.remaining() > 0; i++) {
@@ -65,7 +65,6 @@ public class ChroniDump {
         try {
             boolean indexed = false;
 
-            //TODO add more options
             for (int i = 0; i < args.length - 1; i++) {
                 if ("-i".equals(args[i])) {
                     indexed = true;

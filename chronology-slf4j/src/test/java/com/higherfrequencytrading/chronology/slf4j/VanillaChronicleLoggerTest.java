@@ -1,5 +1,7 @@
 package com.higherfrequencytrading.chronology.slf4j;
 
+import com.higherfrequencytrading.chronology.Chronology;
+import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.VanillaChronicle;
@@ -14,6 +16,7 @@ import org.slf4j.impl.StaticLoggerBinder;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * TODO: add test case for text-logegrs
@@ -27,8 +30,8 @@ public class VanillaChronicleLoggerTest extends ChronicleTestBase {
     @Before
     public void setUp() {
         System.setProperty(
-                "slf4j.chronicle.properties",
-                System.getProperty("slf4j.chronicle.vanilla.properties"));
+            "slf4j.chronicle.properties",
+            System.getProperty("slf4j.chronicle.vanilla.properties"));
 
         getChronicleLoggerFactory().relaod();
         getChronicleLoggerFactory().warmup();
@@ -105,7 +108,11 @@ public class VanillaChronicleLoggerTest extends ChronicleTestBase {
 
     @Test
     public void testBiaryLogging() throws IOException {
-        Thread.currentThread().setName("th-test-logging_1");
+        String theradName = "th-test-logging_1";
+        String loggerName = "readwrite";
+        long   timestamp  = System.currentTimeMillis();
+
+        Thread.currentThread().setName(theradName);
 
         Logger l = LoggerFactory.getLogger("readwrite");
         l.trace("trace");
@@ -114,44 +121,48 @@ public class VanillaChronicleLoggerTest extends ChronicleTestBase {
         l.warn("warn");
         l.error("error");
 
-        Chronicle reader = new VanillaChronicle(basePath(ChronicleLoggingConfig.TYPE_VANILLA, "readwrite"));
+        Chronicle reader = new VanillaChronicle(basePath(ChronicleLoggingConfig.TYPE_VANILLA, loggerName));
         ExcerptTailer tailer = reader.createTailer();
 
         // debug
         assertTrue(tailer.nextIndex());
-        tailer.readLong();
-        assertEquals(ChronicleLoggingHelper.LOG_LEVEL_DEBUG, tailer.readByte());
-        assertEquals(Thread.currentThread().getId(), tailer.readLong());
-        assertEquals("th-test-logging_1", tailer.readEnum(String.class));
-        assertEquals("readwrite", tailer.readEnum(String.class));
-        assertEquals("debug", tailer.readEnum(String.class));
+        assertEquals(Chronology.VERSION, tailer.readByte());
+        assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
+        assertTrue(timestamp < tailer.readLong());
+        assertEquals(ChronologyLogLevel.DEBUG.levelInt, tailer.readInt());
+        assertEquals(theradName, tailer.readUTF());
+        assertEquals(loggerName, tailer.readUTF());
+        assertEquals("debug", tailer.readUTF());
 
         // info
         assertTrue(tailer.nextIndex());
-        tailer.readLong();
-        assertEquals(ChronicleLoggingHelper.LOG_LEVEL_INFO, tailer.readByte());
-        assertEquals(Thread.currentThread().getId(), tailer.readLong());
-        assertEquals("th-test-logging_1", tailer.readEnum(String.class));
-        assertEquals("readwrite", tailer.readEnum(String.class));
-        assertEquals("info", tailer.readEnum(String.class));
+        assertEquals(Chronology.VERSION, tailer.readByte());
+        assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
+        assertTrue(timestamp < tailer.readLong());
+        assertEquals(ChronologyLogLevel.INFO.levelInt, tailer.readInt());
+        assertEquals(theradName, tailer.readUTF());
+        assertEquals(loggerName, tailer.readUTF());
+        assertEquals("info", tailer.readUTF());
 
         // warn
         assertTrue(tailer.nextIndex());
-        tailer.readLong();
-        assertEquals(ChronicleLoggingHelper.LOG_LEVEL_WARN, tailer.readByte());
-        assertEquals(Thread.currentThread().getId(), tailer.readLong());
-        assertEquals("th-test-logging_1", tailer.readEnum(String.class));
-        assertEquals("readwrite", tailer.readEnum(String.class));
-        assertEquals("warn", tailer.readEnum(String.class));
+        assertEquals(Chronology.VERSION, tailer.readByte());
+        assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
+        assertTrue(timestamp < tailer.readLong());
+        assertEquals(ChronologyLogLevel.WARN.levelInt, tailer.readInt());
+        assertEquals(theradName, tailer.readUTF());
+        assertEquals(loggerName, tailer.readUTF());
+        assertEquals("warn", tailer.readUTF());
 
         // error
         assertTrue(tailer.nextIndex());
-        tailer.readLong();
-        assertEquals(ChronicleLoggingHelper.LOG_LEVEL_ERROR, tailer.readByte());
-        assertEquals(Thread.currentThread().getId(), tailer.readLong());
-        assertEquals("th-test-logging_1", tailer.readEnum(String.class));
-        assertEquals("readwrite", tailer.readEnum(String.class));
-        assertEquals("error", tailer.readEnum(String.class));
+        assertEquals(Chronology.VERSION, tailer.readByte());
+        assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
+        assertTrue(timestamp < tailer.readLong());
+        assertEquals(ChronologyLogLevel.ERROR.levelInt, tailer.readInt());
+        assertEquals(theradName, tailer.readUTF());
+        assertEquals(loggerName, tailer.readUTF());
+        assertEquals("error", tailer.readUTF());
 
         assertFalse(tailer.nextIndex());
 

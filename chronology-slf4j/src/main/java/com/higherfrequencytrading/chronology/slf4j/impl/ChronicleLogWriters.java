@@ -1,5 +1,7 @@
 package com.higherfrequencytrading.chronology.slf4j.impl;
 
+import com.higherfrequencytrading.chronology.Chronology;
+import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import com.higherfrequencytrading.chronology.slf4j.ChronicleLogWriter;
 import com.higherfrequencytrading.chronology.slf4j.ChronicleLoggingConfig;
 import com.higherfrequencytrading.chronology.slf4j.ChronicleLoggingHelper;
@@ -44,15 +46,14 @@ public class ChronicleLogWriters {
          */
         @Override
         public void log(int level, String name, String message, Object... args) {
-            final Thread currentThread = Thread.currentThread();
-
             this.appender.startExcerpt();
+            this.appender.writeByte(Chronology.VERSION);
+            this.appender.writeByte(Chronology.TYPE_SLF4J);
             this.appender.writeLong(System.currentTimeMillis());
-            this.appender.writeByte(level);
-            this.appender.writeLong(currentThread.getId());
-            this.appender.writeEnum(currentThread.getName());
-            this.appender.writeEnum(name);
-            this.appender.writeEnum(message);
+            this.appender.writeInt(toChronologyLogLevel(level));
+            this.appender.writeUTF(Thread.currentThread().getName());
+            this.appender.writeUTF(name);
+            this.appender.writeUTF(message);
             this.appender.writeInt(args.length);
             for (Object arg : args) {
                 this.appender.writeObject(arg);
@@ -81,20 +82,20 @@ public class ChronicleLogWriters {
          */
         @Override
         public void log(int level, String name, String message, Object... args) {
-            final Thread currentThread = Thread.currentThread();
             final FormattingTuple tp = MessageFormatter.format(message, args);
 
             this.appender.startExcerpt();
+            this.appender.writeByte(Chronology.VERSION);
+            this.appender.writeByte(Chronology.TYPE_SLF4J);
             this.appender.writeLong(System.currentTimeMillis());
-            this.appender.writeByte(level);
-            this.appender.writeLong(currentThread.getId());
-            this.appender.writeEnum(currentThread.getName());
-            this.appender.writeEnum(name);
+            this.appender.writeInt(toChronologyLogLevel(level));
+            this.appender.writeUTF(Thread.currentThread().getName());
+            this.appender.writeUTF(name);
 
             if (tp.getThrowable() == null) {
-                this.appender.writeEnum(tp.getMessage());
+                this.appender.writeUTF(tp.getMessage());
             } else {
-                appender.writeEnum(tp.getMessage() + " " + tp.getThrowable().toString());
+                appender.writeUTF(tp.getMessage() + " " + tp.getThrowable().toString());
             }
 
             this.appender.writeInt(0);
@@ -142,7 +143,6 @@ public class ChronicleLogWriters {
          */
         @Override
         public void log(int level, String name, String message, Object... args) {
-            final Thread currentThread = Thread.currentThread();
             final FormattingTuple tp = MessageFormatter.format(message, args);
 
             appender.startExcerpt();
@@ -150,9 +150,7 @@ public class ChronicleLogWriters {
             appender.append('|');
             appender.append(ChronicleLoggingHelper.levelToString(level));
             appender.append('|');
-            appender.append(currentThread.getId());
-            appender.append('|');
-            appender.append(currentThread.getName());
+            appender.append(Thread.currentThread().getName());
             appender.append('|');
             appender.append(name);
             appender.append('|');
@@ -203,6 +201,29 @@ public class ChronicleLogWriters {
         @Override
         public void close() throws IOException {
             this.writer.close();
+        }
+    }
+
+
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public static int toChronologyLogLevel(final int levelInt) {
+        switch(levelInt) {
+            case ChronicleLoggingHelper.LOG_LEVEL_DEBUG:
+                return ChronologyLogLevel.DEBUG.levelInt;
+            case ChronicleLoggingHelper.LOG_LEVEL_TRACE:
+                return ChronologyLogLevel.TRACE.levelInt;
+            case ChronicleLoggingHelper.LOG_LEVEL_INFO:
+                return ChronologyLogLevel.INFO.levelInt;
+            case ChronicleLoggingHelper.LOG_LEVEL_WARN:
+                return ChronologyLogLevel.WARN.levelInt;
+            case ChronicleLoggingHelper.LOG_LEVEL_ERROR:
+                return ChronologyLogLevel.ERROR.levelInt;
+            default:
+                throw new IllegalArgumentException(levelInt + " not a valid level value");
         }
     }
 }

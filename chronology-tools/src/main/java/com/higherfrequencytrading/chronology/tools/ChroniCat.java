@@ -1,4 +1,4 @@
-package com.higherfrequencytrading.chronology.slf4j.tools;
+package com.higherfrequencytrading.chronology.tools;
 
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
@@ -6,7 +6,7 @@ import net.openhft.chronicle.VanillaChronicle;
 /**
  *
  */
-public class ChroniTail extends ChroniTool {
+public class ChroniCat extends ChroniTool {
 
     // *************************************************************************
     //
@@ -31,12 +31,14 @@ public class ChroniTail extends ChroniTool {
                     indexed
                         ? new IndexedChronicle(args[args.length - 1])
                         : new VanillaChronicle(args[args.length - 1]),
-                    binary ? READER_BINARY : READER_TEXT,
-                    true,
-                    true
+                    binary
+                        ? READER_BINARY
+                        : READER_TEXT,
+                    false,
+                    false
                 );
             } else {
-                System.err.format("\nUsage: ChroniTail [-t|-i] path");
+                System.err.format("\nUsage: ChroniCat [-t|-i] path");
                 System.err.format("\n  -t = text chronicle, default binary");
                 System.err.format("\n  -i = IndexedCronicle, default VanillaChronicle");
             }

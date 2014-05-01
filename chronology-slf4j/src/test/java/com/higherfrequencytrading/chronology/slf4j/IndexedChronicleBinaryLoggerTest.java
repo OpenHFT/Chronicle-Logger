@@ -1,5 +1,7 @@
 package com.higherfrequencytrading.chronology.slf4j;
 
+import com.higherfrequencytrading.chronology.Chronology;
+import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.IndexedChronicle;
@@ -15,6 +17,7 @@ import org.slf4j.impl.StaticLoggerBinder;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * TODO: add test case for text-logegrs
@@ -28,8 +31,8 @@ public class IndexedChronicleBinaryLoggerTest extends ChronicleTestBase {
     @Before
     public void setUp() {
         System.setProperty(
-                "slf4j.chronicle.properties",
-                System.getProperty("slf4j.chronicle.indexed.binary.properties"));
+            "slf4j.chronicle.properties",
+            System.getProperty("slf4j.chronicle.indexed.binary.properties"));
 
         getChronicleLoggerFactory().relaod();
         getChronicleLoggerFactory().warmup();
@@ -76,25 +79,28 @@ public class IndexedChronicleBinaryLoggerTest extends ChronicleTestBase {
     public void testLogging1() throws IOException {
         String theradName = "th-test-binary-logging";
         String loggerName = IndexedChronicleBinaryLoggerTest.class.getName();
+        long   timestamp  = System.currentTimeMillis();
 
         Thread.currentThread().setName(theradName);
 
         Logger l = LoggerFactory.getLogger(loggerName);
         l.debug("data {}, {}",
-                new MySerializableData("a Serializable object"),
-                new MyMarshallableData("a Marshallable object")
+            new MySerializableData("a Serializable object"),
+            new MyMarshallableData("a Marshallable object")
         );
 
         Chronicle reader = getIndexedChronicle(ChronicleLoggingConfig.TYPE_INDEXED, "root-binary");
         ExcerptTailer tailer = reader.createTailer();
 
         assertTrue(tailer.nextIndex());
-        tailer.readLong();
-        assertEquals(ChronicleLoggingHelper.LOG_LEVEL_DEBUG, tailer.readByte());
-        assertEquals(Thread.currentThread().getId(), tailer.readLong());
-        assertEquals(theradName, tailer.readEnum(String.class));
-        assertEquals(loggerName, tailer.readEnum(String.class));
-        assertEquals("data {}, {}", tailer.readEnum(String.class));
+
+        assertEquals(Chronology.VERSION, tailer.readByte());
+        assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
+        assertTrue(timestamp < tailer.readLong());
+        assertEquals(ChronologyLogLevel.DEBUG.levelInt, tailer.readInt());
+        assertEquals(theradName, tailer.readUTF());
+        assertEquals(loggerName, tailer.readUTF());
+        assertEquals("data {}, {}", tailer.readUTF());
 
         int nbObjects = tailer.readInt();
         assertEquals(nbObjects, 2);

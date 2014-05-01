@@ -1,11 +1,9 @@
-package com.higherfrequencytrading.chronology.slf4j.tools;
+package com.higherfrequencytrading.chronology.tools;
 
-import com.higherfrequencytrading.chronology.slf4j.impl.AbstractBinaryChronicleLogReader;
-import com.higherfrequencytrading.chronology.slf4j.impl.AbstractTextChronicleLogReader;
+import com.higherfrequencytrading.chronology.ChronologyLogEvent;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,7 +22,6 @@ public class ChroniGrep extends ChroniTool {
             boolean binary = true;
             Grep grep = new Grep();
 
-            //TODO add more options
             for (int i = 0; i < args.length - 1; i++) {
                 if ("-t".equals(args[i])) {
                     binary = false;
@@ -84,11 +81,9 @@ public class ChroniGrep extends ChroniTool {
 
             return false;
         }
-    }
+    };
 
-    ;
-
-    private static final class BinaryGrep extends AbstractBinaryChronicleLogReader {
+    private static final class BinaryGrep extends BinaryProcessor {
         private final Grep grep;
 
         public BinaryGrep(final Grep grep) {
@@ -96,21 +91,15 @@ public class ChroniGrep extends ChroniTool {
         }
 
         @Override
-        public void process(Date timestamp, int level, long threadId, String threadName, String name, String message, Object... args) {
-            String msg = asString(timestamp, level, threadId, threadName, name, message, args);
+        public void process(final ChronologyLogEvent event) {
+            String msg = asString(event);
             if (this.grep.matches(msg)) {
                 System.out.println(msg);
             }
         }
-    }
+    };
 
-    ;
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    private static final class TextGrep extends AbstractTextChronicleLogReader {
+    private static final class TextGrep extends TextProcessor {
         private final Grep grep;
 
         public TextGrep(final Grep grep) {

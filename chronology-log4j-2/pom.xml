@@ -102,23 +102,25 @@
 
     </dependencies>
 
-    <!--
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <forkCount>0</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <!--
                     <systemPropertyVariables>
                         <logback.configuration>
-                            ${project.basedir}/src/test/resources/logback.xml
+                            ${project.basedir}/src/test/resources/log4j.xml
                         </logback.configuration>
                     </systemPropertyVariables>
+                    -->
                 </configuration>
             </plugin>
         </plugins>
     </build>
-    -->
 
     <!-- THIS COULD BE MOVED INTO THE SETTINGS FILE LATER -->
     <repositories>

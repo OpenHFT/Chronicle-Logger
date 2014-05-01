@@ -1,5 +1,5 @@
-chronicle-slf4j
-===============
+chronology-slf4j
+================
 
 To configure this sl4j binding you need to specify the location of a properties files via system properties:
 ```
@@ -58,31 +58,31 @@ Predefined values are:
 
 ###Tools
 
-  * com.higherfrequencytrading.chronology.slf4j.tools.ChroniTail
+  * com.higherfrequencytrading.chronology.tools.ChroniTail
   ```
     ChroniTail [-t|-i] path
         -t = text chronicle, default binary
         -i = IndexedCronicle, default VanillaChronicle
 
-    mvn exec:java -Dexec.mainClass="com.higherfrequencytrading.chronology.slf4j.tools.ChroniTail" -Dexec.args="..."
+    mvn exec:java -Dexec.mainClass="com.higherfrequencytrading.chronology.tools.ChroniTail" -Dexec.args="..."
   ```
 
-  * com.higherfrequencytrading.chronology.slf4j.tools.ChroniCat
+  * com.higherfrequencytrading.chronology.tools.ChroniCat
   ```
       ChroniCat [-t|-i] path
         -t = text chronicle, default binary
         -i = IndexedCronicle, default VanillaChronicle
 
-      mvn exec:java -Dexec.mainClass="com.higherfrequencytrading.chronology.slf4j.tools.ChroniCat" -Dexec.args="..."
+      mvn exec:java -Dexec.mainClass="com.higherfrequencytrading.chronology.tools.ChroniCat" -Dexec.args="..."
   ```
 
-  * com.higherfrequencytrading.chronology.slf4j.tools.ChroniGrep
+  * com.higherfrequencytrading.chronology.tools.ChroniGrep
   ```
       ChroniCat [-t|-i] regexp1 ... regexpN path
         -t = text chronicle, default binary
         -i = IndexedCronicle, default VanillaChronicle
 
-      mvn exec:java -Dexec.mainClass="com.higherfrequencytrading.chronology.slf4j.tools.ChroniCat" -Dexec.args="..."
+      mvn exec:java -Dexec.mainClass="com.higherfrequencytrading.chronology.tools.ChroniCat" -Dexec.args="..."
   ```
 
 
@@ -102,7 +102,7 @@ Output:
   import net.openhft.chronicle.VanillaChronicle
   import net.openhft.chronicle.IndexedChronicle
   import net.openhft.chronicle.slf4j.ChronicleLogProcessor
-  import com.higherfrequencytrading.chronology.slf4j.tools.ChroniTool
+  import com.higherfrequencytrading.chronology.tools.ChroniTool
 
   @Grapes([
      @Grab(group='net.openhft'               , module='chronicle'       , version='3.0b-SNAPSHOT'),
@@ -136,7 +136,7 @@ Output:
   import net.openhft.chronicle.VanillaChronicle
   import net.openhft.chronicle.IndexedChronicle
   import net.openhft.chronicle.slf4j.ChronicleLogProcessor
-  import com.higherfrequencytrading.chronology.slf4j.tools.ChroniTool
+  import com.higherfrequencytrading.chronology.tools.ChroniTool
 
   @Grapes([
      @Grab(group='net.openhft'               , module='chronicle'       , version='3.0b-SNAPSHOT'),

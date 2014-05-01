@@ -60,6 +60,10 @@ public class ChronologyLogEvent implements BytesMarshallable {
         return this.args;
     }
 
+    public boolean hasArguments() {
+        return this.args != null && this.args.length > 0;
+    }
+
     public String getLoggerName() {
         return this.loggerName;
     }
