@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Ignore
-public class IndexedChroniclePerfTest extends ChronicleTestBase {
+public class Slf4jIndexedChroniclePerfTest extends Slf4jTestBase {
 
     // *************************************************************************
     //
@@ -45,7 +45,7 @@ public class IndexedChroniclePerfTest extends ChronicleTestBase {
 
     @Test
     public void testSingleThreadLogging() throws IOException {
-        Logger l = LoggerFactory.getLogger(VanillaChroniclePerfTest.class);
+        Logger l = LoggerFactory.getLogger(Slf4jVanillaChroniclePerfTest.class);
 
         for (int size : new int[]{64, 128, 256}) {
             String msg = StringUtils.rightPad("", size, 'X');

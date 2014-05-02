@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Ignore
-public class IndexedChronicleBinaryPerfTest extends ChronicleTestBase {
+public class Slf4jVanillaChronicleBinaryPerfTest extends Slf4jTestBase {
 
     // *************************************************************************
     //
@@ -24,9 +24,8 @@ public class IndexedChronicleBinaryPerfTest extends ChronicleTestBase {
     @Before
     public void setUp() {
         System.setProperty(
-            "slf4j.chronicle.properties",
-            System.getProperty("slf4j.chronicle.indexed.properties")
-        );
+                "slf4j.chronicle.properties",
+                System.getProperty("slf4j.chronicle.vanilla.binary.properties"));
 
         getChronicleLoggerFactory().relaod();
         getChronicleLoggerFactory().warmup();
@@ -36,7 +35,7 @@ public class IndexedChronicleBinaryPerfTest extends ChronicleTestBase {
     public void tearDown() {
         getChronicleLoggerFactory().shutdown();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED));
+        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA));
     }
 
     // *************************************************************************
@@ -45,7 +44,7 @@ public class IndexedChronicleBinaryPerfTest extends ChronicleTestBase {
 
     @Test
     public void testSingleThreadLogging() throws IOException {
-        Logger l = LoggerFactory.getLogger(VanillaChroniclePerfTest.class);
+        Logger l = LoggerFactory.getLogger(Slf4jVanillaChronicleBinaryPerfTest.class);
 
         for (int size : new int[]{64, 128, 256}) {
             String msg = StringUtils.rightPad("", size, 'X');
@@ -60,7 +59,7 @@ public class IndexedChronicleBinaryPerfTest extends ChronicleTestBase {
 
                 long end = System.nanoTime();
 
-                System.out.printf("Indexed.SingleThreadLogging (min size %d, level disabled): took an average of %.2f us to write %d items\n",
+                System.out.printf("Vanilla.SingleThreadLogging (min size %d, level disabled): took an average of %.2f us to write %d items\n",
                         size,
                         (end - start) / items / 1e3,
                         items);
@@ -76,7 +75,7 @@ public class IndexedChronicleBinaryPerfTest extends ChronicleTestBase {
 
                 long end = System.nanoTime();
 
-                System.out.printf("Indexed.SingleThreadLogging (min size %d, level enabled): took an average of %.2f us to write %d items\n",
+                System.out.printf("Vanilla.SingleThreadLogging (min size %d, level enabled): took an average of %.2f us to write %d items\n",
                         size,
                         (end - start) / items / 1e3,
                         items);
@@ -102,7 +101,7 @@ public class IndexedChronicleBinaryPerfTest extends ChronicleTestBase {
 
             final long time = System.nanoTime() - start;
 
-            System.out.printf("Indexed.MultiThreadLogging (min size = %d): took an average of %.1f us per entry\n",
+            System.out.printf("Vanilla.MultiThreadLogging (min size = %d): took an average of %.1f us per entry\n",
                     size,
                     time / 1e3 / (RUNS * THREADS)
             );

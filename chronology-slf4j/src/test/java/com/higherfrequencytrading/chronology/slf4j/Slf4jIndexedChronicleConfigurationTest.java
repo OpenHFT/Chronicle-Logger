@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 /**
  *
  */
-public class IndexedChronicleConfigurationTest extends ChronicleTestBase {
+public class Slf4jIndexedChronicleConfigurationTest extends Slf4jTestBase {
 
     @Test
     public void testLoadProperties() {

@@ -1,4 +1,4 @@
-package com.higherfrequencytrading.chronology.logback;
+package com.higherfrequencytrading.chronology.slf4j;
 
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.IndexedChronicle;
@@ -9,15 +9,15 @@ import net.openhft.lang.model.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.StaticLoggerBinder;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-/**
- *
- */
-public class ChronologyTestBase {
+public class Slf4jTestBase {
 
     // *************************************************************************
     //
@@ -31,42 +31,20 @@ public class ChronologyTestBase {
         ChronologyLogLevel.ERROR
     };
 
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    protected static String rootPath() {
+    protected static String basePath(String type) {
         return System.getProperty("java.io.tmpdir")
             + File.separator
-            + "chronicle-logback";
-    }
-
-    protected static String basePath(String type) {
-        return rootPath()
+            + "chronology-slf4j"
             + File.separator
-            + type;
+            + type
+            + File.separator
+            + new SimpleDateFormat("yyyyMMdd").format(new Date());
     }
 
-    protected static void log(Logger logger, ChronologyLogLevel level, String fmt, Object... args) {
-        switch(level) {
-            case TRACE:
-                logger.trace(fmt,args);
-                break;
-            case DEBUG:
-                logger.debug(fmt,args);
-                break;
-            case INFO:
-                logger.info(fmt,args);
-                break;
-            case WARN:
-                logger.warn(fmt,args);
-                break;
-            case ERROR:
-                logger.error(fmt,args);
-                break;
-            default:
-                throw new UnsupportedOperationException();
-        }
+    protected static String basePath(String type, String loggerName) {
+        return basePath(type)
+            + File.separator
+            + loggerName;
     }
 
     // *************************************************************************
@@ -74,25 +52,33 @@ public class ChronologyTestBase {
     // *************************************************************************
 
     /**
-     * @param type
-     * @return
+     * @return the ChronicleLoggerFactory singleton
      */
-    protected IndexedChronicle getIndexedChronicle(String type) throws IOException {
-        return new IndexedChronicle(basePath(type));
+    protected ChronicleLoggerFactory getChronicleLoggerFactory() {
+        return (ChronicleLoggerFactory) StaticLoggerBinder.getSingleton().getLoggerFactory();
     }
 
     /**
      * @param type
+     * @param id
      * @return
      */
-    protected VanillaChronicle getVanillaChronicle(String type) throws IOException {
-        return new VanillaChronicle(basePath(type));
+    protected IndexedChronicle getIndexedChronicle(String type, String id) throws IOException {
+        return new IndexedChronicle(basePath(type, id));
+    }
+
+    /**
+     * @param type
+     * @param id
+     * @return
+     */
+    protected VanillaChronicle getVanillaChronicle(String type, String id) throws IOException {
+        return new VanillaChronicle(basePath(type, id));
     }
 
     // *************************************************************************
     //
     // *************************************************************************
-
 
     protected final static class MySerializableData implements Serializable {
         private final Object data;

@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * TODO: add test case for text-logegrs
  */
-public class IndexedChronicleBinaryLoggerTest extends ChronicleTestBase {
+public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
 
     // *************************************************************************
     //
@@ -60,7 +60,7 @@ public class IndexedChronicleBinaryLoggerTest extends ChronicleTestBase {
 
     @Test
     public void testLogger() {
-        Logger logger = LoggerFactory.getLogger(IndexedChronicleBinaryLoggerTest.class);
+        Logger logger = LoggerFactory.getLogger(Slf4jIndexedChronicleBinaryLoggerTest.class);
 
         assertNotNull(logger);
         assertEquals(logger.getClass(), ChronicleLogger.class);
@@ -68,7 +68,7 @@ public class IndexedChronicleBinaryLoggerTest extends ChronicleTestBase {
         ChronicleLogger cl = (ChronicleLogger) logger;
 
         assertEquals(cl.getLevel(), ChronicleLoggingHelper.LOG_LEVEL_DEBUG);
-        assertEquals(cl.getName(), IndexedChronicleBinaryLoggerTest.class.getName());
+        assertEquals(cl.getName(), Slf4jIndexedChronicleBinaryLoggerTest.class.getName());
         assertTrue(cl.getWriter() instanceof ChronicleLogWriters.SynchronizedWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof IndexedChronicle);
     }
@@ -80,7 +80,7 @@ public class IndexedChronicleBinaryLoggerTest extends ChronicleTestBase {
     @Test
     public void testLogging1() throws IOException {
         String theradName = "th-test-binary-logging";
-        String loggerName = IndexedChronicleBinaryLoggerTest.class.getName();
+        String loggerName = Slf4jIndexedChronicleBinaryLoggerTest.class.getName();
         long   timestamp  = System.currentTimeMillis();
 
         Thread.currentThread().setName(theradName);

@@ -16,7 +16,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class LogbackVanillaChronicleTest extends ChronologyTestBase {
+public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
     // *************************************************************************
     //

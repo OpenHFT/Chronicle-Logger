@@ -4,7 +4,7 @@
 
     <appender name  = "BINARY-VANILLA-CHRONICLE"
               class = "com.higherfrequencytrading.chronology.log4j1.BinaryVanillaChronicleAppender">
-        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/binary-vanilla-chronicle"/>
+        <param name="path" value="${java.io.tmpdir}/chronology-log4j1/binary-vanilla-chronicle"/>
         <param name="includeCallerData" value="false"/>
         <param name="includeMappedDiagnosticContext" value="false"/>
     </appender>

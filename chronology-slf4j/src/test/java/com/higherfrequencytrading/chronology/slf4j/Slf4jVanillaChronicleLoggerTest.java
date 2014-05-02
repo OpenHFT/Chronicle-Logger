@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 /**
  * TODO: add test case for text-logegrs
  */
-public class VanillaChronicleLoggerTest extends ChronicleTestBase {
+public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
 
     // *************************************************************************
     //
@@ -58,8 +58,8 @@ public class VanillaChronicleLoggerTest extends ChronicleTestBase {
 
     @Test
     public void testLogger() {
-        Logger l1 = LoggerFactory.getLogger(VanillaChronicleLoggerTest.class);
-        Logger l2 = LoggerFactory.getLogger(VanillaChronicleLoggerTest.class);
+        Logger l1 = LoggerFactory.getLogger(Slf4jVanillaChronicleLoggerTest.class);
+        Logger l2 = LoggerFactory.getLogger(Slf4jVanillaChronicleLoggerTest.class);
         Logger l3 = LoggerFactory.getLogger("Logger1");
         Logger l4 = LoggerFactory.getLogger("readwrite");
 
@@ -84,12 +84,12 @@ public class VanillaChronicleLoggerTest extends ChronicleTestBase {
         ChronicleLogger cl1 = (ChronicleLogger) l1;
 
         assertEquals(cl1.getLevel(), ChronicleLoggingHelper.LOG_LEVEL_DEBUG);
-        assertEquals(cl1.getName(), VanillaChronicleLoggerTest.class.getName());
+        assertEquals(cl1.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
         assertTrue(cl1.getWriter().getChronicle() instanceof VanillaChronicle);
 
         ChronicleLogger cl2 = (ChronicleLogger) l2;
         assertEquals(cl2.getLevel(), ChronicleLoggingHelper.LOG_LEVEL_DEBUG);
-        assertEquals(cl2.getName(), VanillaChronicleLoggerTest.class.getName());
+        assertEquals(cl2.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
         assertTrue(cl2.getWriter().getChronicle() instanceof VanillaChronicle);
 
         ChronicleLogger cl3 = (ChronicleLogger) l3;

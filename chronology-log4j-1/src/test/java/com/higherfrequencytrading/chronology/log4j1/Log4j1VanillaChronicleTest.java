@@ -18,7 +18,7 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 @Ignore
-public class Log4j1VanillaChronicleTest extends ChronologyTestBase {
+public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
 
     // *************************************************************************
     //

@@ -10,7 +10,7 @@
 
     <appender name  = "BINARY-VANILLA-CHRONICLE"
               class = "com.higherfrequencytrading.chronology.logback.BinaryVanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronicle-logback/binary-vanilla-chronicle</path>
+        <path>${java.io.tmpdir}/chronology-logback/binary-vanilla-chronicle</path>
         <formatMessage>false</formatMessage>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
@@ -20,7 +20,7 @@
 
     <appender name  = "BINARY-VANILLA-CHRONICLE-FMT"
               class = "com.higherfrequencytrading.chronology.logback.BinaryVanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronicle-logback/binary-vanilla-chronicle-fmt</path>
+        <path>${java.io.tmpdir}/chronology-logback/binary-vanilla-chronicle-fmt</path>
         <formatMessage>true</formatMessage>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>

@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 /**
  * TODO: add test case for text-logegrs
  */
-public class VanillaChronicleBinaryLoggerTest extends ChronicleTestBase {
+public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
 
     // *************************************************************************
     //
@@ -59,7 +59,7 @@ public class VanillaChronicleBinaryLoggerTest extends ChronicleTestBase {
 
     @Test
     public void testLogger() {
-        Logger logger = LoggerFactory.getLogger(VanillaChronicleBinaryLoggerTest.class);
+        Logger logger = LoggerFactory.getLogger(Slf4jVanillaChronicleBinaryLoggerTest.class);
 
         assertNotNull(logger);
         assertEquals(logger.getClass(), ChronicleLogger.class);
@@ -67,7 +67,7 @@ public class VanillaChronicleBinaryLoggerTest extends ChronicleTestBase {
         ChronicleLogger cl = (ChronicleLogger) logger;
 
         assertEquals(cl.getLevel(), ChronicleLoggingHelper.LOG_LEVEL_DEBUG);
-        assertEquals(cl.getName(), VanillaChronicleBinaryLoggerTest.class.getName());
+        assertEquals(cl.getName(), Slf4jVanillaChronicleBinaryLoggerTest.class.getName());
         assertTrue(cl.getWriter() instanceof ChronicleLogWriters.BinaryWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof VanillaChronicle);
     }
@@ -79,7 +79,7 @@ public class VanillaChronicleBinaryLoggerTest extends ChronicleTestBase {
     @Test
     public void testLogging1() throws IOException {
         String theradName = "th-test-binary-logging";
-        String loggerName = VanillaChronicleBinaryLoggerTest.class.getName();
+        String loggerName = Slf4jVanillaChronicleBinaryLoggerTest.class.getName();
         long   timestamp  = System.currentTimeMillis();
 
         Thread.currentThread().setName(theradName);

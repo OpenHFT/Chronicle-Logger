@@ -17,7 +17,7 @@ import java.io.Serializable;
 /**
  *
  */
-public class ChronologyTestBase {
+public class Log4j1TestBase {
 
     // *************************************************************************
     //
@@ -34,7 +34,7 @@ public class ChronologyTestBase {
     protected static String rootPath() {
         return System.getProperty("java.io.tmpdir")
             + File.separator
-            + "chronicle-log4j1";
+            + "chronology-log4j1";
     }
 
     protected static String basePath(String type) {
