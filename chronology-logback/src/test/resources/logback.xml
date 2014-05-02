@@ -8,6 +8,39 @@
         </encoder>
     </appender>
 
+    <!-- ******************************************************************* -->
+    <!-- PLAIN                                                               -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "PERF-PLAIN-VANILLA"
+              class = "ch.qos.logback.core.FileAppender">
+        <File>${java.io.tmpdir}/chronology-logback/perf-plain-vanilla-log</File>
+        <encoder>
+            <pattern>%d{yyyy/MM/dd HH:mm:ss.SSS}|%-5.5p|%-48.48c{48} - %m%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name  = "PERF-PLAIN-INDEXED"
+              class = "ch.qos.logback.core.FileAppender">
+        <File>${java.io.tmpdir}/chronology-logback/perf-plain-indexed-log</File>
+        <encoder>
+            <pattern>%d{yyyy/MM/dd HH:mm:ss.SSS}|%-5.5p|%-48.48c{48} - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="perf-plain-vanilla" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-PLAIN-VANILLA"/>
+    </logger>
+
+    <logger name="perf-plain-indexed" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-PLAIN-INDEXED"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!-- VANILLA                                                             -->
+    <!-- ******************************************************************* -->
+
     <appender name  = "BINARY-VANILLA-CHRONICLE"
               class = "com.higherfrequencytrading.chronology.logback.BinaryVanillaChronicleAppender">
         <path>${java.io.tmpdir}/chronology-logback/binary-vanilla-chronicle</path>
@@ -16,8 +49,6 @@
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
     </appender>
 
-
-
     <appender name  = "BINARY-VANILLA-CHRONICLE-FMT"
               class = "com.higherfrequencytrading.chronology.logback.BinaryVanillaChronicleAppender">
         <path>${java.io.tmpdir}/chronology-logback/binary-vanilla-chronicle-fmt</path>
@@ -25,6 +56,71 @@
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
     </appender>
+
+    <appender name  = "PERF-BINARY-VANILLA-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.logback.BinaryVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/perf-binary-vanilla-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+    <logger name="binary-vanilla-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="binary-vanilla-chronicle-fmt" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-VANILLA-CHRONICLE-FMT"/>
+    </logger>
+
+    <logger name="perf-binary-vanilla-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!-- INDEXED                                                             -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "BINARY-INDEXED-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.logback.BinaryIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/binary-indexed-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+    <appender name  = "BINARY-INDEXED-CHRONICLE-FMT"
+              class = "com.higherfrequencytrading.chronology.logback.BinaryIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/binary-indexed-chronicle-fmt</path>
+        <formatMessage>true</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+    <appender name  = "PERF-BINARY-INDEXED-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.logback.BinaryIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/perf-binary-indexed-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+
+    <logger name="binary-indexed-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <logger name="binary-indexed-chronicle-fmt" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-INDEXED-CHRONICLE-FMT"/>
+    </logger>
+
+    <logger name="perf-binary-indexed-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
 
     <!--
     <appender name="VANILLA-CHRONICLE-CONNECT" class="com.higherfrequencytrading.chronology.logback.VanillaChronicleAppender">
@@ -37,14 +133,6 @@
         <listen>localhost:9701</listen>
     </appender>
     -->
-
-    <logger name="binary-vanilla-chronicle" level="TRACE" additivity="false">
-        <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
-    </logger>
-
-    <logger name="binary-vanilla-chronicle-fmt" level="TRACE" additivity="false">
-        <appender-ref ref="BINARY-VANILLA-CHRONICLE-FMT"/>
-    </logger>
 
     <!--
     <logger name="VANILLA-CHRONICLE-CONNECT" level="DEBUG">

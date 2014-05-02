@@ -16,7 +16,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class LogbackVanillaChronicleTest extends LogbackTestBase {
+public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
     // *************************************************************************
     //
@@ -28,7 +28,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
     @After
     public void tearDown() {
-        IOTools.deleteDir(rootPath());
+        //IOTools.deleteDir(rootPath());
     }
 
     // *************************************************************************
@@ -37,7 +37,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
     @Test
     public void testBinaryAppender1() throws IOException {
-        final String testId    = "binary-vanilla-chronicle";
+        final String testId    = "binary-indexed-chronicle";
         final String threadId  = testId + "-th";
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
@@ -48,7 +48,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
             log(logger,level,"level is {}",level.levelStr);
         }
 
-        Chronicle          chronicle = getVanillaChronicle(testId);
+        Chronicle          chronicle = getIndexedChronicle(testId);
         ExcerptTailer      tailer    = chronicle.createTailer().toStart();
         ChronologyLogEvent evt       = null;
 
@@ -73,11 +73,13 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
         tailer.close();
         chronicle.close();
+
+        IOTools.deleteDir(basePath(testId));
     }
 
     @Test
     public void testBinaryAppender2() throws IOException {
-        final String testId    = "binary-vanilla-chronicle-fmt";
+        final String testId    = "binary-indexed-chronicle-fmt";
         final String threadId  = testId + "-th";
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
@@ -88,7 +90,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
             log(logger,level,"level is {}",level.levelStr);
         }
 
-        Chronicle          chronicle = getVanillaChronicle(testId);
+        Chronicle          chronicle = getIndexedChronicle(testId);
         ExcerptTailer      tailer    = chronicle.createTailer().toStart();
         ChronologyLogEvent evt       = null;
 
@@ -112,5 +114,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
         tailer.close();
         chronicle.close();
+
+        IOTools.deleteDir(basePath(testId));
     }
 }
