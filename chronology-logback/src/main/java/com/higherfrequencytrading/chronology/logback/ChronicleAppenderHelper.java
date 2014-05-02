@@ -15,10 +15,17 @@ public class ChronicleAppenderHelper {
      *
      * @param appender          the ExcerptAppender
      * @param event             the ILoggingEvent
+     * @param formatMessage     write formatted or unformatted message
      * @param includeMDC        include or not Mapped Diagnostic Context
      * @param includeCallerData include or not CallerData
      */
-    public static void write(final ExcerptAppender appender, final ILoggingEvent event, boolean includeMDC, boolean includeCallerData) {
+    public static void write(
+        final ExcerptAppender appender,
+        final ILoggingEvent event,
+        boolean formatMessage,
+        boolean includeMDC,
+        boolean includeCallerData) {
+
         appender.startExcerpt();
         appender.writeByte(Chronology.VERSION);
         appender.writeByte(Chronology.TYPE_LOGBACK);
@@ -26,15 +33,21 @@ public class ChronicleAppenderHelper {
         appender.writeInt(toChronologyLogLevel(event.getLevel()));
         appender.writeUTF(event.getThreadName());
         appender.writeUTF(event.getLoggerName());
-        appender.writeUTF(event.getMessage());
 
-        // Args
-        Object[] args = event.getArgumentArray();
-        int argsLen = null != args ? args.length : 0;
+        if(!formatMessage) {
+            appender.writeUTF(event.getMessage());
 
-        appender.writeInt(argsLen);
-        for(int i=0; i < argsLen; i++) {
-            appender.writeObject(args[i]);
+            // Args
+            Object[] args = event.getArgumentArray();
+            int argsLen = null != args ? args.length : 0;
+
+            appender.writeInt(argsLen);
+            for (int i = 0; i < argsLen; i++) {
+                appender.writeObject(args[i]);
+            }
+        } else {
+            appender.writeUTF(event.getFormattedMessage());
+            appender.writeInt(0);
         }
 
         /*

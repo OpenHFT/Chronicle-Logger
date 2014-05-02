@@ -1,11 +1,13 @@
 package com.higherfrequencytrading.chronology.slf4j;
 
 import com.higherfrequencytrading.chronology.Chronology;
+import com.higherfrequencytrading.chronology.ChronologyLogEvent;
+import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
+import com.higherfrequencytrading.chronology.slf4j.impl.ChronicleLogWriters;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.VanillaChronicle;
-import com.higherfrequencytrading.chronology.slf4j.impl.ChronicleLogWriters;
 import net.openhft.lang.io.IOTools;
 import org.junit.After;
 import org.junit.Before;
@@ -17,7 +19,6 @@ import org.slf4j.impl.StaticLoggerBinder;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * TODO: add test case for text-logegrs
@@ -94,23 +95,23 @@ public class VanillaChronicleBinaryLoggerTest extends ChronicleTestBase {
 
         assertTrue(tailer.nextIndex());
 
-        assertEquals(Chronology.VERSION, tailer.readByte());
-        assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
-        assertTrue(timestamp < tailer.readLong());
-        assertEquals(ChronologyLogLevel.DEBUG.levelInt, tailer.readInt());
-        assertEquals(theradName, tailer.readUTF());
-        assertEquals(loggerName, tailer.readUTF());
-        assertEquals("data {}, {}", tailer.readUTF());
+        ChronologyLogEvent evt = ChronologyLogHelper.decode(tailer);
+        assertNotNull(evt);
+        assertEquals(evt.getVersion(), Chronology.VERSION);
+        assertEquals(evt.getType(), Chronology.TYPE_SLF4J);
+        assertTrue(timestamp <= evt.getTimeStamp());
+        assertEquals(ChronologyLogLevel.DEBUG,evt.getLevel());
+        assertEquals("data {}, {}",evt.getMessage());
+        assertEquals(theradName, evt.getThreadName());
+        assertNotNull(evt.getArgumentArray());
+        assertEquals(2, evt.getArgumentArray().length);
 
-        int nbObjects = tailer.readInt();
-        assertEquals(nbObjects, 2);
-
-        Object serializableObject = tailer.readObject();
+        Object serializableObject = evt.getArgumentArray()[0];
         assertNotNull(serializableObject);
         assertTrue(serializableObject instanceof MySerializableData);
         assertEquals(serializableObject.toString(), "a Serializable object");
 
-        Object marshallableObject = tailer.readObject();
+        Object marshallableObject = evt.getArgumentArray()[1];
         assertNotNull(marshallableObject);
         assertTrue(marshallableObject instanceof MyMarshallableData);
         assertEquals(marshallableObject.toString(), "a Marshallable object");

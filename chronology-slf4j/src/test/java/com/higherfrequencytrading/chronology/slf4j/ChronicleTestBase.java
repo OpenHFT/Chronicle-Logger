@@ -1,5 +1,6 @@
 package com.higherfrequencytrading.chronology.slf4j;
 
+import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.lang.io.Bytes;
@@ -13,33 +14,37 @@ import org.slf4j.impl.StaticLoggerBinder;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- *
- */
 public class ChronicleTestBase {
 
     // *************************************************************************
     //
     // *************************************************************************
 
+    protected static ChronologyLogLevel[] LOG_LEVELS = new ChronologyLogLevel[] {
+        ChronologyLogLevel.TRACE,
+        ChronologyLogLevel.DEBUG,
+        ChronologyLogLevel.INFO,
+        ChronologyLogLevel.WARN,
+        ChronologyLogLevel.ERROR
+    };
+
     protected static String basePath(String type) {
         return System.getProperty("java.io.tmpdir")
-                + File.separator
-                + "chronicle"
-                + File.separator
-                + type
-                + File.separator
-                + new SimpleDateFormat("yyyyMMdd").format(new Date());
+            + File.separator
+            + "chronicle"
+            + File.separator
+            + type
+            + File.separator
+            + new SimpleDateFormat("yyyyMMdd").format(new Date());
     }
 
     protected static String basePath(String type, String loggerName) {
         return basePath(type)
-                + File.separator
-                + loggerName;
+            + File.separator
+            + loggerName;
     }
 
     // *************************************************************************

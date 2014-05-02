@@ -11,6 +11,7 @@ public abstract class ChronicleAppender extends UnsynchronizedAppenderBase<ILogg
     private String path;
     private boolean includeCallerData;
     private boolean includeMDC;
+    private boolean formatMessage;
 
     private Chronicle chronicle;
     private ExcerptAppender appender;
@@ -19,6 +20,7 @@ public abstract class ChronicleAppender extends UnsynchronizedAppenderBase<ILogg
         this.path = null;
         this.includeCallerData = true;
         this.includeMDC = true;
+        this.formatMessage = false;
 
         this.chronicle = null;
         this.appender = null;
@@ -42,6 +44,14 @@ public abstract class ChronicleAppender extends UnsynchronizedAppenderBase<ILogg
 
     public boolean isIncludeMappedDiagnosticContext() {
         return this.includeMDC;
+    }
+
+    public void setFormatMessage(boolean formatMessage) {
+        this.formatMessage = formatMessage;
+    }
+
+    public boolean isFormatMessage() {
+        return this.formatMessage;
     }
 
     public void setPath(String path) {
@@ -98,6 +108,7 @@ public abstract class ChronicleAppender extends UnsynchronizedAppenderBase<ILogg
         ChronicleAppenderHelper.write(
             this.appender,
             event,
+            this.formatMessage,
             this.includeMDC,
             this.includeCallerData);
     }

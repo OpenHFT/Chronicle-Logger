@@ -1,12 +1,12 @@
 package com.higherfrequencytrading.chronology.log4j1;
 
+import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.lang.io.Bytes;
 import net.openhft.lang.io.serialization.BytesMarshallable;
 import net.openhft.lang.model.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +23,12 @@ public class ChronologyTestBase {
     //
     // *************************************************************************
 
-    protected static Level[] LOG_LEVELS = new Level[] {
-        Level.TRACE,
-        Level.DEBUG,
-        Level.INFO,
-        Level.WARN,
-        Level.ERROR
+    protected static ChronologyLogLevel[] LOG_LEVELS = new ChronologyLogLevel[] {
+        ChronologyLogLevel.TRACE,
+        ChronologyLogLevel.DEBUG,
+        ChronologyLogLevel.INFO,
+        ChronologyLogLevel.WARN,
+        ChronologyLogLevel.ERROR
     };
 
     protected static String rootPath() {
@@ -41,6 +41,28 @@ public class ChronologyTestBase {
         return rootPath()
             + File.separator
             + type;
+    }
+
+    protected static void log(Logger logger, ChronologyLogLevel level, String fmt, Object... args) {
+        switch(level) {
+            case TRACE:
+                logger.trace(fmt,args);
+                break;
+            case DEBUG:
+                logger.debug(fmt,args);
+                break;
+            case INFO:
+                logger.info(fmt,args);
+                break;
+            case WARN:
+                logger.warn(fmt,args);
+                break;
+            case ERROR:
+                logger.error(fmt,args);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
     // *************************************************************************

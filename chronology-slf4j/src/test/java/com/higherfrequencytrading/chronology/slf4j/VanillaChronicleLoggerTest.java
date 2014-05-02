@@ -1,6 +1,8 @@
 package com.higherfrequencytrading.chronology.slf4j;
 
 import com.higherfrequencytrading.chronology.Chronology;
+import com.higherfrequencytrading.chronology.ChronologyLogEvent;
+import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
@@ -16,7 +18,6 @@ import org.slf4j.impl.StaticLoggerBinder;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * TODO: add test case for text-logegrs
@@ -115,54 +116,30 @@ public class VanillaChronicleLoggerTest extends ChronicleTestBase {
         Thread.currentThread().setName(theradName);
 
         Logger l = LoggerFactory.getLogger("readwrite");
-        l.trace("trace");
-        l.debug("debug");
-        l.info("info");
-        l.warn("warn");
-        l.error("error");
+        l.trace(ChronologyLogLevel.TRACE.levelStr);
+        l.debug(ChronologyLogLevel.DEBUG.levelStr);
+        l.info(ChronologyLogLevel.INFO.levelStr);
+        l.warn(ChronologyLogLevel.WARN.levelStr);
+        l.error(ChronologyLogLevel.ERROR.levelStr);
 
-        Chronicle reader = new VanillaChronicle(basePath(ChronicleLoggingConfig.TYPE_VANILLA, loggerName));
+        Chronicle reader = getVanillaChronicle(ChronicleLoggingConfig.TYPE_VANILLA,loggerName);
         ExcerptTailer tailer = reader.createTailer();
+        ChronologyLogEvent evt = null;
 
-        // debug
-        assertTrue(tailer.nextIndex());
-        assertEquals(Chronology.VERSION, tailer.readByte());
-        assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
-        assertTrue(timestamp <= tailer.readLong());
-        assertEquals(ChronologyLogLevel.DEBUG.levelInt, tailer.readInt());
-        assertEquals(theradName, tailer.readUTF());
-        assertEquals(loggerName, tailer.readUTF());
-        assertEquals("debug", tailer.readUTF());
+        for(int i=1;i< LOG_LEVELS.length; i++) {
+            assertTrue(tailer.nextIndex());
 
-        // info
-        assertTrue(tailer.nextIndex());
-        assertEquals(Chronology.VERSION, tailer.readByte());
-        assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
-        assertTrue(timestamp <= tailer.readLong());
-        assertEquals(ChronologyLogLevel.INFO.levelInt, tailer.readInt());
-        assertEquals(theradName, tailer.readUTF());
-        assertEquals(loggerName, tailer.readUTF());
-        assertEquals("info", tailer.readUTF());
-
-        // warn
-        assertTrue(tailer.nextIndex());
-        assertEquals(Chronology.VERSION, tailer.readByte());
-        assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
-        assertTrue(timestamp <= tailer.readLong());
-        assertEquals(ChronologyLogLevel.WARN.levelInt, tailer.readInt());
-        assertEquals(theradName, tailer.readUTF());
-        assertEquals(loggerName, tailer.readUTF());
-        assertEquals("warn", tailer.readUTF());
-
-        // error
-        assertTrue(tailer.nextIndex());
-        assertEquals(Chronology.VERSION, tailer.readByte());
-        assertEquals(Chronology.TYPE_SLF4J, tailer.readByte());
-        assertTrue(timestamp <= tailer.readLong());
-        assertEquals(ChronologyLogLevel.ERROR.levelInt, tailer.readInt());
-        assertEquals(theradName, tailer.readUTF());
-        assertEquals(loggerName, tailer.readUTF());
-        assertEquals("error", tailer.readUTF());
+            evt = ChronologyLogHelper.decode(tailer);
+            assertNotNull(evt);
+            assertEquals(evt.getVersion(), Chronology.VERSION);
+            assertEquals(evt.getType(), Chronology.TYPE_SLF4J);
+            assertTrue(timestamp <= evt.getTimeStamp());
+            assertEquals(LOG_LEVELS[i],evt.getLevel());
+            assertEquals(LOG_LEVELS[i].levelStr,evt.getMessage());
+            assertEquals(theradName, evt.getThreadName());
+            assertNotNull(evt.getArgumentArray());
+            assertEquals(0, evt.getArgumentArray().length);
+        }
 
         assertFalse(tailer.nextIndex());
 

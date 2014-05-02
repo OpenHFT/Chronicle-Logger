@@ -1,6 +1,6 @@
 package com.higherfrequencytrading.chronology.logback;
 
-import ch.qos.logback.classic.Level;
+import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.lang.io.Bytes;
@@ -23,13 +23,17 @@ public class ChronologyTestBase {
     //
     // *************************************************************************
 
-    protected static Level[] LOG_LEVELS = new Level[] {
-        Level.TRACE,
-        Level.DEBUG,
-        Level.INFO,
-        Level.WARN,
-        Level.ERROR
+    protected static ChronologyLogLevel[] LOG_LEVELS = new ChronologyLogLevel[] {
+        ChronologyLogLevel.TRACE,
+        ChronologyLogLevel.DEBUG,
+        ChronologyLogLevel.INFO,
+        ChronologyLogLevel.WARN,
+        ChronologyLogLevel.ERROR
     };
+
+    // *************************************************************************
+    //
+    // *************************************************************************
 
     protected static String rootPath() {
         return System.getProperty("java.io.tmpdir")
@@ -41,6 +45,28 @@ public class ChronologyTestBase {
         return rootPath()
             + File.separator
             + type;
+    }
+
+    protected static void log(Logger logger, ChronologyLogLevel level, String fmt, Object... args) {
+        switch(level) {
+            case TRACE:
+                logger.trace(fmt,args);
+                break;
+            case DEBUG:
+                logger.debug(fmt,args);
+                break;
+            case INFO:
+                logger.info(fmt,args);
+                break;
+            case WARN:
+                logger.warn(fmt,args);
+                break;
+            case ERROR:
+                logger.error(fmt,args);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
     // *************************************************************************
@@ -66,6 +92,7 @@ public class ChronologyTestBase {
     // *************************************************************************
     //
     // *************************************************************************
+
 
     protected final static class MySerializableData implements Serializable {
         private final Object data;

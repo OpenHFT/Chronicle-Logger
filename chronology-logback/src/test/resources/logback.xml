@@ -8,9 +8,20 @@
         </encoder>
     </appender>
 
-    <appender name  = "VANILLA-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.logback.VanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronicle-logback/vanilla-chronicle</path>
+    <appender name  = "BINARY-VANILLA-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.logback.BinaryVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronicle-logback/binary-vanilla-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+
+
+    <appender name  = "BINARY-VANILLA-CHRONICLE-FMT"
+              class = "com.higherfrequencytrading.chronology.logback.BinaryVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronicle-logback/binary-vanilla-chronicle-fmt</path>
+        <formatMessage>true</formatMessage>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
     </appender>
@@ -27,8 +38,12 @@
     </appender>
     -->
 
-    <logger name="vanilla-chronicle" level="TRACE" additivity="false">
-        <appender-ref ref="VANILLA-CHRONICLE"/>
+    <logger name="binary-vanilla-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="binary-vanilla-chronicle-fmt" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-VANILLA-CHRONICLE-FMT"/>
     </logger>
 
     <!--

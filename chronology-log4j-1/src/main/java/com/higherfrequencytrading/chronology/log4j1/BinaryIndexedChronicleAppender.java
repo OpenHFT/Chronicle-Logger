@@ -7,12 +7,12 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;
 
-public class IndexedChronicleAppender extends ChronicleAppender {
+public class BinaryIndexedChronicleAppender extends ChronicleAppender {
 
     private ChronicleConfig config;
     private Object lock;
 
-    public IndexedChronicleAppender() {
+    public BinaryIndexedChronicleAppender() {
         this.config = null;
         this.lock = new Object();
     }
