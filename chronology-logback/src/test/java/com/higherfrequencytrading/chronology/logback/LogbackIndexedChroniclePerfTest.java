@@ -10,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Ignore
 public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
@@ -101,5 +104,53 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
         }
 
         IOTools.deleteDir(rootPath());
+    }
+
+    @Test
+    public void testMultiThreadLogging() throws IOException, InterruptedException {
+        final int RUNS = 1000000;
+        final int THREADS = 4;
+
+        for (int size : new int[]{64, 128, 256}) {
+            {
+                final long start = System.nanoTime();
+
+                ExecutorService es = Executors.newFixedThreadPool(THREADS);
+                for (int t = 0; t < THREADS; t++) {
+                    es.submit(new RunnableChronicle(RUNS, size, "perf-binary-indexed-chronicle"));
+                }
+
+                es.shutdown();
+                es.awaitTermination(5, TimeUnit.SECONDS);
+
+                final long time = System.nanoTime() - start;
+
+                System.out.printf("Indexed.MultiThreadLogging (runs=%d, min size=%03d): took an average of %.3f us per entry\n",
+                    RUNS,
+                    size,
+                    time / 1e3 / (RUNS * THREADS)
+                );
+            }
+
+            {
+                final long start = System.nanoTime();
+
+                ExecutorService es = Executors.newFixedThreadPool(THREADS);
+                for (int t = 0; t < THREADS; t++) {
+                    es.submit(new RunnableChronicle(RUNS, size, "perf-plain-vanilla"));
+                }
+
+                es.shutdown();
+                es.awaitTermination(5, TimeUnit.SECONDS);
+
+                final long time = System.nanoTime() - start;
+
+                System.out.printf("Plain.MultiThreadLogging (runs=%d, min size=%03d): took an average of %.3f us per entry\n",
+                    RUNS,
+                    size,
+                    time / 1e3 / (RUNS * THREADS)
+                );
+            }
+        }
     }
 }
