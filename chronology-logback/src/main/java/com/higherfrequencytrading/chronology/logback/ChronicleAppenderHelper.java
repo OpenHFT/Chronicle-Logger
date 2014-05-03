@@ -3,23 +3,24 @@ package com.higherfrequencytrading.chronology.logback;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import com.higherfrequencytrading.chronology.Chronology;
-import com.higherfrequencytrading.chronology.ChronologyLogEvent;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.ExcerptTailer;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 public class ChronicleAppenderHelper {
 
     /**
-     * Write ILoggingEvent to an Excerpt
+     * Write ILoggingEvent to a binary Excerpt
      *
      * @param appender          the ExcerptAppender
      * @param event             the ILoggingEvent
-     * @param formatMessage     write formatted or unformatted message
+     * @param formatMessage     writeBinary formatted or unformatted message
      * @param includeMDC        include or not Mapped Diagnostic Context
      * @param includeCallerData include or not CallerData
      */
-    public static void write(
+    public static void writeBinary(
         final ExcerptAppender appender,
         final ILoggingEvent event,
         boolean formatMessage,
@@ -30,7 +31,7 @@ public class ChronicleAppenderHelper {
         appender.writeByte(Chronology.VERSION);
         appender.writeByte(Chronology.TYPE_LOGBACK);
         appender.writeLong(event.getTimeStamp());
-        appender.writeInt(toChronologyLogLevel(event.getLevel()));
+        appender.writeInt(toIntChronologyLogLevel(event.getLevel()));
         appender.writeUTF(event.getThreadName());
         appender.writeUTF(event.getLoggerName());
 
@@ -91,23 +92,35 @@ public class ChronicleAppenderHelper {
     }
 
     /**
-     * Read an ChronologyLogEvent from an Excerpt
+     * Write ILoggingEvent to a text Excerpt
      *
-     * @param tailer    the ExcerptTailer
-     * @return          the ILoggingEvent
+     * @param appender          the ExcerptAppender
+     * @param event             the ILoggingEvent
+     * @param dateFormat        date format to use
+     * @param includeMDC        include or not Mapped Diagnostic Context
+     * @param includeCallerData include or not CallerData
      */
-    public static ChronologyLogEvent read(final ExcerptTailer tailer) {
-        final ChronologyLogEvent event = new ChronologyLogEvent();
-        event.readMarshallable(tailer);
+    public static void writeText(
+        final ExcerptAppender appender,
+        final ILoggingEvent event,
+        final DateFormat dateFormat,
+        boolean includeMDC,
+        boolean includeCallerData) {
 
-        return event;
+        appender.startExcerpt();
+        appender.writeUTF(dateFormat.format(new Date(event.getTimeStamp())));
+        appender.writeUTF(toStrChronologyLogLevel(event.getLevel()));
+        appender.writeUTF(event.getThreadName());
+        appender.writeUTF(event.getLoggerName());
+        appender.writeUTF(event.getFormattedMessage());
+        appender.finish();
     }
 
     // *************************************************************************
     //
     // *************************************************************************
 
-    public static int toChronologyLogLevel(final Level level) {
+    public static int toIntChronologyLogLevel(final Level level) {
         switch(level.levelInt) {
             case Level.DEBUG_INT:
                 return ChronologyLogLevel.DEBUG.levelInt;
@@ -124,49 +137,20 @@ public class ChronicleAppenderHelper {
         }
     }
 
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    /*
-        @Override
-        public void readMarshallable(@NotNull Bytes in) throws IllegalStateException {
-            if(in.readInt() == Chronology.VERSION) {
-                this.timestamp  = in.readLong();
-                this.level      = in.readInt();
-                this.threadName = in.readUTF();
-                this.loggerName = in.readUTF();
-                this.message    = in.readUTF();
-
-                // Args
-                // TODO: should this.args be null ?
-                this.args = new Object[in.readInt()];
-                for(int i=0;i<this.args.length;i++) {
-                    this.args[i] = in.readObject();
-                }
-
-                // Mapped Diagnostic Context
-                this.mdc = new HashMap<String,String>();
-                for(int i=in.readInt()-1;i>=0;i--) {
-                    String k = in.readUTF();
-                    String v = in.readUTF();
-                    this.mdc.put(k,v);
-                }
-
-                // Caller Data
-                // TODO: should this.callerData be null ?
-                this.callerData = new StackTraceElement[in.readInt()];
-                for(int i=0;i<this.callerData.length;i++) {
-                    this.callerData[i] = in.readObject(StackTraceElement.class);
-                }
-
-                if(in.readBoolean()) {
-                    this.throwableProxy = in.readObject(IThrowableProxy.class);
-                }
-
-            } else {
-                throw new UnsupportedClassVersionError();
-            }
+    public static String toStrChronologyLogLevel(final Level level) {
+        switch(level.levelInt) {
+            case Level.DEBUG_INT:
+                return ChronologyLogLevel.DEBUG.levelStr;
+            case Level.TRACE_INT:
+                return ChronologyLogLevel.TRACE.levelStr;
+            case Level.INFO_INT:
+                return ChronologyLogLevel.INFO.levelStr;
+            case Level.WARN_INT:
+                return ChronologyLogLevel.WARN.levelStr;
+            case Level.ERROR_INT:
+                return ChronologyLogLevel.ERROR.levelStr;
+            default:
+                throw new IllegalArgumentException(level.levelInt + " not a valid level value");
         }
-    */
+    }
 }

@@ -69,9 +69,10 @@ public abstract class ChronicleAppender extends AppenderSkeleton implements Appe
         createAppender();
 
         if(this.appender != null) {
-            ChronicleAppenderHelper.write(
+            ChronicleAppenderHelper.writeBinary(
                 this.appender,
                 event,
+                false,
                 this.includeMDC,
                 this.includeCallerData);
         }

@@ -137,19 +137,20 @@ public class LogbackTestBase {
     protected final class RunnableChronicle implements Runnable {
         private final Logger logger;
         private final int runs;
-        private final String msg;
+        private final String fmt;
+        private final String fmtBase = " > val1={}, val2={}, val3={}";
 
-        public RunnableChronicle(int runs, int size, String loggerName) {
+        public RunnableChronicle(int runs, int pad, String loggerName) {
             this.logger = LoggerFactory.getLogger(loggerName);
-            this.runs = runs;
-            this.msg = StringUtils.rightPad("", size, "X");
+            this.runs   = runs;
+            this.fmt    = StringUtils.rightPad(fmtBase, pad + fmtBase.length(), "X");
         }
 
         @Override
         public void run() {
             try {
                 for (int i = 0; i < this.runs; i++) {
-                    this.logger.info("{},{}", this.msg, i);
+                    this.logger.info(fmt,i, i * 10,i / 16);
                 }
             } catch (Exception e) {
                 this.logger.warn("Exception", e);

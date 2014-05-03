@@ -2,6 +2,7 @@ package com.higherfrequencytrading.chronology.log4j1;
 
 import com.higherfrequencytrading.chronology.Chronology;
 import com.higherfrequencytrading.chronology.ChronologyLogEvent;
+import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.VanillaChronicle;
@@ -15,7 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @Ignore
 public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
@@ -57,7 +60,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
         for(ChronologyLogLevel level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronicleAppenderHelper.read(tailer);
+            evt = ChronologyLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), Chronology.VERSION);
             assertEquals(evt.getType(), Chronology.TYPE_LOG4J_1);

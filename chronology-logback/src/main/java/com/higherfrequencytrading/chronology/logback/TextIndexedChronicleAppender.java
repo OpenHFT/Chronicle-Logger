@@ -7,12 +7,12 @@ import net.openhft.chronicle.IndexedChronicle;
 
 import java.io.IOException;
 
-public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
+public class TextIndexedChronicleAppender extends TextChronicleAppender {
 
     private ChronicleConfig config;
     private Object lock;
 
-    public BinaryIndexedChronicleAppender() {
+    public TextIndexedChronicleAppender() {
         this.config = null;
         this.lock = new Object();
     }

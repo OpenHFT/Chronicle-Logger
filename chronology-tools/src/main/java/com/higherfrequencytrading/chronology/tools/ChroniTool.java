@@ -1,8 +1,10 @@
 package com.higherfrequencytrading.chronology.tools;
 
+import com.higherfrequencytrading.chronology.BinaryChronologyLogEvent;
 import com.higherfrequencytrading.chronology.ChronologyLogEvent;
 import com.higherfrequencytrading.chronology.ChronologyLogProcessor;
 import com.higherfrequencytrading.chronology.ChronologyLogReader;
+import com.higherfrequencytrading.chronology.TextChronologyLogEvent;
 import com.higherfrequencytrading.chronology.slf4j.ChronicleLoggingConfig;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
@@ -24,27 +26,20 @@ public class ChroniTool {
     public static abstract class BinaryProcessor implements ChronologyLogReader, ChronologyLogProcessor {
         @Override
         public void read(final Bytes bytes) {
-            ChronologyLogEvent evt = new ChronologyLogEvent();
+            ChronologyLogEvent evt = new BinaryChronologyLogEvent();
             evt.readMarshallable(bytes);
 
             process(evt);
-        }
-
-        @Override
-        public void process(final String message) {
-            throw new UnsupportedOperationException();
         }
     }
 
     public static abstract class TextProcessor implements ChronologyLogReader, ChronologyLogProcessor {
         @Override
         public void read(final Bytes bytes) {
-            process(bytes.readLine());
-        }
+            ChronologyLogEvent evt = new TextChronologyLogEvent();
+            evt.readMarshallable(bytes);
 
-        @Override
-        public void process(final ChronologyLogEvent event) {
-            throw new UnsupportedOperationException();
+            process(evt);
         }
     }
 
@@ -61,8 +56,8 @@ public class ChroniTool {
 
     public static final ChronologyLogReader READER_TEXT = new TextProcessor() {
         @Override
-        public void process(String message) {
-            System.out.println(message);
+        public void process(final ChronologyLogEvent event) {
+            System.out.println(asString(event));
         }
     };
 
@@ -70,20 +65,11 @@ public class ChroniTool {
     //
     // *************************************************************************
 
-    public static ChronologyLogReader binaryReader(final ChronologyLogProcessor processor) {
+    public static ChronologyLogReader reader(final ChronologyLogProcessor processor) {
         return new BinaryProcessor() {
             @Override
             public void process(final ChronologyLogEvent event) {
                 processor.process(event);
-            }
-        };
-    }
-
-    public static ChronologyLogReader textReader(final ChronologyLogProcessor processor) {
-        return new TextProcessor() {
-            @Override
-            public void process(String message) {
-                processor.process(message);
             }
         };
     }

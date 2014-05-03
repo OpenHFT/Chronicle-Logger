@@ -2,6 +2,7 @@ package com.higherfrequencytrading.chronology.logback;
 
 import com.higherfrequencytrading.chronology.Chronology;
 import com.higherfrequencytrading.chronology.ChronologyLogEvent;
+import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
@@ -55,7 +56,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         for(ChronologyLogLevel level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronicleAppenderHelper.read(tailer);
+            evt = ChronologyLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), Chronology.VERSION);
             assertEquals(evt.getType(), Chronology.TYPE_LOGBACK);
@@ -95,7 +96,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         for(ChronologyLogLevel level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronicleAppenderHelper.read(tailer);
+            evt = ChronologyLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), Chronology.VERSION);
             assertEquals(evt.getType(), Chronology.TYPE_LOGBACK);

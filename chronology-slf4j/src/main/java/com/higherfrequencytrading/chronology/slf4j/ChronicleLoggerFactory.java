@@ -198,7 +198,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             if (chronicle != null) {
                 writer = new ChronicleLogWriters.TextWriter(
                         chronicle,
-                        this.cfg.getString(name, ChronicleLoggingConfig.KEY_DATE_FORMAT)
+                        null // TODO: this.cfg.getString(name, ChronicleLoggingConfig.KEY_DATE_FORMAT)
                 );
             }
         }

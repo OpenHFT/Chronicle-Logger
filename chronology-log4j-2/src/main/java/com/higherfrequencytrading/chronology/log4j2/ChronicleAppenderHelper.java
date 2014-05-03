@@ -1,10 +1,8 @@
 package com.higherfrequencytrading.chronology.log4j2;
 
 import com.higherfrequencytrading.chronology.Chronology;
-import com.higherfrequencytrading.chronology.ChronologyLogEvent;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.ExcerptTailer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
@@ -16,11 +14,11 @@ public class ChronicleAppenderHelper {
      *
      * @param appender          the ExcerptAppender
      * @param event             the ILoggingEvent
-     * @param formatMessage     write formatted or unformatted message
+     * @param formatMessage     writeBinary formatted or unformatted message
      * @param includeMDC        include or not Mapped Diagnostic Context
      * @param includeCallerData include or not CallerData
      */
-    public static void write(
+    public static void writeBinary(
         final ExcerptAppender appender,
         final LogEvent event,
         boolean formatMessage,
@@ -100,19 +98,6 @@ public class ChronicleAppenderHelper {
         appender.finish();
     }
 
-    /**
-     * Read an ChronologyLogEvent from an Excerpt
-     *
-     * @param tailer    the ExcerptTailer
-     * @return          the ILoggingEvent
-     */
-    public static ChronologyLogEvent read(final ExcerptTailer tailer) {
-        final ChronologyLogEvent event = new ChronologyLogEvent();
-        event.readMarshallable(tailer);
-
-        return event;
-    }
-
     // *************************************************************************
     //
     // *************************************************************************
@@ -132,50 +117,4 @@ public class ChronicleAppenderHelper {
 
         throw new IllegalArgumentException(level.intLevel() + " not a valid level value");
     }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    /*
-        @Override
-        public void readMarshallable(@NotNull Bytes in) throws IllegalStateException {
-            if(in.readInt() == Chronology.VERSION) {
-                this.timestamp  = in.readLong();
-                this.level      = in.readInt();
-                this.threadName = in.readUTF();
-                this.loggerName = in.readUTF();
-                this.message    = in.readUTF();
-
-                // Args
-                // TODO: should this.args be null ?
-                this.args = new Object[in.readInt()];
-                for(int i=0;i<this.args.length;i++) {
-                    this.args[i] = in.readObject();
-                }
-
-                // Mapped Diagnostic Context
-                this.mdc = new HashMap<String,String>();
-                for(int i=in.readInt()-1;i>=0;i--) {
-                    String k = in.readUTF();
-                    String v = in.readUTF();
-                    this.mdc.put(k,v);
-                }
-
-                // Caller Data
-                // TODO: should this.callerData be null ?
-                this.callerData = new StackTraceElement[in.readInt()];
-                for(int i=0;i<this.callerData.length;i++) {
-                    this.callerData[i] = in.readObject(StackTraceElement.class);
-                }
-
-                if(in.readBoolean()) {
-                    this.throwableProxy = in.readObject(IThrowableProxy.class);
-                }
-
-            } else {
-                throw new UnsupportedClassVersionError();
-            }
-        }
-    */
 }

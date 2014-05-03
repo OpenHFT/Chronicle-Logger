@@ -96,7 +96,7 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         assertTrue(tailer.nextIndex());
 
-        ChronologyLogEvent evt = ChronologyLogHelper.decode(tailer);
+        ChronologyLogEvent evt = ChronologyLogHelper.decodeBinary(tailer);
         assertNotNull(evt);
         assertEquals(evt.getVersion(), Chronology.VERSION);
         assertEquals(evt.getType(), Chronology.TYPE_SLF4J);

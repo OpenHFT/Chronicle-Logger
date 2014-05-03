@@ -1,26 +1,37 @@
 package com.higherfrequencytrading.chronology.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.FilterAttachableImpl;
+import ch.qos.logback.core.spi.FilterReply;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 
 import java.io.IOException;
+import java.util.List;
 
-public abstract class ChronicleAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
+public abstract class ChronicleAppender
+    extends ContextAwareBase
+    implements Appender<ILoggingEvent> {
+
+    private final FilterAttachableImpl<ILoggingEvent> filterAttachable;
+
+    private String name;
+    private boolean started = false;
+
     private String path;
-    private boolean includeCallerData;
-    private boolean includeMDC;
-    private boolean formatMessage;
 
-    private Chronicle chronicle;
-    private ExcerptAppender appender;
+    protected Chronicle chronicle;
+    protected ExcerptAppender appender;
 
     protected ChronicleAppender() {
+        this.filterAttachable = new FilterAttachableImpl<ILoggingEvent>();
+
+        this.name = null;
+        this.started = false;
         this.path = null;
-        this.includeCallerData = true;
-        this.includeMDC = true;
-        this.formatMessage = false;
 
         this.chronicle = null;
         this.appender = null;
@@ -29,30 +40,6 @@ public abstract class ChronicleAppender extends UnsynchronizedAppenderBase<ILogg
     // *************************************************************************
     // Custom logging options
     // *************************************************************************
-
-    public void setIncludeCallerData(boolean logCallerData) {
-        this.includeCallerData = logCallerData;
-    }
-
-    public boolean isIncludeCallerData() {
-        return this.includeCallerData;
-    }
-
-    public void setIncludeMappedDiagnosticContext(boolean logMDC) {
-        this.includeMDC = logMDC;
-    }
-
-    public boolean isIncludeMappedDiagnosticContext() {
-        return this.includeMDC;
-    }
-
-    public void setFormatMessage(boolean formatMessage) {
-        this.formatMessage = formatMessage;
-    }
-
-    public boolean isFormatMessage() {
-        return this.formatMessage;
-    }
 
     public void setPath(String path) {
         this.path = path;
@@ -73,6 +60,37 @@ public abstract class ChronicleAppender extends UnsynchronizedAppenderBase<ILogg
     // *************************************************************************
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void addFilter(Filter<ILoggingEvent> newFilter) {
+        this.filterAttachable.addFilter(newFilter);
+    }
+
+    public void clearAllFilters() {
+        this.filterAttachable.clearAllFilters();
+    }
+
+    public List<Filter<ILoggingEvent>> getCopyOfAttachedFiltersList() {
+        return this.filterAttachable.getCopyOfAttachedFiltersList();
+    }
+
+    public FilterReply getFilterChainDecision(ILoggingEvent event) {
+        return this.filterAttachable.getFilterChainDecision(event);
+    }
+
+    @Override
     public void start() {
         if(getPath() == null) {
             addError("Appender " + getName() + " has configuration errors and is not started!");
@@ -85,8 +103,6 @@ public abstract class ChronicleAppender extends UnsynchronizedAppenderBase<ILogg
                 this.appender  = null;
                 addError("Appender " + getName() + " " + e.getMessage());
             }
-
-            super.start();
         }
     }
 
@@ -99,17 +115,5 @@ public abstract class ChronicleAppender extends UnsynchronizedAppenderBase<ILogg
                 addError("Appender " + getName() + " " + e.getMessage());
             }
         }
-
-        super.stop();
-    }
-
-    @Override
-    protected void append(final ILoggingEvent event) {
-        ChronicleAppenderHelper.write(
-            this.appender,
-            event,
-            this.formatMessage,
-            this.includeMDC,
-            this.includeCallerData);
     }
 }

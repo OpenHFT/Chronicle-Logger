@@ -45,7 +45,7 @@ public class Slf4jIndexedChronicleBinaryPerfTest extends Slf4jTestBase {
 
     @Test
     public void testSingleThreadLogging() throws IOException {
-        Logger l = LoggerFactory.getLogger(Slf4jVanillaChroniclePerfTest.class);
+        Logger l = LoggerFactory.getLogger(Slf4jIndexedChronicleBinaryPerfTest.class);
 
         for (int size : new int[]{64, 128, 256}) {
             String msg = StringUtils.rightPad("", size, 'X');
@@ -81,6 +81,28 @@ public class Slf4jIndexedChronicleBinaryPerfTest extends Slf4jTestBase {
                         (end - start) / items / 1e3,
                         items);
             }
+        }
+    }
+
+    @Test
+    public void testSingleThreadLogging2() throws IOException {
+        final Logger clogger = LoggerFactory.getLogger(Slf4jIndexedChronicleBinaryPerfTest.class);
+        final long   items     = 10000;
+        final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
+
+        for(int n=0;n<10;n++) {
+
+            long cStart1 = System.nanoTime();
+
+            for (int i = 1; i <= items; i++) {
+                clogger.info(strFmt, i, i * 10, i / 16);
+            }
+
+            long cEnd1 = System.nanoTime();
+
+            System.out.printf("items=%03d chronology=%.3f\n",
+                items,
+                (cEnd1 - cStart1) / items / 1e3);
         }
     }
 

@@ -129,7 +129,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         for(int i=1;i< LOG_LEVELS.length; i++) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronologyLogHelper.decode(tailer);
+            evt = ChronologyLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), Chronology.VERSION);
             assertEquals(evt.getType(), Chronology.TYPE_SLF4J);

@@ -109,7 +109,7 @@ public abstract class ChronicleAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        ChronicleAppenderHelper.write(
+        ChronicleAppenderHelper.writeBinary(
             this.appender,
             event,
             this.formatMessage,

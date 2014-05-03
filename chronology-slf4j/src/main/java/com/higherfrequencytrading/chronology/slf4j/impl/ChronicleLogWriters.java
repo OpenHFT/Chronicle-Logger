@@ -11,8 +11,6 @@ import org.slf4j.helpers.MessageFormatter;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -112,8 +110,7 @@ public class ChronicleLogWriters {
      */
     public static final class TextWriter extends AbstractChronicleLogWriter {
 
-        private final String dateFormat;
-        private final ThreadLocal<DateFormat> dateFormatCache;
+        private final Chronology.DateFormatCache dateFormatCache;
 
         /**
          * c-tor
@@ -124,13 +121,12 @@ public class ChronicleLogWriters {
          */
         public TextWriter(Chronicle chronicle, String dateFormat) throws IOException {
             super(chronicle);
-            this.dateFormat = dateFormat != null ? dateFormat : ChronicleLoggingConfig.DEFAULT_DATE_FORMAT;
-            this.dateFormatCache = new ThreadLocal<DateFormat>() {
-                @Override
-                protected SimpleDateFormat initialValue() {
-                    return new SimpleDateFormat(TextWriter.this.dateFormat);
-                }
-            };
+
+            this.dateFormatCache = new Chronology.DateFormatCache(
+                dateFormat != null
+                    ? dateFormat
+                    : ChronicleLoggingConfig.DEFAULT_DATE_FORMAT
+            );
         }
 
         /**

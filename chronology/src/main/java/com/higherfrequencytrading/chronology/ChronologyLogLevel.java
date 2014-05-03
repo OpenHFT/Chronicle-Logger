@@ -16,10 +16,44 @@ public enum ChronologyLogLevel {
         this.levelStr = levelStr;
     }
 
+    // *************************************************************************
+    //
+    // *************************************************************************
+
     public static ChronologyLogLevel fromIntLevel(int levelInt) {
         for(ChronologyLogLevel cll : ChronologyLogLevel.values()) {
             if(cll.levelInt == levelInt) {
                 return cll;
+            }
+        }
+
+        throw new IllegalArgumentException(levelInt + " not a valid level value");
+    }
+
+    public static ChronologyLogLevel fromStringLevel(String levelStr) {
+        for(ChronologyLogLevel cll : ChronologyLogLevel.values()) {
+            if(cll.levelStr.equalsIgnoreCase(levelStr)) {
+                return cll;
+            }
+        }
+
+        throw new IllegalArgumentException(levelStr + " not a valid level value");
+    }
+
+    public static int intLevelfromStringLevel(String levelStr) {
+        for(ChronologyLogLevel cll : ChronologyLogLevel.values()) {
+            if(cll.levelStr.equalsIgnoreCase(levelStr)) {
+                return cll.levelInt;
+            }
+        }
+
+        throw new IllegalArgumentException(levelStr + " not a valid level value");
+    }
+
+    public static int stringLevelfromintLevel(int levelInt) {
+        for(ChronologyLogLevel cll : ChronologyLogLevel.values()) {
+            if(cll.levelInt == levelInt) {
+                return cll.levelInt;
             }
         }
 

@@ -31,7 +31,7 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
     // *************************************************************************
 
     @Test
-    public void testSingleThreadLogging() throws IOException {
+    public void testSingleThreadLogging1() throws IOException {
         Thread.currentThread().setName("perf-plain-indexed");
 
         final Logger clogger   = LoggerFactory.getLogger("perf-binary-indexed-chronicle");
@@ -57,9 +57,45 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d size=%04d=> chronology=%.0f, plain=%.0f\n",
+            System.out.printf("items=%03d size=%04d=> chronology=%.3f, plain=%.3f\n",
                 items,
                 staticStr.length(),
+                (cEnd1 - cStart1) / items / 1e3,
+                (pEnd1 - pStart1) / items / 1e3);
+        }
+
+        IOTools.deleteDir(rootPath());
+    }
+
+    @Test
+    public void testSingleThreadLogging2() throws IOException {
+        Thread.currentThread().setName("perf-plain-indexed");
+
+        final Logger clogger   = LoggerFactory.getLogger("perf-binary-indexed-chronicle");
+        final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed");
+        final long   items     = 10000;
+        final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
+
+        for(int n=0;n<10;n++) {
+
+            long cStart1 = System.nanoTime();
+
+            for (int i = 1; i <= items; i++) {
+                clogger.info(strFmt, i, i * 10, i / 16);
+            }
+
+            long cEnd1 = System.nanoTime();
+
+            long pStart1 = System.nanoTime();
+
+            for (int i = 1; i <= items; i++) {
+                plogger.info(strFmt, i, i * 10, i / 16);
+            }
+
+            long pEnd1 = System.nanoTime();
+
+            System.out.printf("items=%03d chronology=%.3f, plain=%.3f\n",
+                items,
                 (cEnd1 - cStart1) / items / 1e3,
                 (pEnd1 - pStart1) / items / 1e3);
         }
