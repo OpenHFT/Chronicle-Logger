@@ -39,11 +39,16 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
     public void doAppend(final ILoggingEvent event) {
         if(getFilterChainDecision(event) != FilterReply.DENY) {
             appender.startExcerpt();
-            appender.writeUTF(this.dateFormatCache.get().format(new Date(event.getTimeStamp())));
-            appender.writeUTF(toStrChronologyLogLevel(event.getLevel()));
-            appender.writeUTF(event.getThreadName());
-            appender.writeUTF(event.getLoggerName());
-            appender.writeUTF(event.getFormattedMessage());
+            appender.append(this.dateFormatCache.get().format(new Date(event.getTimeStamp())));
+            appender.append('|');
+            appender.append(toStrChronologyLogLevel(event.getLevel()));
+            appender.append('|');
+            appender.append(event.getThreadName());
+            appender.append('|');
+            appender.append(event.getLoggerName());
+            appender.append('|');
+            appender.append(event.getFormattedMessage());
+            appender.append('\n');
             appender.finish();
         }
     }

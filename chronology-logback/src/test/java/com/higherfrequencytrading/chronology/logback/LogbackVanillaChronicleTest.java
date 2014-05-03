@@ -114,4 +114,39 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         tailer.close();
         chronicle.close();
     }
+
+    @Test
+    public void testTextAppender1() throws IOException {
+        final String testId    = "text-vanilla-chronicle";
+        final String threadId  = testId + "-th";
+        final Logger logger    = LoggerFactory.getLogger(testId);
+
+        Thread.currentThread().setName(threadId);
+
+        for(ChronologyLogLevel level : LOG_LEVELS) {
+            log(logger,level,"level is {}",level.levelStr);
+        }
+
+        Chronicle          chronicle = getVanillaChronicle(testId);
+        ExcerptTailer      tailer    = chronicle.createTailer().toStart();
+        ChronologyLogEvent evt       = null;
+
+        for(ChronologyLogLevel level : LOG_LEVELS) {
+            assertTrue(tailer.nextIndex());
+
+            evt = ChronologyLogHelper.decodeText(tailer);
+            assertNotNull(evt);
+            assertEquals(level,evt.getLevel());
+            assertEquals(threadId, evt.getThreadName());
+            assertEquals(testId, evt.getLoggerName());
+            assertEquals("level is " + level.levelStr, evt.getMessage());
+            assertNotNull(evt.getArgumentArray());
+            assertEquals(0, evt.getArgumentArray().length);
+
+            tailer.finish();
+        }
+
+        tailer.close();
+        chronicle.close();
+    }
 }

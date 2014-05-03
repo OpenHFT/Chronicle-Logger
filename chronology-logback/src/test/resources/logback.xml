@@ -38,7 +38,7 @@
     </logger>
 
     <!-- ******************************************************************* -->
-    <!-- VANILLA                                                             -->
+    <!-- VANILLA - BINARY                                                    -->
     <!-- ******************************************************************* -->
 
     <appender name  = "BINARY-VANILLA-CHRONICLE"
@@ -75,6 +75,20 @@
 
     <logger name="perf-binary-vanilla-chronicle" level="TRACE" additivity="false">
         <appender-ref ref="PERF-BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!-- VANILLA - TEXT                                                      -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "TEXT-VANILLA-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.logback.TextVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/text-vanilla-chronicle</path>
+        <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+    </appender>
+
+    <logger name="text-vanilla-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
     </logger>
 
     <!-- ******************************************************************* -->
