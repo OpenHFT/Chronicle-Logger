@@ -1,18 +1,20 @@
 package com.higherfrequencytrading.chronology.logback;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
+import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 
 import java.io.IOException;
 import java.util.List;
 
-public abstract class ChronicleAppender
+public abstract class AbstractChronicleAppender
     extends ContextAwareBase
     implements Appender<ILoggingEvent> {
 
@@ -26,7 +28,7 @@ public abstract class ChronicleAppender
     protected Chronicle chronicle;
     protected ExcerptAppender appender;
 
-    protected ChronicleAppender() {
+    protected AbstractChronicleAppender() {
         this.filterAttachable = new FilterAttachableImpl<ILoggingEvent>();
 
         this.name = null;
@@ -114,6 +116,44 @@ public abstract class ChronicleAppender
             } catch(IOException e) {
                 addError("Appender " + getName() + " " + e.getMessage());
             }
+        }
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public static int toIntChronologyLogLevel(final Level level) {
+        switch(level.levelInt) {
+            case Level.DEBUG_INT:
+                return ChronologyLogLevel.DEBUG.levelInt;
+            case Level.TRACE_INT:
+                return ChronologyLogLevel.TRACE.levelInt;
+            case Level.INFO_INT:
+                return ChronologyLogLevel.INFO.levelInt;
+            case Level.WARN_INT:
+                return ChronologyLogLevel.WARN.levelInt;
+            case Level.ERROR_INT:
+                return ChronologyLogLevel.ERROR.levelInt;
+            default:
+                throw new IllegalArgumentException(level.levelInt + " not a valid level value");
+        }
+    }
+
+    public static String toStrChronologyLogLevel(final Level level) {
+        switch(level.levelInt) {
+            case Level.DEBUG_INT:
+                return ChronologyLogLevel.DEBUG.levelStr;
+            case Level.TRACE_INT:
+                return ChronologyLogLevel.TRACE.levelStr;
+            case Level.INFO_INT:
+                return ChronologyLogLevel.INFO.levelStr;
+            case Level.WARN_INT:
+                return ChronologyLogLevel.WARN.levelStr;
+            case Level.ERROR_INT:
+                return ChronologyLogLevel.ERROR.levelStr;
+            default:
+                throw new IllegalArgumentException(level.levelInt + " not a valid level value");
         }
     }
 }

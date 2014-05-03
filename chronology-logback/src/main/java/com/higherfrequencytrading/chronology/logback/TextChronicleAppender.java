@@ -4,7 +4,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.spi.FilterReply;
 import com.higherfrequencytrading.chronology.Chronology;
 
-public abstract class TextChronicleAppender extends ChronicleAppender {
+import java.util.Date;
+
+public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
     private String dateFormat;
     private Chronology.DateFormatCache dateFormatCache;
@@ -36,12 +38,13 @@ public abstract class TextChronicleAppender extends ChronicleAppender {
     @Override
     public void doAppend(final ILoggingEvent event) {
         if(getFilterChainDecision(event) != FilterReply.DENY) {
-            ChronicleAppenderHelper.writeText(
-                appender,
-                event,
-                this.dateFormatCache.get(),
-                false,
-                false);
+            appender.startExcerpt();
+            appender.writeUTF(this.dateFormatCache.get().format(new Date(event.getTimeStamp())));
+            appender.writeUTF(toStrChronologyLogLevel(event.getLevel()));
+            appender.writeUTF(event.getThreadName());
+            appender.writeUTF(event.getLoggerName());
+            appender.writeUTF(event.getFormattedMessage());
+            appender.finish();
         }
     }
 }
