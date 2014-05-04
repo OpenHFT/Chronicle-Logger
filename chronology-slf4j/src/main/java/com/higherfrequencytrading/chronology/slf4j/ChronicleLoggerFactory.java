@@ -1,6 +1,6 @@
 package com.higherfrequencytrading.chronology.slf4j;
 
-import com.higherfrequencytrading.chronology.slf4j.impl.ChronicleLogWriters;
+import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleConfig;
 import net.openhft.chronicle.IndexedChronicle;
@@ -78,7 +78,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
         if (logger == null) {
             String path = this.cfg.getString(name, ChronicleLoggingConfig.KEY_PATH);
             String levels = this.cfg.getString(name, ChronicleLoggingConfig.KEY_LEVEL);
-            int level = ChronicleLoggingHelper.stringToLevel(levels);
+            ChronologyLogLevel level = ChronologyLogLevel.fromStringLevel(levels);
             Throwable error = null;
 
             ChronicleLogWriter writer = null;
@@ -97,9 +97,9 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
                         this.writers.put(path, writer);
                     } else {
                         StringBuilder sb = new StringBuilder("Unable to inzialize chroncile-slf4j ")
-                                .append("(")
-                                .append("name")
-                                .append(")");
+                            .append("(")
+                            .append("name")
+                            .append(")");
 
                         if (error != null) {
                             sb.append("\n  " + error.getMessage());
@@ -115,9 +115,9 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
                 }
             } else {
                 StringBuilder sb = new StringBuilder("Unable to inzialize chroncile-slf4j ")
-                        .append("(")
-                        .append("name")
-                        .append(")");
+                    .append("(")
+                    .append("name")
+                    .append(")");
 
                 if (path == null) {
                     sb.append("\n  slf4j.chronicle.path is not defined");
@@ -185,6 +185,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
         String type = this.cfg.getString(name, ChronicleLoggingConfig.KEY_TYPE);
         String format = this.cfg.getString(name, ChronicleLoggingConfig.KEY_FORMAT);
         String binaryMode = this.cfg.getString(ChronicleLoggingConfig.KEY_BINARY_MODE);
+        Integer stackTraceDepth = this.cfg.getInteger(ChronicleLoggingConfig.KEY_STACK_TRACE_DEPTH);
 
         if (ChronicleLoggingConfig.FORMAT_BINARY.equalsIgnoreCase(format)) {
             Chronicle chronicle = newChronicle(type, path, name);
@@ -198,7 +199,8 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             if (chronicle != null) {
                 writer = new ChronicleLogWriters.TextWriter(
                         chronicle,
-                        null // TODO: this.cfg.getString(name, ChronicleLoggingConfig.KEY_DATE_FORMAT)
+                        null, // TODO: this.cfg.getString(name, ChronicleLoggingConfig.KEY_DATE_FORMAT)
+                        stackTraceDepth
                 );
             }
         }

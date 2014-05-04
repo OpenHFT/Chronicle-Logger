@@ -45,6 +45,7 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
 
+        IOTools.deleteDir(basePath(testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
@@ -103,6 +104,7 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
         final String threadId  = testId + "-th";
         final Logger logger    = LoggerFactory.getLogger(testId);
 
+        IOTools.deleteDir(basePath(testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {

@@ -4,6 +4,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class Chronology {
+    public static final String NEWLINE   = System.getProperty("line.separator");
+    public static final String COMMA     = ", ";
+    public static final String STR_FALSE = "false";
+    public static final String STR_TRUE  = "true";
+
     public static final byte VERSION      = 1;
 
     public static final byte TYPE_SLF4J   = 1;

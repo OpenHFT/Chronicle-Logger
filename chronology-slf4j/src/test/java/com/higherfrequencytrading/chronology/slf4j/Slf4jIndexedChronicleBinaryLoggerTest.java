@@ -7,7 +7,6 @@ import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.IndexedChronicle;
-import com.higherfrequencytrading.chronology.slf4j.impl.ChronicleLogWriters;
 import net.openhft.lang.io.IOTools;
 import org.junit.After;
 import org.junit.Before;
@@ -67,7 +66,7 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         ChronicleLogger cl = (ChronicleLogger) logger;
 
-        assertEquals(cl.getLevel(), ChronicleLoggingHelper.LOG_LEVEL_DEBUG);
+        assertEquals(cl.getLevel(), ChronologyLogLevel.DEBUG);
         assertEquals(cl.getName(), Slf4jIndexedChronicleBinaryLoggerTest.class.getName());
         assertTrue(cl.getWriter() instanceof ChronicleLogWriters.SynchronizedWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof IndexedChronicle);

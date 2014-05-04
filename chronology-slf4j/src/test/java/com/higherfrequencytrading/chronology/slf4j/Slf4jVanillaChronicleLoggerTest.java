@@ -83,22 +83,22 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
 
         ChronicleLogger cl1 = (ChronicleLogger) l1;
 
-        assertEquals(cl1.getLevel(), ChronicleLoggingHelper.LOG_LEVEL_DEBUG);
+        assertEquals(cl1.getLevel(), ChronologyLogLevel.DEBUG);
         assertEquals(cl1.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
         assertTrue(cl1.getWriter().getChronicle() instanceof VanillaChronicle);
 
         ChronicleLogger cl2 = (ChronicleLogger) l2;
-        assertEquals(cl2.getLevel(), ChronicleLoggingHelper.LOG_LEVEL_DEBUG);
+        assertEquals(cl2.getLevel(), ChronologyLogLevel.DEBUG);
         assertEquals(cl2.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
         assertTrue(cl2.getWriter().getChronicle() instanceof VanillaChronicle);
 
         ChronicleLogger cl3 = (ChronicleLogger) l3;
-        assertEquals(cl3.getLevel(), ChronicleLoggingHelper.LOG_LEVEL_INFO);
+        assertEquals(cl3.getLevel(), ChronologyLogLevel.INFO);
         assertTrue(cl3.getWriter().getChronicle() instanceof VanillaChronicle);
         assertEquals(cl3.getName(), "Logger1");
 
         ChronicleLogger cl4 = (ChronicleLogger) l4;
-        assertEquals(cl4.getLevel(), ChronicleLoggingHelper.LOG_LEVEL_DEBUG);
+        assertEquals(cl4.getLevel(), ChronologyLogLevel.DEBUG);
         assertTrue(cl4.getWriter().getChronicle() instanceof VanillaChronicle);
         assertEquals(cl4.getName(), "readwrite");
     }

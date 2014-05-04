@@ -1,5 +1,6 @@
 package com.higherfrequencytrading.chronology.slf4j;
 
+import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import org.slf4j.helpers.MarkerIgnoringBase;
 
 /**
@@ -8,7 +9,7 @@ import org.slf4j.helpers.MarkerIgnoringBase;
 public class ChronicleLogger extends MarkerIgnoringBase {
 
     private final ChronicleLogWriter writer;
-    private final int level;
+    private final ChronologyLogLevel level;
 
     /**
      * c-tor
@@ -17,7 +18,7 @@ public class ChronicleLogger extends MarkerIgnoringBase {
      * @param name
      */
     public ChronicleLogger(final ChronicleLogWriter writer, final String name) {
-        this(writer, name, ChronicleLoggingHelper.DEFAULT_LOG_LEVEL);
+        this(writer, name, ChronologyLogLevel.INFO);
     }
 
     /**
@@ -27,7 +28,7 @@ public class ChronicleLogger extends MarkerIgnoringBase {
      * @param name
      * @param level
      */
-    public ChronicleLogger(final ChronicleLogWriter writer, final String name, int level) {
+    public ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronologyLogLevel level) {
         this.writer = writer;
         this.name = name;
         this.level = level;
@@ -40,7 +41,7 @@ public class ChronicleLogger extends MarkerIgnoringBase {
     /**
      * @return
      */
-    public int getLevel() {
+    public ChronologyLogLevel getLevel() {
         return this.level;
     }
 
@@ -57,41 +58,41 @@ public class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public boolean isTraceEnabled() {
-        return isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_TRACE);
+        return isLevelEnabled(ChronologyLogLevel.TRACE);
     }
 
     @Override
     public void trace(String s) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_TRACE)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_TRACE, this.name, s);
+        if (isLevelEnabled(ChronologyLogLevel.TRACE)) {
+            this.writer.log(ChronologyLogLevel.TRACE, this.name, s);
         }
     }
 
     @Override
     public void trace(String s, Object o) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_TRACE)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_TRACE, this.name, s, o);
+        if (isLevelEnabled(ChronologyLogLevel.TRACE)) {
+            this.writer.log(ChronologyLogLevel.TRACE, this.name, s, o);
         }
     }
 
     @Override
     public void trace(String s, Object o1, Object o2) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_TRACE)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_TRACE, this.name, s, o1, o2);
+        if (isLevelEnabled(ChronologyLogLevel.TRACE)) {
+            this.writer.log(ChronologyLogLevel.TRACE, this.name, s, o1, o2);
         }
     }
 
     @Override
     public void trace(String s, Object... objects) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_TRACE)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_TRACE, this.name, s, objects);
+        if (isLevelEnabled(ChronologyLogLevel.TRACE)) {
+            this.writer.log(ChronologyLogLevel.TRACE, this.name, s, objects);
         }
     }
 
     @Override
     public void trace(String s, Throwable throwable) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_TRACE)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_TRACE, this.name, s, throwable);
+        if (isLevelEnabled(ChronologyLogLevel.TRACE)) {
+            this.writer.log(ChronologyLogLevel.TRACE, this.name, s, throwable);
         }
     }
 
@@ -101,41 +102,41 @@ public class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public boolean isDebugEnabled() {
-        return isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_DEBUG);
+        return isLevelEnabled(ChronologyLogLevel.DEBUG);
     }
 
     @Override
     public void debug(String s) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_DEBUG)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_DEBUG, this.name, s);
+        if (isLevelEnabled(ChronologyLogLevel.DEBUG)) {
+            this.writer.log(ChronologyLogLevel.DEBUG, this.name, s);
         }
     }
 
     @Override
     public void debug(String s, Object o) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_DEBUG)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_DEBUG, this.name, s, o);
+        if (isLevelEnabled(ChronologyLogLevel.DEBUG)) {
+            this.writer.log(ChronologyLogLevel.DEBUG, this.name, s, o);
         }
     }
 
     @Override
     public void debug(String s, Object o1, Object o2) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_DEBUG)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_DEBUG, this.name, s, o1, o2);
+        if (isLevelEnabled(ChronologyLogLevel.DEBUG)) {
+            this.writer.log(ChronologyLogLevel.DEBUG, this.name, s, o1, o2);
         }
     }
 
     @Override
     public void debug(String s, Object... objects) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_DEBUG)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_DEBUG, this.name, s, objects);
+        if (isLevelEnabled(ChronologyLogLevel.DEBUG)) {
+            this.writer.log(ChronologyLogLevel.DEBUG, this.name, s, objects);
         }
     }
 
     @Override
     public void debug(String s, Throwable throwable) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_DEBUG)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_DEBUG, this.name, s, throwable);
+        if (isLevelEnabled(ChronologyLogLevel.DEBUG)) {
+            this.writer.log(ChronologyLogLevel.DEBUG, this.name, s, throwable);
         }
     }
 
@@ -145,41 +146,41 @@ public class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public boolean isInfoEnabled() {
-        return isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_INFO);
+        return isLevelEnabled(ChronologyLogLevel.INFO);
     }
 
     @Override
     public void info(String s) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_INFO)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_INFO, this.name, s);
+        if (isLevelEnabled(ChronologyLogLevel.INFO)) {
+            this.writer.log(ChronologyLogLevel.INFO, this.name, s);
         }
     }
 
     @Override
     public void info(String s, Object o) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_INFO)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_INFO, this.name, s, o);
+        if (isLevelEnabled(ChronologyLogLevel.INFO)) {
+            this.writer.log(ChronologyLogLevel.INFO, this.name, s, o);
         }
     }
 
     @Override
     public void info(String s, Object o1, Object o2) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_INFO)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_INFO, this.name, s, o1, o2);
+        if (isLevelEnabled(ChronologyLogLevel.INFO)) {
+            this.writer.log(ChronologyLogLevel.INFO, this.name, s, o1, o2);
         }
     }
 
     @Override
     public void info(String s, Object... objects) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_INFO)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_INFO, this.name, s, objects);
+        if (isLevelEnabled(ChronologyLogLevel.INFO)) {
+            this.writer.log(ChronologyLogLevel.INFO, this.name, s, objects);
         }
     }
 
     @Override
     public void info(String s, Throwable throwable) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_INFO)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_INFO, this.name, s, throwable);
+        if (isLevelEnabled(ChronologyLogLevel.INFO)) {
+            this.writer.log(ChronologyLogLevel.INFO, this.name, s, throwable);
         }
     }
 
@@ -189,41 +190,41 @@ public class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public boolean isWarnEnabled() {
-        return isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_WARN);
+        return isLevelEnabled(ChronologyLogLevel.WARN);
     }
 
     @Override
     public void warn(String s) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_WARN)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_WARN, this.name, s);
+        if (isLevelEnabled(ChronologyLogLevel.WARN)) {
+            this.writer.log(ChronologyLogLevel.WARN, this.name, s);
         }
     }
 
     @Override
     public void warn(String s, Object o) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_WARN)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_WARN, this.name, s, o);
+        if (isLevelEnabled(ChronologyLogLevel.WARN)) {
+            this.writer.log(ChronologyLogLevel.WARN, this.name, s, o);
         }
     }
 
     @Override
     public void warn(String s, Object o1, Object o2) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_WARN)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_WARN, this.name, s, o1, o2);
+        if (isLevelEnabled(ChronologyLogLevel.WARN)) {
+            this.writer.log(ChronologyLogLevel.WARN, this.name, s, o1, o2);
         }
     }
 
     @Override
     public void warn(String s, Object... objects) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_WARN)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_WARN, this.name, s, objects);
+        if (isLevelEnabled(ChronologyLogLevel.WARN)) {
+            this.writer.log(ChronologyLogLevel.WARN, this.name, s, objects);
         }
     }
 
     @Override
     public void warn(String s, Throwable throwable) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_WARN)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_WARN, this.name, s, throwable);
+        if (isLevelEnabled(ChronologyLogLevel.WARN)) {
+            this.writer.log(ChronologyLogLevel.WARN, this.name, s, throwable);
         }
     }
 
@@ -233,41 +234,41 @@ public class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public boolean isErrorEnabled() {
-        return isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_ERROR);
+        return isLevelEnabled(ChronologyLogLevel.ERROR);
     }
 
     @Override
     public void error(String s) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_ERROR)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_ERROR, this.name, s);
+        if (isLevelEnabled(ChronologyLogLevel.ERROR)) {
+            this.writer.log(ChronologyLogLevel.ERROR, this.name, s);
         }
     }
 
     @Override
     public void error(String s, Object o) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_ERROR)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_ERROR, this.name, s, o);
+        if (isLevelEnabled(ChronologyLogLevel.ERROR)) {
+            this.writer.log(ChronologyLogLevel.ERROR, this.name, s, o);
         }
     }
 
     @Override
     public void error(String s, Object o1, Object o2) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_ERROR)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_ERROR, this.name, s, o1, o2);
+        if (isLevelEnabled(ChronologyLogLevel.ERROR)) {
+            this.writer.log(ChronologyLogLevel.ERROR, this.name, s, o1, o2);
         }
     }
 
     @Override
     public void error(String s, Object... objects) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_ERROR)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_ERROR, this.name, s, objects);
+        if (isLevelEnabled(ChronologyLogLevel.ERROR)) {
+            this.writer.log(ChronologyLogLevel.ERROR, this.name, s, objects);
         }
     }
 
     @Override
     public void error(String s, Throwable throwable) {
-        if (isLevelEnabled(ChronicleLoggingHelper.LOG_LEVEL_ERROR)) {
-            this.writer.log(ChronicleLoggingHelper.LOG_LEVEL_ERROR, this.name, s, throwable);
+        if (isLevelEnabled(ChronologyLogLevel.ERROR)) {
+            this.writer.log(ChronologyLogLevel.ERROR, this.name, s, throwable);
         }
     }
 
@@ -280,9 +281,9 @@ public class ChronicleLogger extends MarkerIgnoringBase {
      *
      * @param level is this level enabled?
      */
-    private boolean isLevelEnabled(int level) {
+    private boolean isLevelEnabled(final ChronologyLogLevel level) {
         // slf4j level are numerically ordered so can use simple numeric
         // comparison
-        return (level >= this.level);
+        return (level.levelInt >= this.level.levelInt);
     }
 }

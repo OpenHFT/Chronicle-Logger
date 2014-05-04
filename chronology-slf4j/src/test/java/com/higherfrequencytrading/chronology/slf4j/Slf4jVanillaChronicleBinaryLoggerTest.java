@@ -4,7 +4,6 @@ import com.higherfrequencytrading.chronology.Chronology;
 import com.higherfrequencytrading.chronology.ChronologyLogEvent;
 import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
-import com.higherfrequencytrading.chronology.slf4j.impl.ChronicleLogWriters;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.VanillaChronicle;
@@ -66,7 +65,7 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         ChronicleLogger cl = (ChronicleLogger) logger;
 
-        assertEquals(cl.getLevel(), ChronicleLoggingHelper.LOG_LEVEL_DEBUG);
+        assertEquals(cl.getLevel(), ChronologyLogLevel.DEBUG);
         assertEquals(cl.getName(), Slf4jVanillaChronicleBinaryLoggerTest.class.getName());
         assertTrue(cl.getWriter() instanceof ChronicleLogWriters.BinaryWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof VanillaChronicle);

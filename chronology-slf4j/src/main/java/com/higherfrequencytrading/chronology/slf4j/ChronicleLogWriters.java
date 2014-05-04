@@ -1,12 +1,10 @@
-package com.higherfrequencytrading.chronology.slf4j.impl;
+package com.higherfrequencytrading.chronology.slf4j;
 
 import com.higherfrequencytrading.chronology.Chronology;
 import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
-import com.higherfrequencytrading.chronology.slf4j.ChronicleLogWriter;
-import com.higherfrequencytrading.chronology.slf4j.ChronicleLoggingConfig;
-import com.higherfrequencytrading.chronology.slf4j.ChronicleLoggingHelper;
 import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ExcerptAppender;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -14,13 +12,34 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Date;
 
-
-/**
- *
- */
 public class ChronicleLogWriters {
 
-    public static final Object[] NULL_ARGS = new Object[]{};
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    private static abstract class AbstractChronicleLogWriter implements ChronicleLogWriter {
+
+        protected final ExcerptAppender appender;
+        private final Chronicle chronicle;
+
+        public AbstractChronicleLogWriter(Chronicle chronicle) throws IOException {
+            this.chronicle = chronicle;
+            this.appender = this.chronicle.createAppender();
+        }
+
+        @Override
+        public Chronicle getChronicle() {
+            return this.chronicle;
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (this.chronicle != null) {
+                this.chronicle.close();
+            }
+        }
+    }
 
     // *************************************************************************
     //
@@ -44,12 +63,12 @@ public class ChronicleLogWriters {
          * @param message The message arguments
          */
         @Override
-        public void log(int level, String name, String message, Object... args) {
+        public void log(ChronologyLogLevel level, String name, String message, Object... args) {
             this.appender.startExcerpt();
             this.appender.writeByte(Chronology.VERSION);
             this.appender.writeByte(Chronology.TYPE_SLF4J);
             this.appender.writeLong(System.currentTimeMillis());
-            this.appender.writeInt(toChronologyLogLevel(level));
+            this.appender.writeInt(level.levelInt);
             this.appender.writeUTF(Thread.currentThread().getName());
             this.appender.writeUTF(name);
             this.appender.writeUTF(message);
@@ -91,14 +110,14 @@ public class ChronicleLogWriters {
          * @param message The message arguments
          */
         @Override
-        public void log(int level, String name, String message, Object... args) {
-            final FormattingTuple tp = MessageFormatter.format(message, args);
+        public void log(ChronologyLogLevel level, String name, String message, Object... args) {
+            final FormattingTuple tp = MessageFormatter.arrayFormat(message,args);
 
             this.appender.startExcerpt();
             this.appender.writeByte(Chronology.VERSION);
             this.appender.writeByte(Chronology.TYPE_SLF4J);
             this.appender.writeLong(System.currentTimeMillis());
-            this.appender.writeInt(toChronologyLogLevel(level));
+            this.appender.writeInt(level.levelInt);
             this.appender.writeUTF(Thread.currentThread().getName());
             this.appender.writeUTF(name);
             this.appender.writeUTF(tp.getMessage());
@@ -125,6 +144,7 @@ public class ChronicleLogWriters {
     public static final class TextWriter extends AbstractChronicleLogWriter {
 
         private final Chronology.DateFormatCache dateFormatCache;
+        private final int stackTraceDepth;
 
         /**
          * c-tor
@@ -133,9 +153,10 @@ public class ChronicleLogWriters {
          * @param dateFormat
          * @throws IOException
          */
-        public TextWriter(Chronicle chronicle, String dateFormat) throws IOException {
+        public TextWriter(Chronicle chronicle, String dateFormat, Integer stackTraceDepth) throws IOException {
             super(chronicle);
 
+            this.stackTraceDepth = stackTraceDepth != null ? stackTraceDepth : -1;
             this.dateFormatCache = new Chronology.DateFormatCache(
                 dateFormat != null
                     ? dateFormat
@@ -152,13 +173,13 @@ public class ChronicleLogWriters {
          * @param message The message arguments
          */
         @Override
-        public void log(int level, String name, String message, Object... args) {
-            final FormattingTuple tp = MessageFormatter.format(message, args);
+        public void log(ChronologyLogLevel level, String name, String message, Object... args) {
+            final FormattingTuple tp = MessageFormatter.arrayFormat(message, args);
 
             appender.startExcerpt();
             appender.append(this.dateFormatCache.get().format(new Date()));
             appender.append('|');
-            appender.append(ChronicleLoggingHelper.levelToString(level));
+            appender.append(level.levelStr);
             appender.append('|');
             appender.append(Thread.currentThread().getName());
             appender.append('|');
@@ -170,7 +191,8 @@ public class ChronicleLogWriters {
                 appender.append(" - ");
                 appender.append(ChronologyLogHelper.getStackTraceAsString(
                     tp.getThrowable(),
-                    Chronology.COMMA));
+                    Chronology.COMMA,
+                    this.stackTraceDepth));
             }
 
             appender.append('\n');
@@ -203,7 +225,7 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(int level, String name, String message, Object... args) {
+        public void log(ChronologyLogLevel level, String name, String message, Object... args) {
             synchronized (this.sync) {
                 this.writer.log(level, name, message, args);
             }
@@ -213,29 +235,6 @@ public class ChronicleLogWriters {
         @Override
         public void close() throws IOException {
             this.writer.close();
-        }
-    }
-
-
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    public static int toChronologyLogLevel(final int levelInt) {
-        switch(levelInt) {
-            case ChronicleLoggingHelper.LOG_LEVEL_DEBUG:
-                return ChronologyLogLevel.DEBUG.levelInt;
-            case ChronicleLoggingHelper.LOG_LEVEL_TRACE:
-                return ChronologyLogLevel.TRACE.levelInt;
-            case ChronicleLoggingHelper.LOG_LEVEL_INFO:
-                return ChronologyLogLevel.INFO.levelInt;
-            case ChronicleLoggingHelper.LOG_LEVEL_WARN:
-                return ChronologyLogLevel.WARN.levelInt;
-            case ChronicleLoggingHelper.LOG_LEVEL_ERROR:
-                return ChronologyLogLevel.ERROR.levelInt;
-            default:
-                throw new IllegalArgumentException(levelInt + " not a valid level value");
         }
     }
 }

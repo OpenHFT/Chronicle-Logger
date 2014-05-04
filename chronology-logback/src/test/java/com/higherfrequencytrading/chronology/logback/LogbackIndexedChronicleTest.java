@@ -32,7 +32,6 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
     @After
     public void tearDown() {
-        //IOTools.deleteDir(rootPath());
     }
 
     // *************************************************************************
@@ -46,6 +45,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
 
+        IOTools.deleteDir(basePath(testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
@@ -92,7 +92,6 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
 
-
         tailer.close();
         chronicle.close();
 
@@ -106,6 +105,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
 
+        IOTools.deleteDir(basePath(testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
@@ -163,6 +163,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
         final String threadId  = testId + "-th";
         final Logger logger    = LoggerFactory.getLogger(testId);
 
+        IOTools.deleteDir(basePath(testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {

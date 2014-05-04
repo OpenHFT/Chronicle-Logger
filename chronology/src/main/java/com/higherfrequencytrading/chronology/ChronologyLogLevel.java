@@ -16,6 +16,11 @@ public enum ChronologyLogLevel {
         this.levelStr = levelStr;
     }
 
+    @Override
+    public String toString() {
+        return levelStr;
+    }
+
     // *************************************************************************
     //
     // *************************************************************************

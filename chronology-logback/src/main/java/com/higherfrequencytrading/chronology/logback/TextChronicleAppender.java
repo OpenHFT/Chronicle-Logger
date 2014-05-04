@@ -10,9 +10,9 @@ import java.util.Date;
 
 public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
-    private int stackTradeDepth;
     private String dateFormat;
     private Chronology.DateFormatCache dateFormatCache;
+    private int stackTradeDepth;
 
     protected TextChronicleAppender() {
         super();
@@ -37,6 +37,10 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
     public void setStackTradeDepth(int stackTradeDepth) {
         this.stackTradeDepth = stackTradeDepth;
+    }
+
+    public int getStackTradeDepth() {
+        return this.stackTradeDepth;
     }
 
     // *************************************************************************
