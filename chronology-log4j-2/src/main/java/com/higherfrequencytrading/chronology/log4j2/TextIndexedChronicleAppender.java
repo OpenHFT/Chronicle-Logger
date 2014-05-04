@@ -13,17 +13,18 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import java.io.IOException;
 
 @Plugin(
-    name        = "BinaryIndexedChronicle",
+    name        = "TextIndexedChronicle",
     category    = "Core",
     elementType = "appender",
     printObject = true)
-public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
+public class TextIndexedChronicleAppender extends TextChronicleAppender {
 
     private ChronicleConfig config;
     private Object lock;
 
-    public BinaryIndexedChronicleAppender(String name, Filter filter) {
+    public TextIndexedChronicleAppender(String name, Filter filter) {
         super(name,filter);
+
         this.config = null;
         this.lock = new Object();
     }
@@ -51,37 +52,27 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
     // *************************************************************************
 
     @PluginFactory
-    public static BinaryIndexedChronicleAppender createAppender(
+    public static TextIndexedChronicleAppender createAppender(
         @PluginAttribute("name") final String name,
         @PluginAttribute("path") final String path,
-        @PluginAttribute("formatMessage") final String formatMessage,
-        @PluginAttribute("includeCallerData") final String includeCallerData,
-        @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
+        @PluginAttribute("dateFormat") final String dateFormat,
         @PluginElement("filters") final Filter filter) {
 
         if(name == null) {
-            LOGGER.error("No name provided for BinaryVanillaChronicleAppender");
+            LOGGER.error("No name provided for TextIndexedChronicleAppender");
             return null;
         }
 
         if(path == null) {
-            LOGGER.error("No path provided for BinaryVanillaChronicleAppender");
+            LOGGER.error("No path provided for TextIndexedChronicleAppender");
             return null;
         }
 
-        BinaryIndexedChronicleAppender appender = new BinaryIndexedChronicleAppender(name, filter);
+        TextIndexedChronicleAppender appender = new TextIndexedChronicleAppender(name, filter);
         appender.setPath(path);
 
-        if(formatMessage != null) {
-            appender.setFormatMessage("true".equalsIgnoreCase(formatMessage));
-        }
-
-        if(includeCallerData != null) {
-            appender.setIncludeCallerData("true".equalsIgnoreCase(includeCallerData));
-        }
-
-        if(includeMappedDiagnosticContext != null) {
-            appender.setIncludeMappedDiagnosticContext("true".equalsIgnoreCase(includeMappedDiagnosticContext));
+        if(dateFormat != null) {
+            appender.setDateFormat(dateFormat);
         }
 
         return appender;

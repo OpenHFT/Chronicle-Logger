@@ -6,10 +6,11 @@ import net.openhft.chronicle.VanillaChronicleConfig;
 
 import java.io.IOException;
 
-public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
+public class TextVanillaChronicleAppender extends TextChronicleAppender {
+
     private VanillaChronicleConfig config;
 
-    public BinaryVanillaChronicleAppender() {
+    public TextVanillaChronicleAppender() {
         this.config = null;
     }
 

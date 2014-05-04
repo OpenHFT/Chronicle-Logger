@@ -9,6 +9,25 @@
         <param name="includeMappedDiagnosticContext" value="false"/>
     </appender>
 
+    <appender name  = "TEXT-VANILLA-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.log4j1.TextVanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronology-log4j1/text-vanilla-chronicle"/>
+        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
+    </appender>
+
+    <appender name  = "BINARY-INDEXED-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.log4j1.BinaryIndexedChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronology-log4j1/binary-indexed-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+    </appender>
+
+    <appender name  = "TEXT-INDEXED-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.log4j1.TextIndexedChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronology-log4j1/text-indexed-chronicle"/>
+        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
+    </appender>
+
     <appender name  = "STDOUT"
               class = "org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
@@ -19,6 +38,21 @@
     <logger name="binary-vanilla-chronicle" additivity="false">
         <level value="trace"/>
         <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="text-vanilla-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="binary-indexed-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <logger name="text-indexed-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
     </logger>
 
     <root>

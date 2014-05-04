@@ -43,7 +43,7 @@ public class ChronicleLogWriters {
          * @param message The message arguments
          */
         @Override
-        public void log(int level, String name, String message, Object... args) {
+        public void log(int level, String name, String message, Throwable throwable, Object... args) {
             this.appender.startExcerpt();
             this.appender.writeByte(Chronology.VERSION);
             this.appender.writeByte(Chronology.TYPE_SLF4J);
@@ -79,7 +79,7 @@ public class ChronicleLogWriters {
          * @param message The message arguments
          */
         @Override
-        public void log(int level, String name, String message, Object... args) {
+        public void log(int level, String name, String message, Throwable throwable, Object... args) {
             final FormattingTuple tp = MessageFormatter.format(message, args);
 
             this.appender.startExcerpt();
@@ -89,12 +89,15 @@ public class ChronicleLogWriters {
             this.appender.writeInt(toChronologyLogLevel(level));
             this.appender.writeUTF(Thread.currentThread().getName());
             this.appender.writeUTF(name);
+            this.appender.writeUTF(tp.getMessage());
 
+            /*
             if (tp.getThrowable() == null) {
                 this.appender.writeUTF(tp.getMessage());
             } else {
                 appender.writeUTF(tp.getMessage() + " " + tp.getThrowable().toString());
             }
+            */
 
             this.appender.writeInt(0);
             this.appender.finish();
@@ -138,7 +141,7 @@ public class ChronicleLogWriters {
          * @param message The message arguments
          */
         @Override
-        public void log(int level, String name, String message, Object... args) {
+        public void log(int level, String name, String message, Throwable throwable, Object... args) {
             final FormattingTuple tp = MessageFormatter.format(message, args);
 
             appender.startExcerpt();
@@ -152,10 +155,10 @@ public class ChronicleLogWriters {
             appender.append('|');
             appender.append(tp.getMessage());
 
-            if (tp.getThrowable() != null) {
-                appender.append('|');
-                appender.append(tp.getThrowable().toString());
-            }
+            //if (tp.getThrowable() != null) {
+            //    appender.append('|');
+            //    appender.append(tp.getThrowable().toString());
+            //}
 
             appender.append('\n');
             appender.finish();
@@ -187,9 +190,9 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(int level, String name, String message, Object... args) {
+        public void log(int level, String name, String message, Throwable throwable, Object... args) {
             synchronized (this.sync) {
-                this.writer.log(level, name, message, args);
+                this.writer.log(level, name, message, throwable, args);
             }
 
         }

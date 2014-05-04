@@ -7,12 +7,12 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;
 
-public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
+public class TextIndexedChronicleAppender extends TextChronicleAppender {
 
     private ChronicleConfig config;
     private Object lock;
 
-    public BinaryIndexedChronicleAppender() {
+    public TextIndexedChronicleAppender() {
         this.config = null;
         this.lock = new Object();
     }
@@ -29,9 +29,9 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
     }
 
     @Override
-    protected void append(LoggingEvent event) {
+    public void doAppend(final LoggingEvent event) {
         synchronized (this.lock) {
-            super.append(event);
+            super.doAppend(event);
         }
     }
 }

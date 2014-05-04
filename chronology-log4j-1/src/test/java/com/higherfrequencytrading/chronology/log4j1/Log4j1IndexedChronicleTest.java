@@ -6,7 +6,6 @@ import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
-import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.lang.io.IOTools;
 import org.junit.After;
 import org.junit.Before;
@@ -20,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
+public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
 
     // *************************************************************************
     //
@@ -32,16 +31,15 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
 
     @After
     public void tearDown() {
-        IOTools.deleteDir(rootPath());
     }
 
     // *************************************************************************
-    //
+    // BINARY
     // *************************************************************************
 
     @Test
-    public void testAppender() throws IOException {
-        final String testId    = "binary-vanilla-chronicle";
+    public void testBinaryAppender1() throws IOException {
+        final String testId    = "binary-indexed-chronicle";
         final String threadId  = testId + "-th";
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
@@ -52,7 +50,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
             log(logger,level,"level is {}",level.levelStr);
         }
 
-        VanillaChronicle   chronicle = getVanillaChronicle(testId);
+        Chronicle          chronicle = getIndexedChronicle(testId);
         ExcerptTailer      tailer    = chronicle.createTailer().toStart();
         ChronologyLogEvent evt       = null;
 
@@ -76,11 +74,13 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
 
         tailer.close();
         chronicle.close();
+
+        IOTools.deleteDir(basePath(testId));
     }
 
     @Test
     public void testTextAppender1() throws IOException {
-        final String testId    = "text-vanilla-chronicle";
+        final String testId    = "text-indexed-chronicle";
         final String threadId  = testId + "-th";
         final Logger logger    = LoggerFactory.getLogger(testId);
 
@@ -90,7 +90,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
             log(logger,level,"level is {}",level.levelStr);
         }
 
-        Chronicle chronicle = getVanillaChronicle(testId);
+        Chronicle          chronicle = getIndexedChronicle(testId);
         ExcerptTailer      tailer    = chronicle.createTailer().toStart();
         ChronologyLogEvent evt       = null;
 
@@ -111,5 +111,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
 
         tailer.close();
         chronicle.close();
+
+        IOTools.deleteDir(basePath(testId));
     }
 }

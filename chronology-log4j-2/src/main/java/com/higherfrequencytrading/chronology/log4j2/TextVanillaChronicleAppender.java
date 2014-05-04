@@ -12,16 +12,17 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import java.io.IOException;
 
 @Plugin(
-    name        = "BinaryVanillaChronicle",
+    name        = "TextVanillaChronicle",
     category    = "Core",
     elementType = "appender",
     printObject = true)
-public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
+public class TextVanillaChronicleAppender extends TextChronicleAppender {
 
     private VanillaChronicleConfig config;
 
-    public BinaryVanillaChronicleAppender(String name, Filter filter) {
+    public TextVanillaChronicleAppender(String name, Filter filter) {
         super(name,filter);
+
         this.config = null;
     }
 
@@ -41,37 +42,27 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
     // *************************************************************************
 
     @PluginFactory
-    public static BinaryVanillaChronicleAppender createAppender(
+    public static TextVanillaChronicleAppender createAppender(
         @PluginAttribute("name") final String name,
         @PluginAttribute("path") final String path,
-        @PluginAttribute("formatMessage") final String formatMessage,
-        @PluginAttribute("includeCallerData") final String includeCallerData,
-        @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
+        @PluginAttribute("dateFormat") final String dateFormat,
         @PluginElement("filters") final Filter filter) {
 
         if(name == null) {
-            LOGGER.error("No name provided for BinaryVanillaChronicleAppender");
+            LOGGER.error("No name provided for TextVanillaChronicleAppender");
             return null;
         }
 
         if(path == null) {
-            LOGGER.error("No path provided for BinaryVanillaChronicleAppender");
+            LOGGER.error("No path provided for TextVanillaChronicleAppender");
             return null;
         }
 
-        BinaryVanillaChronicleAppender appender = new BinaryVanillaChronicleAppender(name, filter);
+        TextVanillaChronicleAppender appender = new TextVanillaChronicleAppender(name, filter);
         appender.setPath(path);
 
-        if(formatMessage != null) {
-            appender.setFormatMessage("true".equalsIgnoreCase(formatMessage));
-        }
-
-        if(includeCallerData != null) {
-            appender.setIncludeCallerData("true".equalsIgnoreCase(includeCallerData));
-        }
-
-        if(includeMappedDiagnosticContext != null) {
-            appender.setIncludeMappedDiagnosticContext("true".equalsIgnoreCase(includeMappedDiagnosticContext));
+        if(dateFormat != null) {
+            appender.setDateFormat(dateFormat);
         }
 
         return appender;

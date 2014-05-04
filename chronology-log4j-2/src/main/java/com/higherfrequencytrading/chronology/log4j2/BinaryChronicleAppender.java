@@ -1,35 +1,64 @@
 package com.higherfrequencytrading.chronology.log4j2;
 
+
 import com.higherfrequencytrading.chronology.Chronology;
-import com.higherfrequencytrading.chronology.ChronologyLogLevel;
-import net.openhft.chronicle.ExcerptAppender;
-import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
 
-public class ChronicleAppenderHelper {
+public abstract class BinaryChronicleAppender extends AbstractChronicleAppender {
 
-    /**
-     * Write ILoggingEvent to an Excerpt
-     *
-     * @param appender          the ExcerptAppender
-     * @param event             the ILoggingEvent
-     * @param formatMessage     writeBinary formatted or unformatted message
-     * @param includeMDC        include or not Mapped Diagnostic Context
-     * @param includeCallerData include or not CallerData
-     */
-    public static void writeBinary(
-        final ExcerptAppender appender,
-        final LogEvent event,
-        boolean formatMessage,
-        boolean includeMDC,
-        boolean includeCallerData) {
+    private boolean includeCallerData;
+    private boolean includeMDC;
+    private boolean formatMessage;
 
+    protected BinaryChronicleAppender(String name, Filter filter) {
+        super(name, filter);
+
+        this.includeCallerData = true;
+        this.includeMDC = true;
+        this.formatMessage = false;
+    }
+
+    // *************************************************************************
+    // Custom logging options
+    // *************************************************************************
+
+    public void setIncludeCallerData(boolean logCallerData) {
+        this.includeCallerData = logCallerData;
+    }
+
+    public boolean isIncludeCallerData() {
+        return this.includeCallerData;
+    }
+
+    public void setIncludeMappedDiagnosticContext(boolean logMDC) {
+        this.includeMDC = logMDC;
+    }
+
+    public boolean isIncludeMappedDiagnosticContext() {
+        return this.includeMDC;
+    }
+
+    public void setFormatMessage(boolean formatMessage) {
+        this.formatMessage = formatMessage;
+    }
+
+    public boolean isFormatMessage() {
+        return this.formatMessage;
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    @Override
+    public void append(final LogEvent event) {
         appender.startExcerpt();
         appender.writeByte(Chronology.VERSION);
         appender.writeByte(Chronology.TYPE_LOG4J_2);
         appender.writeLong(event.getMillis());
-        appender.writeInt(toChronologyLogLevel(event.getLevel()));
+        appender.writeInt(toIntChronologyLogLevel(event.getLevel()));
         appender.writeUTF(event.getThreadName());
         appender.writeUTF(event.getLoggerName());
 
@@ -96,25 +125,5 @@ public class ChronicleAppenderHelper {
         */
 
         appender.finish();
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    public static int toChronologyLogLevel(final Level level) {
-        if(level.intLevel() == Level.DEBUG.intLevel()) {
-            return ChronologyLogLevel.DEBUG.levelInt;
-        } else if(level.intLevel() == Level.TRACE.intLevel()) {
-            return ChronologyLogLevel.TRACE.levelInt;
-        } else if(level.intLevel() == Level.INFO.intLevel()) {
-            return ChronologyLogLevel.INFO.levelInt;
-        } else if(level.intLevel() == Level.WARN.intLevel()) {
-            return ChronologyLogLevel.WARN.levelInt;
-        } else if(level.intLevel() == Level.ERROR.intLevel()) {
-            return ChronologyLogLevel.ERROR.levelInt;
-        }
-
-        throw new IllegalArgumentException(level.intLevel() + " not a valid level value");
     }
 }

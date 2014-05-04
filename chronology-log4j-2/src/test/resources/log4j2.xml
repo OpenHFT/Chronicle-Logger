@@ -8,22 +8,54 @@
     <appenders>
 
         <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="[RAVEN] [%-5p] %c - %m%n%throwable{none}"/>
+            <PatternLayout pattern="[CHRONOLOGY] [%-5p] %c - %m%n%throwable{none}"/>
         </Console>
 
-        <BinaryVanillaChronicleAppender name="BINARY-VANILLA-CHRONICLE">
+        <!-- *************************************************************** -->
+        <!-- VANILLA                                                         -->
+        <!-- *************************************************************** -->
+
+        <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-vanilla-chronicle</path>
             <formatMessage>false</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-        </BinaryVanillaChronicleAppender>
+        </BinaryVanillaChronicle>
 
-        <BinaryVanillaChronicleAppender name="BINARY-VANILLA-CHRONICLE-FMT">
+        <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE-FMT">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-vanilla-chronicle-fmt</path>
             <formatMessage>true</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-        </BinaryVanillaChronicleAppender>
+        </BinaryVanillaChronicle>
+
+        <TextVanillaChronicle name="TEXT-VANILLA-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/text-vanilla-chronicle</path>
+            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+        </TextVanillaChronicle>
+
+        <!-- *************************************************************** -->
+        <!-- INDEXED                                                         -->
+        <!-- *************************************************************** -->
+
+        <BinaryIndexedChronicle name="BINARY-INDEXED-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-indexed-chronicle</path>
+            <formatMessage>false</formatMessage>
+            <includeCallerData>false</includeCallerData>
+            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+        </BinaryIndexedChronicle>
+
+        <BinaryIndexedChronicle name="BINARY-INDEXED-CHRONICLE-FMT">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-indexed-chronicle-fmt</path>
+            <formatMessage>true</formatMessage>
+            <includeCallerData>false</includeCallerData>
+            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+        </BinaryIndexedChronicle>
+
+        <TextIndexedChronicle name="TEXT-INDEXED-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/text-indexed-chronicle</path>
+            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+        </TextIndexedChronicle>
 
     </appenders>
 
@@ -32,15 +64,39 @@
     <!-- ******************************************************************* -->
 
     <loggers>
+
+        <root level="all">
+            <appender-ref ref="STDOUT"/>
+        </root>
+
+        <!-- *************************************************************** -->
+        <!-- VANILLA                                                         -->
+        <!-- *************************************************************** -->
+
         <logger name="binary-vanilla-chronicle" level="trace" additivity="false">
             <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
         </logger>
         <logger name="binary-vanilla-chronicle-fmt" level="trace" additivity="false">
             <appender-ref ref="BINARY-VANILLA-CHRONICLE-FMT"/>
         </logger>
-        <root level="all">
-            <appender-ref ref="STDOUT"/>
-        </root>
+        <logger name="text-vanilla-chronicle" level="trace" additivity="false">
+            <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
+        </logger>
+
+        <!-- *************************************************************** -->
+        <!-- INDEXED                                                         -->
+        <!-- *************************************************************** -->
+
+        <logger name="binary-indexed-chronicle" level="trace" additivity="false">
+            <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
+        </logger>
+        <logger name="binary-indexed-chronicle-fmt" level="trace" additivity="false">
+            <appender-ref ref="BINARY-INDEXED-CHRONICLE-FMT"/>
+        </logger>
+        <logger name="text-indexed-chronicle" level="trace" additivity="false">
+            <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
+        </logger>
+
     </loggers>
 
 </configuration>

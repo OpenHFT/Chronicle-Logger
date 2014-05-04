@@ -1,31 +1,25 @@
 package com.higherfrequencytrading.chronology.log4j2;
 
 
+import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 
 import java.io.IOException;
 
-public abstract class ChronicleAppender extends AbstractAppender {
+public abstract class AbstractChronicleAppender extends AbstractAppender {
     private String path;
-    private boolean includeCallerData;
-    private boolean includeMDC;
-    private boolean formatMessage;
 
-    private Chronicle chronicle;
-    private ExcerptAppender appender;
+    protected Chronicle chronicle;
+    protected ExcerptAppender appender;
 
-    protected ChronicleAppender(String name, Filter filter) {
+    protected AbstractChronicleAppender(String name, Filter filter) {
         super(name, filter, null, true);
 
         this.path = null;
-        this.includeCallerData = true;
-        this.includeMDC = true;
-        this.formatMessage = false;
-
         this.chronicle = null;
         this.appender = null;
     }
@@ -33,30 +27,6 @@ public abstract class ChronicleAppender extends AbstractAppender {
     // *************************************************************************
     // Custom logging options
     // *************************************************************************
-
-    public void setIncludeCallerData(boolean logCallerData) {
-        this.includeCallerData = logCallerData;
-    }
-
-    public boolean isIncludeCallerData() {
-        return this.includeCallerData;
-    }
-
-    public void setIncludeMappedDiagnosticContext(boolean logMDC) {
-        this.includeMDC = logMDC;
-    }
-
-    public boolean isIncludeMappedDiagnosticContext() {
-        return this.includeMDC;
-    }
-
-    public void setFormatMessage(boolean formatMessage) {
-        this.formatMessage = formatMessage;
-    }
-
-    public boolean isFormatMessage() {
-        return this.formatMessage;
-    }
 
     public void setPath(String path) {
         this.path = path;
@@ -107,13 +77,39 @@ public abstract class ChronicleAppender extends AbstractAppender {
         super.stop();
     }
 
-    @Override
-    public void append(final LogEvent event) {
-        ChronicleAppenderHelper.writeBinary(
-            this.appender,
-            event,
-            this.formatMessage,
-            this.includeMDC,
-            this.includeCallerData);
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public static int toIntChronologyLogLevel(final Level level) {
+        if(level.intLevel() == Level.DEBUG.intLevel()) {
+            return ChronologyLogLevel.DEBUG.levelInt;
+        } else if(level.intLevel() == Level.TRACE.intLevel()) {
+            return ChronologyLogLevel.TRACE.levelInt;
+        } else if(level.intLevel() == Level.INFO.intLevel()) {
+            return ChronologyLogLevel.INFO.levelInt;
+        } else if(level.intLevel() == Level.WARN.intLevel()) {
+            return ChronologyLogLevel.WARN.levelInt;
+        } else if(level.intLevel() == Level.ERROR.intLevel()) {
+            return ChronologyLogLevel.ERROR.levelInt;
+        }
+
+        throw new IllegalArgumentException(level.intLevel() + " not a valid level value");
+    }
+
+    public static String toStrChronologyLogLevel(final Level level) {
+        if(level.intLevel() == Level.DEBUG.intLevel()) {
+            return ChronologyLogLevel.DEBUG.levelStr;
+        } else if(level.intLevel() == Level.TRACE.intLevel()) {
+            return ChronologyLogLevel.TRACE.levelStr;
+        } else if(level.intLevel() == Level.INFO.intLevel()) {
+            return ChronologyLogLevel.INFO.levelStr;
+        } else if(level.intLevel() == Level.WARN.intLevel()) {
+            return ChronologyLogLevel.WARN.levelStr;
+        } else if(level.intLevel() == Level.ERROR.intLevel()) {
+            return ChronologyLogLevel.ERROR.levelStr;
+        }
+
+        throw new IllegalArgumentException(level.intLevel() + " not a valid level value");
     }
 }
