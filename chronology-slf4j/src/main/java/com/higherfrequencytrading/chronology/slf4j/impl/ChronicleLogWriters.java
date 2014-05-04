@@ -1,6 +1,7 @@
 package com.higherfrequencytrading.chronology.slf4j.impl;
 
 import com.higherfrequencytrading.chronology.Chronology;
+import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import com.higherfrequencytrading.chronology.slf4j.ChronicleLogWriter;
 import com.higherfrequencytrading.chronology.slf4j.ChronicleLoggingConfig;
@@ -43,7 +44,7 @@ public class ChronicleLogWriters {
          * @param message The message arguments
          */
         @Override
-        public void log(int level, String name, String message, Throwable throwable, Object... args) {
+        public void log(int level, String name, String message, Object... args) {
             this.appender.startExcerpt();
             this.appender.writeByte(Chronology.VERSION);
             this.appender.writeByte(Chronology.TYPE_SLF4J);
@@ -52,16 +53,20 @@ public class ChronicleLogWriters {
             this.appender.writeUTF(Thread.currentThread().getName());
             this.appender.writeUTF(name);
             this.appender.writeUTF(message);
-            this.appender.writeInt(args.length);
-            for (Object arg : args) {
-                this.appender.writeObject(arg);
-            }
 
-            if(throwable != null) {
+            if(args.length > 0 && args[args.length - 1] instanceof Throwable) {
+                this.appender.writeInt(args.length - 1);
+                for (int i=0;i<args.length - 1; i++) {
+                    this.appender.writeObject(args[i]);
+                }
+
                 this.appender.writeBoolean(true);
-                this.appender.writeObject(throwable);
+                this.appender.writeObject(args[args.length - 1]);
             } else {
-                this.appender.writeBoolean(false);
+                this.appender.writeInt(args.length);
+                for (Object arg : args) {
+                    this.appender.writeObject(arg);
+                }
             }
 
             this.appender.finish();
@@ -86,7 +91,7 @@ public class ChronicleLogWriters {
          * @param message The message arguments
          */
         @Override
-        public void log(int level, String name, String message, Throwable throwable, Object... args) {
+        public void log(int level, String name, String message, Object... args) {
             final FormattingTuple tp = MessageFormatter.format(message, args);
 
             this.appender.startExcerpt();
@@ -98,7 +103,14 @@ public class ChronicleLogWriters {
             this.appender.writeUTF(name);
             this.appender.writeUTF(tp.getMessage());
             this.appender.writeInt(0);
-            this.appender.writeBoolean(false);
+
+            if(tp.getThrowable() != null) {
+                this.appender.writeBoolean(true);
+                this.appender.writeObject(tp.getThrowable());
+            } else {
+                this.appender.writeBoolean(false);
+            }
+
             this.appender.finish();
         }
     }
@@ -140,7 +152,7 @@ public class ChronicleLogWriters {
          * @param message The message arguments
          */
         @Override
-        public void log(int level, String name, String message, Throwable throwable, Object... args) {
+        public void log(int level, String name, String message, Object... args) {
             final FormattingTuple tp = MessageFormatter.format(message, args);
 
             appender.startExcerpt();
@@ -153,6 +165,13 @@ public class ChronicleLogWriters {
             appender.append(name);
             appender.append('|');
             appender.append(tp.getMessage());
+
+            if(tp.getThrowable() != null) {
+                appender.append(" - ");
+                appender.append(ChronologyLogHelper.getStackTraceAsString(
+                    tp.getThrowable(),
+                    Chronology.COMMA));
+            }
 
             appender.append('\n');
             appender.finish();
@@ -184,9 +203,9 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(int level, String name, String message, Throwable throwable, Object... args) {
+        public void log(int level, String name, String message, Object... args) {
             synchronized (this.sync) {
-                this.writer.log(level, name, message, throwable, args);
+                this.writer.log(level, name, message, args);
             }
 
         }
