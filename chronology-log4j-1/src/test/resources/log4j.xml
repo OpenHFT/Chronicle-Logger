@@ -13,6 +13,7 @@
               class = "com.higherfrequencytrading.chronology.log4j1.TextVanillaChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronology-log4j1/text-vanilla-chronicle"/>
         <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
+        <param name="stackTradeDepth" value="3"/>
     </appender>
 
     <appender name  = "BINARY-INDEXED-CHRONICLE"
@@ -26,6 +27,7 @@
               class = "com.higherfrequencytrading.chronology.log4j1.TextIndexedChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronology-log4j1/text-indexed-chronicle"/>
         <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
+        <param name="stackTradeDepth" value="3"/>
     </appender>
 
     <appender name  = "STDOUT"

@@ -2,6 +2,7 @@ package com.higherfrequencytrading.chronology.log4j1;
 
 import com.higherfrequencytrading.chronology.Chronology;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
 
 public abstract class BinaryChronicleAppender extends AbstractChronicleAppender {
 
@@ -52,9 +53,10 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
             appender.writeUTF(event.getMessage().toString());
             appender.writeInt(0);
 
-            if(event.getThrowableInformation() != null) {
+            ThrowableInformation ti = event.getThrowableInformation();
+            if(ti != null) {
                 appender.writeBoolean(true);
-                appender.writeObject(event.getThrowableInformation().getThrowable());
+                appender.writeObject(ti.getThrowable());
             } else {
                 appender.writeBoolean(false);
             }

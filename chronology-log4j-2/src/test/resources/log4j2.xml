@@ -32,6 +32,7 @@
         <TextVanillaChronicle name="TEXT-VANILLA-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/text-vanilla-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+            <stackTradeDepth>3</stackTradeDepth>
         </TextVanillaChronicle>
 
         <!-- *************************************************************** -->
@@ -55,6 +56,7 @@
         <TextIndexedChronicle name="TEXT-INDEXED-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/text-indexed-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+            <stackTradeDepth>3</stackTradeDepth>
         </TextIndexedChronicle>
 
     </appenders>

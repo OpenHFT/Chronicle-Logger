@@ -56,6 +56,7 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
         @PluginAttribute("name") final String name,
         @PluginAttribute("path") final String path,
         @PluginAttribute("dateFormat") final String dateFormat,
+        @PluginAttribute("stackTradeDepth") final String stackTradeDepth,
         @PluginElement("filters") final Filter filter) {
 
         if(name == null) {
@@ -73,6 +74,10 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
 
         if(dateFormat != null) {
             appender.setDateFormat(dateFormat);
+        }
+
+        if(stackTradeDepth != null) {
+            appender.setStackTradeDepth(Integer.parseInt(stackTradeDepth));
         }
 
         return appender;
