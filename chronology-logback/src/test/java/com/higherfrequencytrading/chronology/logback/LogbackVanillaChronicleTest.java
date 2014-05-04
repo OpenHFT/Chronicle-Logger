@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
@@ -131,6 +132,23 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
             tailer.finish();
         }
 
+        logger.debug("Throwable test",new UnsupportedOperationException());
+        logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronologyLogHelper.decodeBinary(tailer);
+        assertEquals("Throwable test",evt.getMessage());
+        assertNotNull(evt.getThrowable());
+        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+        assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronologyLogHelper.decodeBinary(tailer);
+        assertEquals("Throwable test",evt.getMessage());
+        assertNotNull(evt.getThrowable());
+        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+        assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
+
         tailer.close();
         chronicle.close();
     }
@@ -166,6 +184,33 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
             tailer.finish();
         }
+
+        logger.debug("Throwable test",new UnsupportedOperationException());
+        logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronologyLogHelper.decodeText(tailer);
+        assertNotNull(evt);
+        assertEquals(threadId, evt.getThreadName());
+        assertEquals(testId, evt.getLoggerName());
+        assertTrue(evt.getMessage().contains("Throwable test"));
+        assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
+        assertTrue(evt.getMessage().contains(this.getClass().getName()));
+        assertNotNull(evt.getArgumentArray());
+        assertEquals(0, evt.getArgumentArray().length);
+        assertNull(evt.getThrowable());
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronologyLogHelper.decodeText(tailer);assertNotNull(evt);
+        assertEquals(threadId, evt.getThreadName());
+        assertEquals(testId, evt.getLoggerName());
+        assertTrue(evt.getMessage().contains("Throwable test"));
+        assertTrue(evt.getMessage().contains("Exception message"));
+        assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
+        assertTrue(evt.getMessage().contains(this.getClass().getName()));
+        assertNotNull(evt.getArgumentArray());
+        assertEquals(0, evt.getArgumentArray().length);
+        assertNull(evt.getThrowable());
 
         tailer.close();
         chronicle.close();

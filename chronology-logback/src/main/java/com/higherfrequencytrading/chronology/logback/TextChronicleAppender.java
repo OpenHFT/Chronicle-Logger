@@ -1,13 +1,16 @@
 package com.higherfrequencytrading.chronology.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.spi.FilterReply;
 import com.higherfrequencytrading.chronology.Chronology;
+import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 
 import java.util.Date;
 
 public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
+    private int stackTradeDepth;
     private String dateFormat;
     private Chronology.DateFormatCache dateFormatCache;
 
@@ -16,6 +19,7 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
         this.dateFormat = null;
         this.dateFormatCache = null;
+        this.stackTradeDepth = -1;
     }
 
     // *************************************************************************
@@ -29,6 +33,10 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
     public String getDateFormat() {
         return this.dateFormat;
+    }
+
+    public void setStackTradeDepth(int stackTradeDepth) {
+        this.stackTradeDepth = stackTradeDepth;
     }
 
     // *************************************************************************
@@ -48,7 +56,18 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
             appender.append(event.getLoggerName());
             appender.append('|');
             appender.append(event.getFormattedMessage());
-            appender.append('\n');
+
+            ThrowableProxy tp = (ThrowableProxy)event.getThrowableProxy();
+            if(tp != null) {
+                appender.append(" - ");
+                appender.append(ChronologyLogHelper.getStackTraceAsString(
+                    tp.getThrowable(),
+                    Chronology.COMMA,
+                    this.stackTradeDepth)
+                );
+            }
+
+            appender.append(Chronology.NEWLINE);
             appender.finish();
         }
     }

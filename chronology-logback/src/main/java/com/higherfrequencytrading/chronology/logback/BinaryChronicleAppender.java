@@ -73,17 +73,16 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
                 for (int i = 0; i < argsLen; i++) {
                     appender.writeObject(args[i]);
                 }
-
-                if(event.getThrowableProxy() != null) {
-                    appender.writeBoolean(true);
-                    appender.writeObject(((ThrowableProxy)event.getThrowableProxy()).getThrowable());
-                } else {
-                    appender.writeBoolean(false);
-                }
-            }
-            else {
+            } else {
                 appender.writeUTF(event.getFormattedMessage());
                 appender.writeInt(0);
+            }
+
+            ThrowableProxy tp = (ThrowableProxy)event.getThrowableProxy();
+            if(tp != null) {
+                appender.writeBoolean(true);
+                appender.writeObject(tp.getThrowable());
+            } else {
                 appender.writeBoolean(false);
             }
 
@@ -113,14 +112,6 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
 
             } else {
                 appender.writeInt(0);
-            }
-
-            IThrowableProxy throwableProxy = event.getThrowableProxy();
-            if(throwableProxy != null) {
-                appender.writeBoolean(true);
-                appender.writeObject(throwableProxy);
-            } else {
-                appender.writeBoolean(false);
             }
             */
 

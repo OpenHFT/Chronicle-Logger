@@ -85,6 +85,7 @@
               class = "com.higherfrequencytrading.chronology.logback.TextVanillaChronicleAppender">
         <path>${java.io.tmpdir}/chronology-logback/text-vanilla-chronicle</path>
         <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+        <stackTradeDepth>3</stackTradeDepth>
     </appender>
 
     <logger name="text-vanilla-chronicle" level="TRACE" additivity="false">
@@ -92,7 +93,7 @@
     </logger>
 
     <!-- ******************************************************************* -->
-    <!-- INDEXED                                                             -->
+    <!-- INDEXED - BINARY                                                    -->
     <!-- ******************************************************************* -->
 
     <appender name  = "BINARY-INDEXED-CHRONICLE"
@@ -130,6 +131,21 @@
 
     <logger name="perf-binary-indexed-chronicle" level="TRACE" additivity="false">
         <appender-ref ref="PERF-BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!-- INDEXED - TEXT                                                      -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "TEXT-INDEXED-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.logback.TextIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/text-indexed-chronicle</path>
+        <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+        <stackTradeDepth>3</stackTradeDepth>
+    </appender>
+
+    <logger name="text-indexed-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
     </logger>
 
     <!-- ******************************************************************* -->
