@@ -57,6 +57,13 @@ public class ChronicleLogWriters {
                 this.appender.writeObject(arg);
             }
 
+            if(throwable != null) {
+                this.appender.writeBoolean(true);
+                this.appender.writeObject(throwable);
+            } else {
+                this.appender.writeBoolean(false);
+            }
+
             this.appender.finish();
         }
     }
@@ -90,16 +97,8 @@ public class ChronicleLogWriters {
             this.appender.writeUTF(Thread.currentThread().getName());
             this.appender.writeUTF(name);
             this.appender.writeUTF(tp.getMessage());
-
-            /*
-            if (tp.getThrowable() == null) {
-                this.appender.writeUTF(tp.getMessage());
-            } else {
-                appender.writeUTF(tp.getMessage() + " " + tp.getThrowable().toString());
-            }
-            */
-
             this.appender.writeInt(0);
+            this.appender.writeBoolean(false);
             this.appender.finish();
         }
     }
@@ -154,11 +153,6 @@ public class ChronicleLogWriters {
             appender.append(name);
             appender.append('|');
             appender.append(tp.getMessage());
-
-            //if (tp.getThrowable() != null) {
-            //    appender.append('|');
-            //    appender.append(tp.getThrowable().toString());
-            //}
 
             appender.append('\n');
             appender.finish();

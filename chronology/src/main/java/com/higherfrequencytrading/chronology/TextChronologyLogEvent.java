@@ -86,6 +86,11 @@ public class TextChronologyLogEvent implements ChronologyLogEvent {
         return this.loggerName;
     }
 
+    @Override
+    public Throwable getThrowable() {
+        return null;
+    }
+
     // *********************************************************************
     //
     // *********************************************************************

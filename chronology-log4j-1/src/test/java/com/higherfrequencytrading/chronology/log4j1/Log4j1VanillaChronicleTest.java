@@ -74,6 +74,24 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
             tailer.finish();
         }
 
+        logger.debug("Throwable test",new UnsupportedOperationException());
+        logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronologyLogHelper.decodeBinary(tailer);
+        assertEquals("Throwable test",evt.getMessage());
+        assertNotNull(evt.getThrowable());
+        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+        assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronologyLogHelper.decodeBinary(tailer);
+        assertEquals("Throwable test",evt.getMessage());
+        assertNotNull(evt.getThrowable());
+        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+        assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
+
+
         tailer.close();
         chronicle.close();
     }

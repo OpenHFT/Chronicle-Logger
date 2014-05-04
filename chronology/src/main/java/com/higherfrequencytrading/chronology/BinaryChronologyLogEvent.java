@@ -14,6 +14,7 @@ public class BinaryChronologyLogEvent implements ChronologyLogEvent {
     private String message;
     private String fmtMessage;
     private Object[] args;
+    private Throwable throwable;
 
     public BinaryChronologyLogEvent() {
         this.version        = 0;
@@ -25,6 +26,7 @@ public class BinaryChronologyLogEvent implements ChronologyLogEvent {
         this.message        = null;
         this.fmtMessage     = null;
         this.args           = null;
+        this.throwable      = null;
     }
 
     // *********************************************************************
@@ -76,6 +78,11 @@ public class BinaryChronologyLogEvent implements ChronologyLogEvent {
         return this.loggerName;
     }
 
+    @Override
+    public Throwable getThrowable() {
+        return this.throwable;
+    }
+
     // *********************************************************************
     //
     // *********************************************************************
@@ -96,6 +103,10 @@ public class BinaryChronologyLogEvent implements ChronologyLogEvent {
             this.args = new Object[in.readInt()];
             for(int i=0;i<this.args.length;i++) {
                 this.args[i] = in.readObject();
+            }
+
+            if(in.readBoolean()) {
+                this.throwable = in.readObject(Throwable.class);
             }
         } else {
             throw new UnsupportedClassVersionError();

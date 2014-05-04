@@ -54,8 +54,8 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
     @Test
     public void testLoggerFactory() {
         assertEquals(
-                StaticLoggerBinder.getSingleton().getLoggerFactory().getClass(),
-                ChronicleLoggerFactory.class);
+            StaticLoggerBinder.getSingleton().getLoggerFactory().getClass(),
+            ChronicleLoggerFactory.class);
     }
 
     @Test

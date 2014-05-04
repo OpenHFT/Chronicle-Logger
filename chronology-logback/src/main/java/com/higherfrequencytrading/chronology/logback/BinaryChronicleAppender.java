@@ -1,6 +1,7 @@
 package com.higherfrequencytrading.chronology.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.spi.FilterReply;
 import com.higherfrequencytrading.chronology.Chronology;
 
@@ -72,10 +73,18 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
                 for (int i = 0; i < argsLen; i++) {
                     appender.writeObject(args[i]);
                 }
+
+                if(event.getThrowableProxy() != null) {
+                    appender.writeBoolean(true);
+                    appender.writeObject(((ThrowableProxy)event.getThrowableProxy()).getThrowable());
+                } else {
+                    appender.writeBoolean(false);
+                }
             }
             else {
                 appender.writeUTF(event.getFormattedMessage());
                 appender.writeInt(0);
+                appender.writeBoolean(false);
             }
 
             /*

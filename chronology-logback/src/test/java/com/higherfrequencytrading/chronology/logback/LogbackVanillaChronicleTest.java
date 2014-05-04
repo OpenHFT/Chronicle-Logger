@@ -68,9 +68,28 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
             assertNotNull(evt.getArgumentArray());
             assertEquals(1, evt.getArgumentArray().length);
             assertEquals(level.levelStr , evt.getArgumentArray()[0]);
+            assertNull(evt.getThrowable());
 
             tailer.finish();
         }
+
+        logger.debug("Throwable test",new UnsupportedOperationException());
+        logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronologyLogHelper.decodeBinary(tailer);
+        assertEquals("Throwable test",evt.getMessage());
+        assertNotNull(evt.getThrowable());
+        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+        assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronologyLogHelper.decodeBinary(tailer);
+        assertEquals("Throwable test",evt.getMessage());
+        assertNotNull(evt.getThrowable());
+        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+        assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
+
 
         tailer.close();
         chronicle.close();
@@ -107,6 +126,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
             assertEquals("level is " + level.levelStr, evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(0, evt.getArgumentArray().length);
+            assertNull(evt.getThrowable());
 
             tailer.finish();
         }
@@ -142,6 +162,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
             assertEquals("level is " + level.levelStr, evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(0, evt.getArgumentArray().length);
+            assertNull(evt.getThrowable());
 
             tailer.finish();
         }

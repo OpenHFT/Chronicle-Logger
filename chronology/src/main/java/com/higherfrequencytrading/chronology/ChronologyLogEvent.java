@@ -21,4 +21,6 @@ public interface ChronologyLogEvent extends BytesMarshallable {
     public boolean hasArguments();
 
     public String getLoggerName();
+
+    public Throwable getThrowable();
 }

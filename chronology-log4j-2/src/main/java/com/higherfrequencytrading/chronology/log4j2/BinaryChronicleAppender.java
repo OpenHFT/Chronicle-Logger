@@ -79,12 +79,16 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
                 appender.writeObject(args[i]);
             }
 
-            //if(message.getThrowable() != null) {
-            //    appender.writeObject(message.getThrowable());
-            //}
+            if(event.getThrown() != null) {
+                appender.writeBoolean(true);
+                appender.writeObject(event.getThrown());
+            } else {
+                appender.writeBoolean(false);
+            }
         } else {
             appender.writeUTF(event.getMessage().getFormattedMessage());
             appender.writeInt(0);
+            appender.writeBoolean(false);
         }
 
         /*
