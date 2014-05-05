@@ -8,7 +8,7 @@ import org.slf4j.helpers.MarkerIgnoringBase;
  */
 public class ChronicleLogger extends MarkerIgnoringBase {
 
-    private final ChronicleLogWriter writer;
+    private final ChronicleLogAppender writer;
     private final ChronologyLogLevel level;
 
     /**
@@ -17,7 +17,7 @@ public class ChronicleLogger extends MarkerIgnoringBase {
      * @param writer
      * @param name
      */
-    public ChronicleLogger(final ChronicleLogWriter writer, final String name) {
+    public ChronicleLogger(final ChronicleLogAppender writer, final String name) {
         this(writer, name, ChronologyLogLevel.INFO);
     }
 
@@ -28,7 +28,7 @@ public class ChronicleLogger extends MarkerIgnoringBase {
      * @param name
      * @param level
      */
-    public ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronologyLogLevel level) {
+    public ChronicleLogger(final ChronicleLogAppender writer, final String name, final ChronologyLogLevel level) {
         this.writer = writer;
         this.name = name;
         this.level = level;
@@ -48,7 +48,7 @@ public class ChronicleLogger extends MarkerIgnoringBase {
     /**
      * @return
      */
-    public ChronicleLogWriter getWriter() {
+    public ChronicleLogAppender getWriter() {
         return this.writer;
     }
 

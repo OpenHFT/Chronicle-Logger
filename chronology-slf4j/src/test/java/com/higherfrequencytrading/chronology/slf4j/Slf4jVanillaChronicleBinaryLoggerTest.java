@@ -67,7 +67,7 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         assertEquals(cl.getLevel(), ChronologyLogLevel.DEBUG);
         assertEquals(cl.getName(), Slf4jVanillaChronicleBinaryLoggerTest.class.getName());
-        assertTrue(cl.getWriter() instanceof ChronicleLogWriters.BinaryWriter);
+        assertTrue(cl.getWriter() instanceof ChronicleLogAppenders.BinaryWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof VanillaChronicle);
     }
 
@@ -78,9 +78,10 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
     @Test
     public void testLogging1() throws IOException {
         String theradName = "th-test-binary-logging";
-        String loggerName = Slf4jVanillaChronicleBinaryLoggerTest.class.getName();
+        String loggerName = Slf4jIndexedChronicleBinaryLoggerTest.class.getName();
         long   timestamp  = System.currentTimeMillis();
 
+        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA,"root-binary"));
         Thread.currentThread().setName(theradName);
 
         Logger l = LoggerFactory.getLogger(loggerName);

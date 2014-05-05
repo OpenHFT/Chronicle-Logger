@@ -65,10 +65,11 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
             ThrowableInformation ti = event.getThrowableInformation();
             if(ti != null) {
                 appender.append(" - ");
-                appender.append(ChronologyLogHelper.getStackTraceAsString(
+                ChronologyLogHelper.appendStackTraceAsString(
+                    this.appender,
                     ti.getThrowable(),
                     Chronology.COMMA,
-                    this.stackTradeDepth)
+                    this.stackTradeDepth
                 );
             }
 

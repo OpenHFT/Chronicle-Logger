@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ChronicleLoggerFactory implements ILoggerFactory {
     private final Map<String, Logger> loggers;
-    private final Map<String, ChronicleLogWriter> writers;
+    private final Map<String, ChronicleLogAppender> writers;
     private ChronicleLoggingConfig cfg;
 
     /**
@@ -54,7 +54,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      */
     public ChronicleLoggerFactory(final ChronicleLoggingConfig cfg) {
         this.loggers = new ConcurrentHashMap<String, Logger>();
-        this.writers = new ConcurrentHashMap<String, ChronicleLogWriter>();
+        this.writers = new ConcurrentHashMap<String, ChronicleLogAppender>();
         this.cfg = ChronicleLoggingConfig.load();
     }
 
@@ -81,7 +81,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             ChronologyLogLevel level = ChronologyLogLevel.fromStringLevel(levels);
             Throwable error = null;
 
-            ChronicleLogWriter writer = null;
+            ChronicleLogAppender writer = null;
 
             if (path != null) {
                 writer = this.writers.get(path);
@@ -148,7 +148,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * close underlying Chronicles
      */
     public synchronized void shutdown() {
-        for (ChronicleLogWriter writer : this.writers.values()) {
+        for (ChronicleLogAppender writer : this.writers.values()) {
             try {
                 writer.getChronicle().close();
             } catch (IOException e) {
@@ -179,8 +179,8 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * @return
      * @throws IOException
      */
-    private ChronicleLogWriter newWriter(String path, String name) throws IOException {
-        ChronicleLogWriter writer = null;
+    private ChronicleLogAppender newWriter(String path, String name) throws IOException {
+        ChronicleLogAppender writer = null;
 
         String type = this.cfg.getString(name, ChronicleLoggingConfig.KEY_TYPE);
         String format = this.cfg.getString(name, ChronicleLoggingConfig.KEY_FORMAT);
@@ -191,13 +191,13 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             Chronicle chronicle = newChronicle(type, path, name);
             if (chronicle != null) {
                 writer = ChronicleLoggingConfig.BINARY_MODE_SERIALIZED.equalsIgnoreCase(binaryMode)
-                        ? new ChronicleLogWriters.BinaryWriter(chronicle)
-                        : new ChronicleLogWriters.BinaryFormattingWriter(chronicle);
+                        ? new ChronicleLogAppenders.BinaryWriter(chronicle)
+                        : new ChronicleLogAppenders.BinaryFormattingWriter(chronicle);
             }
         } else if (ChronicleLoggingConfig.FORMAT_TEXT.equalsIgnoreCase(format)) {
             Chronicle chronicle = newChronicle(type, path, name);
             if (chronicle != null) {
-                writer = new ChronicleLogWriters.TextWriter(
+                writer = new ChronicleLogAppenders.TextWriter(
                         chronicle,
                         null, // TODO: this.cfg.getString(name, ChronicleLoggingConfig.KEY_DATE_FORMAT)
                         stackTraceDepth
@@ -209,7 +209,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             // If the underlying chronicle is an Indexed chronicle, wrap the writer
             // so it is thread safe (synchronized)
             if (writer.getChronicle() instanceof IndexedChronicle) {
-                writer = new ChronicleLogWriters.SynchronizedWriter(writer);
+                writer = new ChronicleLogAppenders.SynchronizedWriter(writer);
             }
         }
 

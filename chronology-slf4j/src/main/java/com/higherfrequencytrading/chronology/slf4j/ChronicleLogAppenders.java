@@ -12,13 +12,13 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Date;
 
-public class ChronicleLogWriters {
+public class ChronicleLogAppenders {
 
     // *************************************************************************
     //
     // *************************************************************************
 
-    private static abstract class AbstractChronicleLogWriter implements ChronicleLogWriter {
+    private static abstract class AbstractChronicleLogWriter implements ChronicleLogAppender {
 
         protected final ExcerptAppender appender;
         private final Chronicle chronicle;
@@ -83,9 +83,11 @@ public class ChronicleLogWriters {
                 this.appender.writeObject(args[args.length - 1]);
             } else {
                 this.appender.writeInt(args.length);
-                for (Object arg : args) {
-                    this.appender.writeObject(arg);
+                for (int i=0;i<args.length; i++) {
+                    this.appender.writeObject(args[i]);
                 }
+
+                this.appender.writeBoolean(false);
             }
 
             this.appender.finish();
@@ -189,10 +191,11 @@ public class ChronicleLogWriters {
 
             if(tp.getThrowable() != null) {
                 appender.append(" - ");
-                appender.append(ChronologyLogHelper.getStackTraceAsString(
+                ChronologyLogHelper.appendStackTraceAsString(
+                    appender,
                     tp.getThrowable(),
                     Chronology.COMMA,
-                    this.stackTraceDepth));
+                    this.stackTraceDepth);
             }
 
             appender.append('\n');
@@ -207,14 +210,14 @@ public class ChronicleLogWriters {
     /**
      *
      */
-    public static final class SynchronizedWriter implements ChronicleLogWriter, Closeable {
-        private final ChronicleLogWriter writer;
+    public static final class SynchronizedWriter implements ChronicleLogAppender, Closeable {
+        private final ChronicleLogAppender writer;
         private final Object sync;
 
         /**
          * @param writer
          */
-        public SynchronizedWriter(final ChronicleLogWriter writer) {
+        public SynchronizedWriter(final ChronicleLogAppender writer) {
             this.writer = writer;
             this.sync = new Object();
         }

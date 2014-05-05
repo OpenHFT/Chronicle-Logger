@@ -60,7 +60,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
     public void testLogger() {
         Logger l1 = LoggerFactory.getLogger(Slf4jVanillaChronicleLoggerTest.class);
         Logger l2 = LoggerFactory.getLogger(Slf4jVanillaChronicleLoggerTest.class);
-        Logger l3 = LoggerFactory.getLogger("Logger1");
+        Logger l3 = LoggerFactory.getLogger("logger_1");
         Logger l4 = LoggerFactory.getLogger("readwrite");
 
         assertNotNull(l1);
@@ -95,7 +95,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         ChronicleLogger cl3 = (ChronicleLogger) l3;
         assertEquals(cl3.getLevel(), ChronologyLogLevel.INFO);
         assertTrue(cl3.getWriter().getChronicle() instanceof VanillaChronicle);
-        assertEquals(cl3.getName(), "Logger1");
+        assertEquals(cl3.getName(), "logger_1");
 
         ChronicleLogger cl4 = (ChronicleLogger) l4;
         assertEquals(cl4.getLevel(), ChronologyLogLevel.DEBUG);
@@ -108,66 +108,131 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
     // *************************************************************************
 
     @Test
-    public void testBiaryLogging() throws IOException {
-        String theradName = "th-test-logging_1";
-        String loggerName = "readwrite";
-        long   timestamp  = System.currentTimeMillis();
+    public void testLogging() throws IOException {
+        final String testId    = "readwrite";
+        final String threadId  = testId + "-th";
+        final long   timestamp = System.currentTimeMillis();
+        final Logger logger    = LoggerFactory.getLogger(testId);
 
-        Thread.currentThread().setName(theradName);
+        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA,testId));
+        Thread.currentThread().setName(threadId);
 
-        Logger l = LoggerFactory.getLogger("readwrite");
-        l.trace(ChronologyLogLevel.TRACE.levelStr);
-        l.debug(ChronologyLogLevel.DEBUG.levelStr);
-        l.info(ChronologyLogLevel.INFO.levelStr);
-        l.warn(ChronologyLogLevel.WARN.levelStr);
-        l.error(ChronologyLogLevel.ERROR.levelStr);
-
-        Chronicle reader = getVanillaChronicle(ChronicleLoggingConfig.TYPE_VANILLA,loggerName);
-        ExcerptTailer tailer = reader.createTailer();
-        ChronologyLogEvent evt = null;
-
-        for(int i=1;i< LOG_LEVELS.length; i++) {
-            assertTrue(tailer.nextIndex());
-
-            evt = ChronologyLogHelper.decodeBinary(tailer);
-            assertNotNull(evt);
-            assertEquals(evt.getVersion(), Chronology.VERSION);
-            assertEquals(evt.getType(), Chronology.TYPE_SLF4J);
-            assertTrue(timestamp <= evt.getTimeStamp());
-            assertEquals(LOG_LEVELS[i],evt.getLevel());
-            assertEquals(LOG_LEVELS[i].levelStr,evt.getMessage());
-            assertEquals(theradName, evt.getThreadName());
-            assertNotNull(evt.getArgumentArray());
-            assertEquals(0, evt.getArgumentArray().length);
+        for(ChronologyLogLevel level : LOG_LEVELS) {
+            log(logger,level,"level is {}",level.levelStr);
         }
 
-        assertFalse(tailer.nextIndex());
+        Chronicle          chronicle = getVanillaChronicle(ChronicleLoggingConfig.TYPE_VANILLA,testId);
+        ExcerptTailer      tailer    = chronicle.createTailer().toStart();
+        ChronologyLogEvent evt       = null;
+
+        for(ChronologyLogLevel level : LOG_LEVELS) {
+            if(level != ChronologyLogLevel.TRACE) {
+                assertTrue(tailer.nextIndex());
+
+                evt = ChronologyLogHelper.decodeBinary(tailer);
+                assertNotNull(evt);
+                assertEquals(evt.getVersion(), Chronology.VERSION);
+                assertEquals(evt.getType(), Chronology.TYPE_SLF4J);
+                assertTrue(evt.getTimeStamp() >= timestamp);
+                assertEquals(level, evt.getLevel());
+                assertEquals(threadId, evt.getThreadName());
+                assertEquals(testId, evt.getLoggerName());
+                assertEquals("level is " + level.levelStr, evt.getMessage());
+                assertNotNull(evt.getArgumentArray());
+                assertEquals(0, evt.getArgumentArray().length);
+
+                tailer.finish();
+            }
+        }
+
+        logger.debug("Throwable test",new UnsupportedOperationException());
+        logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronologyLogHelper.decodeBinary(tailer);
+        assertEquals("Throwable test",evt.getMessage());
+        assertNotNull(evt.getThrowable());
+        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+        assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronologyLogHelper.decodeBinary(tailer);
+        assertEquals("Throwable test",evt.getMessage());
+        assertNotNull(evt.getThrowable());
+        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+        assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
+
 
         tailer.close();
-        reader.close();
+        chronicle.close();
+
+        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA,testId));
     }
 
     @Test
     public void testTextLogging() throws IOException {
-        Logger l = LoggerFactory.getLogger("Text1");
-        l.trace("trace");
-        l.debug("debug");
-        l.info("info");
-        l.warn("warn");
-        l.error("error");
+        final String testId    = "text_1";
+        final String threadId  = testId + "-th";
+        final Logger logger    = LoggerFactory.getLogger(testId);
 
-        Chronicle reader = new VanillaChronicle(basePath(ChronicleLoggingConfig.TYPE_VANILLA, "text_1"));
-        ExcerptTailer tailer = reader.createTailer().toStart();
+        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA,testId));
+        Thread.currentThread().setName(threadId);
+
+        for(ChronologyLogLevel level : LOG_LEVELS) {
+            log(logger,level,"level is {}",level.levelStr);
+        }
+
+        Chronicle          chronicle = getVanillaChronicle(ChronicleLoggingConfig.TYPE_VANILLA,testId);
+        ExcerptTailer      tailer    = chronicle.createTailer().toStart();
+        ChronologyLogEvent evt       = null;
+
+        for(ChronologyLogLevel level : LOG_LEVELS) {
+            assertTrue(tailer.nextIndex());
+
+            evt = ChronologyLogHelper.decodeText(tailer);
+            assertNotNull(evt);
+            assertEquals(level, evt.getLevel());
+            assertEquals(threadId, evt.getThreadName());
+            assertEquals(testId, evt.getLoggerName());
+            assertEquals("level is " + level.levelStr, evt.getMessage());
+            assertNotNull(evt.getArgumentArray());
+            assertEquals(0, evt.getArgumentArray().length);
+            assertNull(evt.getThrowable());
+
+            tailer.finish();
+        }
+
+        logger.debug("Throwable test",new UnsupportedOperationException());
+        logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
 
         assertTrue(tailer.nextIndex());
-        assertTrue(tailer.readLine().contains("warn"));
+        evt = ChronologyLogHelper.decodeText(tailer);
+        assertNotNull(evt);
+        assertEquals(threadId, evt.getThreadName());
+        assertEquals(testId, evt.getLoggerName());
+        assertTrue(evt.getMessage().contains("Throwable test"));
+        assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
+        assertTrue(evt.getMessage().contains(this.getClass().getName()));
+        assertNotNull(evt.getArgumentArray());
+        assertEquals(0, evt.getArgumentArray().length);
+        assertNull(evt.getThrowable());
 
         assertTrue(tailer.nextIndex());
-        assertTrue(tailer.readLine().contains("error"));
-
-        assertFalse(tailer.nextIndex());
+        evt = ChronologyLogHelper.decodeText(tailer);assertNotNull(evt);
+        assertEquals(threadId, evt.getThreadName());
+        assertEquals(testId, evt.getLoggerName());
+        assertTrue(evt.getMessage().contains("Throwable test"));
+        assertTrue(evt.getMessage().contains("Exception message"));
+        assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
+        assertTrue(evt.getMessage().contains(this.getClass().getName()));
+        assertNotNull(evt.getArgumentArray());
+        assertEquals(0, evt.getArgumentArray().length);
+        assertNull(evt.getThrowable());
 
         tailer.close();
-        reader.close();
+        chronicle.close();
+
+        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA,testId));
+
     }
 }

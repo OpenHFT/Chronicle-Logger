@@ -41,10 +41,10 @@ public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
             cfg.getString(ChronicleLoggingConfig.KEY_APPEND));
         assertEquals(
             new File(basePath(ChronicleLoggingConfig.TYPE_VANILLA, "logger_1")),
-            new File(cfg.getString("Logger1", ChronicleLoggingConfig.KEY_PATH)));
+            new File(cfg.getString("logger_1", ChronicleLoggingConfig.KEY_PATH)));
         assertEquals(
             ChronologyLogLevel.INFO.levelStr,
-            cfg.getString("Logger1", ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
+            cfg.getString("logger_1", ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
         assertEquals(
             new File(basePath(ChronicleLoggingConfig.TYPE_VANILLA, "readwrite")),
             new File(cfg.getString("readwrite", ChronicleLoggingConfig.KEY_PATH)));

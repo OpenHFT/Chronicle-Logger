@@ -43,7 +43,7 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
     public void tearDown() {
         getChronicleLoggerFactory().shutdown();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA));
+        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED));
     }
 
     // *************************************************************************
@@ -68,7 +68,7 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         assertEquals(cl.getLevel(), ChronologyLogLevel.DEBUG);
         assertEquals(cl.getName(), Slf4jIndexedChronicleBinaryLoggerTest.class.getName());
-        assertTrue(cl.getWriter() instanceof ChronicleLogWriters.SynchronizedWriter);
+        assertTrue(cl.getWriter() instanceof ChronicleLogAppenders.SynchronizedWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof IndexedChronicle);
     }
 
@@ -82,6 +82,7 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
         String loggerName = Slf4jIndexedChronicleBinaryLoggerTest.class.getName();
         long   timestamp  = System.currentTimeMillis();
 
+        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED,"root-binary"));
         Thread.currentThread().setName(theradName);
 
         Logger l = LoggerFactory.getLogger(loggerName);

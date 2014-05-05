@@ -9,7 +9,7 @@ import java.io.Closeable;
 /**
  *
  */
-public interface ChronicleLogWriter extends Closeable {
+public interface ChronicleLogAppender extends Closeable {
     /**
      * @return
      */
