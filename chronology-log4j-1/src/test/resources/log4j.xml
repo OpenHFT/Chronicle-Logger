@@ -2,11 +2,32 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
 
-    <appender name  = "VANILLA-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.log4j1.VanillaChronicleAppender">
-        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/vanilla-chronicle"/>
+    <appender name  = "BINARY-VANILLA-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.log4j1.BinaryVanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronology-log4j1/binary-vanilla-chronicle"/>
         <param name="includeCallerData" value="false"/>
         <param name="includeMappedDiagnosticContext" value="false"/>
+    </appender>
+
+    <appender name  = "TEXT-VANILLA-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.log4j1.TextVanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronology-log4j1/text-vanilla-chronicle"/>
+        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
+        <param name="stackTradeDepth" value="3"/>
+    </appender>
+
+    <appender name  = "BINARY-INDEXED-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.log4j1.BinaryIndexedChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronology-log4j1/binary-indexed-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+    </appender>
+
+    <appender name  = "TEXT-INDEXED-CHRONICLE"
+              class = "com.higherfrequencytrading.chronology.log4j1.TextIndexedChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronology-log4j1/text-indexed-chronicle"/>
+        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
+        <param name="stackTradeDepth" value="3"/>
     </appender>
 
     <appender name  = "STDOUT"
@@ -16,9 +37,24 @@
         </layout>
     </appender>
 
-    <logger name="vanilla-chronicle" additivity="false">
+    <logger name="binary-vanilla-chronicle" additivity="false">
         <level value="trace"/>
-        <appender-ref ref="VANILLA-CHRONICLE"/>
+        <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="text-vanilla-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="binary-indexed-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <logger name="text-indexed-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
     </logger>
 
     <root>

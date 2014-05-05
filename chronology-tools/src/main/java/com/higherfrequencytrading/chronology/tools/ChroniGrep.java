@@ -107,7 +107,8 @@ public class ChroniGrep extends ChroniTool {
         }
 
         @Override
-        public void process(String msg) {
+        public void process(final ChronologyLogEvent event) {
+            String msg = asString(event);
             if (this.grep.matches(msg)) {
                 System.out.println(msg);
             }
