@@ -6,7 +6,7 @@ import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
-import net.openhft.lang.io.IOTools;
+import net.openhft.chronicle.tools.ChronicleTools;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,10 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
 
@@ -45,7 +42,6 @@ public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
 
-        IOTools.deleteDir(basePath(testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
@@ -92,11 +88,10 @@ public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
 
-
         tailer.close();
         chronicle.close();
 
-        IOTools.deleteDir(basePath(testId));
+        ChronicleTools.deleteOnExit(basePath(testId));
     }
 
     @Test
@@ -106,7 +101,6 @@ public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
 
-        IOTools.deleteDir(basePath(testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
@@ -155,7 +149,7 @@ public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
         tailer.close();
         chronicle.close();
 
-        IOTools.deleteDir(basePath(testId));
+        ChronicleTools.deleteOnExit(basePath(testId));
     }
 
     @Test
@@ -164,7 +158,6 @@ public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
         final String threadId  = testId + "-th";
         final Logger logger    = LoggerFactory.getLogger(testId);
 
-        IOTools.deleteDir(basePath(testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
@@ -221,6 +214,6 @@ public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
         tailer.close();
         chronicle.close();
 
-        IOTools.deleteDir(basePath(testId));
+        ChronicleTools.deleteOnExit(basePath(testId));
     }
 }

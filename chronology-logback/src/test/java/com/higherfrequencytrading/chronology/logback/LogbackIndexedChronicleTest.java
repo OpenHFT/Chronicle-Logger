@@ -6,7 +6,7 @@ import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
-import net.openhft.lang.io.IOTools;
+import net.openhft.chronicle.tools.ChronicleTools;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,10 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
@@ -40,12 +37,11 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
     @Test
     public void testBinaryAppender1() throws IOException {
-        final String testId    = "binary-indexed-chronicle";
+        final String testId = "binary-indexed-chronicle";
         final String threadId  = testId + "-th";
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
 
-        IOTools.deleteDir(basePath(testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
@@ -95,17 +91,16 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
         tailer.close();
         chronicle.close();
 
-        IOTools.deleteDir(basePath(testId));
+        ChronicleTools.deleteOnExit(basePath(testId));
     }
 
     @Test
     public void testBinaryAppender2() throws IOException {
-        final String testId    = "binary-indexed-chronicle-fmt";
+        final String testId = "binary-indexed-chronicle-fmt";
         final String threadId  = testId + "-th";
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
 
-        IOTools.deleteDir(basePath(testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
@@ -154,16 +149,17 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
         tailer.close();
         chronicle.close();
 
-        IOTools.deleteDir(basePath(testId));
+        ChronicleTools.deleteOnExit(basePath(testId));
     }
 
     @Test
     public void testTextAppender1() throws IOException {
-        final String testId    = "text-indexed-chronicle";
+        final String testId = "text-indexed-chronicle";
+        ChronicleTools.deleteOnExit(basePath(testId));
+
         final String threadId  = testId + "-th";
         final Logger logger    = LoggerFactory.getLogger(testId);
 
-        IOTools.deleteDir(basePath(testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
@@ -219,5 +215,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
         tailer.close();
         chronicle.close();
+
+        ChronicleTools.deleteOnExit(basePath(testId));
     }
 }
