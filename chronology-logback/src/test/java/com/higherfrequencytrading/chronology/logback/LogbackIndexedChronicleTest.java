@@ -154,9 +154,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
     @Test
     public void testTextAppender1() throws IOException {
-        final String testId = "text-indexed-chronicle";
-        ChronicleTools.deleteOnExit(basePath(testId));
-
+        final String testId    = "text-indexed-chronicle";
         final String threadId  = testId + "-th";
         final Logger logger    = LoggerFactory.getLogger(testId);
 

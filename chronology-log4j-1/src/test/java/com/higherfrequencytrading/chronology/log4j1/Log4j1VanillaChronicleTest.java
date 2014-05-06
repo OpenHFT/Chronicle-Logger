@@ -16,10 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
 
@@ -33,7 +30,6 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
 
     @After
     public void tearDown() {
-        IOTools.deleteDir(rootPath());
     }
 
     // *************************************************************************
@@ -92,9 +88,10 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
 
-
         tailer.close();
         chronicle.close();
+
+        IOTools.deleteDir(basePath(testId));
     }
 
     @Test
@@ -157,5 +154,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
 
         tailer.close();
         chronicle.close();
+
+        IOTools.deleteDir(basePath(testId));
     }
 }

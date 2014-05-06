@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
@@ -30,7 +29,6 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
     @After
     public void tearDown() {
-        IOTools.deleteDir(rootPath());
     }
 
     // *************************************************************************
@@ -91,9 +89,10 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
 
-
         tailer.close();
         chronicle.close();
+
+        IOTools.deleteDir(basePath(testId));
     }
 
     @Test
@@ -151,6 +150,8 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
         tailer.close();
         chronicle.close();
+
+        IOTools.deleteDir(basePath(testId));
     }
 
     @Test
@@ -214,5 +215,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
         tailer.close();
         chronicle.close();
+
+        IOTools.deleteDir(basePath(testId));
     }
 }

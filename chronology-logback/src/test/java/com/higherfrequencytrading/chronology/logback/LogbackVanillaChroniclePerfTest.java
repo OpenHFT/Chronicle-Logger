@@ -27,7 +27,6 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
 
     @After
     public void tearDown() {
-        IOTools.deleteDir(rootPath());
     }
 
     // *************************************************************************
@@ -37,7 +36,7 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
 
     @Test
     public void testSingleThreadLogging1() throws IOException {
-        Thread.currentThread().setName("perf-plain-vanilla");
+        Thread.currentThread().setName("perf-plain-vanilla-1");
 
         final Logger clogger   = LoggerFactory.getLogger("perf-binary-vanilla-chronicle");
         final Logger plogger   = LoggerFactory.getLogger("perf-plain-vanilla");
@@ -68,11 +67,13 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
                 (cEnd1 - cStart1) / items / 1e3,
                 (pEnd1 - pStart1) / items / 1e3);
         }
+
+        IOTools.deleteDir(basePath("perf-binary-vanilla-chronicle"));
     }
 
     @Test
     public void testSingleThreadLogging2() throws IOException {
-        Thread.currentThread().setName("perf-plain-vanilla");
+        Thread.currentThread().setName("perf-plain-vanilla-2");
 
         final Logger clogger   = LoggerFactory.getLogger("perf-binary-vanilla-chronicle");
         final Logger plogger   = LoggerFactory.getLogger("perf-plain-vanilla");
@@ -102,6 +103,8 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
                 (cEnd1 - cStart1) / items / 1e3,
                 (pEnd1 - pStart1) / items / 1e3);
         }
+
+        IOTools.deleteDir(basePath("perf-binary-vanilla-chronicle"));
     }
 
     @Test
@@ -150,5 +153,7 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
                 );
             }
         }
+
+        IOTools.deleteDir(basePath("perf-binary-vanilla-chronicle"));
     }
 }

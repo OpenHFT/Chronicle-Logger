@@ -1,6 +1,6 @@
 package com.higherfrequencytrading.chronology.logback;
 
-import net.openhft.lang.io.IOTools;
+import net.openhft.chronicle.tools.ChronicleTools;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -67,7 +67,7 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
                 (pEnd1 - pStart1) / items / 1e3);
         }
 
-        IOTools.deleteDir(rootPath());
+        ChronicleTools.deleteOnExit(basePath("perf-binary-indexed-chronicle"));
     }
 
     @Test
@@ -103,7 +103,7 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
                 (pEnd1 - pStart1) / items / 1e3);
         }
 
-        IOTools.deleteDir(rootPath());
+        ChronicleTools.deleteOnExit(basePath("perf-binary-indexed-chronicle"));
     }
 
     @Test
@@ -152,5 +152,7 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
                 );
             }
         }
+
+        ChronicleTools.deleteOnExit(basePath("perf-binary-indexed-chronicle"));
     }
 }
