@@ -24,8 +24,8 @@ public class Slf4jVanillaChroniclePerfTest extends Slf4jTestBase {
     @Before
     public void setUp() {
         System.setProperty(
-                "slf4j.chronicle.properties",
-                System.getProperty("slf4j.chronicle.vanilla.properties"));
+            "slf4j.chronicle.properties",
+            System.getProperty("slf4j.chronicle.vanilla.properties"));
 
         getChronicleLoggerFactory().relaod();
         getChronicleLoggerFactory().warmup();

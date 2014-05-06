@@ -9,9 +9,6 @@ import org.slf4j.impl.StaticLoggerBinder;
  */
 public class ChronicleLogging {
 
-    /**
-     *
-     */
     public static void warmup() {
         ILoggerFactory factory = StaticLoggerBinder.getSingleton().getLoggerFactory();
         if (factory instanceof ChronicleLoggerFactory) {
@@ -19,9 +16,6 @@ public class ChronicleLogging {
         }
     }
 
-    /**
-     *
-     */
     public static void shutdown() {
         ILoggerFactory factory = StaticLoggerBinder.getSingleton().getLoggerFactory();
         if (factory instanceof ChronicleLoggerFactory) {

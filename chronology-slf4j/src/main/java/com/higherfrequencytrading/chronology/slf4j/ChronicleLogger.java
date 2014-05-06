@@ -63,37 +63,27 @@ public class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void trace(String s) {
-        if (isLevelEnabled(ChronologyLogLevel.TRACE)) {
-            this.writer.log(ChronologyLogLevel.TRACE, this.name, s);
-        }
+        append(ChronologyLogLevel.TRACE,  s);
     }
 
     @Override
     public void trace(String s, Object o) {
-        if (isLevelEnabled(ChronologyLogLevel.TRACE)) {
-            this.writer.log(ChronologyLogLevel.TRACE, this.name, s, o);
-        }
+        append(ChronologyLogLevel.TRACE,  s, o);
     }
 
     @Override
     public void trace(String s, Object o1, Object o2) {
-        if (isLevelEnabled(ChronologyLogLevel.TRACE)) {
-            this.writer.log(ChronologyLogLevel.TRACE, this.name, s, o1, o2);
-        }
+        append(ChronologyLogLevel.TRACE,  s, o1, o2);
     }
 
     @Override
     public void trace(String s, Object... objects) {
-        if (isLevelEnabled(ChronologyLogLevel.TRACE)) {
-            this.writer.log(ChronologyLogLevel.TRACE, this.name, s, objects);
-        }
+        append(ChronologyLogLevel.TRACE,  s, objects);
     }
 
     @Override
     public void trace(String s, Throwable throwable) {
-        if (isLevelEnabled(ChronologyLogLevel.TRACE)) {
-            this.writer.log(ChronologyLogLevel.TRACE, this.name, s, throwable);
-        }
+        append(ChronologyLogLevel.TRACE,  s, throwable);
     }
 
     // *************************************************************************
@@ -107,37 +97,27 @@ public class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void debug(String s) {
-        if (isLevelEnabled(ChronologyLogLevel.DEBUG)) {
-            this.writer.log(ChronologyLogLevel.DEBUG, this.name, s);
-        }
+        append(ChronologyLogLevel.DEBUG,  s);
     }
 
     @Override
     public void debug(String s, Object o) {
-        if (isLevelEnabled(ChronologyLogLevel.DEBUG)) {
-            this.writer.log(ChronologyLogLevel.DEBUG, this.name, s, o);
-        }
+        append(ChronologyLogLevel.DEBUG,  s, o);
     }
 
     @Override
     public void debug(String s, Object o1, Object o2) {
-        if (isLevelEnabled(ChronologyLogLevel.DEBUG)) {
-            this.writer.log(ChronologyLogLevel.DEBUG, this.name, s, o1, o2);
-        }
+        append(ChronologyLogLevel.DEBUG,  s, o1, o2);
     }
 
     @Override
     public void debug(String s, Object... objects) {
-        if (isLevelEnabled(ChronologyLogLevel.DEBUG)) {
-            this.writer.log(ChronologyLogLevel.DEBUG, this.name, s, objects);
-        }
+        append(ChronologyLogLevel.DEBUG,  s, objects);
     }
 
     @Override
     public void debug(String s, Throwable throwable) {
-        if (isLevelEnabled(ChronologyLogLevel.DEBUG)) {
-            this.writer.log(ChronologyLogLevel.DEBUG, this.name, s, throwable);
-        }
+        append(ChronologyLogLevel.DEBUG,  s, throwable);
     }
 
     // *************************************************************************
@@ -151,37 +131,27 @@ public class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void info(String s) {
-        if (isLevelEnabled(ChronologyLogLevel.INFO)) {
-            this.writer.log(ChronologyLogLevel.INFO, this.name, s);
-        }
+        append(ChronologyLogLevel.INFO,  s);
     }
 
     @Override
     public void info(String s, Object o) {
-        if (isLevelEnabled(ChronologyLogLevel.INFO)) {
-            this.writer.log(ChronologyLogLevel.INFO, this.name, s, o);
-        }
+        append(ChronologyLogLevel.INFO,  s, o);
     }
 
     @Override
     public void info(String s, Object o1, Object o2) {
-        if (isLevelEnabled(ChronologyLogLevel.INFO)) {
-            this.writer.log(ChronologyLogLevel.INFO, this.name, s, o1, o2);
-        }
+        append(ChronologyLogLevel.INFO,  s, o1, o2);
     }
 
     @Override
     public void info(String s, Object... objects) {
-        if (isLevelEnabled(ChronologyLogLevel.INFO)) {
-            this.writer.log(ChronologyLogLevel.INFO, this.name, s, objects);
-        }
+        append(ChronologyLogLevel.INFO,  s, objects);
     }
 
     @Override
     public void info(String s, Throwable throwable) {
-        if (isLevelEnabled(ChronologyLogLevel.INFO)) {
-            this.writer.log(ChronologyLogLevel.INFO, this.name, s, throwable);
-        }
+        append(ChronologyLogLevel.INFO,  s, throwable);
     }
 
     // *************************************************************************
@@ -195,37 +165,27 @@ public class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void warn(String s) {
-        if (isLevelEnabled(ChronologyLogLevel.WARN)) {
-            this.writer.log(ChronologyLogLevel.WARN, this.name, s);
-        }
+        append(ChronologyLogLevel.WARN,  s);
     }
 
     @Override
     public void warn(String s, Object o) {
-        if (isLevelEnabled(ChronologyLogLevel.WARN)) {
-            this.writer.log(ChronologyLogLevel.WARN, this.name, s, o);
-        }
+        append(ChronologyLogLevel.WARN,  s, o);
     }
 
     @Override
     public void warn(String s, Object o1, Object o2) {
-        if (isLevelEnabled(ChronologyLogLevel.WARN)) {
-            this.writer.log(ChronologyLogLevel.WARN, this.name, s, o1, o2);
-        }
+        append(ChronologyLogLevel.WARN,  s, o1, o2);
     }
 
     @Override
     public void warn(String s, Object... objects) {
-        if (isLevelEnabled(ChronologyLogLevel.WARN)) {
-            this.writer.log(ChronologyLogLevel.WARN, this.name, s, objects);
-        }
+        append(ChronologyLogLevel.WARN,  s, objects);
     }
 
     @Override
     public void warn(String s, Throwable throwable) {
-        if (isLevelEnabled(ChronologyLogLevel.WARN)) {
-            this.writer.log(ChronologyLogLevel.WARN, this.name, s, throwable);
-        }
+        append(ChronologyLogLevel.WARN,  s, throwable);
     }
 
     // *************************************************************************
@@ -239,51 +199,42 @@ public class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void error(String s) {
-        if (isLevelEnabled(ChronologyLogLevel.ERROR)) {
-            this.writer.log(ChronologyLogLevel.ERROR, this.name, s);
-        }
+        append(ChronologyLogLevel.ERROR, s);
     }
 
     @Override
     public void error(String s, Object o) {
-        if (isLevelEnabled(ChronologyLogLevel.ERROR)) {
-            this.writer.log(ChronologyLogLevel.ERROR, this.name, s, o);
-        }
+        append(ChronologyLogLevel.ERROR, s, o);
     }
 
     @Override
     public void error(String s, Object o1, Object o2) {
-        if (isLevelEnabled(ChronologyLogLevel.ERROR)) {
-            this.writer.log(ChronologyLogLevel.ERROR, this.name, s, o1, o2);
-        }
+        append(ChronologyLogLevel.ERROR, s, o1, o2);
     }
 
     @Override
     public void error(String s, Object... objects) {
-        if (isLevelEnabled(ChronologyLogLevel.ERROR)) {
-            this.writer.log(ChronologyLogLevel.ERROR, this.name, s, objects);
-        }
+        append(ChronologyLogLevel.ERROR, s, objects);
     }
 
     @Override
     public void error(String s, Throwable throwable) {
-        if (isLevelEnabled(ChronologyLogLevel.ERROR)) {
-            this.writer.log(ChronologyLogLevel.ERROR, this.name, s, throwable);
-        }
+        append(ChronologyLogLevel.ERROR, s, throwable);
     }
 
     // *************************************************************************
     // HELPERS
     // *************************************************************************
 
-    /**
-     * Is the given slf4j level enabled?
-     *
-     * @param level is this level enabled?
-     */
-    private boolean isLevelEnabled(final ChronologyLogLevel level) {
+    private boolean isLevelEnabled(ChronologyLogLevel level) {
+        return level.levelInt >= this.level.levelInt;
+    }
+
+    private void append(ChronologyLogLevel level, String message, Object... args) {
         // slf4j level are numerically ordered so can use simple numeric
         // comparison
-        return (level.levelInt >= this.level.levelInt);
+        if(level.levelInt >= this.level.levelInt) {
+            this.writer.log(level, this.name, message, args);
+        }
     }
 }
