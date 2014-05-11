@@ -30,16 +30,17 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
     }
 
     // *************************************************************************
-    // BINARY
+    // Single Thread
     // *************************************************************************
 
     @Test
     public void testSingleThreadLogging1() throws IOException {
         Thread.currentThread().setName("perf-plain-indexed");
 
-        final Logger clogger   = LoggerFactory.getLogger("perf-binary-indexed-chronicle");
+        final String testId    = "perf-binary-indexed-chronicle";
+        final Logger clogger   = LoggerFactory.getLogger(testId);
         final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed");
-        final long   items     = 10000;
+        final long   items     = 1000000;
 
         for(int s=64; s <= 1024 ;s += 64) {
             final String staticStr = StringUtils.leftPad("", s, 'X');
@@ -60,23 +61,26 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d size=%04d=> chronology=%.3f, plain=%.3f\n",
+            System.out.printf("items=%03d size=%04d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-averfage=%.3f us\n",
                 items,
                 staticStr.length(),
+                (cEnd1 - cStart1) / 1e6,
                 (cEnd1 - cStart1) / items / 1e3,
+                (pEnd1 - pStart1),
                 (pEnd1 - pStart1) / items / 1e3);
         }
 
-        ChronicleTools.deleteOnExit(basePath("perf-binary-indexed-chronicle"));
+        ChronicleTools.deleteOnExit(basePath(testId));
     }
 
     @Test
     public void testSingleThreadLogging2() throws IOException {
         Thread.currentThread().setName("perf-plain-indexed");
 
-        final Logger clogger   = LoggerFactory.getLogger("perf-binary-indexed-chronicle");
+        final String testId    = "perf-binary-indexed-chronicle";
+        final Logger clogger   = LoggerFactory.getLogger(testId);
         final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed");
-        final long   items     = 10000;
+        final long   items     = 1000000;
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
 
         for(int n=0;n<10;n++) {
@@ -97,15 +101,61 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d chronology=%.3f, plain=%.3f\n",
+            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-averfage=%.3f us\n",
                 items,
+                (cEnd1 - cStart1) / 1e6,
                 (cEnd1 - cStart1) / items / 1e3,
+                (pEnd1 - pStart1),
                 (pEnd1 - pStart1) / items / 1e3);
         }
 
-        ChronicleTools.deleteOnExit(basePath("perf-binary-indexed-chronicle"));
+        ChronicleTools.deleteOnExit(basePath(testId));
     }
 
+    @Test
+    public void testSingleThreadLogging3() throws IOException {
+        Thread.currentThread().setName("perf-plain-indexed");
+
+        final String testId    = "perf-binary-indexed-chronicle";
+        final Logger clogger   = LoggerFactory.getLogger(testId);
+        final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed-async");
+        final long   items     = 1000000;
+        final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
+
+        for(int n=0;n<10;n++) {
+
+            long cStart1 = System.nanoTime();
+
+            for (int i = 1; i <= items; i++) {
+                clogger.info(strFmt, i, i * 10, i / 16);
+            }
+
+            long cEnd1 = System.nanoTime();
+
+            long pStart1 = System.nanoTime();
+
+            for (int i = 1; i <= items; i++) {
+                plogger.info(strFmt, i, i * 10, i / 16);
+            }
+
+            long pEnd1 = System.nanoTime();
+
+            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-averfage=%.3f us\n",
+                items,
+                (cEnd1 - cStart1) / 1e6,
+                (cEnd1 - cStart1) / items / 1e3,
+                (pEnd1 - pStart1),
+                (pEnd1 - pStart1) / items / 1e3);
+        }
+
+        ChronicleTools.deleteOnExit(basePath(testId));
+    }
+
+    // *************************************************************************
+    // Multi Thread
+    // *************************************************************************
+
+    @Ignore
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
         final int RUNS = 1000000;
