@@ -48,8 +48,6 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
     @Override
     protected void append(final LoggingEvent event) {
-        createAppender();
-
         if(this.appender != null) {
             appender.startExcerpt();
             appender.append(this.dateFormatCache.get().format(new Date(event.getTimeStamp())));

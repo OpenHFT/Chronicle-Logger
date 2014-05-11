@@ -40,8 +40,6 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
 
     @Override
     protected void append(final LoggingEvent event) {
-        createAppender();
-
         if(this.appender != null) {
             appender.startExcerpt();
             appender.writeByte(Chronology.VERSION);
