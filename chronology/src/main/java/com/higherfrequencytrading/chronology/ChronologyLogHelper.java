@@ -4,7 +4,7 @@ package com.higherfrequencytrading.chronology;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.ExcerptTailer;
 
-public class ChronologyLogHelper {
+public final class ChronologyLogHelper {
 
 
     /**
@@ -67,4 +67,6 @@ public class ChronologyLogHelper {
 
         return appender;
     }
+
+    private ChronologyLogHelper() {}
 }

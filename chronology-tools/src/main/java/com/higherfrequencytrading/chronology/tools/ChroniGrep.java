@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  *
  */
-public class ChroniGrep extends ChroniTool {
+public final class ChroniGrep {
 
     // *************************************************************************
     //
@@ -83,7 +83,7 @@ public class ChroniGrep extends ChroniTool {
         }
     };
 
-    private static final class BinaryGrep extends BinaryProcessor {
+    private static final class BinaryGrep extends ChroniTool.BinaryProcessor {
         private final Grep grep;
 
         public BinaryGrep(final Grep grep) {
@@ -92,14 +92,14 @@ public class ChroniGrep extends ChroniTool {
 
         @Override
         public void process(final ChronologyLogEvent event) {
-            String msg = asString(event);
+            String msg = ChroniTool.asString(event);
             if (this.grep.matches(msg)) {
                 System.out.println(msg);
             }
         }
     };
 
-    private static final class TextGrep extends TextProcessor {
+    private static final class TextGrep extends ChroniTool.TextProcessor {
         private final Grep grep;
 
         public TextGrep(final Grep grep) {
@@ -108,10 +108,12 @@ public class ChroniGrep extends ChroniTool {
 
         @Override
         public void process(final ChronologyLogEvent event) {
-            String msg = asString(event);
+            String msg = ChroniTool.asString(event);
             if (this.grep.matches(msg)) {
                 System.out.println(msg);
             }
         }
     }
+
+    private ChroniGrep() {}
 }

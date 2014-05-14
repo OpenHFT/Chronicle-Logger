@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-public class ChroniTool {
+public final class ChroniTool {
 
     public static final DateFormat DF = new SimpleDateFormat(ChronicleLoggingConfig.DEFAULT_DATE_FORMAT);
 
@@ -125,4 +125,6 @@ public class ChroniTool {
             chronicle.close();
         }
     }
+
+    private ChroniTool() {}
 }

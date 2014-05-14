@@ -1,6 +1,6 @@
 package com.higherfrequencytrading.chronology;
 
-public class Chronology {
+public final class Chronology {
     public static final String NEWLINE   = System.getProperty("line.separator");
     public static final String COMMA     = ", ";
     public static final String STR_FALSE = "false";
@@ -15,4 +15,5 @@ public class Chronology {
 
     public static final String          DEFAULT_DATE_FORMAT       = "yyyy.MM.dd-HH:mm:ss.SSS";
 
+    private Chronology() {}
 }
