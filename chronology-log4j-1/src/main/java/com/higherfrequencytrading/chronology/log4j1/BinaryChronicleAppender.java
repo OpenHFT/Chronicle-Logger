@@ -51,7 +51,7 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
             appender.writeUTF(event.getThreadName());
             appender.writeUTF(event.getLoggerName());
             appender.writeUTF(event.getMessage().toString());
-            appender.writeInt(0);
+            appender.writeStopBit(0);
 
             ThrowableInformation ti = event.getThrowableInformation();
             if(ti != null) {

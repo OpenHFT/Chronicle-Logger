@@ -16,8 +16,11 @@ final class BinaryChronologyLogEvent extends ChronologyLogEvent {
             String message    = in.readUTF();
 
             // Args
+            long argsLen = in.readStopBit();
+            if (argsLen < 0 || argsLen > Integer.MAX_VALUE)
+                throw new IllegalStateException();
             // TODO: should args be null ?
-            Object[] args = new Object[in.readInt()];
+            Object[] args = new Object[argsLen];
             for(int i=0;i<args.length;i++) {
                 args[i] = in.readObject();
             }

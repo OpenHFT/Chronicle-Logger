@@ -69,13 +69,13 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
                 Object[] args = event.getArgumentArray();
                 int argsLen = null != args ? args.length : 0;
 
-                appender.writeInt(argsLen);
+                appender.writeStopBit(argsLen);
                 for (int i = 0; i < argsLen; i++) {
                     appender.writeObject(args[i]);
                 }
             } else {
                 appender.writeUTF(event.getFormattedMessage());
-                appender.writeInt(0);
+                appender.writeStopBit(0);
             }
 
             ThrowableProxy tp = (ThrowableProxy)event.getThrowableProxy();

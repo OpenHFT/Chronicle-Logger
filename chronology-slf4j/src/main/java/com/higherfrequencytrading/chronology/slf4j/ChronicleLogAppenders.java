@@ -71,7 +71,7 @@ public class ChronicleLogAppenders {
             this.appender.writeUTF(message);
 
             if(args.length > 0 && args[args.length - 1] instanceof Throwable) {
-                this.appender.writeInt(args.length - 1);
+                this.appender.writeStopBit(args.length - 1);
                 for (int i=0;i<args.length - 1; i++) {
                     this.appender.writeObject(args[i]);
                 }
@@ -79,7 +79,7 @@ public class ChronicleLogAppenders {
                 this.appender.writeBoolean(true);
                 this.appender.writeObject(args[args.length - 1]);
             } else {
-                this.appender.writeInt(args.length);
+                this.appender.writeStopBit(args.length);
                 for (int i=0;i<args.length; i++) {
                     this.appender.writeObject(args[i]);
                 }
@@ -120,7 +120,7 @@ public class ChronicleLogAppenders {
             this.appender.writeUTF(Thread.currentThread().getName());
             this.appender.writeUTF(name);
             this.appender.writeUTF(tp.getMessage());
-            this.appender.writeInt(0);
+            this.appender.writeStopBit(0);
 
             if(tp.getThrowable() != null) {
                 this.appender.writeBoolean(true);
