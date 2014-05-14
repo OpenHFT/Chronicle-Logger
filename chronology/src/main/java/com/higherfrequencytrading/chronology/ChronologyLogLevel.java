@@ -8,6 +8,11 @@ public enum ChronologyLogLevel {
     DEBUG(20,"DEBUG"),
     TRACE(10,"TRACE");
 
+    /**
+     * Array is not cached in Java enum internals, make the single copy to prevent garbage creation
+     */
+    private static final ChronologyLogLevel[] VALUES = values();
+
     public final int levelInt;
     public final String levelStr;
 
@@ -26,7 +31,7 @@ public enum ChronologyLogLevel {
     // *************************************************************************
 
     public static ChronologyLogLevel fromIntLevel(int levelInt) {
-        for(ChronologyLogLevel cll : ChronologyLogLevel.values()) {
+        for(ChronologyLogLevel cll : VALUES) {
             if(cll.levelInt == levelInt) {
                 return cll;
             }
@@ -36,7 +41,7 @@ public enum ChronologyLogLevel {
     }
 
     public static ChronologyLogLevel fromStringLevel(String levelStr) {
-        for(ChronologyLogLevel cll : ChronologyLogLevel.values()) {
+        for (ChronologyLogLevel cll : VALUES) {
             if(cll.levelStr.equalsIgnoreCase(levelStr)) {
                 return cll;
             }
@@ -46,7 +51,7 @@ public enum ChronologyLogLevel {
     }
 
     public static int intLevelfromStringLevel(String levelStr) {
-        for(ChronologyLogLevel cll : ChronologyLogLevel.values()) {
+        for (ChronologyLogLevel cll : VALUES) {
             if(cll.levelStr.equalsIgnoreCase(levelStr)) {
                 return cll.levelInt;
             }
@@ -56,7 +61,7 @@ public enum ChronologyLogLevel {
     }
 
     public static int stringLevelfromintLevel(int levelInt) {
-        for(ChronologyLogLevel cll : ChronologyLogLevel.values()) {
+        for(ChronologyLogLevel cll : VALUES) {
             if(cll.levelInt == levelInt) {
                 return cll.levelInt;
             }
