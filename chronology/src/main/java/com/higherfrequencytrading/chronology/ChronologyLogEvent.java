@@ -4,6 +4,8 @@ import net.openhft.lang.io.Bytes;
 
 public abstract class ChronologyLogEvent {
 
+    static final Object[] EMPTY_ARGS = new Object[] {};
+
     /**
      * Decode a binary stream, i. e. Excerpt
      *

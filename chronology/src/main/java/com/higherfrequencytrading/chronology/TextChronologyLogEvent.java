@@ -11,7 +11,7 @@ final class TextChronologyLogEvent extends ChronologyLogEvent {
 
     //TODO: check
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat(Chronology.DEFAULT_DATE_FORMAT);
-    private static final Object[] EMPTY_ARGS = new Object[] {};
+
     private static final StopCharTester PIPE_TESTER = new StopCharTester() {
         @Override
         public boolean isStopChar(int ch) throws IllegalStateException {

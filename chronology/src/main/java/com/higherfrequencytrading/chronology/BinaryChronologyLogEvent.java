@@ -19,10 +19,12 @@ final class BinaryChronologyLogEvent extends ChronologyLogEvent {
             long argsLen = in.readStopBit();
             if (argsLen < 0 || argsLen > Integer.MAX_VALUE)
                 throw new IllegalStateException();
-            // TODO: should args be null ?
-            Object[] args = new Object[argsLen];
-            for(int i=0;i<args.length;i++) {
-                args[i] = in.readObject();
+            Object[] args = null;
+            if (argsLen != 0) {
+                args = new Object[(int) argsLen];
+                for (int i = 0; i < argsLen; i++) {
+                    args[i] = in.readObject();
+                }
             }
 
             Throwable throwable = in.readBoolean() ? in.readObject(Throwable.class) : null;
@@ -96,12 +98,12 @@ final class BinaryChronologyLogEvent extends ChronologyLogEvent {
 
     @Override
     public Object[] getArgumentArray() {
-        return this.args;
+        return this.args != null ? args : EMPTY_ARGS;
     }
 
     @Override
     public boolean hasArguments() {
-        return this.args != null && this.args.length > 0;
+        return this.args != null;
     }
 
     @Override
