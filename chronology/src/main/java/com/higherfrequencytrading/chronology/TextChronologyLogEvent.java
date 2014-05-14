@@ -19,8 +19,15 @@ final class TextChronologyLogEvent extends ChronologyLogEvent {
         }
     };
 
+    private static final ThreadLocal<StringBuilder> sbCache = new ThreadLocal<StringBuilder>() {
+        @Override
+        protected StringBuilder initialValue() {
+            return new StringBuilder();
+        }
+    };
+
     static TextChronologyLogEvent read(@NotNull Bytes in) throws IllegalStateException {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = sbCache.get();
         sb.setLength(0);
 
         // timestamp
@@ -28,6 +35,7 @@ final class TextChronologyLogEvent extends ChronologyLogEvent {
         long timestamp = 0;
         try {
             //TODO: store date as long even in text?
+            // haven't found a simple way to get rid of this intermediate conversion to String
             timestamp = DATE_FORMAT.parse(sb.toString()).getTime();
         } catch(Exception e) {
             // Ignore
