@@ -1,6 +1,9 @@
 package com.higherfrequencytrading.chronology;
 
 
+import net.openhft.lang.io.ByteStringAppender;
+import net.openhft.lang.io.RandomDataInput;
+import net.openhft.lang.io.RandomDataOutput;
 import net.openhft.lang.model.constraints.NotNull;
 
 
@@ -46,6 +49,14 @@ public enum ChronologyLogLevel {
         this.levelStr = levelStr;
     }
 
+    public void printTo(ByteStringAppender appender) {
+        appender.append(levelStr);
+    }
+
+    public void writeTo(RandomDataOutput out) {
+        out.writeByte(ordinal());
+    }
+
     @Override
     public String toString() {
         return levelStr;
@@ -55,14 +66,8 @@ public enum ChronologyLogLevel {
     //
     // *************************************************************************
 
-    public static ChronologyLogLevel fromIntLevel(int levelInt) {
-        for(ChronologyLogLevel cll : VALUES) {
-            if(cll.levelInt == levelInt) {
-                return cll;
-            }
-        }
-
-        throw new IllegalArgumentException(levelInt + " not a valid level value");
+    public static ChronologyLogLevel readBinary(RandomDataInput in) {
+        return VALUES[in.readByte()];
     }
 
     public static ChronologyLogLevel fromStringLevel(CharSequence levelStr) {
@@ -85,15 +90,5 @@ public enum ChronologyLogLevel {
             }
         }
         throw new IllegalArgumentException(levelStr + " not a valid level value");
-    }
-
-    public static int stringLevelFromIntLevel(int levelInt) {
-        for(ChronologyLogLevel cll : VALUES) {
-            if(cll.levelInt == levelInt) {
-                return cll.levelInt;
-            }
-        }
-
-        throw new IllegalArgumentException(levelInt + " not a valid level value");
     }
 }

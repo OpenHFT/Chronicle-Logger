@@ -58,7 +58,7 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
             appender.writeByte(Chronology.VERSION);
             Chronology.Type.LOGBACK.writeTo(appender);
             appender.writeLong(event.getTimeStamp());
-            appender.writeByte(toIntChronologyLogLevel(event.getLevel()));
+            toChronologyLogLevel(event.getLevel()).writeTo(appender);
             appender.writeUTF(event.getThreadName());
             appender.writeUTF(event.getLoggerName());
 

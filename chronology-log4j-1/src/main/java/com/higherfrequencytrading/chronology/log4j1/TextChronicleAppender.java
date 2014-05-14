@@ -51,7 +51,7 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
             appender.startExcerpt();
             timeStampFormatter.format(event.getTimeStamp(), appender);
             appender.append('|');
-            appender.append(toStrChronologyLogLevel(event.getLevel()));
+            toChronologyLogLevel(event.getLevel()).printTo(appender);
             appender.append('|');
             appender.append(event.getThreadName());
             appender.append('|');
