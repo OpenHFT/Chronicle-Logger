@@ -57,7 +57,7 @@ public class ChronicleLogAppenders {
          * @param level   One of the LOG_LEVEL_XXX constants defining the slf4j level
          * @param name    The logger name
          * @param message The message
-         * @param message The message arguments
+         * @param args    The arguments
          */
         @Override
         public void log(ChronologyLogLevel level, String name, String message, Object... args) {
@@ -106,7 +106,7 @@ public class ChronicleLogAppenders {
          * @param level   One of the LOG_LEVEL_XXX constants defining the slf4j level
          * @param name    The logger name
          * @param message The message
-         * @param message The message arguments
+         * @param args    The arguments
          */
         @Override
         public void log(ChronologyLogLevel level, String name, String message, Object... args) {
@@ -169,7 +169,7 @@ public class ChronicleLogAppenders {
          * @param level   One of the LOG_LEVEL_XXX constants defining the slf4j level
          * @param name    The logger name
          * @param message The message
-         * @param message The message arguments
+         * @param args    The arguments
          */
         @Override
         public void log(ChronologyLogLevel level, String name, String message, Object... args) {
