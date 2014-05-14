@@ -23,13 +23,7 @@ public class Slf4jTestBase {
     //
     // *************************************************************************
 
-    protected static ChronologyLogLevel[] LOG_LEVELS = new ChronologyLogLevel[] {
-        ChronologyLogLevel.TRACE,
-        ChronologyLogLevel.DEBUG,
-        ChronologyLogLevel.INFO,
-        ChronologyLogLevel.WARN,
-        ChronologyLogLevel.ERROR
-    };
+    protected static ChronologyLogLevel[] LOG_LEVELS = ChronologyLogLevel.values();
 
     protected static String basePath(String type) {
         return System.getProperty("java.io.tmpdir")
