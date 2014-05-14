@@ -10,7 +10,7 @@ final class BinaryChronologyLogEvent extends ChronologyLogEvent {
         if(version == Chronology.VERSION) {
             byte type       = in.readByte();
             long timestamp  = in.readLong();
-            int level      = in.readInt();
+            byte level      = in.readByte();
             String threadName = in.readUTF();
             String loggerName = in.readUTF();
             String message    = in.readUTF();
@@ -37,14 +37,14 @@ final class BinaryChronologyLogEvent extends ChronologyLogEvent {
     private final byte version;
     private final byte type;
     private final long timestamp;
-    private final int level;
+    private final byte level;
     private final String threadName;
     private final String loggerName;
     private final String message;
     private final Object[] args;
     private final Throwable throwable;
 
-    BinaryChronologyLogEvent(byte version, byte type, long timestamp, int level, String threadName,
+    BinaryChronologyLogEvent(byte version, byte type, long timestamp, byte level, String threadName,
                              String loggerName, String message, Object[] args, Throwable throwable) {
         this.version = version;
         this.type = type;

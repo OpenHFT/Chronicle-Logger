@@ -35,7 +35,7 @@ final class TextChronologyLogEvent extends ChronologyLogEvent {
 
         // level
         in.parseUTF(sb, PIPE_TESTER);
-        int level = ChronologyLogLevel.intLevelFromStringLevel(sb.toString());
+        byte level = (byte) ChronologyLogLevel.intLevelFromStringLevel(sb.toString());
 
         // thread name
         in.parseUTF(sb, PIPE_TESTER);
@@ -56,12 +56,12 @@ final class TextChronologyLogEvent extends ChronologyLogEvent {
     // *********************************************************************
 
     private final long timestamp;
-    private final int level;
+    private final byte level;
     private final String threadName;
     private final String loggerName;
     private final String message;
 
-    TextChronologyLogEvent(long timestamp, int level, String threadName, String loggerName,
+    TextChronologyLogEvent(long timestamp, byte level, String threadName, String loggerName,
                            String message) {
         this.timestamp = timestamp;
         this.level = level;
