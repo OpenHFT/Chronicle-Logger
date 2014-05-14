@@ -123,7 +123,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level.levelStr);
+            log(logger,level,"level is {}",level);
         }
 
         Chronicle          chronicle = getIndexedChronicle(ChronicleLoggingConfig.TYPE_INDEXED,testId);
@@ -142,7 +142,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
                 assertEquals(level, evt.getLevel());
                 assertEquals(threadId, evt.getThreadName());
                 assertEquals(testId, evt.getLoggerName());
-                assertEquals("level is " + level.levelStr, evt.getMessage());
+                assertEquals("level is " + level, evt.getMessage());
                 assertNotNull(evt.getArgumentArray());
                 assertEquals(0, evt.getArgumentArray().length);
 
@@ -184,7 +184,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level.levelStr);
+            log(logger,level,"level is {}",level);
         }
 
         Chronicle          chronicle = getIndexedChronicle(ChronicleLoggingConfig.TYPE_INDEXED,testId);
@@ -199,7 +199,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
             assertEquals(level, evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
             assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is " + level.levelStr, evt.getMessage());
+            assertEquals("level is " + level, evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(0, evt.getArgumentArray().length);
             assertNull(evt.getThrowable());

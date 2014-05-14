@@ -42,7 +42,7 @@ public enum ChronologyLogLevel {
     private static final ChronologyLogLevel[] VALUES = values();
 
     private final int levelInt;
-    public final String levelStr;
+    private final String levelStr;
 
     ChronologyLogLevel(int levelInt, String levelStr) {
         this.levelInt = levelInt;

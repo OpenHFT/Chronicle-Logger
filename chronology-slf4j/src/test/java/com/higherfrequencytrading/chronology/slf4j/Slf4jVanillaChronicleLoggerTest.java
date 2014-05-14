@@ -117,7 +117,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level.levelStr);
+            log(logger,level,"level is {}",level);
         }
 
         Chronicle          chronicle = getVanillaChronicle(ChronicleLoggingConfig.TYPE_VANILLA,testId);
@@ -136,7 +136,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
                 assertEquals(level, evt.getLevel());
                 assertEquals(threadId, evt.getThreadName());
                 assertEquals(testId, evt.getLoggerName());
-                assertEquals("level is " + level.levelStr, evt.getMessage());
+                assertEquals("level is " + level, evt.getMessage());
                 assertNotNull(evt.getArgumentArray());
                 assertEquals(0, evt.getArgumentArray().length);
 
@@ -178,7 +178,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level.levelStr);
+            log(logger,level,"level is {}",level);
         }
 
         Chronicle          chronicle = getVanillaChronicle(ChronicleLoggingConfig.TYPE_VANILLA,testId);
@@ -193,7 +193,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
             assertEquals(level, evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
             assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is " + level.levelStr, evt.getMessage());
+            assertEquals("level is " + level, evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(0, evt.getArgumentArray().length);
             assertNull(evt.getThrowable());

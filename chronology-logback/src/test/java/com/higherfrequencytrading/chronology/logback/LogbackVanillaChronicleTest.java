@@ -44,7 +44,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level.levelStr);
+            log(logger,level,"level is {}",level);
         }
 
         Chronicle          chronicle = getVanillaChronicle(testId);
@@ -65,7 +65,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
             assertEquals("level is {}", evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(1, evt.getArgumentArray().length);
-            assertEquals(level.levelStr , evt.getArgumentArray()[0]);
+            assertEquals(level , evt.getArgumentArray()[0]);
             assertNull(evt.getThrowable());
 
             tailer.finish();
@@ -104,7 +104,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level.levelStr);
+            log(logger,level,"level is {}",level);
         }
 
         Chronicle          chronicle = getVanillaChronicle(testId);
@@ -122,7 +122,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
             assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is " + level.levelStr, evt.getMessage());
+            assertEquals("level is " + level, evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(0, evt.getArgumentArray().length);
             assertNull(evt.getThrowable());
@@ -162,7 +162,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level.levelStr);
+            log(logger,level,"level is {}",level);
         }
 
         Chronicle          chronicle = getVanillaChronicle(testId);
@@ -177,7 +177,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
             assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is " + level.levelStr, evt.getMessage());
+            assertEquals("level is " + level, evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(0, evt.getArgumentArray().length);
             assertNull(evt.getThrowable());

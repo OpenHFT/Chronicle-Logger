@@ -68,7 +68,7 @@ public final class ChroniTool {
         if(!event.hasArguments()) {
             return String.format("%s|%s|%s|%s|%s\n",
                 DF.format(event.getTimeStamp()),
-                event.getLevel().levelStr,
+                event.getLevel().toString(),
                 event.getThreadName(),
                 event.getLoggerName(),
                 event.getMessage());

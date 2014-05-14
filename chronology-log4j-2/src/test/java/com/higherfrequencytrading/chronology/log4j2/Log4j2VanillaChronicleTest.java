@@ -44,7 +44,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level.levelStr);
+            log(logger,level,"level is {}",level);
         }
 
         Chronicle          chronicle = getVanillaChronicle(testId);
@@ -65,7 +65,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
             assertEquals("level is {}", evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(1, evt.getArgumentArray().length);
-            assertEquals(level.levelStr , evt.getArgumentArray()[0]);
+            assertEquals(level.toString() , evt.getArgumentArray()[0]);
 
             tailer.finish();
         }
@@ -104,7 +104,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level.levelStr);
+            log(logger,level,"level is {}",level);
         }
 
         Chronicle          chronicle = getVanillaChronicle(testId);
@@ -122,7 +122,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
             assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is " + level.levelStr, evt.getMessage());
+            assertEquals("level is " + level, evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(0, evt.getArgumentArray().length);
 
@@ -161,7 +161,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronologyLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level.levelStr);
+            log(logger,level,"level is {}",level);
         }
 
         Chronicle          chronicle = getVanillaChronicle(testId);
@@ -176,7 +176,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
             assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is " + level.levelStr, evt.getMessage());
+            assertEquals("level is " + level, evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(0, evt.getArgumentArray().length);
 
