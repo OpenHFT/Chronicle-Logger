@@ -80,8 +80,8 @@ public class ChronicleLogAppenders {
                 this.appender.writeObject(args[args.length - 1]);
             } else {
                 this.appender.writeStopBit(args.length);
-                for (int i=0;i<args.length; i++) {
-                    this.appender.writeObject(args[i]);
+                for (Object arg : args) {
+                    this.appender.writeObject(arg);
                 }
 
                 this.appender.writeBoolean(false);
