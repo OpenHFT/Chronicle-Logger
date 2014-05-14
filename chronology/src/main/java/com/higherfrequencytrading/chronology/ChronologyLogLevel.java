@@ -50,7 +50,7 @@ public enum ChronologyLogLevel {
         throw new IllegalArgumentException(levelStr + " not a valid level value");
     }
 
-    public static int intLevelfromStringLevel(String levelStr) {
+    public static int intLevelFromStringLevel(CharSequence levelStr) {
         for (ChronologyLogLevel cll : VALUES) {
             if(cll.levelStr.equalsIgnoreCase(levelStr)) {
                 return cll.levelInt;
@@ -60,7 +60,7 @@ public enum ChronologyLogLevel {
         throw new IllegalArgumentException(levelStr + " not a valid level value");
     }
 
-    public static int stringLevelfromintLevel(int levelInt) {
+    public static int stringLevelFromIntLevel(int levelInt) {
         for(ChronologyLogLevel cll : VALUES) {
             if(cll.levelInt == levelInt) {
                 return cll.levelInt;

@@ -110,7 +110,7 @@ public class TextChronologyLogEvent implements ChronologyLogEvent {
 
         // level
         in.parseUTF(sb, PIPE_TESTER);
-        this.level = ChronologyLogLevel.intLevelfromStringLevel(sb.toString());
+        this.level = ChronologyLogLevel.intLevelFromStringLevel(sb.toString());
 
         // thread name
         in.parseUTF(sb, PIPE_TESTER);
