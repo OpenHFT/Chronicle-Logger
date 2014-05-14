@@ -7,7 +7,7 @@ import net.openhft.lang.model.constraints.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-public class TextChronologyLogEvent implements ChronologyLogEvent {
+final class TextChronologyLogEvent extends ChronologyLogEvent {
 
     //TODO: check
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat(Chronology.DEFAULT_DATE_FORMAT);
@@ -19,22 +19,55 @@ public class TextChronologyLogEvent implements ChronologyLogEvent {
         }
     };
 
-    private byte version;
-    private byte type;
-    private long timestamp;
-    private int level;
-    private String threadName;
-    private String loggerName;
-    private String message;
+    static TextChronologyLogEvent read(@NotNull Bytes in) throws IllegalStateException {
+        StringBuilder sb = new StringBuilder();
+        sb.setLength(0);
 
-    public TextChronologyLogEvent() {
-        this.version        = 0;
-        this.type           = 0;
-        this.timestamp      = -1;
-        this.level          = -1;
-        this.threadName     = null;
-        this.loggerName     = null;
-        this.message        = null;
+        // timestamp
+        in.parseUTF(sb, PIPE_TESTER);
+        long timestamp = 0;
+        try {
+            //TODO: store date as long even in text?
+            timestamp = DATE_FORMAT.parse(sb.toString()).getTime();
+        } catch(Exception e) {
+            // Ignore
+        }
+
+        // level
+        in.parseUTF(sb, PIPE_TESTER);
+        int level = ChronologyLogLevel.intLevelFromStringLevel(sb.toString());
+
+        // thread name
+        in.parseUTF(sb, PIPE_TESTER);
+        String threadName = sb.toString();
+
+        // logger name
+        in.parseUTF(sb, PIPE_TESTER);
+        String loggerName = sb.toString();
+
+        // message
+        String message = in.readLine();
+
+        return new TextChronologyLogEvent(timestamp, level, threadName, loggerName, message);
+    }
+
+    // *********************************************************************
+    //
+    // *********************************************************************
+
+    private final long timestamp;
+    private final int level;
+    private final String threadName;
+    private final String loggerName;
+    private final String message;
+
+    TextChronologyLogEvent(long timestamp, int level, String threadName, String loggerName,
+                           String message) {
+        this.timestamp = timestamp;
+        this.level = level;
+        this.threadName = threadName;
+        this.loggerName = loggerName;
+        this.message = message;
     }
 
     // *********************************************************************
@@ -43,12 +76,12 @@ public class TextChronologyLogEvent implements ChronologyLogEvent {
 
     @Override
     public byte getVersion() {
-        return this.version;
+        return 0;
     }
 
     @Override
     public byte getType() {
-        return this.type;
+        return 0;
     }
 
     @Override
@@ -89,43 +122,5 @@ public class TextChronologyLogEvent implements ChronologyLogEvent {
     @Override
     public Throwable getThrowable() {
         return null;
-    }
-
-    // *********************************************************************
-    //
-    // *********************************************************************
-
-    @Override
-    public void readMarshallable(@NotNull Bytes in) throws IllegalStateException {
-        StringBuilder sb = new StringBuilder();
-
-        // timestamp
-        in.parseUTF(sb,PIPE_TESTER);
-        try {
-            //TODO: store date as long even in text?
-            this.timestamp = DATE_FORMAT.parse(sb.toString()).getTime();
-        } catch(Exception e) {
-            this.timestamp = 0;
-        }
-
-        // level
-        in.parseUTF(sb, PIPE_TESTER);
-        this.level = ChronologyLogLevel.intLevelFromStringLevel(sb.toString());
-
-        // thread name
-        in.parseUTF(sb, PIPE_TESTER);
-        this.threadName = sb.toString();
-
-        // logger name
-        in.parseUTF(sb, PIPE_TESTER);
-        this.loggerName = sb.toString();
-
-        // message
-        this.message = in.readLine();
-    }
-
-    @Override
-    public void writeMarshallable(@NotNull Bytes out) {
-        throw new UnsupportedOperationException();
     }
 }

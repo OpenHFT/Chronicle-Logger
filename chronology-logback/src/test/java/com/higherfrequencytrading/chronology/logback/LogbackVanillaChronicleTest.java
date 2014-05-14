@@ -2,7 +2,6 @@ package com.higherfrequencytrading.chronology.logback;
 
 import com.higherfrequencytrading.chronology.Chronology;
 import com.higherfrequencytrading.chronology.ChronologyLogEvent;
-import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
@@ -55,7 +54,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         for(ChronologyLogLevel level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronologyLogHelper.decodeBinary(tailer);
+            evt = ChronologyLogEvent.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), Chronology.VERSION);
             assertEquals(evt.getType(), Chronology.TYPE_LOGBACK);
@@ -76,14 +75,14 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogHelper.decodeBinary(tailer);
+        evt = ChronologyLogEvent.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogHelper.decodeBinary(tailer);
+        evt = ChronologyLogEvent.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
@@ -115,7 +114,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         for(ChronologyLogLevel level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronologyLogHelper.decodeBinary(tailer);
+            evt = ChronologyLogEvent.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), Chronology.VERSION);
             assertEquals(evt.getType(), Chronology.TYPE_LOGBACK);
@@ -135,14 +134,14 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogHelper.decodeBinary(tailer);
+        evt = ChronologyLogEvent.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogHelper.decodeBinary(tailer);
+        evt = ChronologyLogEvent.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
@@ -173,7 +172,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         for(ChronologyLogLevel level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronologyLogHelper.decodeText(tailer);
+            evt = ChronologyLogEvent.decodeText(tailer);
             assertNotNull(evt);
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
@@ -190,7 +189,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogHelper.decodeText(tailer);
+        evt = ChronologyLogEvent.decodeText(tailer);
         assertNotNull(evt);
         assertEquals(threadId, evt.getThreadName());
         assertEquals(testId, evt.getLoggerName());
@@ -202,7 +201,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         assertNull(evt.getThrowable());
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogHelper.decodeText(tailer);assertNotNull(evt);
+        evt = ChronologyLogEvent.decodeText(tailer);assertNotNull(evt);
         assertEquals(threadId, evt.getThreadName());
         assertEquals(testId, evt.getLoggerName());
         assertTrue(evt.getMessage().contains("Throwable test"));

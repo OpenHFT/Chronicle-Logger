@@ -1,26 +1,46 @@
 package com.higherfrequencytrading.chronology;
 
-import net.openhft.lang.io.serialization.BytesMarshallable;
+import net.openhft.lang.io.Bytes;
 
-public interface ChronologyLogEvent extends BytesMarshallable {
+public abstract class ChronologyLogEvent {
 
-    public byte getVersion();
+    /**
+     * Decode a binary stream, i. e. Excerpt
+     *
+     * @param in        the source of event in binary form (i. e. Excerpt)
+     * @return          the ChronologyLogEvent
+     */
+    public static ChronologyLogEvent decodeBinary(final Bytes in) {
+        return BinaryChronologyLogEvent.read(in);
+    }
 
-    public byte getType();
+    /**
+     * Decode a text stream, i. e. Excerpt
+     *
+     * @param in        the source of event in text form (i. e. Excerpt)
+     * @return          the ChronologyLogEvent
+     */
+    public static ChronologyLogEvent decodeText(final Bytes in) {
+        return TextChronologyLogEvent.read(in);
+    }
 
-    public long getTimeStamp();
+    public abstract byte getVersion();
 
-    public String getThreadName();
+    public abstract byte getType();
 
-    public ChronologyLogLevel getLevel();
+    public abstract long getTimeStamp();
 
-    public String getMessage();
+    public abstract String getThreadName();
 
-    public Object[] getArgumentArray();
+    public abstract ChronologyLogLevel getLevel();
 
-    public boolean hasArguments();
+    public abstract String getMessage();
 
-    public String getLoggerName();
+    public abstract Object[] getArgumentArray();
 
-    public Throwable getThrowable();
+    public abstract boolean hasArguments();
+
+    public abstract String getLoggerName();
+
+    public abstract Throwable getThrowable();
 }

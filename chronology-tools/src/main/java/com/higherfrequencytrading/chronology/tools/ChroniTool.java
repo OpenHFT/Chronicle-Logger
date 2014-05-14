@@ -1,10 +1,6 @@
 package com.higherfrequencytrading.chronology.tools;
 
-import com.higherfrequencytrading.chronology.BinaryChronologyLogEvent;
-import com.higherfrequencytrading.chronology.ChronologyLogEvent;
-import com.higherfrequencytrading.chronology.ChronologyLogProcessor;
-import com.higherfrequencytrading.chronology.ChronologyLogReader;
-import com.higherfrequencytrading.chronology.TextChronologyLogEvent;
+import com.higherfrequencytrading.chronology.*;
 import com.higherfrequencytrading.chronology.slf4j.ChronicleLoggingConfig;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
@@ -26,20 +22,14 @@ public final class ChroniTool {
     public static abstract class BinaryProcessor implements ChronologyLogReader, ChronologyLogProcessor {
         @Override
         public void read(final Bytes bytes) {
-            ChronologyLogEvent evt = new BinaryChronologyLogEvent();
-            evt.readMarshallable(bytes);
-
-            process(evt);
+            process(ChronologyLogEvent.decodeBinary(bytes));
         }
     }
 
     public static abstract class TextProcessor implements ChronologyLogReader, ChronologyLogProcessor {
         @Override
         public void read(final Bytes bytes) {
-            ChronologyLogEvent evt = new TextChronologyLogEvent();
-            evt.readMarshallable(bytes);
-
-            process(evt);
+            process(ChronologyLogEvent.decodeText(bytes));
         }
     }
 
