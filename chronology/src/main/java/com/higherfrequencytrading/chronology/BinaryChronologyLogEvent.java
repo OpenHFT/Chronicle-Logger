@@ -28,8 +28,9 @@ final class BinaryChronologyLogEvent extends ChronologyLogEvent {
             }
 
             Throwable throwable = in.readBoolean() ? in.readObject(Throwable.class) : null;
-            return new BinaryChronologyLogEvent(version, type, timestamp, level, threadName,
-                    loggerName, message, args, throwable);
+            return new BinaryChronologyLogEvent(version, type, timestamp,
+                    ChronologyLogLevel.fromIntLevel(level), threadName, loggerName, message, args,
+                    throwable);
         } else {
             throw new UnsupportedClassVersionError();
         }
@@ -42,15 +43,16 @@ final class BinaryChronologyLogEvent extends ChronologyLogEvent {
     private final byte version;
     private final byte type;
     private final long timestamp;
-    private final byte level;
+    private final ChronologyLogLevel level;
     private final String threadName;
     private final String loggerName;
     private final String message;
     private final Object[] args;
     private final Throwable throwable;
 
-    BinaryChronologyLogEvent(byte version, byte type, long timestamp, byte level, String threadName,
-                             String loggerName, String message, Object[] args, Throwable throwable) {
+    BinaryChronologyLogEvent(byte version, byte type, long timestamp, ChronologyLogLevel level,
+                             String threadName, String loggerName, String message, Object[] args,
+                             Throwable throwable) {
         this.version = version;
         this.type = type;
         this.timestamp = timestamp;
@@ -88,7 +90,7 @@ final class BinaryChronologyLogEvent extends ChronologyLogEvent {
 
     @Override
     public ChronologyLogLevel getLevel() {
-        return ChronologyLogLevel.fromIntLevel(this.level);
+        return this.level;
     }
 
     @Override
