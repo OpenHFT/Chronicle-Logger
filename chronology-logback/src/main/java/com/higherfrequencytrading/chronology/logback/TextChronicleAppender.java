@@ -25,7 +25,7 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
-        this.timeStampFormatter = TimeStampFormatter.fromDateFormat(dateFormat)
+        this.timeStampFormatter = TimeStampFormatter.fromDateFormat(dateFormat);
     }
 
     public String getDateFormat() {
