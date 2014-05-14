@@ -65,7 +65,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
             assertEquals("level is {}", evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(1, evt.getArgumentArray().length);
-            assertEquals(level.toString() , evt.getArgumentArray()[0]);
+            assertEquals(level , evt.getArgumentArray()[0]);
 
             tailer.finish();
         }
