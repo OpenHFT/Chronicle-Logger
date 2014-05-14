@@ -28,7 +28,7 @@ public abstract class ChronologyLogEvent {
 
     public abstract byte getVersion();
 
-    public abstract byte getType();
+    public abstract Chronology.Type getType();
 
     public abstract long getTimeStamp();
 

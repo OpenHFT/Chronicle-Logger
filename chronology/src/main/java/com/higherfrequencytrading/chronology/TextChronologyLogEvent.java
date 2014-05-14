@@ -88,8 +88,8 @@ final class TextChronologyLogEvent extends ChronologyLogEvent {
     }
 
     @Override
-    public byte getType() {
-        return 0;
+    public Chronology.Type getType() {
+        return Chronology.Type.UNKNOWN;
     }
 
     @Override

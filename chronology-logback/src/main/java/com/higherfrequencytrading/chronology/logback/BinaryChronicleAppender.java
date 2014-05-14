@@ -56,7 +56,7 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
         if(getFilterChainDecision(event) != FilterReply.DENY) {
             appender.startExcerpt();
             appender.writeByte(Chronology.VERSION);
-            appender.writeByte(Chronology.TYPE_LOGBACK);
+            Chronology.Type.LOGBACK.writeTo(appender);
             appender.writeLong(event.getTimeStamp());
             appender.writeByte(toIntChronologyLogLevel(event.getLevel()));
             appender.writeUTF(event.getThreadName());

@@ -57,7 +57,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
             evt = ChronologyLogEvent.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), Chronology.VERSION);
-            assertEquals(evt.getType(), Chronology.TYPE_LOGBACK);
+            assertEquals(evt.getType(), Chronology.Type.LOGBACK);
             assertTrue(evt.getTimeStamp() >= timestamp);
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
@@ -116,7 +116,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
             evt = ChronologyLogEvent.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), Chronology.VERSION);
-            assertEquals(evt.getType(), Chronology.TYPE_LOGBACK);
+            assertEquals(evt.getType(), Chronology.Type.LOGBACK);
             assertTrue(evt.getTimeStamp() >= timestamp);
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());

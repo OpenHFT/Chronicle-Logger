@@ -137,7 +137,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
                 evt = ChronologyLogEvent.decodeBinary(tailer);
                 assertNotNull(evt);
                 assertEquals(evt.getVersion(), Chronology.VERSION);
-                assertEquals(evt.getType(), Chronology.TYPE_SLF4J);
+                assertEquals(evt.getType(), Chronology.Type.SLF4J);
                 assertTrue(evt.getTimeStamp() >= timestamp);
                 assertEquals(level, evt.getLevel());
                 assertEquals(threadId, evt.getThreadName());

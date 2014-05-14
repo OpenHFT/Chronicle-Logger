@@ -57,7 +57,7 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
             evt = ChronologyLogEvent.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), Chronology.VERSION);
-            assertEquals(evt.getType(), Chronology.TYPE_LOG4J_1);
+            assertEquals(evt.getType(), Chronology.Type.LOG4J_1);
             assertTrue(evt.getTimeStamp() >= timestamp);
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());

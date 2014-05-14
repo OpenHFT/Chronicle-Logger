@@ -63,7 +63,7 @@ public class ChronicleLogAppenders {
         public void log(ChronologyLogLevel level, String name, String message, Object... args) {
             this.appender.startExcerpt();
             this.appender.writeByte(Chronology.VERSION);
-            this.appender.writeByte(Chronology.TYPE_SLF4J);
+            Chronology.Type.SLF4J.writeTo(appender);
             this.appender.writeLong(System.currentTimeMillis());
             this.appender.writeByte(level.levelInt);
             this.appender.writeUTF(Thread.currentThread().getName());
@@ -114,7 +114,7 @@ public class ChronicleLogAppenders {
 
             this.appender.startExcerpt();
             this.appender.writeByte(Chronology.VERSION);
-            this.appender.writeByte(Chronology.TYPE_SLF4J);
+            Chronology.Type.SLF4J.writeTo(appender);
             this.appender.writeLong(System.currentTimeMillis());
             this.appender.writeByte(level.levelInt);
             this.appender.writeUTF(Thread.currentThread().getName());
