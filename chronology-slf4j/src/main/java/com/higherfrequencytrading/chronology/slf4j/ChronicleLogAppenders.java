@@ -1,8 +1,6 @@
 package com.higherfrequencytrading.chronology.slf4j;
 
-import com.higherfrequencytrading.chronology.Chronology;
-import com.higherfrequencytrading.chronology.ChronologyLogHelper;
-import com.higherfrequencytrading.chronology.ChronologyLogLevel;
+import com.higherfrequencytrading.chronology.*;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import org.slf4j.helpers.FormattingTuple;
@@ -10,7 +8,6 @@ import org.slf4j.helpers.MessageFormatter;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Date;
 
 public class ChronicleLogAppenders {
 
@@ -145,7 +142,7 @@ public class ChronicleLogAppenders {
      */
     public static final class TextWriter extends AbstractChronicleLogWriter {
 
-        private final Chronology.DateFormatCache dateFormatCache;
+        private final TimeStampFormatter timeStampFormatter;
         private final int stackTraceDepth;
 
         /**
@@ -159,7 +156,7 @@ public class ChronicleLogAppenders {
             super(chronicle);
 
             this.stackTraceDepth = stackTraceDepth != null ? stackTraceDepth : -1;
-            this.dateFormatCache = new Chronology.DateFormatCache(
+            this.timeStampFormatter = TimeStampFormatter.fromDateFormat(
                 dateFormat != null
                     ? dateFormat
                     : ChronicleLoggingConfig.DEFAULT_DATE_FORMAT
@@ -179,7 +176,7 @@ public class ChronicleLogAppenders {
             final FormattingTuple tp = MessageFormatter.arrayFormat(message, args);
 
             appender.startExcerpt();
-            appender.append(this.dateFormatCache.get().format(new Date()));
+            timeStampFormatter.format(System.currentTimeMillis(), appender);
             appender.append('|');
             appender.append(level.levelStr);
             appender.append('|');

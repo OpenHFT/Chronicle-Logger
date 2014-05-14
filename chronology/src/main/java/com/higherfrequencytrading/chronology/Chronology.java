@@ -1,8 +1,5 @@
 package com.higherfrequencytrading.chronology;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 public class Chronology {
     public static final String NEWLINE   = System.getProperty("line.separator");
     public static final String COMMA     = ", ";
@@ -17,26 +14,5 @@ public class Chronology {
     public static final byte TYPE_LOG4J_2 = 4;
 
     public static final String          DEFAULT_DATE_FORMAT       = "yyyy.MM.dd-HH:mm:ss.SSS";
-    public static final DateFormatCache DEFAULT_DATE_FORMAT_CACHE = new DateFormatCache();
 
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    public static final class DateFormatCache extends ThreadLocal<DateFormat> {
-        private final String format;
-
-        public DateFormatCache() {
-            this(DEFAULT_DATE_FORMAT);
-        }
-
-        public DateFormatCache(String format) {
-            this.format = format;
-        }
-
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat(this.format);
-        }
-    }
 }
