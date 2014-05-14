@@ -56,9 +56,9 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
     public void append(final LogEvent event) {
         appender.startExcerpt();
         appender.writeByte(Chronology.VERSION);
-        appender.writeByte(Chronology.TYPE_LOG4J_2);
+        Chronology.Type.LOG4J_2.writeTo(appender);
         appender.writeLong(event.getMillis());
-        appender.writeInt(toIntChronologyLogLevel(event.getLevel()));
+        toChronologyLogLevel(event.getLevel()).writeTo(appender);
         appender.writeUTF(event.getThreadName());
         appender.writeUTF(event.getLoggerName());
 
@@ -74,13 +74,13 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
             //    argsLen++;
             //}
 
-            appender.writeInt(argsLen);
+            appender.writeStopBit(argsLen);
             for (int i = 0; i < argsLen; i++) {
                 appender.writeObject(args[i]);
             }
         } else {
             appender.writeUTF(event.getMessage().getFormattedMessage());
-            appender.writeInt(0);
+            appender.writeStopBit(0);
         }
 
         if(event.getThrown() != null) {

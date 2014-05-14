@@ -1,21 +1,17 @@
 package com.higherfrequencytrading.chronology.tools;
 
-import com.higherfrequencytrading.chronology.BinaryChronologyLogEvent;
-import com.higherfrequencytrading.chronology.ChronologyLogEvent;
-import com.higherfrequencytrading.chronology.ChronologyLogProcessor;
-import com.higherfrequencytrading.chronology.ChronologyLogReader;
-import com.higherfrequencytrading.chronology.TextChronologyLogEvent;
+import com.higherfrequencytrading.chronology.*;
 import com.higherfrequencytrading.chronology.slf4j.ChronicleLoggingConfig;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.lang.io.Bytes;
-import org.jetbrains.annotations.NotNull;
+import net.openhft.lang.model.constraints.NotNull;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-public class ChroniTool {
+public final class ChroniTool {
 
     public static final DateFormat DF = new SimpleDateFormat(ChronicleLoggingConfig.DEFAULT_DATE_FORMAT);
 
@@ -26,20 +22,14 @@ public class ChroniTool {
     public static abstract class BinaryProcessor implements ChronologyLogReader, ChronologyLogProcessor {
         @Override
         public void read(final Bytes bytes) {
-            ChronologyLogEvent evt = new BinaryChronologyLogEvent();
-            evt.readMarshallable(bytes);
-
-            process(evt);
+            process(ChronologyLogEvent.decodeBinary(bytes));
         }
     }
 
     public static abstract class TextProcessor implements ChronologyLogReader, ChronologyLogProcessor {
         @Override
         public void read(final Bytes bytes) {
-            ChronologyLogEvent evt = new TextChronologyLogEvent();
-            evt.readMarshallable(bytes);
-
-            process(evt);
+            process(ChronologyLogEvent.decodeText(bytes));
         }
     }
 
@@ -78,7 +68,7 @@ public class ChroniTool {
         if(!event.hasArguments()) {
             return String.format("%s|%s|%s|%s|%s\n",
                 DF.format(event.getTimeStamp()),
-                event.getLevel().levelStr,
+                event.getLevel().toString(),
                 event.getThreadName(),
                 event.getLoggerName(),
                 event.getMessage());
@@ -121,8 +111,10 @@ public class ChroniTool {
                 }
             }
         } finally {
-            tailer.close();
+            if (tailer != null) tailer.close();
             chronicle.close();
         }
     }
+
+    private ChroniTool() {}
 }

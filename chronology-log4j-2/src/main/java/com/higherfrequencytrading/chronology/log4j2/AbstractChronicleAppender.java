@@ -81,33 +81,17 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
     //
     // *************************************************************************
 
-    public static int toIntChronologyLogLevel(final Level level) {
+    public static ChronologyLogLevel toChronologyLogLevel(final Level level) {
         if(level.intLevel() == Level.DEBUG.intLevel()) {
-            return ChronologyLogLevel.DEBUG.levelInt;
+            return ChronologyLogLevel.DEBUG;
         } else if(level.intLevel() == Level.TRACE.intLevel()) {
-            return ChronologyLogLevel.TRACE.levelInt;
+            return ChronologyLogLevel.TRACE;
         } else if(level.intLevel() == Level.INFO.intLevel()) {
-            return ChronologyLogLevel.INFO.levelInt;
+            return ChronologyLogLevel.INFO;
         } else if(level.intLevel() == Level.WARN.intLevel()) {
-            return ChronologyLogLevel.WARN.levelInt;
+            return ChronologyLogLevel.WARN;
         } else if(level.intLevel() == Level.ERROR.intLevel()) {
-            return ChronologyLogLevel.ERROR.levelInt;
-        }
-
-        throw new IllegalArgumentException(level.intLevel() + " not a valid level value");
-    }
-
-    public static String toStrChronologyLogLevel(final Level level) {
-        if(level.intLevel() == Level.DEBUG.intLevel()) {
-            return ChronologyLogLevel.DEBUG.levelStr;
-        } else if(level.intLevel() == Level.TRACE.intLevel()) {
-            return ChronologyLogLevel.TRACE.levelStr;
-        } else if(level.intLevel() == Level.INFO.intLevel()) {
-            return ChronologyLogLevel.INFO.levelStr;
-        } else if(level.intLevel() == Level.WARN.intLevel()) {
-            return ChronologyLogLevel.WARN.levelStr;
-        } else if(level.intLevel() == Level.ERROR.intLevel()) {
-            return ChronologyLogLevel.ERROR.levelStr;
+            return ChronologyLogLevel.ERROR;
         }
 
         throw new IllegalArgumentException(level.intLevel() + " not a valid level value");

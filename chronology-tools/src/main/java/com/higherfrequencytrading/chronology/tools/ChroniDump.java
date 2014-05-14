@@ -8,7 +8,7 @@ import net.openhft.lang.io.Bytes;
 /**
  *
  */
-public class ChroniDump {
+public final class ChroniDump {
 
     private final static char[] HEX_DIGITS = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -88,4 +88,6 @@ public class ChroniDump {
             e.printStackTrace(System.err);
         }
     }
+
+    private ChroniDump() {}
 }

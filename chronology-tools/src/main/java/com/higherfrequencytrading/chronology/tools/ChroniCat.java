@@ -6,7 +6,7 @@ import net.openhft.chronicle.VanillaChronicle;
 /**
  *
  */
-public class ChroniCat extends ChroniTool {
+public final class ChroniCat {
 
     // *************************************************************************
     //
@@ -32,8 +32,8 @@ public class ChroniCat extends ChroniTool {
                         ? new IndexedChronicle(args[args.length - 1])
                         : new VanillaChronicle(args[args.length - 1]),
                     binary
-                        ? READER_BINARY
-                        : READER_TEXT,
+                        ? ChroniTool.READER_BINARY
+                        : ChroniTool.READER_TEXT,
                     false,
                     false
                 );
@@ -46,4 +46,6 @@ public class ChroniCat extends ChroniTool {
             e.printStackTrace(System.err);
         }
     }
+
+    private ChroniCat() {}
 }
