@@ -227,13 +227,11 @@ public class ChronicleLogger extends MarkerIgnoringBase {
     // *************************************************************************
 
     private boolean isLevelEnabled(ChronologyLogLevel level) {
-        return level.levelInt >= this.level.levelInt;
+        return level.isHigherOrEqualTo(this.level);
     }
 
     private void append(ChronologyLogLevel level, String message, Object... args) {
-        // slf4j level are numerically ordered so can use simple numeric
-        // comparison
-        if(level.levelInt >= this.level.levelInt) {
+        if(level.isHigherOrEqualTo(this.level)) {
             this.writer.log(level, this.name, message, args);
         }
     }

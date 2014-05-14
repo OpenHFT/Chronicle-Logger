@@ -41,12 +41,16 @@ public enum ChronologyLogLevel {
      */
     private static final ChronologyLogLevel[] VALUES = values();
 
-    public final int levelInt;
+    private final int levelInt;
     public final String levelStr;
 
     ChronologyLogLevel(int levelInt, String levelStr) {
         this.levelInt = levelInt;
         this.levelStr = levelStr;
+    }
+
+    public boolean isHigherOrEqualTo(ChronologyLogLevel presumablyLowerLevel) {
+        return levelInt >= presumablyLowerLevel.levelInt;
     }
 
     public void printTo(ByteStringAppender appender) {
@@ -75,17 +79,6 @@ public enum ChronologyLogLevel {
             for (ChronologyLogLevel cll : VALUES) {
                 if (fastEqualsIgnoreCase(cll.levelStr, levelStr)) {
                     return cll;
-                }
-            }
-        }
-        throw new IllegalArgumentException(levelStr + " not a valid level value");
-    }
-
-    public static int intLevelFromStringLevel(CharSequence levelStr) {
-        if (levelStr != null) {
-            for (ChronologyLogLevel cll : VALUES) {
-                if (fastEqualsIgnoreCase(cll.levelStr, levelStr)) {
-                    return cll.levelInt;
                 }
             }
         }
