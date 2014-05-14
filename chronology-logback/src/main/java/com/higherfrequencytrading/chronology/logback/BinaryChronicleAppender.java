@@ -56,9 +56,9 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
         if(getFilterChainDecision(event) != FilterReply.DENY) {
             appender.startExcerpt();
             appender.writeByte(Chronology.VERSION);
-            appender.writeByte(Chronology.TYPE_LOGBACK);
+            Chronology.Type.LOGBACK.writeTo(appender);
             appender.writeLong(event.getTimeStamp());
-            appender.writeInt(toIntChronologyLogLevel(event.getLevel()));
+            toChronologyLogLevel(event.getLevel()).writeTo(appender);
             appender.writeUTF(event.getThreadName());
             appender.writeUTF(event.getLoggerName());
 
@@ -69,13 +69,13 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
                 Object[] args = event.getArgumentArray();
                 int argsLen = null != args ? args.length : 0;
 
-                appender.writeInt(argsLen);
+                appender.writeStopBit(argsLen);
                 for (int i = 0; i < argsLen; i++) {
                     appender.writeObject(args[i]);
                 }
             } else {
                 appender.writeUTF(event.getFormattedMessage());
-                appender.writeInt(0);
+                appender.writeStopBit(0);
             }
 
             ThrowableProxy tp = (ThrowableProxy)event.getThrowableProxy();

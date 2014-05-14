@@ -3,22 +3,19 @@ package com.higherfrequencytrading.chronology.logback;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.spi.FilterReply;
-import com.higherfrequencytrading.chronology.Chronology;
-import com.higherfrequencytrading.chronology.ChronologyLogHelper;
-
-import java.util.Date;
+import com.higherfrequencytrading.chronology.*;
 
 public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
     private String dateFormat;
-    private Chronology.DateFormatCache dateFormatCache;
+    private TimeStampFormatter timeStampFormatter;
     private int stackTradeDepth;
 
     protected TextChronicleAppender() {
         super();
 
         this.dateFormat = null;
-        this.dateFormatCache = null;
+        this.timeStampFormatter = null;
         this.stackTradeDepth = -1;
     }
 
@@ -28,7 +25,7 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
-        this.dateFormatCache = new Chronology.DateFormatCache(dateFormat);
+        this.timeStampFormatter = TimeStampFormatter.fromDateFormat(dateFormat);
     }
 
     public String getDateFormat() {
@@ -51,9 +48,9 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
     public void doAppend(final ILoggingEvent event) {
         if(getFilterChainDecision(event) != FilterReply.DENY) {
             appender.startExcerpt();
-            appender.append(this.dateFormatCache.get().format(new Date(event.getTimeStamp())));
+            timeStampFormatter.format(event.getTimeStamp(), appender);
             appender.append('|');
-            appender.append(toStrChronologyLogLevel(event.getLevel()));
+            toChronologyLogLevel(event.getLevel()).printTo(appender);
             appender.append('|');
             appender.append(event.getThreadName());
             appender.append('|');

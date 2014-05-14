@@ -2,7 +2,6 @@ package com.higherfrequencytrading.chronology.slf4j;
 
 import com.higherfrequencytrading.chronology.Chronology;
 import com.higherfrequencytrading.chronology.ChronologyLogEvent;
-import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
@@ -95,10 +94,10 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         assertTrue(tailer.nextIndex());
 
-        ChronologyLogEvent evt = ChronologyLogHelper.decodeBinary(tailer);
+        ChronologyLogEvent evt = ChronologyLogEvent.decodeBinary(tailer);
         assertNotNull(evt);
         assertEquals(evt.getVersion(), Chronology.VERSION);
-        assertEquals(evt.getType(), Chronology.TYPE_SLF4J);
+        assertEquals(evt.getType(), Chronology.Type.SLF4J);
         assertTrue(timestamp <= evt.getTimeStamp());
         assertEquals(ChronologyLogLevel.DEBUG,evt.getLevel());
         assertEquals("data {}, {}",evt.getMessage());

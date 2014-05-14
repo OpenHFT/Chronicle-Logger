@@ -31,7 +31,7 @@ public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
             Chronology.STR_FALSE,
             cfg.getString(ChronicleLoggingConfig.KEY_SYNCHRONOUS));
         assertEquals(
-            ChronologyLogLevel.DEBUG.levelStr,
+            ChronologyLogLevel.DEBUG.toString(),
             cfg.getString(ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
         assertEquals(
             Chronology.STR_FALSE,
@@ -43,13 +43,13 @@ public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
             new File(basePath(ChronicleLoggingConfig.TYPE_VANILLA, "logger_1")),
             new File(cfg.getString("logger_1", ChronicleLoggingConfig.KEY_PATH)));
         assertEquals(
-            ChronologyLogLevel.INFO.levelStr,
+            ChronologyLogLevel.INFO.toString(),
             cfg.getString("logger_1", ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
         assertEquals(
             new File(basePath(ChronicleLoggingConfig.TYPE_VANILLA, "readwrite")),
             new File(cfg.getString("readwrite", ChronicleLoggingConfig.KEY_PATH)));
         assertEquals(
-            ChronologyLogLevel.DEBUG.levelStr,
+            ChronologyLogLevel.DEBUG.toString(),
             cfg.getString("readwrite", ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
     }
 }

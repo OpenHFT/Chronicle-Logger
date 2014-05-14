@@ -23,13 +23,7 @@ public class LogbackTestBase {
     //
     // *************************************************************************
 
-    protected static ChronologyLogLevel[] LOG_LEVELS = new ChronologyLogLevel[] {
-        ChronologyLogLevel.TRACE,
-        ChronologyLogLevel.DEBUG,
-        ChronologyLogLevel.INFO,
-        ChronologyLogLevel.WARN,
-        ChronologyLogLevel.ERROR
-    };
+    protected static ChronologyLogLevel[] LOG_LEVELS = ChronologyLogLevel.values();
 
     // *************************************************************************
     //

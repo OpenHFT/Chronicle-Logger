@@ -1,8 +1,6 @@
 package com.higherfrequencytrading.chronology.slf4j;
 
-import com.higherfrequencytrading.chronology.Chronology;
-import com.higherfrequencytrading.chronology.ChronologyLogHelper;
-import com.higherfrequencytrading.chronology.ChronologyLogLevel;
+import com.higherfrequencytrading.chronology.*;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import org.slf4j.helpers.FormattingTuple;
@@ -10,7 +8,6 @@ import org.slf4j.helpers.MessageFormatter;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Date;
 
 public class ChronicleLogAppenders {
 
@@ -60,21 +57,21 @@ public class ChronicleLogAppenders {
          * @param level   One of the LOG_LEVEL_XXX constants defining the slf4j level
          * @param name    The logger name
          * @param message The message
-         * @param message The message arguments
+         * @param args    The arguments
          */
         @Override
         public void log(ChronologyLogLevel level, String name, String message, Object... args) {
             this.appender.startExcerpt();
             this.appender.writeByte(Chronology.VERSION);
-            this.appender.writeByte(Chronology.TYPE_SLF4J);
+            Chronology.Type.SLF4J.writeTo(appender);
             this.appender.writeLong(System.currentTimeMillis());
-            this.appender.writeInt(level.levelInt);
+            level.writeTo(appender);
             this.appender.writeUTF(Thread.currentThread().getName());
             this.appender.writeUTF(name);
             this.appender.writeUTF(message);
 
             if(args.length > 0 && args[args.length - 1] instanceof Throwable) {
-                this.appender.writeInt(args.length - 1);
+                this.appender.writeStopBit(args.length - 1);
                 for (int i=0;i<args.length - 1; i++) {
                     this.appender.writeObject(args[i]);
                 }
@@ -82,9 +79,9 @@ public class ChronicleLogAppenders {
                 this.appender.writeBoolean(true);
                 this.appender.writeObject(args[args.length - 1]);
             } else {
-                this.appender.writeInt(args.length);
-                for (int i=0;i<args.length; i++) {
-                    this.appender.writeObject(args[i]);
+                this.appender.writeStopBit(args.length);
+                for (Object arg : args) {
+                    this.appender.writeObject(arg);
                 }
 
                 this.appender.writeBoolean(false);
@@ -109,7 +106,7 @@ public class ChronicleLogAppenders {
          * @param level   One of the LOG_LEVEL_XXX constants defining the slf4j level
          * @param name    The logger name
          * @param message The message
-         * @param message The message arguments
+         * @param args    The arguments
          */
         @Override
         public void log(ChronologyLogLevel level, String name, String message, Object... args) {
@@ -117,13 +114,13 @@ public class ChronicleLogAppenders {
 
             this.appender.startExcerpt();
             this.appender.writeByte(Chronology.VERSION);
-            this.appender.writeByte(Chronology.TYPE_SLF4J);
+            Chronology.Type.SLF4J.writeTo(appender);
             this.appender.writeLong(System.currentTimeMillis());
-            this.appender.writeInt(level.levelInt);
+            level.writeTo(appender);
             this.appender.writeUTF(Thread.currentThread().getName());
             this.appender.writeUTF(name);
             this.appender.writeUTF(tp.getMessage());
-            this.appender.writeInt(0);
+            this.appender.writeStopBit(0);
 
             if(tp.getThrowable() != null) {
                 this.appender.writeBoolean(true);
@@ -145,7 +142,7 @@ public class ChronicleLogAppenders {
      */
     public static final class TextWriter extends AbstractChronicleLogWriter {
 
-        private final Chronology.DateFormatCache dateFormatCache;
+        private final TimeStampFormatter timeStampFormatter;
         private final int stackTraceDepth;
 
         /**
@@ -159,7 +156,7 @@ public class ChronicleLogAppenders {
             super(chronicle);
 
             this.stackTraceDepth = stackTraceDepth != null ? stackTraceDepth : -1;
-            this.dateFormatCache = new Chronology.DateFormatCache(
+            this.timeStampFormatter = TimeStampFormatter.fromDateFormat(
                 dateFormat != null
                     ? dateFormat
                     : ChronicleLoggingConfig.DEFAULT_DATE_FORMAT
@@ -172,16 +169,16 @@ public class ChronicleLogAppenders {
          * @param level   One of the LOG_LEVEL_XXX constants defining the slf4j level
          * @param name    The logger name
          * @param message The message
-         * @param message The message arguments
+         * @param args    The arguments
          */
         @Override
         public void log(ChronologyLogLevel level, String name, String message, Object... args) {
             final FormattingTuple tp = MessageFormatter.arrayFormat(message, args);
 
             appender.startExcerpt();
-            appender.append(this.dateFormatCache.get().format(new Date()));
+            timeStampFormatter.format(System.currentTimeMillis(), appender);
             appender.append('|');
-            appender.append(level.levelStr);
+            level.printTo(appender);
             appender.append('|');
             appender.append(Thread.currentThread().getName());
             appender.append('|');

@@ -3,30 +3,64 @@ package com.higherfrequencytrading.chronology;
 import net.openhft.lang.io.Bytes;
 import net.openhft.lang.model.constraints.NotNull;
 
-public class BinaryChronologyLogEvent implements ChronologyLogEvent {
+final class BinaryChronologyLogEvent extends ChronologyLogEvent {
 
-    private byte version;
-    private byte type;
-    private long timestamp;
-    private int level;
-    private String threadName;
-    private String loggerName;
-    private String message;
-    private String fmtMessage;
-    private Object[] args;
-    private Throwable throwable;
+    static BinaryChronologyLogEvent read(@NotNull Bytes in) throws IllegalStateException {
+        byte version = in.readByte();
+        if(version == Chronology.VERSION) {
+            Chronology.Type type = Chronology.Type.read(in);
+            long timestamp  = in.readLong();
+            ChronologyLogLevel level = ChronologyLogLevel.readBinary(in);
+            String threadName = in.readUTF();
+            String loggerName = in.readUTF();
+            String message    = in.readUTF();
 
-    public BinaryChronologyLogEvent() {
-        this.version        = 0;
-        this.type           = 0;
-        this.timestamp      = -1;
-        this.level          = -1;
-        this.threadName     = null;
-        this.loggerName     = null;
-        this.message        = null;
-        this.fmtMessage     = null;
-        this.args           = null;
-        this.throwable      = null;
+            // Args
+            long argsLen = in.readStopBit();
+            if (argsLen < 0 || argsLen > Integer.MAX_VALUE)
+                throw new IllegalStateException();
+            Object[] args = null;
+            if (argsLen != 0) {
+                args = new Object[(int) argsLen];
+                for (int i = 0; i < argsLen; i++) {
+                    args[i] = in.readObject();
+                }
+            }
+
+            Throwable throwable = in.readBoolean() ? in.readObject(Throwable.class) : null;
+            return new BinaryChronologyLogEvent(version, type, timestamp, level, threadName,
+                    loggerName, message, args, throwable);
+        } else {
+            throw new UnsupportedClassVersionError();
+        }
+    }
+
+    // *********************************************************************
+    //
+    // *********************************************************************
+
+    private final byte version;
+    private final Chronology.Type type;
+    private final long timestamp;
+    private final ChronologyLogLevel level;
+    private final String threadName;
+    private final String loggerName;
+    private final String message;
+    private final Object[] args;
+    private final Throwable throwable;
+
+    BinaryChronologyLogEvent(byte version, Chronology.Type type, long timestamp,
+                             ChronologyLogLevel level, String threadName, String loggerName,
+                             String message, Object[] args, Throwable throwable) {
+        this.version = version;
+        this.type = type;
+        this.timestamp = timestamp;
+        this.level = level;
+        this.threadName = threadName;
+        this.loggerName = loggerName;
+        this.message = message;
+        this.args = args;
+        this.throwable = throwable;
     }
 
     // *********************************************************************
@@ -39,7 +73,7 @@ public class BinaryChronologyLogEvent implements ChronologyLogEvent {
     }
 
     @Override
-    public byte getType() {
+    public Chronology.Type getType() {
         return this.type;
     }
 
@@ -55,7 +89,7 @@ public class BinaryChronologyLogEvent implements ChronologyLogEvent {
 
     @Override
     public ChronologyLogLevel getLevel() {
-        return ChronologyLogLevel.fromIntLevel(this.level);
+        return this.level;
     }
 
     @Override
@@ -65,12 +99,12 @@ public class BinaryChronologyLogEvent implements ChronologyLogEvent {
 
     @Override
     public Object[] getArgumentArray() {
-        return this.args;
+        return this.args != null ? args : EMPTY_ARGS;
     }
 
     @Override
     public boolean hasArguments() {
-        return this.args != null && this.args.length > 0;
+        return this.args != null;
     }
 
     @Override
@@ -81,40 +115,5 @@ public class BinaryChronologyLogEvent implements ChronologyLogEvent {
     @Override
     public Throwable getThrowable() {
         return this.throwable;
-    }
-
-    // *********************************************************************
-    //
-    // *********************************************************************
-
-    @Override
-    public void readMarshallable(@NotNull Bytes in) throws IllegalStateException {
-        this.version = in.readByte();
-        if(this.version == Chronology.VERSION) {
-            this.type       = in.readByte();
-            this.timestamp  = in.readLong();
-            this.level      = in.readInt();
-            this.threadName = in.readUTF();
-            this.loggerName = in.readUTF();
-            this.message    = in.readUTF();
-
-            // Args
-            // TODO: should this.args be null ?
-            this.args = new Object[in.readInt()];
-            for(int i=0;i<this.args.length;i++) {
-                this.args[i] = in.readObject();
-            }
-
-            if(in.readBoolean()) {
-                this.throwable = in.readObject(Throwable.class);
-            }
-        } else {
-            throw new UnsupportedClassVersionError();
-        }
-    }
-
-    @Override
-    public void writeMarshallable(@NotNull Bytes out) {
-        throw new UnsupportedOperationException();
     }
 }

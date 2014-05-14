@@ -1,49 +1,39 @@
 package com.higherfrequencytrading.chronology;
 
+
+import net.openhft.chronicle.ChronicleConfig;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.ExcerptTailer;
+import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.VanillaChronicleConfig;
+import net.openhft.chronicle.tools.ChronicleTools;
+import net.openhft.lang.io.RandomDataInput;
+import net.openhft.lang.io.RandomDataOutput;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
-public class Chronology {
-    public static final String NEWLINE   = System.getProperty("line.separator");
-    public static final String TMPDIR    = System.getProperty("java.io.tmpdir");
-    public static final String COMMA     = ", ";
+public final class Chronology {
+    public static final String NEWLINE = System.getProperty("line.separator");
+    public static final String TMPDIR = System.getProperty("java.io.tmpdir");
+    public static final String COMMA = ", ";
     public static final String STR_FALSE = "false";
-    public static final String STR_TRUE  = "true";
+    public static final String STR_TRUE = "true";
+    public static final String DEFAULT_DATE_FORMAT = "yyyy.MM.dd-HH:mm:ss.SSS";
+    
+    public static final byte VERSION = 1;
 
-    public static final byte VERSION      = 1;
+    public enum Type {
+        UNKNOWN, SLF4J, LOGBACK, LOG4J_1, LOG4J_2;
 
-    public static final byte TYPE_SLF4J   = 1;
-    public static final byte TYPE_LOGBACK = 2;
-    public static final byte TYPE_LOG4J_1 = 3;
-    public static final byte TYPE_LOG4J_2 = 4;
+        private static final Type[] VALUES = values();
 
-    public static final String          DEFAULT_DATE_FORMAT       = "yyyy.MM.dd-HH:mm:ss.SSS";
-    public static final DateFormatCache DEFAULT_DATE_FORMAT_CACHE = new DateFormatCache();
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    public static final class DateFormatCache extends ThreadLocal<DateFormat> {
-        private final String format;
-
-        public DateFormatCache() {
-            this(DEFAULT_DATE_FORMAT);
+        public void writeTo(RandomDataOutput out) {
+            out.writeByte(ordinal());
         }
 
-        public DateFormatCache(String format) {
-            this.format = format;
-        }
-
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat(this.format);
+        public static Type read(RandomDataInput in) {
+            return VALUES[in.readByte()];
         }
     }
 
@@ -53,14 +43,15 @@ public class Chronology {
 
     public static void warmup() {
         //noinspection UnusedDeclaration needed to laod class.
-        boolean done = Warmup.DONE;
+        boolean vanillaDone = VanillaWarmup.DONE;
+        boolean indexedDone = IndexedWarmup.DONE;
     }
 
     // *************************************************************************
     //
     // *************************************************************************
 
-    private static class Warmup {
+    private static class VanillaWarmup {
         public  static final boolean DONE;
         private static final int WARMUP_ITER = 1000;
 
@@ -69,13 +60,13 @@ public class Chronology {
             cc.dataBlockSize(64);
             cc.indexBlockSize(64);
 
-            String basePath = TMPDIR + "/warmup-" + Math.random();
-            //ChronicleTools.deleteDirOnExit(basePath);
+            String basePath = TMPDIR + "/vanilla-warmup-" + Math.random();
+            ChronicleTools.deleteDirOnExit(basePath);
 
             try {
                 final VanillaChronicle chronicle = new VanillaChronicle(basePath, cc);
-                final ExcerptAppender  appender = chronicle.createAppender();
-                final ExcerptTailer    tailer   = chronicle.createTailer();
+                final ExcerptAppender appender = chronicle.createAppender();
+                final ExcerptTailer tailer = chronicle.createTailer();
 
                 for (int i = 0; i < WARMUP_ITER; i++) {
                     appender.startExcerpt();
@@ -97,4 +88,43 @@ public class Chronology {
         }
     }
 
+    private static class IndexedWarmup {
+        public  static final boolean DONE;
+        private static final int WARMUP_ITER = 1000;
+
+        static {
+            ChronicleConfig cc = ChronicleConfig.SMALL.clone();
+            cc.dataBlockSize(64);
+            cc.indexBlockSize(64);
+
+            String basePath = TMPDIR + "/indexed-warmup-" + Math.random();
+            ChronicleTools.deleteOnExit(basePath);
+
+            try {
+                final IndexedChronicle chronicle = new IndexedChronicle(basePath, cc);
+                final ExcerptAppender appender = chronicle.createAppender();
+                final ExcerptTailer tailer = chronicle.createTailer();
+
+                for (int i = 0; i < WARMUP_ITER; i++) {
+                    appender.startExcerpt();
+                    appender.writeInt(i);
+                    appender.finish();
+                    boolean b = tailer.nextIndex() || tailer.nextIndex();
+                    tailer.readInt();
+                    tailer.finish();
+                }
+
+                chronicle.close();
+
+                System.gc();
+                DONE = true;
+            } catch (IOException e) {
+                throw new AssertionError();
+            }
+        }
+    }
+    
+
+    private Chronology() {
+    }
 }

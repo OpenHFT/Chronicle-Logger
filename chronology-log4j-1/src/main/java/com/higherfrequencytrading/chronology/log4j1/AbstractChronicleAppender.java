@@ -193,35 +193,18 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     //
     // *************************************************************************
 
-    public static int toIntChronologyLogLevel(final Level level) {
+    public static ChronologyLogLevel toChronologyLogLevel(final Level level) {
         switch(level.toInt()) {
             case Level.DEBUG_INT:
-                return ChronologyLogLevel.DEBUG.levelInt;
+                return ChronologyLogLevel.DEBUG;
             case Level.TRACE_INT:
-                return ChronologyLogLevel.TRACE.levelInt;
+                return ChronologyLogLevel.TRACE;
             case Level.INFO_INT:
-                return ChronologyLogLevel.INFO.levelInt;
+                return ChronologyLogLevel.INFO;
             case Level.WARN_INT:
-                return ChronologyLogLevel.WARN.levelInt;
+                return ChronologyLogLevel.WARN;
             case Level.ERROR_INT:
-                return ChronologyLogLevel.ERROR.levelInt;
-            default:
-                throw new IllegalArgumentException(level.toInt() + " not a valid level value");
-        }
-    }
-
-    public static String toStrChronologyLogLevel(final Level level) {
-        switch(level.toInt()) {
-            case Level.DEBUG_INT:
-                return ChronologyLogLevel.DEBUG.levelStr;
-            case Level.TRACE_INT:
-                return ChronologyLogLevel.TRACE.levelStr;
-            case Level.INFO_INT:
-                return ChronologyLogLevel.INFO.levelStr;
-            case Level.WARN_INT:
-                return ChronologyLogLevel.WARN.levelStr;
-            case Level.ERROR_INT:
-                return ChronologyLogLevel.ERROR.levelStr;
+                return ChronologyLogLevel.ERROR;
             default:
                 throw new IllegalArgumentException(level.toInt() + " not a valid level value");
         }
