@@ -81,7 +81,7 @@ public final class ChroniGrep {
 
             return false;
         }
-    };
+    }
 
     private static final class BinaryGrep extends ChroniTool.BinaryProcessor {
         private final Grep grep;
@@ -97,7 +97,7 @@ public final class ChroniGrep {
                 System.out.println(msg);
             }
         }
-    };
+    }
 
     private static final class TextGrep extends ChroniTool.TextProcessor {
         private final Grep grep;
