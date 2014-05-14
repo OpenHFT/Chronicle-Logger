@@ -1,12 +1,37 @@
 package com.higherfrequencytrading.chronology;
 
 
+import net.openhft.lang.model.constraints.NotNull;
+
+
 public enum ChronologyLogLevel {
     ERROR(50,"ERROR"),
     WARN (40,"WARN" ),
     INFO (30,"INFO" ),
     DEBUG(20,"DEBUG"),
     TRACE(10,"TRACE");
+
+    private static final int CASE_DIFF = 'A' - 'a';
+
+    /**
+     * Package-private for testing.
+     *
+     * @param upperCase string of A-Z characters
+     * @param other     a {@code CharSequence} to compare
+     * @return          {@code true} if {@code upperCase} and {@code other} equals ignore case
+     */
+    static boolean fastEqualsIgnoreCase(@NotNull String upperCase,
+                                        @NotNull CharSequence other) {
+        int l;
+        if ((l = upperCase.length()) != other.length())
+            return false;
+        for (int i = 0; i < l; i++) {
+            int uC, oC;
+            if ((uC = upperCase.charAt(i)) != (oC = other.charAt(i)) && (uC != oC + CASE_DIFF))
+                return false;
+        }
+        return true;
+    }
 
     /**
      * Array is not cached in Java enum internals, make the single copy to prevent garbage creation
@@ -40,23 +65,25 @@ public enum ChronologyLogLevel {
         throw new IllegalArgumentException(levelInt + " not a valid level value");
     }
 
-    public static ChronologyLogLevel fromStringLevel(String levelStr) {
-        for (ChronologyLogLevel cll : VALUES) {
-            if(cll.levelStr.equalsIgnoreCase(levelStr)) {
-                return cll;
+    public static ChronologyLogLevel fromStringLevel(CharSequence levelStr) {
+        if (levelStr != null) {
+            for (ChronologyLogLevel cll : VALUES) {
+                if (fastEqualsIgnoreCase(cll.levelStr, levelStr)) {
+                    return cll;
+                }
             }
         }
-
         throw new IllegalArgumentException(levelStr + " not a valid level value");
     }
 
     public static int intLevelFromStringLevel(CharSequence levelStr) {
-        for (ChronologyLogLevel cll : VALUES) {
-            if(cll.levelStr.equalsIgnoreCase(levelStr)) {
-                return cll.levelInt;
+        if (levelStr != null) {
+            for (ChronologyLogLevel cll : VALUES) {
+                if (fastEqualsIgnoreCase(cll.levelStr, levelStr)) {
+                    return cll.levelInt;
+                }
             }
         }
-
         throw new IllegalArgumentException(levelStr + " not a valid level value");
     }
 
