@@ -121,7 +121,7 @@ public final class ChroniTool {
                 }
             }
         } finally {
-            tailer.close();
+            if (tailer != null) tailer.close();
             chronicle.close();
         }
     }
