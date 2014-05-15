@@ -70,9 +70,6 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
             // Args
             Object[] args = message.getParameters();
             int argsLen = null != args ? args.length : 0;
-            //if(message.getThrowable() != null) {
-            //    argsLen++;
-            //}
 
             appender.writeStopBit(argsLen);
             for (int i = 0; i < argsLen; i++) {

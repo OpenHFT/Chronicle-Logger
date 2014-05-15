@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Ignore
-public class Log4j2VanillaChroniclePerfTest extends Log4j1TestBase {
+public class Log4j2VanillaChroniclePerfTest extends Log4j2TestBase {
 
     // *************************************************************************
     //
@@ -63,12 +63,12 @@ public class Log4j2VanillaChroniclePerfTest extends Log4j1TestBase {
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d size=%04d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-averfage=%.3f us\n",
+            System.out.printf("items=%03d size=%04d => chronology=%.3f ms, chronology-average=%.3f us, plain=%.3f ms, plain-averfage=%.3f us\n",
                 items,
                 staticStr.length(),
                 (cEnd1 - cStart1) / 1e6,
                 (cEnd1 - cStart1) / items / 1e3,
-                (pEnd1 - pStart1),
+                (pEnd1 - pStart1) / 1e6,
                 (pEnd1 - pStart1) / items / 1e3);
         }
 
@@ -103,11 +103,11 @@ public class Log4j2VanillaChroniclePerfTest extends Log4j1TestBase {
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-averfage=%.3f us\n",
+            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%.3f ms, plain-averfage=%.3f us\n",
                 items,
                 (cEnd1 - cStart1) / 1e6,
                 (cEnd1 - cStart1) / items / 1e3,
-                (pEnd1 - pStart1),
+                (pEnd1 - pStart1) / 1e6,
                 (pEnd1 - pStart1) / items / 1e3);
         }
 

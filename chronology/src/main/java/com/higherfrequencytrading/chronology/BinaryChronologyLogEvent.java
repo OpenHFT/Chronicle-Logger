@@ -9,16 +9,18 @@ final class BinaryChronologyLogEvent extends ChronologyLogEvent {
         byte version = in.readByte();
         if(version == Chronology.VERSION) {
             Chronology.Type type = Chronology.Type.read(in);
-            long timestamp  = in.readLong();
+            long timestamp = in.readLong();
             ChronologyLogLevel level = ChronologyLogLevel.readBinary(in);
             String threadName = in.readUTF();
             String loggerName = in.readUTF();
-            String message    = in.readUTF();
+            String message = in.readUTF();
 
             // Args
             long argsLen = in.readStopBit();
-            if (argsLen < 0 || argsLen > Integer.MAX_VALUE)
+            if (argsLen < 0 || argsLen > Integer.MAX_VALUE) {
                 throw new IllegalStateException();
+            }
+
             Object[] args = null;
             if (argsLen != 0) {
                 args = new Object[(int) argsLen];

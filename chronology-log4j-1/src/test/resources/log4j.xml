@@ -67,6 +67,7 @@
         </layout>
     </appender>
 
+
     <logger name="binary-vanilla-chronicle" additivity="false">
         <level value="trace"/>
         <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>

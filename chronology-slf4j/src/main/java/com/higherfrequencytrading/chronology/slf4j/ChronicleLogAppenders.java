@@ -70,7 +70,7 @@ public class ChronicleLogAppenders {
             this.appender.writeUTF(name);
             this.appender.writeUTF(message);
 
-            if(args.length > 0 && args[args.length - 1] instanceof Throwable) {
+            if (args.length > 0 && args[args.length - 1] instanceof Throwable) {
                 this.appender.writeStopBit(args.length - 1);
                 for (int i=0;i<args.length - 1; i++) {
                     this.appender.writeObject(args[i]);
@@ -122,7 +122,7 @@ public class ChronicleLogAppenders {
             this.appender.writeUTF(tp.getMessage());
             this.appender.writeStopBit(0);
 
-            if(tp.getThrowable() != null) {
+            if (tp.getThrowable() != null) {
                 this.appender.writeBoolean(true);
                 this.appender.writeObject(tp.getThrowable());
             } else {
