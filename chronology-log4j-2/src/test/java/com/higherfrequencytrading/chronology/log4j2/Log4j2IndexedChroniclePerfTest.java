@@ -62,12 +62,12 @@ public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d size=%04d => chronology=%.3f ms, chronology-average=%.3f us, plain=%.3f ms, plain-average=%.3f us\n",
+            System.out.printf("items=%03d size=%04d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-average=%.3f us\n",
                 items,
                 staticStr.length(),
                 (cEnd1 - cStart1) / 1e6,
                 (cEnd1 - cStart1) / items / 1e3,
-                (pEnd1 - pStart1) / 1e6,
+                (pEnd1 - pStart1),
                 (pEnd1 - pStart1) / items / 1e3);
         }
 
@@ -102,11 +102,51 @@ public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%.3f ms, plain-average=%.3f us\n",
+            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-average=%.3f us\n",
                 items,
                 (cEnd1 - cStart1) / 1e6,
                 (cEnd1 - cStart1) / items / 1e3,
-                (pEnd1 - pStart1) / 1e6,
+                (pEnd1 - pStart1),
+                (pEnd1 - pStart1) / items / 1e3);
+        }
+
+        ChronicleTools.deleteOnExit(basePath(testId));
+    }
+
+    @Ignore
+    @Test
+    public void testSingleThreadLogging3() throws IOException {
+        Thread.currentThread().setName("perf-plain-indexed");
+
+        final String testId    = "perf-binary-indexed-chronicle";
+        final Logger clogger   = LoggerFactory.getLogger(testId);
+        final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed-async");
+        final long   items     = 1000000;
+        final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
+
+        for(int n=0;n<10;n++) {
+
+            long cStart1 = System.nanoTime();
+
+            for (int i = 1; i <= items; i++) {
+                clogger.info(strFmt, i, i * 10, i / 16);
+            }
+
+            long cEnd1 = System.nanoTime();
+
+            long pStart1 = System.nanoTime();
+
+            for (int i = 1; i <= items; i++) {
+                plogger.info(strFmt, i, i * 10, i / 16);
+            }
+
+            long pEnd1 = System.nanoTime();
+
+            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-average=%.3f us\n",
+                items,
+                (cEnd1 - cStart1) / 1e6,
+                (cEnd1 - cStart1) / items / 1e3,
+                (pEnd1 - pStart1),
                 (pEnd1 - pStart1) / items / 1e3);
         }
 
@@ -117,11 +157,10 @@ public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
     // Multi Thread
     // *************************************************************************
 
-    @Ignore
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
         final int RUNS = 1000000;
-        final int THREADS = 4;
+        final int THREADS = 10;
 
         for (int size : new int[]{64, 128, 256}) {
             {
@@ -129,7 +168,7 @@ public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
 
                 ExecutorService es = Executors.newFixedThreadPool(THREADS);
                 for (int t = 0; t < THREADS; t++) {
-                    es.submit(new RunnableChronicle(RUNS, size, "perf-binary-indexed-chronicle"));
+                    es.submit(new RunnableLogger(RUNS, size, "perf-binary-indexed-chronicle"));
                 }
 
                 es.shutdown();
@@ -137,9 +176,10 @@ public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
 
                 final long time = System.nanoTime() - start;
 
-                System.out.printf("Indexed.MultiThreadLogging (runs=%d, min size=%03d): took an average of %.3f us per entry\n",
+                System.out.printf("Chronology.MT (runs=%d, min size=%03d, elapsed=%.3f ms) took an average of %.3f us per entry\n",
                     RUNS,
                     size,
+                    time / 1e6,
                     time / 1e3 / (RUNS * THREADS)
                 );
             }
@@ -149,7 +189,7 @@ public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
 
                 ExecutorService es = Executors.newFixedThreadPool(THREADS);
                 for (int t = 0; t < THREADS; t++) {
-                    es.submit(new RunnableChronicle(RUNS, size, "perf-plain-vanilla"));
+                    es.submit(new RunnableLogger(RUNS, size, "perf-plain-indexed"));
                 }
 
                 es.shutdown();
@@ -157,9 +197,10 @@ public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
 
                 final long time = System.nanoTime() - start;
 
-                System.out.printf("Plain.MultiThreadLogging (runs=%d, min size=%03d): took an average of %.3f us per entry\n",
+                System.out.printf("Plain.MT (runs=%d, min size=%03d, elapsed=%.3f ms)): took an average of %.3f us per entry\n",
                     RUNS,
                     size,
+                    time / 1e6,
                     time / 1e3 / (RUNS * THREADS)
                 );
             }
