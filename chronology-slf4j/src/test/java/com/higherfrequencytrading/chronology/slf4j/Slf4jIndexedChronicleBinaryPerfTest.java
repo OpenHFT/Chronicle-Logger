@@ -25,7 +25,7 @@ public class Slf4jIndexedChronicleBinaryPerfTest extends Slf4jTestBase {
     public void setUp() {
         System.setProperty(
             "slf4j.chronicle.properties",
-            System.getProperty("slf4j.chronicle.indexed.properties")
+            System.getProperty("slf4j.chronicle.indexed.perf.properties")
         );
 
         getChronicleLoggerFactory().relaod();
@@ -116,7 +116,7 @@ public class Slf4jIndexedChronicleBinaryPerfTest extends Slf4jTestBase {
 
             ExecutorService es = Executors.newFixedThreadPool(THREADS);
             for (int t = 0; t < THREADS; t++) {
-                es.submit(new RunnableChronicle(RUNS, size, "thread-" + t));
+                es.submit(new RunnableLogger(RUNS, size, "thread-" + t));
             }
 
             es.shutdown();
