@@ -63,6 +63,12 @@ public class LogbackTestBase {
         }
     }
 
+    protected static void warmup(Logger logger) {
+        for(int i=0;i<10;i++) {
+            logger.info("warmup");
+        }
+    }
+
     // *************************************************************************
     //
     // *************************************************************************

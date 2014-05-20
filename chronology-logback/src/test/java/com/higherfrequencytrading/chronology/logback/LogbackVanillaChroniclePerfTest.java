@@ -1,6 +1,5 @@
 package com.higherfrequencytrading.chronology.logback;
 
-import com.higherfrequencytrading.chronology.Chronology;
 import net.openhft.lang.io.IOTools;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
@@ -22,7 +21,6 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
 
     @Before
     public void setUp() {
-        Chronology.warmup();
     }
 
     @After
@@ -41,6 +39,9 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
         final Logger clogger   = LoggerFactory.getLogger(testId);
         final Logger plogger   = LoggerFactory.getLogger("perf-plain-vanilla");
         final long   items     = 1000000;
+
+        warmup(clogger);
+        warmup(plogger);
 
         for(int s=64; s <= 1024 ;s += 64) {
             final String staticStr = StringUtils.leftPad("", s, 'X');
@@ -83,6 +84,9 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
         final long   items     = 1000000;
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
 
+        warmup(clogger);
+        warmup(plogger);
+
         for(int n=0;n<10;n++) {
 
             long cStart1 = System.nanoTime();
@@ -122,6 +126,9 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
         final long   items     = 1000000;
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
 
+        warmup(clogger);
+        warmup(plogger);
+
         for(int n=0;n<10;n++) {
 
             long cStart1 = System.nanoTime();
@@ -157,7 +164,10 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
 
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
-        final int RUNS    = 1000000;
+        warmup(LoggerFactory.getLogger("perf-binary-vanilla-chronicle"));
+        warmup(LoggerFactory.getLogger("perf-plain-vanilla"));
+
+        final int RUNS = 1000000;
         final int THREADS = 10;
 
         for (int size : new int[]{64, 128, 256}) {
