@@ -4,7 +4,6 @@ import net.openhft.chronicle.tools.ChronicleTools;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,11 +154,10 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
     // Multi Thread
     // *************************************************************************
 
-    @Ignore
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
         final int RUNS = 1000000;
-        final int THREADS = 4;
+        final int THREADS = 10;
 
         for (int size : new int[]{64, 128, 256}) {
             {
@@ -175,9 +173,10 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
 
                 final long time = System.nanoTime() - start;
 
-                System.out.printf("Indexed.MultiThreadLogging (runs=%d, min size=%03d): took an average of %.3f us per entry\n",
+                System.out.printf("Chronology.MT (runs=%d, min size=%03d, elapsed=%.3f ms) took an average of %.3f us per entry\n",
                     RUNS,
                     size,
+                    time / 1e6,
                     time / 1e3 / (RUNS * THREADS)
                 );
             }
@@ -187,7 +186,7 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
 
                 ExecutorService es = Executors.newFixedThreadPool(THREADS);
                 for (int t = 0; t < THREADS; t++) {
-                    es.submit(new RunnableLogger(RUNS, size, "perf-plain-vanilla"));
+                    es.submit(new RunnableLogger(RUNS, size, "perf-plain-indexed"));
                 }
 
                 es.shutdown();
@@ -195,9 +194,10 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
 
                 final long time = System.nanoTime() - start;
 
-                System.out.printf("Plain.MultiThreadLogging (runs=%d, min size=%03d): took an average of %.3f us per entry\n",
+                System.out.printf("Plain.MT (runs=%d, min size=%03d, elapsed=%.3f ms)): took an average of %.3f us per entry\n",
                     RUNS,
                     size,
+                    time / 1e6,
                     time / 1e3 / (RUNS * THREADS)
                 );
             }

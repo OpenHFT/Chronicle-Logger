@@ -5,7 +5,6 @@ import net.openhft.lang.io.IOTools;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,11 +155,14 @@ public class Log4j1VanillaChroniclePerfTest extends Log4j1TestBase {
     // Multi Thread
     // *************************************************************************
 
-    @Ignore
+    // *************************************************************************
+    // Multi Thread
+    // *************************************************************************
+
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
         final int RUNS    = 1000000;
-        final int THREADS = 4;
+        final int THREADS = 10;
 
         for (int size : new int[]{64, 128, 256}) {
             {
@@ -172,13 +174,14 @@ public class Log4j1VanillaChroniclePerfTest extends Log4j1TestBase {
                 }
 
                 es.shutdown();
-                es.awaitTermination(5, TimeUnit.SECONDS);
+                es.awaitTermination(60, TimeUnit.SECONDS);
 
                 final long time = System.nanoTime() - start;
 
-                System.out.printf("Vanilla.MultiThreadLogging (runs=%d, min size=%03d): took an average of %.3f us per entry\n",
+                System.out.printf("Chronology.MT (runs=%d, min size=%03d, elapsed=%.3f ms) took an average of %.3f us per entry\n",
                     RUNS,
                     size,
+                    time / 1e6,
                     time / 1e3 / (RUNS * THREADS)
                 );
             }
@@ -192,13 +195,14 @@ public class Log4j1VanillaChroniclePerfTest extends Log4j1TestBase {
                 }
 
                 es.shutdown();
-                es.awaitTermination(5, TimeUnit.SECONDS);
+                es.awaitTermination(60, TimeUnit.SECONDS);
 
                 final long time = System.nanoTime() - start;
 
-                System.out.printf("Plain.MultiThreadLogging (runs=%d, min size=%03d): took an average of %.3f us per entry\n",
+                System.out.printf("Plain.MT (runs=%d, min size=%03d, elapsed=%.3f ms)): took an average of %.3f us per entry\n",
                     RUNS,
                     size,
+                    time / 1e6,
                     time / 1e3 / (RUNS * THREADS)
                 );
             }
