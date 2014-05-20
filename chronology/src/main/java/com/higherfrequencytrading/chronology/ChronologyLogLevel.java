@@ -26,12 +26,15 @@ public enum ChronologyLogLevel {
     static boolean fastEqualsIgnoreCase(@NotNull String upperCase,
                                         @NotNull CharSequence other) {
         int l;
-        if ((l = upperCase.length()) != other.length())
+        if ((l = upperCase.length()) != other.length()) {
             return false;
+        }
+
         for (int i = 0; i < l; i++) {
             int uC, oC;
-            if ((uC = upperCase.charAt(i)) != (oC = other.charAt(i)) && (uC != oC + CASE_DIFF))
+            if ((uC = upperCase.charAt(i)) != (oC = other.charAt(i)) && (uC != oC + CASE_DIFF)) {
                 return false;
+            }
         }
         return true;
     }
@@ -49,15 +52,15 @@ public enum ChronologyLogLevel {
         this.levelStr = levelStr;
     }
 
-    public boolean isHigherOrEqualTo(ChronologyLogLevel presumablyLowerLevel) {
+    public boolean isHigherOrEqualTo(final ChronologyLogLevel presumablyLowerLevel) {
         return levelInt >= presumablyLowerLevel.levelInt;
     }
 
-    public void printTo(ByteStringAppender appender) {
+    public void printTo(final ByteStringAppender appender) {
         appender.append(levelStr);
     }
 
-    public void writeTo(RandomDataOutput out) {
+    public void writeTo(final RandomDataOutput out) {
         out.writeByte(ordinal());
     }
 
@@ -70,11 +73,11 @@ public enum ChronologyLogLevel {
     //
     // *************************************************************************
 
-    public static ChronologyLogLevel readBinary(RandomDataInput in) {
+    public static ChronologyLogLevel readBinary(final RandomDataInput in) {
         return VALUES[in.readByte()];
     }
 
-    public static ChronologyLogLevel fromStringLevel(CharSequence levelStr) {
+    public static ChronologyLogLevel fromStringLevel(final CharSequence levelStr) {
         if (levelStr != null) {
             for (ChronologyLogLevel cll : VALUES) {
                 if (fastEqualsIgnoreCase(cll.levelStr, levelStr)) {

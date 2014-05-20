@@ -15,7 +15,7 @@ public class Slf4jIndexedChronicleConfigurationTest extends Slf4jTestBase {
 
     @Test
     public void testLoadProperties() {
-        String cfgPath = System.getProperty("slf4j.chronicle.indexed.properties");
+        String cfgPath = System.getProperty("slf4j.chronology.indexed.properties");
         ChronicleLoggingConfig cfg = ChronicleLoggingConfig.load(cfgPath);
 
         assertEquals(

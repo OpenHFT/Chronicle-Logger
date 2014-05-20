@@ -82,18 +82,30 @@
                     <reuseForks>false</reuseForks>
                     -->
                     <systemPropertyVariables>
-                        <slf4j.chronicle.vanilla.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.properties
-                        </slf4j.chronicle.vanilla.properties>
-                        <slf4j.chronicle.vanilla.binary.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.binary.properties
-                        </slf4j.chronicle.vanilla.binary.properties>
-                        <slf4j.chronicle.indexed.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.properties
-                        </slf4j.chronicle.indexed.properties>
-                        <slf4j.chronicle.indexed.binary.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.binary.properties
-                        </slf4j.chronicle.indexed.binary.properties>
+                        <slf4j.chronology.vanilla.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronology.vanilla.properties
+                        </slf4j.chronology.vanilla.properties>
+                        <slf4j.chronology.vanilla.perf.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronology.vanilla.perf.properties
+                        </slf4j.chronology.vanilla.perf.properties>
+                        <slf4j.chronology.vanilla.binary.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronology.vanilla.binary.properties
+                        </slf4j.chronology.vanilla.binary.properties>
+                        <slf4j.chronology.vanilla.binary.perf.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronology.vanilla.binary.perf.properties
+                        </slf4j.chronology.vanilla.binary.perf.properties>
+                        <slf4j.chronology.indexed.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronology.indexed.properties
+                        </slf4j.chronology.indexed.properties>
+                        <slf4j.chronology.indexed.perf.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronology.indexed.perf.properties
+                        </slf4j.chronology.indexed.perf.properties>
+                        <slf4j.chronology.indexed.binary.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronology.indexed.binary.properties
+                        </slf4j.chronology.indexed.binary.properties>
+                        <slf4j.chronology.indexed.binary.perf.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronology.indexed.binary.perf.properties
+                        </slf4j.chronology.indexed.binary.perf.properties>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

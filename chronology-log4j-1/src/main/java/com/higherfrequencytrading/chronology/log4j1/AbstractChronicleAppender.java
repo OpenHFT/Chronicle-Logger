@@ -22,14 +22,12 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     private ErrorHandler errorHandler;
 
     protected Chronicle chronicle;
-    protected ExcerptAppender appender;
 
     private String path;
 
     protected AbstractChronicleAppender() {
         this.path = null;
         this.chronicle = null;
-        this.appender = null;
         this.name = null;
         this.errorHandler = new OnlyOnceErrorHandler();
     }
@@ -41,7 +39,11 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     @Override
     public void activateOptions() {
         if(path != null) {
-            createAppender();
+            try {
+                this.chronicle = createChronicle();
+            } catch (IOException e) {
+                LogLog.warn("Exception ["+name+"].",e);
+            }
         } else {
             LogLog.warn("path option not set for appender ["+name+"].");
         }
@@ -150,18 +152,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
 
     protected abstract Chronicle createChronicle() throws IOException;
 
-    protected void createAppender() {
-        if(this.chronicle == null) {
-            try {
-                this.chronicle = createChronicle();
-                this.appender  = this.chronicle.createAppender();
-            } catch(IOException e) {
-                //TODO: manage exception
-                this.chronicle = null;
-                this.appender  = null;
-            }
-        }
-    }
+    protected abstract ExcerptAppender getAppender();
 
     // *************************************************************************
     //
@@ -171,10 +162,6 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     public void close() {
         if(this.chronicle != null) {
             try {
-                if(this.appender != null) {
-                    this.appender.close();
-                }
-
                 if(this.chronicle != null) {
                     this.chronicle.close();
                 }

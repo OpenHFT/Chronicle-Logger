@@ -3,7 +3,10 @@ package com.higherfrequencytrading.chronology.logback;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.spi.FilterReply;
-import com.higherfrequencytrading.chronology.*;
+import com.higherfrequencytrading.chronology.Chronology;
+import com.higherfrequencytrading.chronology.ChronologyLogHelper;
+import com.higherfrequencytrading.chronology.TimeStampFormatter;
+import net.openhft.chronicle.ExcerptAppender;
 
 public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
@@ -47,30 +50,33 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
     @Override
     public void doAppend(final ILoggingEvent event) {
         if(getFilterChainDecision(event) != FilterReply.DENY) {
-            appender.startExcerpt();
-            timeStampFormatter.format(event.getTimeStamp(), appender);
-            appender.append('|');
-            toChronologyLogLevel(event.getLevel()).printTo(appender);
-            appender.append('|');
-            appender.append(event.getThreadName());
-            appender.append('|');
-            appender.append(event.getLoggerName());
-            appender.append('|');
-            appender.append(event.getFormattedMessage());
+            final ExcerptAppender appender = getAppender();
+            if (appender != null) {
+                appender.startExcerpt();
+                timeStampFormatter.format(event.getTimeStamp(), appender);
+                appender.append('|');
+                toChronologyLogLevel(event.getLevel()).printTo(appender);
+                appender.append('|');
+                appender.append(event.getThreadName());
+                appender.append('|');
+                appender.append(event.getLoggerName());
+                appender.append('|');
+                appender.append(event.getFormattedMessage());
 
-            ThrowableProxy tp = (ThrowableProxy)event.getThrowableProxy();
-            if(tp != null) {
-                appender.append(" - ");
-                ChronologyLogHelper.appendStackTraceAsString(
-                    this.appender,
-                    tp.getThrowable(),
-                    Chronology.COMMA,
-                    this.stackTradeDepth
-                );
+                ThrowableProxy tp = (ThrowableProxy) event.getThrowableProxy();
+                if (tp != null) {
+                    appender.append(" - ");
+                    ChronologyLogHelper.appendStackTraceAsString(
+                        appender,
+                        tp.getThrowable(),
+                        Chronology.COMMA,
+                        this.stackTradeDepth
+                    );
+                }
+
+                appender.append(Chronology.NEWLINE);
+                appender.finish();
             }
-
-            appender.append(Chronology.NEWLINE);
-            appender.finish();
         }
     }
 }

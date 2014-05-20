@@ -1,6 +1,7 @@
 package com.higherfrequencytrading.chronology.log4j2;
 
 import com.higherfrequencytrading.chronology.*;
+import net.openhft.chronicle.ExcerptAppender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 
@@ -45,29 +46,32 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
     @Override
     public void append(final LogEvent event) {
-        appender.startExcerpt();
-        timeStampFormatter.format(event.getMillis(), appender);
-        appender.append('|');
-        toChronologyLogLevel(event.getLevel()).printTo(appender);
-        appender.append('|');
-        appender.append(event.getThreadName());
-        appender.append('|');
-        appender.append(event.getLoggerName());
-        appender.append('|');
-        appender.append(event.getMessage().getFormattedMessage());
+        final ExcerptAppender appender = getAppender();
+        if (appender != null) {
+            appender.startExcerpt();
+            timeStampFormatter.format(event.getMillis(), appender);
+            appender.append('|');
+            toChronologyLogLevel(event.getLevel()).printTo(appender);
+            appender.append('|');
+            appender.append(event.getThreadName());
+            appender.append('|');
+            appender.append(event.getLoggerName());
+            appender.append('|');
+            appender.append(event.getMessage().getFormattedMessage());
 
-        Throwable th = event.getThrown();
-        if(th != null) {
-            appender.append(" - ");
-            ChronologyLogHelper.appendStackTraceAsString(
-                this.appender,
-                th,
-                Chronology.COMMA,
-                this.stackTradeDepth
-            );
+            Throwable th = event.getThrown();
+            if (th != null) {
+                appender.append(" - ");
+                ChronologyLogHelper.appendStackTraceAsString(
+                    appender,
+                    th,
+                    Chronology.COMMA,
+                    this.stackTradeDepth
+                );
+            }
+
+            appender.append('\n');
+            appender.finish();
         }
-
-        appender.append('\n');
-        appender.finish();
     }
 }

@@ -28,11 +28,11 @@ public final class Chronology {
 
         private static final Type[] VALUES = values();
 
-        public void writeTo(RandomDataOutput out) {
+        public void writeTo(final RandomDataOutput out) {
             out.writeByte(ordinal());
         }
 
-        public static Type read(RandomDataInput in) {
+        public static Type read(final RandomDataInput in) {
             return VALUES[in.readByte()];
         }
     }

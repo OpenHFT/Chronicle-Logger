@@ -2,6 +2,7 @@ package com.higherfrequencytrading.chronology.log4j2;
 
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleConfig;
+import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.IndexedChronicle;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -21,11 +22,13 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
 
     private ChronicleConfig config;
     private Object lock;
+    private ExcerptAppender appender;
 
     public TextIndexedChronicleAppender(String name, Filter filter) {
         super(name,filter);
 
         this.config = null;
+        this.appender = null;
         this.lock = new Object();
     }
 
@@ -35,9 +38,18 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
 
     @Override
     protected Chronicle createChronicle() throws IOException {
-        return (this.config != null)
+        Chronicle chronicle = (this.config != null)
             ? new IndexedChronicle(this.getPath(),this.config)
             : new IndexedChronicle(this.getPath());
+
+        this.appender = chronicle.createAppender();
+
+        return chronicle;
+    }
+
+    @Override
+    protected ExcerptAppender getAppender() {
+        return this.appender;
     }
 
     @Override

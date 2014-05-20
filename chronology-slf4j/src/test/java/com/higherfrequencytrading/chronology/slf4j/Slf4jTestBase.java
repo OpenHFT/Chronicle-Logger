@@ -63,6 +63,12 @@ public class Slf4jTestBase {
         }
     }
 
+    protected static void warmup(Logger logger) {
+        for(int i=0;i<10;i++) {
+            logger.info("warmup");
+        }
+    }
+
     // *************************************************************************
     //
     // *************************************************************************
@@ -135,8 +141,6 @@ public class Slf4jTestBase {
             return this.data.toString();
         }
     }
-
-
 
     protected final class RunnableLogger implements Runnable {
         private final Logger logger;

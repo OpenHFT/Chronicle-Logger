@@ -3,6 +3,7 @@ package com.higherfrequencytrading.chronology.slf4j;
 import com.higherfrequencytrading.chronology.*;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
+import net.openhft.chronicle.VanillaChronicle;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -15,19 +16,71 @@ public class ChronicleLogAppenders {
     //
     // *************************************************************************
 
+    private static interface ExcerptAppenderProvider {
+        public ExcerptAppender get();
+    }
+
+    private static class IndexedExcerptAppenderProvider implements ExcerptAppenderProvider {
+        private ExcerptAppender appender;
+
+        public IndexedExcerptAppenderProvider(final Chronicle chronicle) {
+            try {
+                this.appender = chronicle.createAppender();
+            } catch (IOException e) {
+                this.appender = null;
+
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public ExcerptAppender get() {
+            return this.appender;
+        }
+    }
+
+    private static class VanillaExcerptAppenderProvider implements ExcerptAppenderProvider {
+        private final Chronicle chronicle;
+
+        public VanillaExcerptAppenderProvider(final Chronicle chronicle) {
+            this.chronicle = chronicle;
+        }
+
+        @Override
+        public ExcerptAppender get() {
+            try {
+                return this.chronicle.createAppender();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
     private static abstract class AbstractChronicleLogWriter implements ChronicleLogAppender {
 
-        protected final ExcerptAppender appender;
+        protected final ExcerptAppenderProvider appenderProvider;
         private final Chronicle chronicle;
 
         public AbstractChronicleLogWriter(Chronicle chronicle) throws IOException {
             this.chronicle = chronicle;
-            this.appender = this.chronicle.createAppender();
+            this.appenderProvider = (chronicle instanceof VanillaChronicle)
+                ? new VanillaExcerptAppenderProvider(chronicle)
+                : new IndexedExcerptAppenderProvider(chronicle);
         }
 
         @Override
         public Chronicle getChronicle() {
             return this.chronicle;
+        }
+
+        public ExcerptAppender getAppender() {
+            return this.appenderProvider.get();
         }
 
         @Override
@@ -61,33 +114,37 @@ public class ChronicleLogAppenders {
          */
         @Override
         public void log(ChronologyLogLevel level, String name, String message, Object... args) {
-            this.appender.startExcerpt();
-            this.appender.writeByte(Chronology.VERSION);
-            Chronology.Type.SLF4J.writeTo(appender);
-            this.appender.writeLong(System.currentTimeMillis());
-            level.writeTo(appender);
-            this.appender.writeUTF(Thread.currentThread().getName());
-            this.appender.writeUTF(name);
-            this.appender.writeUTF(message);
+            final ExcerptAppender appender = getAppender();
+            if(appender != null) {
+                appender.startExcerpt();
+                appender.writeByte(Chronology.VERSION);
+                Chronology.Type.SLF4J.writeTo(appender);
+                appender.writeLong(System.currentTimeMillis());
+                level.writeTo(appender);
+                appender.writeUTF(Thread.currentThread().getName());
+                appender.writeUTF(name);
+                appender.writeUTF(message);
 
-            if (args.length > 0 && args[args.length - 1] instanceof Throwable) {
-                this.appender.writeStopBit(args.length - 1);
-                for (int i=0;i<args.length - 1; i++) {
-                    this.appender.writeObject(args[i]);
+                if (args.length > 0 && args[args.length - 1] instanceof Throwable) {
+                    appender.writeStopBit(args.length - 1);
+                    for (int i = 0; i < args.length - 1; i++) {
+                        appender.writeObject(args[i]);
+                    }
+
+                    appender.writeBoolean(true);
+                    appender.writeObject(args[args.length - 1]);
+                }
+                else {
+                    appender.writeStopBit(args.length);
+                    for (Object arg : args) {
+                        appender.writeObject(arg);
+                    }
+
+                    appender.writeBoolean(false);
                 }
 
-                this.appender.writeBoolean(true);
-                this.appender.writeObject(args[args.length - 1]);
-            } else {
-                this.appender.writeStopBit(args.length);
-                for (Object arg : args) {
-                    this.appender.writeObject(arg);
-                }
-
-                this.appender.writeBoolean(false);
+                appender.finish();
             }
-
-            this.appender.finish();
         }
     }
 
@@ -110,26 +167,30 @@ public class ChronicleLogAppenders {
          */
         @Override
         public void log(ChronologyLogLevel level, String name, String message, Object... args) {
-            final FormattingTuple tp = MessageFormatter.arrayFormat(message,args);
+            final ExcerptAppender appender = getAppender();
+            if(appender != null) {
+                final FormattingTuple tp = MessageFormatter.arrayFormat(message,args);
 
-            this.appender.startExcerpt();
-            this.appender.writeByte(Chronology.VERSION);
-            Chronology.Type.SLF4J.writeTo(appender);
-            this.appender.writeLong(System.currentTimeMillis());
-            level.writeTo(appender);
-            this.appender.writeUTF(Thread.currentThread().getName());
-            this.appender.writeUTF(name);
-            this.appender.writeUTF(tp.getMessage());
-            this.appender.writeStopBit(0);
+                appender.startExcerpt();
+                appender.writeByte(Chronology.VERSION);
+                Chronology.Type.SLF4J.writeTo(appender);
+                appender.writeLong(System.currentTimeMillis());
+                level.writeTo(appender);
+                appender.writeUTF(Thread.currentThread().getName());
+                appender.writeUTF(name);
+                appender.writeUTF(tp.getMessage());
+                appender.writeStopBit(0);
 
-            if (tp.getThrowable() != null) {
-                this.appender.writeBoolean(true);
-                this.appender.writeObject(tp.getThrowable());
-            } else {
-                this.appender.writeBoolean(false);
+                if (tp.getThrowable() != null) {
+                    appender.writeBoolean(true);
+                    appender.writeObject(tp.getThrowable());
+                }
+                else {
+                    appender.writeBoolean(false);
+                }
+
+                appender.finish();
             }
-
-            this.appender.finish();
         }
     }
 
@@ -173,30 +234,33 @@ public class ChronicleLogAppenders {
          */
         @Override
         public void log(ChronologyLogLevel level, String name, String message, Object... args) {
-            final FormattingTuple tp = MessageFormatter.arrayFormat(message, args);
+            final ExcerptAppender appender = getAppender();
+            if (appender != null) {
+                final FormattingTuple tp = MessageFormatter.arrayFormat(message, args);
 
-            appender.startExcerpt();
-            timeStampFormatter.format(System.currentTimeMillis(), appender);
-            appender.append('|');
-            level.printTo(appender);
-            appender.append('|');
-            appender.append(Thread.currentThread().getName());
-            appender.append('|');
-            appender.append(name);
-            appender.append('|');
-            appender.append(tp.getMessage());
+                appender.startExcerpt();
+                timeStampFormatter.format(System.currentTimeMillis(), appender);
+                appender.append('|');
+                level.printTo(appender);
+                appender.append('|');
+                appender.append(Thread.currentThread().getName());
+                appender.append('|');
+                appender.append(name);
+                appender.append('|');
+                appender.append(tp.getMessage());
 
-            if(tp.getThrowable() != null) {
-                appender.append(" - ");
-                ChronologyLogHelper.appendStackTraceAsString(
-                    appender,
-                    tp.getThrowable(),
-                    Chronology.COMMA,
-                    this.stackTraceDepth);
+                if (tp.getThrowable() != null) {
+                    appender.append(" - ");
+                    ChronologyLogHelper.appendStackTraceAsString(
+                        appender,
+                        tp.getThrowable(),
+                        Chronology.COMMA,
+                        this.stackTraceDepth);
+                }
+
+                appender.append('\n');
+                appender.finish();
             }
-
-            appender.append('\n');
-            appender.finish();
         }
     }
 

@@ -3,7 +3,7 @@ package com.higherfrequencytrading.chronology;
 import net.openhft.lang.io.Bytes;
 import net.openhft.lang.model.constraints.NotNull;
 
-final class BinaryChronologyLogEvent extends ChronologyLogEvent {
+final class BinaryChronologyLogEvent implements ChronologyLogEvent {
 
     static BinaryChronologyLogEvent read(@NotNull Bytes in) throws IllegalStateException {
         byte version = in.readByte();
@@ -29,9 +29,17 @@ final class BinaryChronologyLogEvent extends ChronologyLogEvent {
                 }
             }
 
-            Throwable throwable = in.readBoolean() ? in.readObject(Throwable.class) : null;
-            return new BinaryChronologyLogEvent(version, type, timestamp, level, threadName,
-                    loggerName, message, args, throwable);
+            final Throwable throwable = in.readBoolean() ? in.readObject(Throwable.class) : null;
+            return new BinaryChronologyLogEvent(
+                version,
+                type,
+                timestamp,
+                level,
+                threadName,
+                loggerName,
+                message,
+                args,
+                throwable);
         } else {
             throw new UnsupportedClassVersionError();
         }
@@ -51,9 +59,9 @@ final class BinaryChronologyLogEvent extends ChronologyLogEvent {
     private final Object[] args;
     private final Throwable throwable;
 
-    BinaryChronologyLogEvent(byte version, Chronology.Type type, long timestamp,
-                             ChronologyLogLevel level, String threadName, String loggerName,
-                             String message, Object[] args, Throwable throwable) {
+    private BinaryChronologyLogEvent(byte version, Chronology.Type type, long timestamp,
+        ChronologyLogLevel level, String threadName, String loggerName,
+        String message, Object[] args, Throwable throwable) {
         this.version = version;
         this.type = type;
         this.timestamp = timestamp;
