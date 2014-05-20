@@ -63,7 +63,7 @@ public class Log4j2VanillaChroniclePerfTest extends Log4j2TestBase {
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d size=%04d => chronology=%.3f ms, chronology-average=%.3f us, plain=%.3f ms, plain-averfage=%.3f us\n",
+            System.out.printf("items=%03d size=%04d => chronology=%.3f ms, chronology-average=%.3f us, plain=%.3f ms, plain-average=%.3f us\n",
                 items,
                 staticStr.length(),
                 (cEnd1 - cStart1) / 1e6,
@@ -103,7 +103,7 @@ public class Log4j2VanillaChroniclePerfTest extends Log4j2TestBase {
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%.3f ms, plain-averfage=%.3f us\n",
+            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%.3f ms, plain-average=%.3f us\n",
                 items,
                 (cEnd1 - cStart1) / 1e6,
                 (cEnd1 - cStart1) / items / 1e3,

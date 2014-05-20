@@ -60,6 +60,16 @@
         </layout>
     </appender>
 
+    <appender name="PERF-PLAIN-VANILLA-ASYNC" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="2048"/>
+        <appender-ref ref="PERF-PLAIN-VANILLA"/>
+    </appender>
+
+    <appender name="PERF-PLAIN-INDEXED-ASYNC" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="2048"/>
+        <appender-ref ref="PERF-PLAIN-INDEXED"/>
+    </appender>
+
     <appender name  = "STDOUT"
               class = "org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
@@ -103,9 +113,19 @@
         <appender-ref ref="PERF-PLAIN-VANILLA"/>
     </logger>
 
+    <logger name="perf-plain-vanilla-async" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="PERF-PLAIN-VANILLA-ASYNC"/>
+    </logger>
+
     <logger name="perf-plain-indexed" additivity="false">
         <level value="trace"/>
         <appender-ref ref="PERF-PLAIN-INDEXED"/>
+    </logger>
+
+    <logger name="perf-plain-indexed-async" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="PERF-PLAIN-INDEXED-ASYNC"/>
     </logger>
 
     <root>

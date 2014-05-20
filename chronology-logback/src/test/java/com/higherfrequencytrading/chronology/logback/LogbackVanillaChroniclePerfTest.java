@@ -61,7 +61,7 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d size=%04d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-averfage=%.3f us\n",
+            System.out.printf("items=%03d size=%04d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-average=%.3f us\n",
                 items,
                 staticStr.length(),
                 (cEnd1 - cStart1) / 1e6,
@@ -88,7 +88,7 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
             long cStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {
-                clogger.info(strFmt, i, i * 10, i / 16);
+                clogger.info(strFmt, i, i * 7, i / 16);
             }
 
             long cEnd1 = System.nanoTime();
@@ -96,12 +96,12 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
             long pStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {
-                plogger.info(strFmt, i, i * 10, i / 16);
+                plogger.info(strFmt, i, i * 7, i / 16);
             }
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-averfage=%.3f us\n",
+            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-average=%.3f us\n",
                 items,
                 (cEnd1 - cStart1) / 1e6,
                 (cEnd1 - cStart1) / items / 1e3,
@@ -127,7 +127,7 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
             long cStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {
-                clogger.info(strFmt, i, i * 10, i / 16);
+                clogger.info(strFmt, i, i * 7, i / 16);
             }
 
             long cEnd1 = System.nanoTime();
@@ -135,12 +135,12 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
             long pStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {
-                plogger.info(strFmt, i, i * 10, i / 16);
+                plogger.info(strFmt, i, i * 7, i / 16);
             }
 
             long pEnd1 = System.nanoTime();
 
-            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-averfage=%.3f us\n",
+            System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us, plain=%d, plain-average=%.3f us\n",
                 items,
                 (cEnd1 - cStart1) / 1e6,
                 (cEnd1 - cStart1) / items / 1e3,
@@ -196,27 +196,6 @@ public class LogbackVanillaChroniclePerfTest extends LogbackTestBase {
                 final long time = System.nanoTime() - start;
 
                 System.out.printf("Plain.MT (runs=%d, min size=%03d, elapsed=%.3f ms)): took an average of %.3f us per entry\n",
-                    RUNS,
-                    size,
-                    time / 1e6,
-                    time / 1e3 / (RUNS * THREADS)
-                );
-            }
-
-            {
-                final long start = System.nanoTime();
-
-                ExecutorService es = Executors.newFixedThreadPool(THREADS);
-                for (int t = 0; t < THREADS; t++) {
-                    es.submit(new RunnableLogger(RUNS, size, "perf-plain-vanilla-async"));
-                }
-
-                es.shutdown();
-                es.awaitTermination(60, TimeUnit.SECONDS);
-
-                final long time = System.nanoTime() - start;
-
-                System.out.printf("Plain.MT.Async (runs=%d, min size=%03d, elapsed=%.3f ms)): took an average of %.3f us per entry\n",
                     RUNS,
                     size,
                     time / 1e6,
