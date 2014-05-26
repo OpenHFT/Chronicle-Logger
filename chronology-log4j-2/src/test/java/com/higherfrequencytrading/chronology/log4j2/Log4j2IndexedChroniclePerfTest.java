@@ -164,7 +164,6 @@ public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
     // Multi Thread
     // *************************************************************************
 
-    @Ignore
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
         warmup(LoggerFactory.getLogger("perf-binary-indexed-chronicle"));

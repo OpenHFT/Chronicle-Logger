@@ -165,7 +165,6 @@ public class Log4j2VanillaChroniclePerfTest extends Log4j2TestBase {
     // Multi Thread
     // *************************************************************************
 
-    @Ignore
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
 
