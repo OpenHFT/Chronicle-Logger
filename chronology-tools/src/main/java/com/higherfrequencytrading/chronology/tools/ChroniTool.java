@@ -22,14 +22,14 @@ public final class ChroniTool {
     public static abstract class BinaryProcessor implements ChronologyLogReader, ChronologyLogProcessor {
         @Override
         public void read(final Bytes bytes) {
-            process(ChronologyLogEvent.decodeBinary(bytes));
+            process(ChronologyLogHelper.decodeBinary(bytes));
         }
     }
 
     public static abstract class TextProcessor implements ChronologyLogReader, ChronologyLogProcessor {
         @Override
         public void read(final Bytes bytes) {
-            process(ChronologyLogEvent.decodeText(bytes));
+            process(ChronologyLogHelper.decodeText(bytes));
         }
     }
 

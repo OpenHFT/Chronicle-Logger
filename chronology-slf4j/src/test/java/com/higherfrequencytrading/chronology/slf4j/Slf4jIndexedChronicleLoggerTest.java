@@ -2,6 +2,7 @@ package com.higherfrequencytrading.chronology.slf4j;
 
 import com.higherfrequencytrading.chronology.Chronology;
 import com.higherfrequencytrading.chronology.ChronologyLogEvent;
+import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
@@ -16,8 +17,11 @@ import org.slf4j.impl.StaticLoggerBinder;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -31,8 +35,8 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
     @Before
     public void setUp() {
         System.setProperty(
-            "slf4j.chronicle.properties",
-            System.getProperty("slf4j.chronicle.indexed.properties")
+            "slf4j.chronology.properties",
+            System.getProperty("slf4j.chronology.indexed.properties")
         );
 
         getChronicleLoggerFactory().relaod();
@@ -134,7 +138,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
             if(level != ChronologyLogLevel.TRACE) {
                 assertTrue(tailer.nextIndex());
 
-                evt = ChronologyLogEvent.decodeBinary(tailer);
+                evt = ChronologyLogHelper.decodeBinary(tailer);
                 assertNotNull(evt);
                 assertEquals(evt.getVersion(), Chronology.VERSION);
                 assertEquals(evt.getType(), Chronology.Type.SLF4J);
@@ -154,14 +158,14 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogEvent.decodeBinary(tailer);
+        evt = ChronologyLogHelper.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogEvent.decodeBinary(tailer);
+        evt = ChronologyLogHelper.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
@@ -194,7 +198,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         for(ChronologyLogLevel level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronologyLogEvent.decodeText(tailer);
+            evt = ChronologyLogHelper.decodeText(tailer);
             assertNotNull(evt);
             assertEquals(level, evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
@@ -211,7 +215,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogEvent.decodeText(tailer);
+        evt = ChronologyLogHelper.decodeText(tailer);
         assertNotNull(evt);
         assertEquals(threadId, evt.getThreadName());
         assertEquals(testId, evt.getLoggerName());
@@ -223,7 +227,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         assertNull(evt.getThrowable());
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogEvent.decodeText(tailer);assertNotNull(evt);
+        evt = ChronologyLogHelper.decodeText(tailer);assertNotNull(evt);
         assertEquals(threadId, evt.getThreadName());
         assertEquals(testId, evt.getLoggerName());
         assertTrue(evt.getMessage().contains("Throwable test"));

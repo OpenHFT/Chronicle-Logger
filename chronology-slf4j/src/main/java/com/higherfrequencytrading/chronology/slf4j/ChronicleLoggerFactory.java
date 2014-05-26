@@ -23,19 +23,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * To configure this sl4j binding you need to specify the location of a properties
  * files via system properties:
  * <p/>
- * <code>-Dslf4j.chronicle.properties=${pathOfYourPropertiesFile}<code>
+ * <code>-Dslf4j.chronology.properties=${pathOfYourPropertiesFile}<code>
  * </p>
  * <p/>
  * The following system properties are supported to configure the behavior of this
  * logger:
  * <p/>
  * <ul>
- * <li><code>slf4j.chronicle.path</code></li>
- * <li><code>slf4j.chronicle.level</code></li>
- * <li><code>slf4j.chronicle.shortName</code></li>
- * <li><code>slf4j.chronicle.append</code></li>
- * <li><code>slf4j.chronicle.format</code></li>
- * <li><code>slf4j.chronicle.type</code></li>
+ * <li><code>slf4j.chronology.path</code></li>
+ * <li><code>slf4j.chronology.level</code></li>
+ * <li><code>slf4j.chronology.shortName</code></li>
+ * <li><code>slf4j.chronology.append</code></li>
+ * <li><code>slf4j.chronology.format</code></li>
+ * <li><code>slf4j.chronology.type</code></li>
  * </ul>
  */
 public class ChronicleLoggerFactory implements ILoggerFactory {
@@ -147,9 +147,9 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             } else {
                 if (path == null) {
                     throw new IllegalArgumentException(new StringBuilder()
-                        .append("slf4j.chronicle.path is not defined")
+                        .append("slf4j.chronology.path is not defined")
                         .append(",")
-                        .append("slf4j.chronicle.logger.")
+                        .append("slf4j.chronology.logger.")
                             .append(name)
                             .append(".path is not defined")
                         .toString()

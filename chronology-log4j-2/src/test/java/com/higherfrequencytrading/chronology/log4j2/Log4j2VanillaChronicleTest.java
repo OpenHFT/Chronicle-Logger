@@ -2,6 +2,7 @@ package com.higherfrequencytrading.chronology.log4j2;
 
 import com.higherfrequencytrading.chronology.Chronology;
 import com.higherfrequencytrading.chronology.ChronologyLogEvent;
+import com.higherfrequencytrading.chronology.ChronologyLogHelper;
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
@@ -14,7 +15,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
 
@@ -54,7 +58,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
         for(ChronologyLogLevel level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronologyLogEvent.decodeBinary(tailer);
+            evt = ChronologyLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), Chronology.VERSION);
             assertEquals(evt.getType(), Chronology.Type.LOG4J_2);
@@ -74,14 +78,14 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
         logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogEvent.decodeBinary(tailer);
+        evt = ChronologyLogHelper.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogEvent.decodeBinary(tailer);
+        evt = ChronologyLogHelper.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
@@ -114,7 +118,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
         for(ChronologyLogLevel level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronologyLogEvent.decodeBinary(tailer);
+            evt = ChronologyLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), Chronology.VERSION);
             assertEquals(evt.getType(), Chronology.Type.LOG4J_2);
@@ -133,14 +137,14 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
         logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogEvent.decodeBinary(tailer);
+        evt = ChronologyLogHelper.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogEvent.decodeBinary(tailer);
+        evt = ChronologyLogHelper.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
@@ -171,7 +175,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
         for(ChronologyLogLevel level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronologyLogEvent.decodeText(tailer);
+            evt = ChronologyLogHelper.decodeText(tailer);
             assertNotNull(evt);
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
@@ -187,7 +191,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
         logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogEvent.decodeText(tailer);
+        evt = ChronologyLogHelper.decodeText(tailer);
         assertNotNull(evt);
         assertEquals(threadId, evt.getThreadName());
         assertEquals(testId, evt.getLoggerName());
@@ -199,7 +203,7 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
         assertNull(evt.getThrowable());
 
         assertTrue(tailer.nextIndex());
-        evt = ChronologyLogEvent.decodeText(tailer);
+        evt = ChronologyLogHelper.decodeText(tailer);
         assertNotNull(evt);
         assertEquals(threadId, evt.getThreadName());
         assertEquals(testId, evt.getLoggerName());

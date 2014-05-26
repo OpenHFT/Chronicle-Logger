@@ -26,7 +26,6 @@ public abstract class AbstractChronicleAppender
     private String path;
 
     protected Chronicle chronicle;
-    protected ExcerptAppender appender;
 
     protected AbstractChronicleAppender() {
         this.filterAttachable = new FilterAttachableImpl<ILoggingEvent>();
@@ -36,7 +35,6 @@ public abstract class AbstractChronicleAppender
         this.path = null;
 
         this.chronicle = null;
-        this.appender = null;
     }
 
     // *************************************************************************
@@ -56,6 +54,9 @@ public abstract class AbstractChronicleAppender
     // *************************************************************************
 
     protected abstract Chronicle createChronicle() throws IOException;
+
+
+    protected abstract ExcerptAppender getAppender();
 
     // *************************************************************************
     //
@@ -99,10 +100,8 @@ public abstract class AbstractChronicleAppender
         } else {
             try {
                 this.chronicle = createChronicle();
-                this.appender  = this.chronicle.createAppender();
             } catch(IOException e) {
                 this.chronicle = null;
-                this.appender  = null;
                 addError("Appender " + getName() + " " + e.getMessage());
             }
         }

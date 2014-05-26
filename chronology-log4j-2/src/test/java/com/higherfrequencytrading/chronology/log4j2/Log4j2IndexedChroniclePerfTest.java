@@ -1,9 +1,10 @@
-package com.higherfrequencytrading.chronology.logback;
+package com.higherfrequencytrading.chronology.log4j2;
 
 import net.openhft.chronicle.tools.ChronicleTools;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
+public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
 
     // *************************************************************************
     //
@@ -21,7 +22,6 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
 
     @Before
     public void setUp() {
-        ChronicleTools.warmup();
     }
 
     @After
@@ -117,6 +117,7 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
         ChronicleTools.deleteOnExit(basePath(testId));
     }
 
+    @Ignore
     @Test
     public void testSingleThreadLogging3() throws IOException {
         Thread.currentThread().setName("perf-plain-indexed");
@@ -126,6 +127,9 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
         final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed-async");
         final long   items     = 1000000;
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
+
+        warmup(clogger);
+        warmup(plogger);
 
         for(int n=0;n<10;n++) {
 

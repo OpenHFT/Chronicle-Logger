@@ -16,17 +16,28 @@
               class = "ch.qos.logback.core.FileAppender">
         <File>${java.io.tmpdir}/chronology-logback/perf-plain-vanilla-log</File>
         <encoder>
-            <pattern>%d{yyyy/MM/dd HH:mm:ss.SSS}|%-5.5p|%-48.48c{48} - %m%n</pattern>
+            <pattern>%d|%t|%c|%m%n</pattern>
         </encoder>
     </appender>
-
 
     <appender name  = "PERF-PLAIN-INDEXED"
               class = "ch.qos.logback.core.FileAppender">
         <File>${java.io.tmpdir}/chronology-logback/perf-plain-indexed-log</File>
         <encoder>
-            <pattern>%d{yyyy/MM/dd HH:mm:ss.SSS}|%-5.5p|%-48.48c{48} - %m%n</pattern>
+            <pattern>%d|%t|%c|%m%n</pattern>
         </encoder>
+    </appender>
+
+    <appender name  = "PERF-PLAIN-VANILLA-ASYNC"
+              class = "ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="PERF-PLAIN-VANILLA"/>
+    </appender>
+
+    <appender name  = "PERF-PLAIN-INDEXED-ASYNC"
+              class = "ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="PERF-PLAIN-INDEXED"/>
     </appender>
 
     <logger name="perf-plain-vanilla" level="TRACE" additivity="false">
@@ -35,6 +46,14 @@
 
     <logger name="perf-plain-indexed" level="TRACE" additivity="false">
         <appender-ref ref="PERF-PLAIN-INDEXED"/>
+    </logger>
+
+    <logger name="perf-plain-vanilla-async" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-PLAIN-VANILLA-ASYNC"/>
+    </logger>
+
+    <logger name="perf-plain-indexed-async" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-PLAIN-INDEXED-ASYNC"/>
     </logger>
 
     <!-- ******************************************************************* -->

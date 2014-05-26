@@ -63,6 +63,12 @@ public class LogbackTestBase {
         }
     }
 
+    protected static void warmup(Logger logger) {
+        for(int i=0;i<10;i++) {
+            logger.info("warmup");
+        }
+    }
+
     // *************************************************************************
     //
     // *************************************************************************
@@ -86,7 +92,6 @@ public class LogbackTestBase {
     // *************************************************************************
     //
     // *************************************************************************
-
 
     protected final static class MySerializableData implements Serializable {
         private final Object data;
@@ -128,26 +133,22 @@ public class LogbackTestBase {
         }
     }
 
-    protected final class RunnableChronicle implements Runnable {
+    protected final class RunnableLogger implements Runnable {
         private final Logger logger;
         private final int runs;
         private final String fmt;
         private final String fmtBase = " > val1={}, val2={}, val3={}";
 
-        public RunnableChronicle(int runs, int pad, String loggerName) {
+        public RunnableLogger(int runs, int pad, String loggerName) {
             this.logger = LoggerFactory.getLogger(loggerName);
-            this.runs   = runs;
-            this.fmt    = StringUtils.rightPad(fmtBase, pad + fmtBase.length(), "X");
+            this.runs = runs;
+            this.fmt = StringUtils.rightPad(fmtBase, pad + fmtBase.length(), "X");
         }
 
         @Override
         public void run() {
-            try {
-                for (int i = 0; i < this.runs; i++) {
-                    this.logger.info(fmt,i, i * 10,i / 16);
-                }
-            } catch (Exception e) {
-                this.logger.warn("Exception", e);
+            for (int i = 0; i < this.runs; i++) {
+                this.logger.info(fmt,i, i * 7,i / 16);
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.higherfrequencytrading.chronology.logback;
+package com.higherfrequencytrading.chronology.log4j1;
 
 import net.openhft.chronicle.tools.ChronicleTools;
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
+public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
 
     // *************************************************************************
     //
@@ -40,9 +40,6 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
         final Logger clogger   = LoggerFactory.getLogger(testId);
         final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed");
         final long   items     = 1000000;
-
-        warmup(clogger);
-        warmup(plogger);
 
         for(int s=64; s <= 1024 ;s += 64) {
             final String staticStr = StringUtils.leftPad("", s, 'X');
@@ -84,9 +81,6 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
         final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed");
         final long   items     = 1000000;
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
-
-        warmup(clogger);
-        warmup(plogger);
 
         for(int n=0;n<10;n++) {
 
@@ -162,9 +156,6 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
 
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
-        warmup(LoggerFactory.getLogger("perf-binary-indexed-chronicle"));
-        warmup(LoggerFactory.getLogger("perf-plain-indexed"));
-
         final int RUNS = 1000000;
         final int THREADS = 10;
 

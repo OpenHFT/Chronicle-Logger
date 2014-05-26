@@ -14,14 +14,12 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
     private String path;
 
     protected Chronicle chronicle;
-    protected ExcerptAppender appender;
 
     protected AbstractChronicleAppender(String name, Filter filter) {
         super(name, filter, null, true);
 
         this.path = null;
         this.chronicle = null;
-        this.appender = null;
     }
 
     // *************************************************************************
@@ -42,6 +40,8 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
 
     protected abstract Chronicle createChronicle() throws IOException;
 
+    protected abstract ExcerptAppender getAppender();
+
     // *************************************************************************
     //
     // *************************************************************************
@@ -53,10 +53,8 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         } else {
             try {
                 this.chronicle = createChronicle();
-                this.appender  = this.chronicle.createAppender();
             } catch(IOException e) {
                 this.chronicle = null;
-                this.appender  = null;
                 LOGGER.error("Appender " + getName() + " " + e.getMessage());
             }
 

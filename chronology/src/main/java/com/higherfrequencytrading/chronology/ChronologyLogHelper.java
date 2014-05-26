@@ -2,8 +2,29 @@ package com.higherfrequencytrading.chronology;
 
 
 import net.openhft.chronicle.ExcerptAppender;
+import net.openhft.lang.io.Bytes;
 
 public final class ChronologyLogHelper {
+
+    /**
+     * Decode a binary stream, i. e. Excerpt
+     *
+     * @param in        the source of event in binary form (i. e. Excerpt)
+     * @return          the ChronologyLogEvent
+     */
+    public static ChronologyLogEvent decodeBinary(final Bytes in) {
+        return BinaryChronologyLogEvent.read(in);
+    }
+
+    /**
+     * Decode a text stream, i. e. Excerpt
+     *
+     * @param in        the source of event in text form (i. e. Excerpt)
+     * @return          the ChronologyLogEvent
+     */
+    public static ChronologyLogEvent decodeText(final Bytes in) {
+        return TextChronologyLogEvent.read(in);
+    }
 
     /**
      * Append a string representation of Throwable to Excerpt

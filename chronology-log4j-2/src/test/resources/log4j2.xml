@@ -11,6 +11,26 @@
             <PatternLayout pattern="[CHRONOLOGY] [%-5p] %c - %m%n%throwable{none}"/>
         </Console>
 
+        <RandomAccessFile
+                name           = "PERF-PLAIN-VANILLA"
+                fileName       = "logs/$${sys:java.io.tmpdir}/chronology-log4j2/perf-plain-vanilla.log"
+                immediateFlush = "false"
+                append         = "false">
+            <PatternLayout>
+                <Pattern>%d|%t|%c|%m%n</Pattern>
+            </PatternLayout>
+        </RandomAccessFile>
+
+        <RandomAccessFile
+                name           = "PERF-PLAIN-INDEXED"
+                fileName       = "logs/$${sys:java.io.tmpdir}/chronology-log4j2/perf-plain-indexed.log"
+                immediateFlush = "false"
+                append         = "false">
+            <PatternLayout>
+                <Pattern>%d|%t|%c|%m%n</Pattern>
+            </PatternLayout>
+        </RandomAccessFile>
+
         <!-- *************************************************************** -->
         <!-- VANILLA                                                         -->
         <!-- *************************************************************** -->
@@ -25,6 +45,13 @@
         <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE-FMT">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-vanilla-chronicle-fmt</path>
             <formatMessage>true</formatMessage>
+            <includeCallerData>false</includeCallerData>
+            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+        </BinaryVanillaChronicle>
+
+        <BinaryVanillaChronicle name="PERF-BINARY-VANILLA-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/perf-binary-vanilla-chronicle</path>
+            <formatMessage>false</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
         </BinaryVanillaChronicle>
@@ -53,6 +80,13 @@
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
         </BinaryIndexedChronicle>
 
+        <BinaryIndexedChronicle name="PERF-BINARY-INDEXED-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/perf-binary-indexed-chronicle</path>
+            <formatMessage>false</formatMessage>
+            <includeCallerData>false</includeCallerData>
+            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+        </BinaryIndexedChronicle>
+
         <TextIndexedChronicle name="TEXT-INDEXED-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/text-indexed-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
@@ -71,6 +105,15 @@
             <appender-ref ref="STDOUT"/>
         </root>
 
+        <logger name="perf-plain-vanilla" level="trace" additivity="false">
+            <appender-ref ref="PERF-PLAIN-VANILLA"/>
+        </logger>
+
+        <logger name="perf-plain-indexed" level="trace" additivity="false">
+            <appender-ref ref="PERF-PLAIN-INDEXED"/>
+        </logger>
+
+
         <!-- *************************************************************** -->
         <!-- VANILLA                                                         -->
         <!-- *************************************************************** -->
@@ -80,6 +123,9 @@
         </logger>
         <logger name="binary-vanilla-chronicle-fmt" level="trace" additivity="false">
             <appender-ref ref="BINARY-VANILLA-CHRONICLE-FMT"/>
+        </logger>
+        <logger name="perf-binary-vanilla-chronicle" level="trace" additivity="false">
+            <appender-ref ref="PERF-BINARY-VANILLA-CHRONICLE"/>
         </logger>
         <logger name="text-vanilla-chronicle" level="trace" additivity="false">
             <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
@@ -94,6 +140,9 @@
         </logger>
         <logger name="binary-indexed-chronicle-fmt" level="trace" additivity="false">
             <appender-ref ref="BINARY-INDEXED-CHRONICLE-FMT"/>
+        </logger>
+        <logger name="perf-binary-indexed-chronicle" level="trace" additivity="false">
+            <appender-ref ref="PERF-BINARY-INDEXED-CHRONICLE"/>
         </logger>
         <logger name="text-indexed-chronicle" level="trace" additivity="false">
             <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>

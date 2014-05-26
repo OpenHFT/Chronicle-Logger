@@ -7,7 +7,7 @@ import net.openhft.lang.model.constraints.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-final class TextChronologyLogEvent extends ChronologyLogEvent {
+final class TextChronologyLogEvent implements ChronologyLogEvent {
 
     //TODO: check
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat(Chronology.DEFAULT_DATE_FORMAT);
@@ -56,7 +56,12 @@ final class TextChronologyLogEvent extends ChronologyLogEvent {
         // message
         String message = in.readLine();
 
-        return new TextChronologyLogEvent(timestamp, level, threadName, loggerName, message);
+        return new TextChronologyLogEvent(
+            timestamp,
+            level,
+            threadName,
+            loggerName,
+            message);
     }
 
     // *********************************************************************
@@ -69,8 +74,8 @@ final class TextChronologyLogEvent extends ChronologyLogEvent {
     private final String loggerName;
     private final String message;
 
-    TextChronologyLogEvent(long timestamp, ChronologyLogLevel level, String threadName,
-                           String loggerName, String message) {
+    private TextChronologyLogEvent(long timestamp, ChronologyLogLevel level, String threadName,
+        String loggerName, String message) {
         this.timestamp = timestamp;
         this.level = level;
         this.threadName = threadName;

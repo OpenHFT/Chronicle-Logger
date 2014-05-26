@@ -1,9 +1,10 @@
-package com.higherfrequencytrading.chronology.logback;
+package com.higherfrequencytrading.chronology.log4j2;
 
-import net.openhft.chronicle.tools.ChronicleTools;
+import net.openhft.lang.io.IOTools;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
+public class Log4j2VanillaChroniclePerfTest extends Log4j2TestBase {
+
 
     // *************************************************************************
     //
@@ -21,7 +23,6 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
 
     @Before
     public void setUp() {
-        ChronicleTools.warmup();
     }
 
     @After
@@ -34,11 +35,11 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
 
     @Test
     public void testSingleThreadLogging1() throws IOException {
-        Thread.currentThread().setName("perf-plain-indexed");
+        Thread.currentThread().setName("perf-plain-vanilla");
 
-        final String testId    = "perf-binary-indexed-chronicle";
+        final String testId    = "perf-binary-vanilla-chronicle";
         final Logger clogger   = LoggerFactory.getLogger(testId);
-        final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed");
+        final Logger plogger   = LoggerFactory.getLogger("perf-plain-vanilla");
         final long   items     = 1000000;
 
         warmup(clogger);
@@ -72,16 +73,16 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
                 (pEnd1 - pStart1) / items / 1e3);
         }
 
-        ChronicleTools.deleteOnExit(basePath(testId));
+        IOTools.deleteDir(basePath(testId));
     }
 
     @Test
     public void testSingleThreadLogging2() throws IOException {
-        Thread.currentThread().setName("perf-plain-indexed");
+        Thread.currentThread().setName("perf-plain-vanilla");
 
-        final String testId    = "perf-binary-indexed-chronicle";
+        final String testId    = "perf-binary-vanilla-chronicle";
         final Logger clogger   = LoggerFactory.getLogger(testId);
-        final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed");
+        final Logger plogger   = LoggerFactory.getLogger("perf-plain-vanilla");
         final long   items     = 1000000;
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
 
@@ -93,7 +94,7 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
             long cStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {
-                clogger.info(strFmt, i, i * 10, i / 16);
+                clogger.info(strFmt, i, i * 7, i / 16);
             }
 
             long cEnd1 = System.nanoTime();
@@ -101,7 +102,7 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
             long pStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {
-                plogger.info(strFmt, i, i * 10, i / 16);
+                plogger.info(strFmt, i, i * 7, i / 16);
             }
 
             long pEnd1 = System.nanoTime();
@@ -114,25 +115,29 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
                 (pEnd1 - pStart1) / items / 1e3);
         }
 
-        ChronicleTools.deleteOnExit(basePath(testId));
+        IOTools.deleteDir(basePath(testId));
     }
 
+    @Ignore
     @Test
-    public void testSingleThreadLogging3() throws IOException {
-        Thread.currentThread().setName("perf-plain-indexed");
+    public void testSingleThreadLoggin3() throws IOException {
+        Thread.currentThread().setName("perf-plain-vanilla");
 
-        final String testId    = "perf-binary-indexed-chronicle";
+        final String testId    = "perf-binary-vanilla-chronicle";
         final Logger clogger   = LoggerFactory.getLogger(testId);
-        final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed-async");
+        final Logger plogger   = LoggerFactory.getLogger("perf-plain-vanilla-async");
         final long   items     = 1000000;
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
+
+        warmup(clogger);
+        warmup(plogger);
 
         for(int n=0;n<10;n++) {
 
             long cStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {
-                clogger.info(strFmt, i, i * 10, i / 16);
+                clogger.info(strFmt, i, i * 7, i / 16);
             }
 
             long cEnd1 = System.nanoTime();
@@ -140,7 +145,7 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
             long pStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {
-                plogger.info(strFmt, i, i * 10, i / 16);
+                plogger.info(strFmt, i, i * 7, i / 16);
             }
 
             long pEnd1 = System.nanoTime();
@@ -153,7 +158,7 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
                 (pEnd1 - pStart1) / items / 1e3);
         }
 
-        ChronicleTools.deleteOnExit(basePath(testId));
+        IOTools.deleteDir(basePath(testId));
     }
 
     // *************************************************************************
@@ -162,10 +167,11 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
 
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
-        warmup(LoggerFactory.getLogger("perf-binary-indexed-chronicle"));
-        warmup(LoggerFactory.getLogger("perf-plain-indexed"));
 
-        final int RUNS = 1000000;
+        warmup(LoggerFactory.getLogger("perf-binary-vanilla-chronicle"));
+        warmup(LoggerFactory.getLogger("perf-plain-vanilla"));
+
+        final int RUNS    = 1000000;
         final int THREADS = 10;
 
         for (int size : new int[]{64, 128, 256}) {
@@ -174,11 +180,11 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
 
                 ExecutorService es = Executors.newFixedThreadPool(THREADS);
                 for (int t = 0; t < THREADS; t++) {
-                    es.submit(new RunnableLogger(RUNS, size, "perf-binary-indexed-chronicle"));
+                    es.submit(new RunnableLogger(RUNS, size, "perf-binary-vanilla-chronicle"));
                 }
 
                 es.shutdown();
-                es.awaitTermination(5, TimeUnit.SECONDS);
+                es.awaitTermination(60, TimeUnit.SECONDS);
 
                 final long time = System.nanoTime() - start;
 
@@ -195,11 +201,11 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
 
                 ExecutorService es = Executors.newFixedThreadPool(THREADS);
                 for (int t = 0; t < THREADS; t++) {
-                    es.submit(new RunnableLogger(RUNS, size, "perf-plain-indexed"));
+                    es.submit(new RunnableLogger(RUNS, size, "perf-plain-vanilla"));
                 }
 
                 es.shutdown();
-                es.awaitTermination(5, TimeUnit.SECONDS);
+                es.awaitTermination(60, TimeUnit.SECONDS);
 
                 final long time = System.nanoTime() - start;
 
@@ -212,6 +218,6 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
             }
         }
 
-        ChronicleTools.deleteOnExit(basePath("perf-binary-indexed-chronicle"));
+        IOTools.deleteDir(basePath("perf-binary-vanilla-chronicle"));
     }
 }

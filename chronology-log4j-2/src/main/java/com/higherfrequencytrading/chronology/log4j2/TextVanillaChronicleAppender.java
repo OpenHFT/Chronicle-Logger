@@ -1,6 +1,7 @@
 package com.higherfrequencytrading.chronology.log4j2;
 
 import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.VanillaChronicleConfig;
 import org.apache.logging.log4j.core.Filter;
@@ -35,6 +36,17 @@ public class TextVanillaChronicleAppender extends TextChronicleAppender {
         return (this.config != null)
             ? new VanillaChronicle(this.getPath(),this.config)
             : new VanillaChronicle(this.getPath());
+    }
+
+    @Override
+    protected ExcerptAppender getAppender() {
+        try {
+            return this.chronicle.createAppender();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     // *************************************************************************

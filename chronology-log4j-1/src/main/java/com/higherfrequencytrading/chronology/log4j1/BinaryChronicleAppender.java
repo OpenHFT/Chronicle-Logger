@@ -1,6 +1,7 @@
 package com.higherfrequencytrading.chronology.log4j1;
 
 import com.higherfrequencytrading.chronology.Chronology;
+import net.openhft.chronicle.ExcerptAppender;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
@@ -40,9 +41,8 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
 
     @Override
     protected void append(final LoggingEvent event) {
-        createAppender();
-
-        if(this.appender != null) {
+        final ExcerptAppender appender = getAppender();
+        if(appender != null) {
             appender.startExcerpt();
             appender.writeByte(Chronology.VERSION);
             Chronology.Type.LOG4J_1.writeTo(appender);

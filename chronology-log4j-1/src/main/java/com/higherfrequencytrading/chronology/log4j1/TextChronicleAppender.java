@@ -1,6 +1,7 @@
 package com.higherfrequencytrading.chronology.log4j1;
 
 import com.higherfrequencytrading.chronology.*;
+import net.openhft.chronicle.ExcerptAppender;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
@@ -45,9 +46,8 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
     @Override
     protected void append(final LoggingEvent event) {
-        createAppender();
-
-        if(this.appender != null) {
+        final ExcerptAppender appender = getAppender();
+        if(appender != null) {
             appender.startExcerpt();
             timeStampFormatter.format(event.getTimeStamp(), appender);
             appender.append('|');
@@ -63,7 +63,7 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
             if(ti != null) {
                 appender.append(" - ");
                 ChronologyLogHelper.appendStackTraceAsString(
-                    this.appender,
+                    appender,
                     ti.getThrowable(),
                     Chronology.COMMA,
                     this.stackTradeDepth

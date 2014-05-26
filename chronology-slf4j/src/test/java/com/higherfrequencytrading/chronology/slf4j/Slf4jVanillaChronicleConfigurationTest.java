@@ -15,7 +15,7 @@ public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
 
     @Test
     public void testLoadProperties() {
-        String cfgPath = System.getProperty("slf4j.chronicle.vanilla.properties");
+        String cfgPath = System.getProperty("slf4j.chronology.vanilla.properties");
         ChronicleLoggingConfig cfg = ChronicleLoggingConfig.load(cfgPath);
 
         assertEquals(
