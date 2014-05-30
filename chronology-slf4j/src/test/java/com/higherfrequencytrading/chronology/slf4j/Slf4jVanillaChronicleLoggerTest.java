@@ -39,7 +39,6 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
             System.getProperty("slf4j.chronology.vanilla.properties"));
 
         getChronicleLoggerFactory().relaod();
-        getChronicleLoggerFactory().warmup();
     }
 
     @After

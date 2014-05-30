@@ -21,7 +21,6 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
 
     @Before
     public void setUp() {
-        ChronicleTools.warmup();
     }
 
     @After

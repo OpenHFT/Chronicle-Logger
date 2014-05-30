@@ -40,7 +40,6 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         );
 
         getChronicleLoggerFactory().relaod();
-        getChronicleLoggerFactory().warmup();
     }
 
     @After
