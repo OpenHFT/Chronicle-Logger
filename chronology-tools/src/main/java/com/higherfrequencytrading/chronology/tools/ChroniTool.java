@@ -1,7 +1,6 @@
 package com.higherfrequencytrading.chronology.tools;
 
 import com.higherfrequencytrading.chronology.*;
-import com.higherfrequencytrading.chronology.slf4j.ChronicleLoggingConfig;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.lang.io.Bytes;
@@ -13,7 +12,7 @@ import java.text.SimpleDateFormat;
 
 public final class ChroniTool {
 
-    public static final DateFormat DF = new SimpleDateFormat(ChronicleLoggingConfig.DEFAULT_DATE_FORMAT);
+    public static final DateFormat DF = new SimpleDateFormat(Chronology.DEFAULT_DATE_FORMAT);
 
     // *************************************************************************
     //

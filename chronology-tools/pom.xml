@@ -36,26 +36,9 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.higherfrequencytrading</groupId>
-                <artifactId>chronology-slf4j</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.higherfrequencytrading</groupId>
-                <artifactId>chronology-logback</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle</artifactId>
-                <version>3.0.1</version>
-            </dependency>
-
-            <!-- TODO: move to third-party-bom -->
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>1.1.2</version>
+                <version>3.1.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -66,14 +49,6 @@
             <artifactId>chronology</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.higherfrequencytrading</groupId>
-            <artifactId>chronology-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.higherfrequencytrading</groupId>
-            <artifactId>chronology-logback</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle</artifactId>
         </dependency>
@@ -82,8 +57,8 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
         </dependency>
 
         <!-- modules for testing -->
