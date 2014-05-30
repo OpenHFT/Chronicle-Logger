@@ -89,8 +89,6 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * Preload loggers
      */
     public synchronized void warmup() {
-        //ChronicleTools.warmup();
-        //TODO: preload loggers
     }
 
     /**

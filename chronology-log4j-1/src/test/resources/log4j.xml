@@ -128,6 +128,10 @@
         <appender-ref ref="PERF-PLAIN-INDEXED-ASYNC"/>
     </logger>
 
+    <logger name="net.openhft">
+        <level value="warn"/>
+    </logger>
+
     <root>
         <level value="debug" />
         <appender-ref ref="STDOUT" />

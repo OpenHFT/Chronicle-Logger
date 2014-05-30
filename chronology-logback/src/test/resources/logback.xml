@@ -193,6 +193,8 @@
     </logger>
     -->
 
+    <logger name="net.openhft" level="WARN"/>
+
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />
     </root>
