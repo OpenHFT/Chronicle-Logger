@@ -128,8 +128,9 @@
         <appender-ref ref="PERF-PLAIN-INDEXED-ASYNC"/>
     </logger>
 
-    <logger name="net.openhft">
+    <logger name="net.openhft" additivity="false">
         <level value="warn"/>
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <root>
