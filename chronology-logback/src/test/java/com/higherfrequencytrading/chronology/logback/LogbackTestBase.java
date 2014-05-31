@@ -64,8 +64,9 @@ public class LogbackTestBase {
     }
 
     protected static void warmup(Logger logger) {
+        final String str = StringUtils.rightPad("X",64);
         for(int i=0;i<10;i++) {
-            logger.info("warmup");
+            logger.info(str);
         }
     }
 

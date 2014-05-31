@@ -42,6 +42,9 @@ public class Log4j1VanillaChroniclePerfTest extends Log4j1TestBase {
         final Logger plogger   = LoggerFactory.getLogger("perf-plain-vanilla");
         final long   items     = 1000000;
 
+        warmup(clogger);
+        warmup(plogger);
+
         for(int s=64; s <= 1024 ;s += 64) {
             final String staticStr = StringUtils.leftPad("", s, 'X');
 
@@ -83,6 +86,9 @@ public class Log4j1VanillaChroniclePerfTest extends Log4j1TestBase {
         final long   items     = 1000000;
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
 
+        warmup(clogger);
+        warmup(plogger);
+
         for(int n=0;n<10;n++) {
 
             long cStart1 = System.nanoTime();
@@ -122,6 +128,9 @@ public class Log4j1VanillaChroniclePerfTest extends Log4j1TestBase {
         final long   items     = 1000000;
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
 
+        warmup(clogger);
+        warmup(plogger);
+
         for(int n=0;n<10;n++) {
 
             long cStart1 = System.nanoTime();
@@ -155,12 +164,11 @@ public class Log4j1VanillaChroniclePerfTest extends Log4j1TestBase {
     // Multi Thread
     // *************************************************************************
 
-    // *************************************************************************
-    // Multi Thread
-    // *************************************************************************
-
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
+        warmup(LoggerFactory.getLogger("perf-binary-vanilla-chronicle"));
+        warmup(LoggerFactory.getLogger("perf-plain-vanilla"));
+
         final int RUNS    = 1000000;
         final int THREADS = 10;
 

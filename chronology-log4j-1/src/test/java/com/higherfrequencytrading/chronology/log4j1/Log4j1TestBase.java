@@ -59,6 +59,13 @@ public class Log4j1TestBase {
         }
     }
 
+    protected static void warmup(Logger logger) {
+        final String str = StringUtils.rightPad("X",64);
+        for(int i=0;i<10;i++) {
+            logger.info(str);
+        }
+    }
+
     // *************************************************************************
     //
     // *************************************************************************
