@@ -11,3 +11,5 @@
 
 # maven
 target
+log
+logs
