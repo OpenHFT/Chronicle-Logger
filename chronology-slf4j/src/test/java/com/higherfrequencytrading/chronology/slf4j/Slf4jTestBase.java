@@ -41,6 +41,18 @@ public class Slf4jTestBase {
             + loggerName;
     }
 
+    protected static String indexedBasePath(String loggerName) {
+        return basePath(ChronicleLoggingConfig.TYPE_INDEXED)
+            + File.separator
+            + loggerName;
+    }
+
+    protected static String vanillaBasePath(String loggerName) {
+        return basePath(ChronicleLoggingConfig.TYPE_VANILLA)
+            + File.separator
+            + loggerName;
+    }
+
     protected static void log(Logger logger, ChronologyLogLevel level, String fmt, Object... args) {
         switch(level) {
             case TRACE:
@@ -81,12 +93,28 @@ public class Slf4jTestBase {
     }
 
     /**
+     * @param id
+     * @return
+     */
+    protected IndexedChronicle getIndexedChronicle(String id) throws IOException {
+        return new IndexedChronicle(basePath(ChronicleLoggingConfig.TYPE_INDEXED, id));
+    }
+
+    /**
      * @param type
      * @param id
      * @return
      */
     protected IndexedChronicle getIndexedChronicle(String type, String id) throws IOException {
         return new IndexedChronicle(basePath(type, id));
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    protected VanillaChronicle getVanillaChronicle(String id) throws IOException {
+        return new VanillaChronicle(basePath(ChronicleLoggingConfig.TYPE_VANILLA, id));
     }
 
     /**

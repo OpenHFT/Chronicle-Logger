@@ -116,7 +116,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
     // *************************************************************************
 
     @Test
-    public void testLogging() throws IOException {
+    public void testLogging1() throws IOException {
         final String testId    = "readwrite";
         final String threadId  = testId + "-th";
         final long   timestamp = System.currentTimeMillis();
@@ -241,6 +241,5 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         chronicle.close();
 
         IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED,testId));
-
     }
 }
