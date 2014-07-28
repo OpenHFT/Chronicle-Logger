@@ -1,2 +1,2 @@
-chronology
-==========
+Chronicle-Logger
+================
