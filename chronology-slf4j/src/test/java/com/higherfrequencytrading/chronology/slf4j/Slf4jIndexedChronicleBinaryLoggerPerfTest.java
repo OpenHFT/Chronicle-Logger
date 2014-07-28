@@ -27,11 +27,11 @@ public class Slf4jIndexedChronicleBinaryLoggerPerfTest extends Slf4jTestBase {
             System.getProperty("slf4j.chronology.indexed.binary.perf.properties"));
 
         getChronicleLoggerFactory().relaod();
-        getChronicleLoggerFactory().warmup();
     }
 
     @After
-    public void tearDown() {getChronicleLoggerFactory().shutdown();
+    public void tearDown() {
+        getChronicleLoggerFactory().shutdown();
 
         IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED));
     }
@@ -124,7 +124,7 @@ public class Slf4jIndexedChronicleBinaryLoggerPerfTest extends Slf4jTestBase {
                 }
 
                 es.shutdown();
-                es.awaitTermination(5, TimeUnit.SECONDS);
+                es.awaitTermination(30, TimeUnit.SECONDS);
 
                 final long time = System.nanoTime() - start;
 

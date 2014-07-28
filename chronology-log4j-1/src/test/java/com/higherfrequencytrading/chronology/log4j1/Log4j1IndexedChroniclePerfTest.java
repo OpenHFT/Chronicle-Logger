@@ -41,6 +41,9 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
         final Logger plogger   = LoggerFactory.getLogger("perf-plain-indexed");
         final long   items     = 1000000;
 
+        warmup(clogger);
+        warmup(plogger);
+
         for(int s=64; s <= 1024 ;s += 64) {
             final String staticStr = StringUtils.leftPad("", s, 'X');
 
@@ -82,6 +85,9 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
         final long   items     = 1000000;
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
 
+        warmup(clogger);
+        warmup(plogger);
+
         for(int n=0;n<10;n++) {
 
             long cStart1 = System.nanoTime();
@@ -121,6 +127,9 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
         final long   items     = 1000000;
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
 
+        warmup(clogger);
+        warmup(plogger);
+
         for(int n=0;n<10;n++) {
 
             long cStart1 = System.nanoTime();
@@ -156,6 +165,9 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
 
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
+        warmup(LoggerFactory.getLogger("perf-binary-indexed-chronicle"));
+        warmup(LoggerFactory.getLogger("perf-plain-indexed"));
+
         final int RUNS = 1000000;
         final int THREADS = 10;
 
@@ -169,7 +181,7 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
                 }
 
                 es.shutdown();
-                es.awaitTermination(5, TimeUnit.SECONDS);
+                es.awaitTermination(60, TimeUnit.SECONDS);
 
                 final long time = System.nanoTime() - start;
 
@@ -190,7 +202,7 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
                 }
 
                 es.shutdown();
-                es.awaitTermination(5, TimeUnit.SECONDS);
+                es.awaitTermination(60, TimeUnit.SECONDS);
 
                 final long time = System.nanoTime() - start;
 

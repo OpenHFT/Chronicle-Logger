@@ -148,6 +148,12 @@
             <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
         </logger>
 
+        <!-- *************************************************************** -->
+        <!--                                                                 -->
+        <!-- *************************************************************** -->
+
+        <logger name="net.openhft" level="warn"/>
+
     </loggers>
 
 </configuration>

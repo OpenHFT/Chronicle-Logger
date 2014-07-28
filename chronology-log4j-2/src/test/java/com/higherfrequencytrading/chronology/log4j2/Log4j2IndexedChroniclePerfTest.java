@@ -182,7 +182,7 @@ public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
                 }
 
                 es.shutdown();
-                es.awaitTermination(5, TimeUnit.SECONDS);
+                es.awaitTermination(60, TimeUnit.SECONDS);
 
                 final long time = System.nanoTime() - start;
 
@@ -203,7 +203,7 @@ public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
                 }
 
                 es.shutdown();
-                es.awaitTermination(5, TimeUnit.SECONDS);
+                es.awaitTermination(60, TimeUnit.SECONDS);
 
                 final long time = System.nanoTime() - start;
 

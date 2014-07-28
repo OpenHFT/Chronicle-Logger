@@ -1,12 +1,7 @@
 package com.higherfrequencytrading.chronology.slf4j;
 
 import com.higherfrequencytrading.chronology.ChronologyLogLevel;
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleConfig;
-import net.openhft.chronicle.IndexedChronicle;
-import net.openhft.chronicle.VanillaChronicle;
-import net.openhft.chronicle.VanillaChronicleConfig;
-import net.openhft.chronicle.tools.ChronicleTools;
+import net.openhft.chronicle.*;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.helpers.NOPLogger;
@@ -75,7 +70,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             System.err.println(
                 new StringBuilder("Unable to inzialize chroncile-slf4j ")
                     .append("(")
-                    .append("name")
+                    .append(name)
                     .append(")")
                     .append("\n  ")
                     .append(e.getMessage())
@@ -94,8 +89,6 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * Preload loggers
      */
     public synchronized void warmup() {
-        ChronicleTools.warmup();
-        //TODO: preload loggers
     }
 
     /**
