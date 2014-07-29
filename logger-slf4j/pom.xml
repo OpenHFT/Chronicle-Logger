@@ -31,6 +31,7 @@
     <groupId>net.openhft</groupId>
     <artifactId>chronicle-logger-slf4j</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>bundle</packaging>
 
     <dependencyManagement>
         <dependencies>
@@ -158,6 +159,30 @@
                         </slf4j.chronicle-logger.indexed.binary.perf.properties>
                     </systemPropertyVariables>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}
+                        </Bundle-SymbolicName>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+                        <Export-Package>net.openhft.chronicle.logger.slf4j.*</Export-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <!--
+                      This execution makes sure that the manifest is available
+                      when the tests are executed
+                    -->
+                    <execution>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
