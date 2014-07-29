@@ -20,11 +20,7 @@ package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
-import net.openhft.chronicle.logger.ChronicleLog;
-import net.openhft.chronicle.logger.ChronicleLogEvent;
-import net.openhft.chronicle.logger.ChronicleLogHelper;
-import net.openhft.chronicle.logger.ChronicleLogProcessor;
-import net.openhft.chronicle.logger.ChronicleLogReader;
+import net.openhft.chronicle.logger.*;
 import net.openhft.lang.io.Bytes;
 import net.openhft.lang.model.constraints.NotNull;
 

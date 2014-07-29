@@ -18,8 +18,8 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
-import com.higherfrequencytrading.chronology.Chronology;
-import com.higherfrequencytrading.chronology.ChronologyLogLevel;
+import net.openhft.chronicle.logger.ChronicleLog;
+import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.junit.Test;
 
 import java.io.File;
@@ -46,28 +46,28 @@ public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
             ChronicleLoggingConfig.BINARY_MODE_FORMATTED,
             cfg.getString(ChronicleLoggingConfig.KEY_BINARY_MODE));
         assertEquals(
-            Chronology.STR_FALSE,
+            ChronicleLog.STR_FALSE,
             cfg.getString(ChronicleLoggingConfig.KEY_SYNCHRONOUS));
         assertEquals(
-            ChronologyLogLevel.DEBUG.toString(),
+            ChronicleLogLevel.DEBUG.toString(),
             cfg.getString(ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
         assertEquals(
-            Chronology.STR_FALSE,
+            ChronicleLog.STR_FALSE,
             cfg.getString(ChronicleLoggingConfig.KEY_SHORTNAME));
         assertEquals(
-            Chronology.STR_FALSE,
+            ChronicleLog.STR_FALSE,
             cfg.getString(ChronicleLoggingConfig.KEY_APPEND));
         assertEquals(
             new File(basePath(ChronicleLoggingConfig.TYPE_VANILLA, "logger_1")),
             new File(cfg.getString("logger_1", ChronicleLoggingConfig.KEY_PATH)));
         assertEquals(
-            ChronologyLogLevel.INFO.toString(),
+            ChronicleLogLevel.INFO.toString(),
             cfg.getString("logger_1", ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
         assertEquals(
             new File(basePath(ChronicleLoggingConfig.TYPE_VANILLA, "readwrite")),
             new File(cfg.getString("readwrite", ChronicleLoggingConfig.KEY_PATH)));
         assertEquals(
-            ChronologyLogLevel.DEBUG.toString(),
+            ChronicleLogLevel.DEBUG.toString(),
             cfg.getString("readwrite", ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
     }
 }

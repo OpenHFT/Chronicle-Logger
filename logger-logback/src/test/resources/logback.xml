@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2014 Higher Frequency Trading
+  ~ <p/>
+  ~ http://www.higherfrequencytrading.com
+  ~ <p/>
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ <p/>
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ <p/>
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <configuration>
 
     <appender name  = "STDOUT"
@@ -61,7 +79,7 @@
     <!-- ******************************************************************* -->
 
     <appender name  = "BINARY-VANILLA-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.logback.BinaryVanillaChronicleAppender">
+              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
         <path>${java.io.tmpdir}/chronology-logback/binary-vanilla-chronicle</path>
         <formatMessage>false</formatMessage>
         <includeCallerData>false</includeCallerData>
@@ -69,7 +87,7 @@
     </appender>
 
     <appender name  = "BINARY-VANILLA-CHRONICLE-FMT"
-              class = "com.higherfrequencytrading.chronology.logback.BinaryVanillaChronicleAppender">
+              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
         <path>${java.io.tmpdir}/chronology-logback/binary-vanilla-chronicle-fmt</path>
         <formatMessage>true</formatMessage>
         <includeCallerData>false</includeCallerData>
@@ -77,7 +95,7 @@
     </appender>
 
     <appender name  = "PERF-BINARY-VANILLA-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.logback.BinaryVanillaChronicleAppender">
+              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
         <path>${java.io.tmpdir}/chronology-logback/perf-binary-vanilla-chronicle</path>
         <formatMessage>false</formatMessage>
         <includeCallerData>false</includeCallerData>
@@ -101,7 +119,7 @@
     <!-- ******************************************************************* -->
 
     <appender name  = "TEXT-VANILLA-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.logback.TextVanillaChronicleAppender">
+              class = "net.openhft.chronicle.logger.logback.TextVanillaChronicleAppender">
         <path>${java.io.tmpdir}/chronology-logback/text-vanilla-chronicle</path>
         <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
         <stackTradeDepth>3</stackTradeDepth>
@@ -116,7 +134,7 @@
     <!-- ******************************************************************* -->
 
     <appender name  = "BINARY-INDEXED-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.logback.BinaryIndexedChronicleAppender">
+              class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
         <path>${java.io.tmpdir}/chronology-logback/binary-indexed-chronicle</path>
         <formatMessage>false</formatMessage>
         <includeCallerData>false</includeCallerData>
@@ -124,7 +142,7 @@
     </appender>
 
     <appender name  = "BINARY-INDEXED-CHRONICLE-FMT"
-              class = "com.higherfrequencytrading.chronology.logback.BinaryIndexedChronicleAppender">
+              class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
         <path>${java.io.tmpdir}/chronology-logback/binary-indexed-chronicle-fmt</path>
         <formatMessage>true</formatMessage>
         <includeCallerData>false</includeCallerData>
@@ -132,7 +150,7 @@
     </appender>
 
     <appender name  = "PERF-BINARY-INDEXED-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.logback.BinaryIndexedChronicleAppender">
+              class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
         <path>${java.io.tmpdir}/chronology-logback/perf-binary-indexed-chronicle</path>
         <formatMessage>false</formatMessage>
         <includeCallerData>false</includeCallerData>
@@ -157,7 +175,7 @@
     <!-- ******************************************************************* -->
 
     <appender name  = "TEXT-INDEXED-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.logback.TextIndexedChronicleAppender">
+              class = "net.openhft.chronicle.logger.logback.TextIndexedChronicleAppender">
         <path>${java.io.tmpdir}/chronology-logback/text-indexed-chronicle</path>
         <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
         <stackTradeDepth>3</stackTradeDepth>

@@ -19,12 +19,7 @@
 package net.openhft.chronicle.logger;
 
 
-import net.openhft.chronicle.ChronicleConfig;
-import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.ExcerptTailer;
-import net.openhft.chronicle.IndexedChronicle;
-import net.openhft.chronicle.VanillaChronicle;
-import net.openhft.chronicle.VanillaChronicleConfig;
+import net.openhft.chronicle.*;
 import net.openhft.chronicle.tools.ChronicleTools;
 import net.openhft.lang.io.RandomDataInput;
 import net.openhft.lang.io.RandomDataOutput;

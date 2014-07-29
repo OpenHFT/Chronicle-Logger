@@ -20,9 +20,15 @@ package net.openhft.chronicle.logger;
 
 import net.openhft.lang.io.ByteStringAppender;
 
-import java.lang.ref.*;
-import java.text.*;
-import java.util.*;
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class TimeStampFormatter {

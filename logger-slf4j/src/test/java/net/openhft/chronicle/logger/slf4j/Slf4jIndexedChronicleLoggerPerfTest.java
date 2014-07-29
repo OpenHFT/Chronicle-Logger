@@ -145,7 +145,7 @@ public class Slf4jIndexedChronicleLoggerPerfTest extends Slf4jTestBase {
 
                 final long time = System.nanoTime() - start;
 
-                System.out.printf("Chronology.MT (runs=%d, min size=%03d, elapsed=%.3f ms) took an average of %.3f us per entry\n",
+                System.out.printf("ChronicleLog.MT (runs=%d, min size=%03d, elapsed=%.3f ms) took an average of %.3f us per entry\n",
                     RUNS,
                     size,
                     time / 1e6,

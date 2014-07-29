@@ -28,7 +28,7 @@ public final class ChronicleLogHelper {
      * Decode a binary stream, i. e. Excerpt
      *
      * @param in        the source of event in binary form (i. e. Excerpt)
-     * @return          the ChronologyLogEvent
+     * @return          the ChronicleLogEvent
      */
     public static ChronicleLogEvent decodeBinary(final Bytes in) {
         return BinaryChronicleLogEvent.read(in);
@@ -38,7 +38,7 @@ public final class ChronicleLogHelper {
      * Decode a text stream, i. e. Excerpt
      *
      * @param in        the source of event in text form (i. e. Excerpt)
-     * @return          the ChronologyLogEvent
+     * @return          the ChronicleLogEvent
      */
     public static ChronicleLogEvent decodeText(final Bytes in) {
         return TextChronicleLogEvent.read(in);

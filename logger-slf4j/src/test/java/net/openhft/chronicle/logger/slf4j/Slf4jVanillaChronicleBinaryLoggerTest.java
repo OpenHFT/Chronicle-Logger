@@ -18,13 +18,13 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
-import com.higherfrequencytrading.chronology.Chronology;
-import com.higherfrequencytrading.chronology.ChronologyLogEvent;
-import com.higherfrequencytrading.chronology.ChronologyLogHelper;
-import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.VanillaChronicle;
+import net.openhft.chronicle.logger.ChronicleLog;
+import net.openhft.chronicle.logger.ChronicleLogEvent;
+import net.openhft.chronicle.logger.ChronicleLogHelper;
+import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.IOTools;
 import org.junit.After;
 import org.junit.Before;
@@ -35,9 +35,7 @@ import org.slf4j.impl.StaticLoggerBinder;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * TODO: add test case for text-logegrs
@@ -84,7 +82,7 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         ChronicleLogger cl = (ChronicleLogger) logger;
 
-        assertEquals(cl.getLevel(), ChronologyLogLevel.DEBUG);
+        assertEquals(cl.getLevel(), ChronicleLogLevel.DEBUG);
         assertEquals(cl.getName(), Slf4jVanillaChronicleBinaryLoggerTest.class.getName());
         assertTrue(cl.getWriter() instanceof ChronicleLogAppenders.BinaryWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof VanillaChronicle);
@@ -114,12 +112,12 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         assertTrue(tailer.nextIndex());
 
-        ChronologyLogEvent evt = ChronologyLogHelper.decodeBinary(tailer);
+        ChronicleLogEvent evt = ChronicleLogHelper.decodeBinary(tailer);
         assertNotNull(evt);
-        assertEquals(evt.getVersion(), Chronology.VERSION);
-        assertEquals(evt.getType(), Chronology.Type.SLF4J);
+        assertEquals(evt.getVersion(), ChronicleLog.VERSION);
+        assertEquals(evt.getType(), ChronicleLog.Type.SLF4J);
         assertTrue(timestamp <= evt.getTimeStamp());
-        assertEquals(ChronologyLogLevel.DEBUG,evt.getLevel());
+        assertEquals(ChronicleLogLevel.DEBUG,evt.getLevel());
         assertEquals("data {}, {}",evt.getMessage());
         assertEquals(theradName, evt.getThreadName());
         assertNotNull(evt.getArgumentArray());
@@ -157,17 +155,17 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         Chronicle          chronicle = getVanillaChronicle(loggerName);
         ExcerptTailer      tailer    = chronicle.createTailer().toStart();
-        ChronologyLogEvent evt       = null;
+        ChronicleLogEvent evt       = null;
 
         for(int[] vals : new int[][] {  { 1 } , {1, 2} , {1, 2, 3}}) {
             assertTrue(tailer.nextIndex());
 
-            evt = ChronologyLogHelper.decodeBinary(tailer);
+            evt = ChronicleLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
-            assertEquals(evt.getVersion(), Chronology.VERSION);
-            assertEquals(evt.getType(), Chronology.Type.SLF4J);
+            assertEquals(evt.getVersion(), ChronicleLog.VERSION);
+            assertEquals(evt.getType(), ChronicleLog.Type.SLF4J);
             assertTrue(evt.getTimeStamp() >= timestamp);
-            assertEquals(ChronologyLogLevel.INFO, evt.getLevel());
+            assertEquals(ChronicleLogLevel.INFO, evt.getLevel());
             assertEquals("args", evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(vals.length, evt.getArgumentArray().length);

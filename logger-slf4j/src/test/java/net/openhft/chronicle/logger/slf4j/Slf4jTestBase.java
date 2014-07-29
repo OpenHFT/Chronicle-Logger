@@ -18,11 +18,9 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
-import com.higherfrequencytrading.chronology.ChronologyLogLevel;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
-import net.openhft.chronicle.logger.slf4j.ChronicleLoggerFactory;
-import net.openhft.chronicle.logger.slf4j.ChronicleLoggingConfig;
+import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.Bytes;
 import net.openhft.lang.io.serialization.BytesMarshallable;
 import net.openhft.lang.model.constraints.NotNull;
@@ -43,7 +41,7 @@ public class Slf4jTestBase {
     //
     // *************************************************************************
 
-    protected static ChronologyLogLevel[] LOG_LEVELS = ChronologyLogLevel.values();
+    protected static ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     protected static String basePath(String type) {
         return System.getProperty("java.io.tmpdir")
@@ -73,7 +71,7 @@ public class Slf4jTestBase {
             + loggerName;
     }
 
-    protected static void log(Logger logger, ChronologyLogLevel level, String fmt, Object... args) {
+    protected static void log(Logger logger, ChronicleLogLevel level, String fmt, Object... args) {
         switch(level) {
             case TRACE:
                 logger.trace(fmt,args);

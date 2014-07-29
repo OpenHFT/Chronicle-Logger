@@ -1,44 +1,62 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright 2014 Higher Frequency Trading
+  ~ <p/>
+  ~ http://www.higherfrequencytrading.com
+  ~ <p/>
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ <p/>
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ <p/>
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
 
     <appender name  = "BINARY-VANILLA-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.log4j1.BinaryVanillaChronicleAppender">
+              class = "net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronology-log4j1/binary-vanilla-chronicle"/>
         <param name="includeCallerData" value="false"/>
         <param name="includeMappedDiagnosticContext" value="false"/>
     </appender>
 
     <appender name  = "PERF-BINARY-VANILLA-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.log4j1.BinaryVanillaChronicleAppender">
+              class = "net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronology-log4j1/perf-binary-vanilla-chronicle"/>
         <param name="includeCallerData" value="false"/>
         <param name="includeMappedDiagnosticContext" value="false"/>
     </appender>
 
     <appender name  = "TEXT-VANILLA-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.log4j1.TextVanillaChronicleAppender">
+              class = "net.openhft.chronicle.logger.log4j1.TextVanillaChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronology-log4j1/text-vanilla-chronicle"/>
         <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
         <param name="stackTradeDepth" value="3"/>
     </appender>
 
     <appender name  = "BINARY-INDEXED-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.log4j1.BinaryIndexedChronicleAppender">
+              class = "net.openhft.chronicle.logger.log4j1.BinaryIndexedChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronology-log4j1/binary-indexed-chronicle"/>
         <param name="includeCallerData" value="false"/>
         <param name="includeMappedDiagnosticContext" value="false"/>
     </appender>
 
     <appender name  = "PERF-BINARY-INDEXED-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.log4j1.BinaryIndexedChronicleAppender">
+              class = "net.openhft.chronicle.logger.log4j1.BinaryIndexedChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronology-log4j1/perf-binary-indexed-chronicle"/>
         <param name="includeCallerData" value="false"/>
         <param name="includeMappedDiagnosticContext" value="false"/>
     </appender>
 
     <appender name  = "TEXT-INDEXED-CHRONICLE"
-              class = "com.higherfrequencytrading.chronology.log4j1.TextIndexedChronicleAppender">
+              class = "net.openhft.chronicle.logger.log4j1.TextIndexedChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronology-log4j1/text-indexed-chronicle"/>
         <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
         <param name="stackTradeDepth" value="3"/>
