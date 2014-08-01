@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2014 Higher Frequency Trading
+  ~ <p/>
+  ~ http://www.higherfrequencytrading.com
+  ~ <p/>
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ <p/>
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ <p/>
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<configuration>
+
+    <appender name  = "STDOUT"
+              class = "ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d %contextName [%t] %level %logger{36} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <!-- ******************************************************************* -->
+    <!-- PLAIN                                                               -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "PERF-PLAIN-VANILLA"
+              class = "ch.qos.logback.core.FileAppender">
+        <File>${java.io.tmpdir}/chronology-logback/perf-plain-vanilla-log</File>
+        <encoder>
+            <pattern>%d|%t|%c|%m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name  = "PERF-PLAIN-INDEXED"
+              class = "ch.qos.logback.core.FileAppender">
+        <File>${java.io.tmpdir}/chronology-logback/perf-plain-indexed-log</File>
+        <encoder>
+            <pattern>%d|%t|%c|%m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name  = "PERF-PLAIN-VANILLA-ASYNC"
+              class = "ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="PERF-PLAIN-VANILLA"/>
+    </appender>
+
+    <appender name  = "PERF-PLAIN-INDEXED-ASYNC"
+              class = "ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="PERF-PLAIN-INDEXED"/>
+    </appender>
+
+    <logger name="perf-plain-vanilla" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-PLAIN-VANILLA"/>
+    </logger>
+
+    <logger name="perf-plain-indexed" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-PLAIN-INDEXED"/>
+    </logger>
+
+    <logger name="perf-plain-vanilla-async" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-PLAIN-VANILLA-ASYNC"/>
+    </logger>
+
+    <logger name="perf-plain-indexed-async" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-PLAIN-INDEXED-ASYNC"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!-- VANILLA - BINARY                                                    -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "BINARY-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/binary-vanilla-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+    <appender name  = "BINARY-VANILLA-CHRONICLE-FMT"
+              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/binary-vanilla-chronicle-fmt</path>
+        <formatMessage>true</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+    <appender name  = "PERF-BINARY-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/perf-binary-vanilla-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+    <logger name="binary-vanilla-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="binary-vanilla-chronicle-fmt" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-VANILLA-CHRONICLE-FMT"/>
+    </logger>
+
+    <logger name="perf-binary-vanilla-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!-- VANILLA - TEXT                                                      -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "TEXT-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.TextVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/text-vanilla-chronicle</path>
+        <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+        <stackTradeDepth>3</stackTradeDepth>
+    </appender>
+
+    <logger name="text-vanilla-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!-- INDEXED - BINARY                                                    -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "BINARY-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/binary-indexed-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+    <appender name  = "BINARY-INDEXED-CHRONICLE-FMT"
+              class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/binary-indexed-chronicle-fmt</path>
+        <formatMessage>true</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+    <appender name  = "PERF-BINARY-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/perf-binary-indexed-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+
+    <logger name="binary-indexed-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <logger name="binary-indexed-chronicle-fmt" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-INDEXED-CHRONICLE-FMT"/>
+    </logger>
+
+    <logger name="perf-binary-indexed-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="PERF-BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!-- INDEXED - TEXT                                                      -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "TEXT-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.TextIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/text-indexed-chronicle</path>
+        <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+        <stackTradeDepth>3</stackTradeDepth>
+    </appender>
+
+    <logger name="text-indexed-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
+
+    <!--
+    <appender name="VANILLA-CHRONICLE-CONNECT" class="com.higherfrequencytrading.chronology.logback.VanillaChronicleAppender">
+        <path>/tmp/chronicle-logback/vanilla-chronicle-connect</path>
+        <connect>localhost:9700</connect>
+    </appender>
+
+    <appender name="VANILLA-CHRONICLE-LISTEN" class="com.higherfrequencytrading.chronology.logback.VanillaChronicleAppender">
+        <path>/tmp/chronicle-logback/vanilla-chronicle-listen</path>
+        <listen>localhost:9701</listen>
+    </appender>
+    -->
+
+    <!--
+    <logger name="VANILLA-CHRONICLE-CONNECT" level="DEBUG">
+        <appender-ref ref="vanilla-chronicle-connect"/>
+    </logger>
+
+    <logger name="VANILLA-CHRONICLE-LISTEN" level="DEBUG">
+        <appender-ref ref="vanilla-chronicle-listen"/>
+    </logger>
+    -->
+
+    <logger name="net.openhft" level="WARN" additivity="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>
