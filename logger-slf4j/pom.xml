@@ -51,7 +51,7 @@
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle</artifactId>
-                <version>3.2.0-SNAPSHOT</version>
+                <version>3.2.1-SNAPSHOT</version>
             </dependency>
             
             <dependency>
@@ -127,30 +127,30 @@
                     <forkCount>0</forkCount>
                     <reuseForks>false</reuseForks>
                     <systemPropertyVariables>
-                        <slf4j.chronicle-logger.vanilla.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle-logger.vanilla.properties
-                        </slf4j.chronicle-logger.vanilla.properties>
-                        <slf4j.chronicle-logger.vanilla.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle-logger.vanilla.perf.properties
-                        </slf4j.chronicle-logger.vanilla.perf.properties>
-                        <slf4j.chronicle-logger.vanilla.binary.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle-logger.vanilla.binary.properties
-                        </slf4j.chronicle-logger.vanilla.binary.properties>
-                        <slf4j.chronicle-logger.vanilla.binary.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle-logger.vanilla.binary.perf.properties
-                        </slf4j.chronicle-logger.vanilla.binary.perf.properties>
-                        <slf4j.chronicle-logger.indexed.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle-logger.indexed.properties
-                        </slf4j.chronicle-logger.indexed.properties>
-                        <slf4j.chronicle-logger.indexed.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle-logger.indexed.perf.properties
-                        </slf4j.chronicle-logger.indexed.perf.properties>
-                        <slf4j.chronicle-logger.indexed.binary.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle-logger.indexed.binary.properties
-                        </slf4j.chronicle-logger.indexed.binary.properties>
-                        <slf4j.chronicle-logger.indexed.binary.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle-logger.indexed.binary.perf.properties
-                        </slf4j.chronicle-logger.indexed.binary.perf.properties>
+                        <slf4j.chronicle.vanilla.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.properties
+                        </slf4j.chronicle.vanilla.properties>
+                        <slf4j.chronicle.vanilla.perf.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.perf.properties
+                        </slf4j.chronicle.vanilla.perf.properties>
+                        <slf4j.chronicle.vanilla.binary.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.binary.properties
+                        </slf4j.chronicle.vanilla.binary.properties>
+                        <slf4j.chronicle.vanilla.binary.perf.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.binary.perf.properties
+                        </slf4j.chronicle.vanilla.binary.perf.properties>
+                        <slf4j.chronicle.indexed.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.properties
+                        </slf4j.chronicle.indexed.properties>
+                        <slf4j.chronicle.indexed.perf.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.perf.properties
+                        </slf4j.chronicle.indexed.perf.properties>
+                        <slf4j.chronicle.indexed.binary.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.binary.properties
+                        </slf4j.chronicle.indexed.binary.properties>
+                        <slf4j.chronicle.indexed.binary.perf.properties>
+                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.binary.perf.properties
+                        </slf4j.chronicle.indexed.binary.perf.properties>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

@@ -40,8 +40,8 @@ chronology-tools
   import net.openhft.chronicle.logger.tools.ChroniTool
 
   @Grapes([
-     @Grab(group='net.openhft', module='chronicle'               , version='3.2-SNAPSHOT'),
-     @Grab(group='net.openhft', module='chronicle-logger--tools' , version='1.0.0-SNAPSHOT' ),
+     @Grab(group='net.openhft', module='chronicle'              , version='3.2.1-SNAPSHOT'),
+     @Grab(group='net.openhft', module='chronicle-logger-tools' , version='1.0.0-SNAPSHOT' ),
   ])
   class LogSearch {
       static def main(String[] args) {
@@ -74,7 +74,7 @@ chronology-tools
   import net.openhft.chronicle.logger.tools.ChroniTool
 
   @Grapes([
-     @Grab(group='net.openhft', module='chronicle'             , version='3.2-SNAPSHOT'),
+     @Grab(group='net.openhft', module='chronicle'             , version='3.2.1-SNAPSHOT'),
      @Grab(group='net.opemhft', module='chronicle-logger-tools', version='1.0.0-SNAPSHOT' ),
   ])
   class LogSearch {
