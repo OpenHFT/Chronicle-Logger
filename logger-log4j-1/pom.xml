@@ -21,8 +21,8 @@
 
     <parent>
         <groupId>net.openhft</groupId>
-        <artifactId>root-parent-pom</artifactId>
-        <version>1.1.0</version>
+        <artifactId>java-parent-pom</artifactId>
+        <version>1.1.1</version>
         <relativePath />
     </parent>
 
@@ -39,25 +39,19 @@
                 <groupId>net.openhft</groupId>
                 <artifactId>third-party-bom</artifactId>
                 <type>pom</type>
-                <version>3.4.3</version>
+                <version>3.4.2</version>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>net.openhft</groupId>
-                <artifactId>java-parent-pom</artifactId>
-                <type>pom</type>
-                <version>1.1.0</version>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>net.openhft</groupId>
-                <artifactId>chronicle</artifactId>
-                <version>3.1.1</version>
-            </dependency>
+
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-logger</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>chronicle</artifactId>
+                <version>3.2.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
@@ -132,11 +126,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.17</version>
-            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>

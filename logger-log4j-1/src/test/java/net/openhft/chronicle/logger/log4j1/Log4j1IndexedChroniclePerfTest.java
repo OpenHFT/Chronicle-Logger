@@ -20,8 +20,7 @@ package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.tools.ChronicleTools;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,20 +30,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+@Ignore
 public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    @Before
-    public void setUp() {
-        ChronicleTools.warmup();
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     // *************************************************************************
     // Single Thread

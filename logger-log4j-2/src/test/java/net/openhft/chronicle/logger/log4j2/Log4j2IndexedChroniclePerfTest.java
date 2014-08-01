@@ -32,19 +32,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+@Ignore
 public class Log4j2IndexedChroniclePerfTest extends Log4j2TestBase {
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     // *************************************************************************
     // Single Thread
