@@ -84,7 +84,7 @@
                     </checkinComment>
                     <content>${project.reporting.outputDirectory}</content>
                     <skipDeletedFiles>true</skipDeletedFiles>
-                    <pubScmUrl>scm:git:git@github.com:OpenHFT/Chronicle-Logger</pubScmUrl>
+                    <pubScmUrl>scm:git:git@github.com:OpenHFT/Chronicle-Logger/chronicle-logger</pubScmUrl>
                     <scmBranch>gh-pages</scmBranch>
                 </configuration>
             </plugin>
@@ -115,5 +115,12 @@
             </plugin>
         </plugins>
     </build>
+
+    <scm>
+        <url>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</url>
+        <connection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</connection>
+        <developerConnection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</developerConnection>
+        <tag>master</tag>
+    </scm>
 
 </project>

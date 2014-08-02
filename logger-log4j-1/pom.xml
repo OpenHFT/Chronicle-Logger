@@ -153,4 +153,11 @@
         </plugins>
     </build>
 
+    <scm>
+        <url>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</url>
+        <connection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</connection>
+        <developerConnection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</developerConnection>
+        <tag>master</tag>
+    </scm>
+
 </project>
