@@ -25,7 +25,7 @@
         <groupId>net.openhft</groupId>
         <artifactId>java-parent-pom</artifactId>
         <version>1.1.1</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -48,7 +48,7 @@
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle</artifactId>
                 <version>3.2.1-SNAPSHOT</version>
-            </dependency>            
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -74,7 +74,7 @@
 
     <build>
         <plugins>
-        
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-scm-publish-plugin</artifactId>
@@ -82,13 +82,13 @@
                     <checkoutDirectory>${project.build.directory}/scmpublish/javadoc</checkoutDirectory>
                     <checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}
                     </checkinComment>
-                    <content>${project.reporting.outputDirectory}/logger</content>
+                    <content>${project.reporting.outputDirectory}</content>
                     <skipDeletedFiles>true</skipDeletedFiles>
                     <pubScmUrl>scm:git:git@github.com:OpenHFT/Chronicle-Logger</pubScmUrl>
                     <scmBranch>gh-pages</scmBranch>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
