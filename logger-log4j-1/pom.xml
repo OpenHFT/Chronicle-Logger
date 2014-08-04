@@ -35,11 +35,12 @@
 
     <dependencyManagement>
         <dependencies>
+
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>third-party-bom</artifactId>
                 <type>pom</type>
-                <version>3.4.6</version>
+                <version>3.4.7</version>
                 <scope>import</scope>
             </dependency>
 
@@ -48,39 +49,13 @@
                 <artifactId>chronicle-logger</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle</artifactId>
                 <version>3.2.1-SNAPSHOT</version>
             </dependency>
 
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.17</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jul-to-slf4j</artifactId>
-                <version>1.7.6</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.6</version>
-            </dependency>
-
-            <!-- JMH -->
-            <dependency>
-                <groupId>org.openjdk.jmh</groupId>
-                <artifactId>jmh-core</artifactId>
-                <version>0.9.5</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openjdk.jmh</groupId>
-                <artifactId>jmh-core-benchmarks</artifactId>
-                <version>0.9.5</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
