@@ -1,0 +1,7 @@
+net.openhft.chronicle.logger
+net.openhft.chronicle.logger.log4j1
+net.openhft.chronicle.logger.log4j2
+net.openhft.chronicle.logger.logback
+net.openhft.chronicle.logger.slf4j
+net.openhft.chronicle.logger.tools
+org.slf4j.impl
