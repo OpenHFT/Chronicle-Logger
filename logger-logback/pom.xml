@@ -21,41 +21,15 @@
 
     <parent>
         <groupId>net.openhft</groupId>
-        <artifactId>java-parent-pom</artifactId>
-        <version>1.1.1</version>
-        <relativePath />
+        <artifactId>chronicle-logger-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <name>OpenHFT/Chronicle-Logger/logger-logback</name>
-    <groupId>net.openhft</groupId>
     <artifactId>chronicle-logger-logback</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>net.openhft</groupId>
-                <artifactId>third-party-bom</artifactId>
-                <type>pom</type>
-                <version>3.4.7</version>
-                <scope>import</scope>
-            </dependency>
-            
-            <dependency>
-                <groupId>net.openhft</groupId>
-                <artifactId>chronicle-logger</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.openhft</groupId>
-                <artifactId>chronicle</artifactId>
-                <version>3.2.1-SNAPSHOT</version>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
