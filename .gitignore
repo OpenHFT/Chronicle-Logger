@@ -4,6 +4,8 @@
 *.jar
 *.war
 *.ear
+*.releaseBackup
+release.properties
 
 # IntelliJ
 *.iml
