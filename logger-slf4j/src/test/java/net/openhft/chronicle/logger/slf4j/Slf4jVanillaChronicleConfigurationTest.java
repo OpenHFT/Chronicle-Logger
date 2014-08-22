@@ -18,13 +18,18 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.VanillaChronicleConfig;
 import net.openhft.chronicle.logger.ChronicleLog;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -66,5 +71,29 @@ public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
         assertEquals(
             ChronicleLogLevel.DEBUG.toString(),
             cfg.getString("readwrite", ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
+    }
+
+
+
+    @Test
+    public void testLoadConfig() {
+        final Properties properties = new Properties();
+        properties.setProperty("slf4j.chronicle.type","vanilla");
+        properties.setProperty("slf4j.chronicle.config.type","DEFAULT");
+        properties.setProperty("slf4j.chronicle.config.dataCacheCapacity","128");
+        properties.setProperty("slf4j.chronicle.config.indexCacheCapacity","256");
+        properties.setProperty("slf4j.chronicle.config.synchronous","true");
+
+        final ChronicleLoggingConfig clc = ChronicleLoggingConfig.load(properties);
+        assertNull(clc.getIndexedChronicleConfig());
+        assertNotNull(clc.getVanillaChronicleConfig());
+        assertTrue(VanillaChronicleConfig.DEFAULT != clc.getVanillaChronicleConfig());
+
+        final VanillaChronicleConfig cfg = clc.getVanillaChronicleConfig();
+        assertEquals(128, cfg.dataCacheCapacity());
+        assertEquals(256, cfg.indexCacheCapacity());
+        assertTrue(cfg.synchronous());
+        assertEquals(VanillaChronicleConfig.DEFAULT.defaultMessageSize(), cfg.defaultMessageSize());
+        assertEquals(VanillaChronicleConfig.DEFAULT.cleanupOnClose(), cfg.cleanupOnClose());
     }
 }
