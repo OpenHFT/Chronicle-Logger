@@ -46,9 +46,6 @@ public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
             ChronicleLoggingConfig.BINARY_MODE_FORMATTED,
             cfg.getString(ChronicleLoggingConfig.KEY_BINARY_MODE));
         assertEquals(
-            ChronicleLog.STR_FALSE,
-            cfg.getString(ChronicleLoggingConfig.KEY_SYNCHRONOUS));
-        assertEquals(
             ChronicleLogLevel.DEBUG.toString(),
             cfg.getString(ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
         assertEquals(

@@ -67,9 +67,9 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * c-tor
      */
     public ChronicleLoggerFactory(final ChronicleLoggingConfig cfg) {
-        this.loggers   = new ConcurrentHashMap<String, Logger>();
+        this.loggers = new ConcurrentHashMap<String, Logger>();
         this.appenders = new ConcurrentHashMap<String, ChronicleLogAppender>();
-        this.cfg       = ChronicleLoggingConfig.load();
+        this.cfg = ChronicleLoggingConfig.load();
     }
 
     // *************************************************************************
@@ -102,6 +102,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     // *************************************************************************
     //
     // *************************************************************************
+
 
     /**
      * Preload loggers
@@ -238,14 +239,11 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * @return
      */
     private Chronicle newVanillaChronicle(String path, String name) throws IOException {
-        Boolean append = cfg.getBoolean(name, ChronicleLoggingConfig.KEY_APPEND, true);
-        Boolean synch = cfg.getBoolean(name, ChronicleLoggingConfig.KEY_SYNCHRONOUS, false);
-
-        VanillaChronicle chronicle = new VanillaChronicle(
+        final VanillaChronicle chronicle = new VanillaChronicle(
             path,
-            new VanillaChronicleConfig().synchronous(synch));
+            this.cfg.getVanillaChronicleConfig());
 
-        if (!append) {
+        if (!cfg.getBoolean(name, ChronicleLoggingConfig.KEY_APPEND, true)) {
             chronicle.clear();
         }
 
@@ -260,17 +258,12 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * @return
      */
     private Chronicle newIndexedChronicle(String path, String name) throws IOException {
-        Boolean append = cfg.getBoolean(name, ChronicleLoggingConfig.KEY_APPEND, true);
-        Boolean synch = cfg.getBoolean(name, ChronicleLoggingConfig.KEY_SYNCHRONOUS, false);
-
-        if (!append) {
+        if (!cfg.getBoolean(name, ChronicleLoggingConfig.KEY_APPEND, true)) {
             new File(path + ".data").delete();
             new File(path + ".index").delete();
         }
 
-        return new IndexedChronicle(
-            path,
-            ChronicleConfig.DEFAULT.clone().synchronousMode(synch));
+        return new IndexedChronicle(path, this.cfg.getIndexedChronicleConfig());
     }
 }
 

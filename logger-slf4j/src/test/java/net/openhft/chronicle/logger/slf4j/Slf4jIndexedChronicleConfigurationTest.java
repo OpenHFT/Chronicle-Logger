@@ -18,13 +18,18 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.ChronicleConfig;
 import net.openhft.chronicle.logger.ChronicleLog;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -33,8 +38,8 @@ public class Slf4jIndexedChronicleConfigurationTest extends Slf4jTestBase {
 
     @Test
     public void testLoadProperties() {
-        String cfgPath = System.getProperty("slf4j.chronicle.indexed.properties");
-        ChronicleLoggingConfig cfg = ChronicleLoggingConfig.load(cfgPath);
+        final String cfgPath = System.getProperty("slf4j.chronicle.indexed.properties");
+        final ChronicleLoggingConfig cfg = ChronicleLoggingConfig.load(cfgPath);
 
         assertEquals(
             new File(basePath(ChronicleLoggingConfig.TYPE_INDEXED, "root")),
@@ -45,9 +50,6 @@ public class Slf4jIndexedChronicleConfigurationTest extends Slf4jTestBase {
         assertEquals(
             ChronicleLoggingConfig.BINARY_MODE_FORMATTED,
             cfg.getString(ChronicleLoggingConfig.KEY_BINARY_MODE));
-        assertEquals(
-            ChronicleLog.STR_FALSE,
-            cfg.getString(ChronicleLoggingConfig.KEY_SYNCHRONOUS));
         assertEquals(
             ChronicleLogLevel.DEBUG.toString(),
             cfg.getString(ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
@@ -69,5 +71,28 @@ public class Slf4jIndexedChronicleConfigurationTest extends Slf4jTestBase {
         assertEquals(
             ChronicleLogLevel.DEBUG.toString(),
             cfg.getString("readwrite", ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
+    }
+
+    @Test
+    public void testLoadConfig() {
+        final Properties properties = new Properties();
+        properties.setProperty("slf4j.chronicle.type","indexed");
+        properties.setProperty("slf4j.chronicle.config.type","DEFAULT");
+        properties.setProperty("slf4j.chronicle.config.indexFileCapacity","128");
+        properties.setProperty("slf4j.chronicle.config.dataBlockSize","256");
+        properties.setProperty("slf4j.chronicle.config.synchronousMode","true");
+
+
+        final ChronicleLoggingConfig clc = ChronicleLoggingConfig.load(properties);
+        assertNotNull(clc.getIndexedChronicleConfig());
+        assertTrue(ChronicleConfig.DEFAULT != clc.getIndexedChronicleConfig());
+        assertNull(clc.getVanillaChronicleConfig());
+
+        final ChronicleConfig cfg = clc.getIndexedChronicleConfig();
+        assertEquals(128, cfg.indexFileCapacity());
+        assertEquals(256, cfg.dataBlockSize());
+        assertTrue(cfg.synchronousMode());
+        assertEquals(ChronicleConfig.DEFAULT.indexFileExcerpts(), cfg.indexFileExcerpts());
+        assertEquals(ChronicleConfig.DEFAULT.cacheLineSize(), cfg.cacheLineSize());
     }
 }
