@@ -270,7 +270,7 @@ public class ChronicleLoggingConfig {
                 Class<?> paramClass = null;
 
                 for (final Method m : methods) {
-                    if(m.getName().equalsIgnoreCase(propName) && m.getParameterCount() == 1) {
+                    if(m.getName().equalsIgnoreCase(propName) && m.getParameterTypes().length == 1) {
                         method = m;
                         paramClass = m.getParameterTypes()[0];
 
