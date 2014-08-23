@@ -31,15 +31,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- *
- */
 public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
 
     @Test
     public void testLoadProperties() {
-        String cfgPath = System.getProperty("slf4j.chronicle.vanilla.properties");
-        ChronicleLoggingConfig cfg = ChronicleLoggingConfig.load(cfgPath);
+        final String cfgPath = System.getProperty("slf4j.chronicle.vanilla.properties");
+        final ChronicleLoggingConfig cfg = ChronicleLoggingConfig.load(cfgPath);
 
         assertEquals(
             new File(basePath(ChronicleLoggingConfig.TYPE_VANILLA, "root")),
@@ -72,8 +69,6 @@ public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
             ChronicleLogLevel.DEBUG.toString(),
             cfg.getString("readwrite", ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
     }
-
-
 
     @Test
     public void testLoadConfig() {
