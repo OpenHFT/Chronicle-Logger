@@ -27,6 +27,31 @@
     </appender>
 
     <!-- ******************************************************************* -->
+    <!-- CONFIG                                                              -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "CONFIG-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/config-indexed-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+
+        <!--
+        <config class="net.openhft.chronicle.ChronicleConfig">
+        </config>
+        -->
+    </appender>
+
+    <appender name  = "CONFIG-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/config-vanilla-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+    <!-- ******************************************************************* -->
     <!-- PLAIN                                                               -->
     <!-- ******************************************************************* -->
 
