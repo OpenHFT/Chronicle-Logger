@@ -60,6 +60,7 @@ public class ChronicleLoggingConfig {
     public static final String KEY_PREFIX = "slf4j.chronicle.";
     public static final String KEY_CFG_PREFIX = "slf4j.chronicle.config.";
     public static final String KEY_CFG_TYPE = "slf4j.chronicle.config.type";
+    public static final String KEY_CHRONICLE_TYPE = "slf4j.chronicle.type";
     public static final String KEY_LOGER = "logger";
     public static final String KEY_LEVEL = "level";
     public static final String KEY_PATH = "path";
@@ -209,7 +210,7 @@ public class ChronicleLoggingConfig {
      * @return
      */
     private static ChronicleConfig loadIndexedConfig(final Properties properties) {
-        if(!properties.getProperty("slf4j.chronicle.type").equalsIgnoreCase(TYPE_INDEXED)) {
+        if(!properties.getProperty(KEY_CHRONICLE_TYPE).equalsIgnoreCase(TYPE_INDEXED)) {
             return null;
         }
 
@@ -222,7 +223,7 @@ public class ChronicleLoggingConfig {
      * @return
      */
     private static VanillaChronicleConfig loadVanillaConfig(final Properties properties) {
-        if(!properties.getProperty("slf4j.chronicle.type").equalsIgnoreCase(TYPE_VANILLA)) {
+        if(!properties.getProperty(KEY_CHRONICLE_TYPE).equalsIgnoreCase(TYPE_VANILLA)) {
             return null;
         }
 
@@ -233,7 +234,7 @@ public class ChronicleLoggingConfig {
         T cfg = null;
 
         try {
-            String cfgType = properties.getProperty(KEY_CFG_TYPE);
+            final String cfgType = properties.getProperty(KEY_CFG_TYPE);
             if(type != null) {
                 Field f = type.getField(cfgType);
                 if(f != null) {
@@ -261,10 +262,9 @@ public class ChronicleLoggingConfig {
         return cfg;
     }
 
-    private static void setProperty(final Object target, final String propName, final String propValue)
-    {
+    private static void setProperty(final Object target, final String propName, final String propValue) {
         try {
-            Method[] methods = target.getClass().getDeclaredMethods();
+            final Method[] methods = target.getClass().getDeclaredMethods();
             if(methods != null) {
                 Method method = null;
                 Class<?> paramClass = null;
