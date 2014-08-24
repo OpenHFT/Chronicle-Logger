@@ -20,32 +20,26 @@ package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleConfig;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.IndexedChronicle;
+import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 
 import java.io.IOException;
 
-public class TextIndexedChronicleAppender extends TextChronicleAppender {
+public class TextIndexedChronicleAppender extends TextChronicleAppender<IndexedLogAppenderConfig> {
 
-    private ChronicleConfig config;
     private ExcerptAppender appender;
     private Object lock;
 
     public TextIndexedChronicleAppender() {
-        this.config = null;
         this.appender = null;
         this.lock = new Object();
-    }
-
-    public void setConfig(ChronicleConfig config) {
-        this.config = config;
     }
 
     @Override
     protected Chronicle createChronicle() throws IOException {
         Chronicle chronicle = (this.config != null)
-            ? new IndexedChronicle(this.getPath(),this.config)
+            ? new IndexedChronicle(this.getPath(), getConfig().config())
             : new IndexedChronicle(this.getPath());
 
         this.appender = chronicle.createAppender();

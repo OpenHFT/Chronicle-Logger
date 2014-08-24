@@ -26,7 +26,7 @@ import net.openhft.chronicle.logger.ChronicleLog;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.TimeStampFormatter;
 
-public abstract class TextChronicleAppender extends AbstractChronicleAppender {
+public abstract class TextChronicleAppender<C> extends AbstractChronicleAppender<C> {
 
     private String dateFormat;
     private TimeStampFormatter timeStampFormatter;

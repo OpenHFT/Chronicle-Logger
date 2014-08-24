@@ -32,7 +32,7 @@ import net.openhft.chronicle.logger.ChronicleLogLevel;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class AbstractChronicleAppender
+public abstract class AbstractChronicleAppender<C>
     extends ContextAwareBase
     implements Appender<ILoggingEvent> {
 
@@ -43,6 +43,7 @@ public abstract class AbstractChronicleAppender
 
     private String path;
 
+    protected C config;
     protected Chronicle chronicle;
 
     protected AbstractChronicleAppender() {
@@ -51,6 +52,7 @@ public abstract class AbstractChronicleAppender
         this.started = false;
         this.path = null;
         this.chronicle = null;
+        this.config = null;
     }
 
     // *************************************************************************
@@ -63,6 +65,14 @@ public abstract class AbstractChronicleAppender
 
     public String getPath() {
         return this.path;
+    }
+
+    public void setConfig(final C config) {
+        this.config = config;
+    }
+
+    public C getConfig() {
+        return this.config;
     }
 
     // *************************************************************************

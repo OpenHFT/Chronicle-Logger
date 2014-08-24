@@ -24,7 +24,7 @@ import ch.qos.logback.core.spi.FilterReply;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLog;
 
-public abstract class BinaryChronicleAppender extends AbstractChronicleAppender {
+public abstract class BinaryChronicleAppender<C> extends AbstractChronicleAppender<C> {
 
     private boolean includeCallerData;
     private boolean includeMDC;
