@@ -27,7 +27,7 @@
     </appender>
 
     <!-- ******************************************************************* -->
-    <!-- CONFIG                                                              -->
+    <!-- CONFIG - INDEXED                                                    -->
     <!-- ******************************************************************* -->
 
     <appender name  = "CONFIG-INDEXED-CHRONICLE"
@@ -37,11 +37,20 @@
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
 
-        <!--
-        <config class="net.openhft.chronicle.ChronicleConfig">
+        <config class="net.openhft.chronicle.logger.IndexedLogAppenderConfig">
+            <!-- <indexFileCapacity>128</indexFileCapacity> -->
         </config>
-        -->
+
     </appender>
+
+    <logger name="config-indexed-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="CONFIG-INDEXED-CHRONICLE"/>
+    </logger>
+
+
+    <!-- ******************************************************************* -->
+    <!-- CONFIG - VANILLA                                                    -->
+    <!-- ******************************************************************* -->
 
     <appender name  = "CONFIG-VANILLA-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
