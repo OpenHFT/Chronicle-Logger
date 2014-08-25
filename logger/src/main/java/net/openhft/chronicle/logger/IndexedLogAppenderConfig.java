@@ -46,91 +46,83 @@ public class IndexedLogAppenderConfig {
         return config.indexFileCapacity();
     }
 
-    public void indexFileCapacity(int indexFileCapacity) {
-        config.indexFileCapacity(indexFileCapacity);
-    }
-
-    public int indexFileCapacity() {
-        return config.indexFileCapacity();
-    }
-
-    public int dataBlockSize() {
+    public int getDataBlockSize() {
         return config.dataBlockSize();
     }
 
-    public void useUnsafe(boolean useUnsafe) {
+    public void setUseUnsafe(boolean useUnsafe) {
         config.useUnsafe(useUnsafe);
     }
 
-    public int cacheLineSize() {
+    public int getCacheLineSize() {
         return config.cacheLineSize();
     }
 
-    public void byteOrder(ByteOrder byteOrder) {
+    public void setByteOrder(ByteOrder byteOrder) {
         config.byteOrder(byteOrder);
     }
 
-    public void indexBlockSize(int indexBlockSize) {
+    public void setIndexBlockSize(int indexBlockSize) {
         config.indexBlockSize(indexBlockSize);
     }
 
-    public void synchronousMode(boolean synchronousMode) {
+    public void setSynchronousMode(boolean synchronousMode) {
         config.synchronousMode(synchronousMode);
     }
 
-    public void cacheLineSize(int cacheLineSize) {
+    public void setCacheLineSize(int cacheLineSize) {
         config.cacheLineSize(cacheLineSize);
     }
 
-    public void messageCapacity(int messageCapacity) {
+    public void setMessageCapacity(int messageCapacity) {
         config.messageCapacity(messageCapacity);
     }
 
-    public void minimiseFootprint(boolean minimiseFootprint) {
+    public void seMinimiseFootprint(boolean minimiseFootprint) {
         config.minimiseFootprint(minimiseFootprint);
     }
 
-    public int indexFileExcerpts() {
+    public int getIndexFileExcerpts() {
         return config.indexFileExcerpts();
     }
 
-    public int indexBlockSize() {
+    public int getIndexBlockSize() {
         return config.indexBlockSize();
     }
 
-    public boolean minimiseFootprint() {
+    public boolean getMinimiseFootprint() {
         return config.minimiseFootprint();
     }
 
-    public void useCheckedExcerpt(boolean useCheckedExcerpt) {
+    public void setUseCheckedExcerpt(boolean useCheckedExcerpt) {
         config.useCheckedExcerpt(useCheckedExcerpt);
     }
 
-    public boolean synchronousMode() {
+    public boolean getSynchronousMode() {
         return config.synchronousMode();
     }
 
-    public int messageCapacity() {
+    public int getMessageCapacity() {
         return config.messageCapacity();
     }
 
-    public boolean useUnsafe() {
+    public boolean getUseUnsafe() {
         return config.useUnsafe();
     }
 
-    public void dataBlockSize(int dataBlockSize) {
+    public void setDataBlockSize(int dataBlockSize) {
         config.dataBlockSize(dataBlockSize);
     }
 
-    public boolean useCheckedExcerpt() {
+    public boolean getUseCheckedExcerpt() {
         return config.useCheckedExcerpt();
     }
 
-    public void indexFileExcerpts(int indexFileExcerpts) {
+    public void setIndexFileExcerpts(int indexFileExcerpts) {
         config.indexFileExcerpts(indexFileExcerpts);
     }
 
-    public ByteOrder byteOrder() {
+    public ByteOrder getByteOrder() {
         return config.byteOrder();
     }
 }

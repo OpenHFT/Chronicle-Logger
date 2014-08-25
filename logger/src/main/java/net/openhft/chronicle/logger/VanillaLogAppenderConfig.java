@@ -40,91 +40,91 @@ public class VanillaLogAppenderConfig {
         return config.cycleFormat(cycleFormat);
     }
 
-    public long dataBlockSize() {
+    public long getDataBlockSize() {
         return config.dataBlockSize();
     }
 
-    public int cycleLength() {
+    public int getCycleLength() {
         return config.cycleLength();
     }
 
-    public VanillaChronicleConfig dataBlockSize(int dataBlockSize) {
-        return config.dataBlockSize(dataBlockSize);
+    public void getDataBlockSize(int dataBlockSize) {
+        config.dataBlockSize(dataBlockSize);
     }
 
-    public int dataCacheCapacity() {
+    public int getDataCacheCapacity() {
         return config.dataCacheCapacity();
     }
 
-    public String cycleFormat() {
+    public String getCycleFormat() {
         return config.cycleFormat();
     }
 
-    public VanillaChronicleConfig dataCacheCapacity(int dataCacheCapacity) {
-        return config.dataCacheCapacity(dataCacheCapacity);
+    public void setDataCacheCapacity(int dataCacheCapacity) {
+        config.dataCacheCapacity(dataCacheCapacity);
     }
 
-    public boolean cleanupOnClose() {
+    public boolean getCleanupOnClose() {
         return config.cleanupOnClose();
     }
 
-    public boolean synchronous() {
+    public boolean getSynchronous() {
         return config.synchronous();
     }
 
-    public long entriesPerCycle() {
+    public long getEntriesPerCycle() {
         return config.entriesPerCycle();
     }
 
-    public int defaultMessageSize() {
+    public int getDefaultMessageSize() {
         return config.defaultMessageSize();
     }
 
-    public VanillaChronicleConfig cycleLength(int cycleLength) {
-        return config.cycleLength(cycleLength);
+    public void setCycleLength(int cycleLength) {
+        config.cycleLength(cycleLength);
     }
 
-    public VanillaChronicleConfig cleanupOnClose(boolean cleanupOnClose) {
-        return config.cleanupOnClose(cleanupOnClose);
+    public void setCleanupOnClose(boolean cleanupOnClose) {
+        config.cleanupOnClose(cleanupOnClose);
     }
 
-    public VanillaChronicleConfig synchronous(boolean synchronous) {
-        return config.synchronous(synchronous);
+    public void setSynchronous(boolean synchronous) {
+        config.synchronous(synchronous);
     }
 
-    public long indexBlockSize() {
+    public long getIndexBlockSize() {
         return config.indexBlockSize();
     }
 
-    public VanillaChronicleConfig defaultMessageSize(int defaultMessageSize) {
-        return config.defaultMessageSize(defaultMessageSize);
+    public void setDefaultMessageSize(int defaultMessageSize) {
+        config.defaultMessageSize(defaultMessageSize);
     }
 
-    public VanillaChronicleConfig useCheckedExcerpt(boolean useCheckedExcerpt) {
-        return config.useCheckedExcerpt(useCheckedExcerpt);
+    public void setUseCheckedExcerpt(boolean useCheckedExcerpt) {
+        config.useCheckedExcerpt(useCheckedExcerpt);
     }
 
-    public int indexCacheCapacity() {
+    public int getIndexCacheCapacity() {
         return config.indexCacheCapacity();
     }
 
-    public VanillaChronicleConfig entriesPerCycle(long entriesPerCycle) {
-        return config.entriesPerCycle(entriesPerCycle);
+    public void setEntriesPerCycle(long entriesPerCycle) {
+        config.entriesPerCycle(entriesPerCycle);
     }
 
-    public VanillaChronicleConfig cycleLength(int cycleLength, boolean check) {
-        return config.cycleLength(cycleLength, check);
+    public void setCycleLength(int cycleLength, boolean check) {
+        config.cycleLength(cycleLength, check);
     }
 
-    public VanillaChronicleConfig indexCacheCapacity(int indexCacheCapacity) {
-        return config.indexCacheCapacity(indexCacheCapacity);
+    public void setIndexCacheCapacity(int indexCacheCapacity) {
+        config.indexCacheCapacity(indexCacheCapacity);
     }
 
-    public boolean useCheckedExcerpt() {
+    public boolean getUseCheckedExcerpt() {
         return config.useCheckedExcerpt();
     }
 
-    public VanillaChronicleConfig indexBlockSize(long indexBlockSize) {
-        return config.indexBlockSize(indexBlockSize);
+    public void setIndexBlockSize(long indexBlockSize) {
+        config.indexBlockSize(indexBlockSize);
     }
 }

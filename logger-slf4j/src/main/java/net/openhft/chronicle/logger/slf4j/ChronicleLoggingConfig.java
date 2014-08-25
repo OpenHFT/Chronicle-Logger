@@ -22,6 +22,7 @@ package net.openhft.chronicle.logger.slf4j;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 
+import java.beans.PropertyDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -243,30 +244,19 @@ public class ChronicleLoggingConfig {
 
     private static void setProperty(final Object target, final String propName, final String propValue) {
         try {
-            final Method[] methods = target.getClass().getDeclaredMethods();
-            if(methods != null) {
-                Method method = null;
-                Class<?> type = null;
+            final PropertyDescriptor property = new PropertyDescriptor(propName, target.getClass());
+            final Method method = property.getWriteMethod();
+            final Class<?> type = method.getParameterTypes()[0];
 
-                for (final Method m : methods) {
-                    if(m.getName().equalsIgnoreCase(propName) && m.getParameterTypes().length == 1) {
-                        method = m;
-                        type = m.getParameterTypes()[0];
-
-                        break;
-                    }
-                }
-
-                if(type != null) {
-                    if (type == int.class) {
-                        method.invoke(target, Integer.parseInt(propValue));
-                    } else if (type == long.class) {
-                        method.invoke(target, Long.parseLong(propValue));
-                    } else if (type == boolean.class) {
-                        method.invoke(target, Boolean.parseBoolean(propValue));
-                    } else if (type == String.class) {
-                        method.invoke(target, propValue);
-                    }
+            if(type != null) {
+                if (type == int.class) {
+                    method.invoke(target, Integer.parseInt(propValue));
+                } else if (type == long.class) {
+                    method.invoke(target, Long.parseLong(propValue));
+                } else if (type == boolean.class) {
+                    method.invoke(target, Boolean.parseBoolean(propValue));
+                } else if (type == String.class) {
+                    method.invoke(target, propValue);
                 }
             }
         } catch (Exception e) {
