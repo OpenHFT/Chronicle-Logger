@@ -38,8 +38,6 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender<Inde
 
     @Override
     protected Chronicle createChronicle() throws IOException {
-        new ch.qos.logback.core.ConsoleAppender();
-
         Chronicle chronicle = (this.config != null)
             ? new IndexedChronicle(this.getPath(), getConfig().config())
             : new IndexedChronicle(this.getPath());
