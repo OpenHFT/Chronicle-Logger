@@ -25,6 +25,7 @@ import java.nio.ByteOrder;
 public class IndexedLogAppenderConfig {
 
     private final ChronicleConfig config;
+    private int capacity;
 
     public IndexedLogAppenderConfig() {
         this(ChronicleConfig.DEFAULT);

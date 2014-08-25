@@ -38,7 +38,7 @@
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
 
         <config class="net.openhft.chronicle.logger.IndexedLogAppenderConfig">
-            <!-- <indexFileCapacity>128</indexFileCapacity> -->
+            <indexFileCapacity>128</indexFileCapacity>
         </config>
 
     </appender>
