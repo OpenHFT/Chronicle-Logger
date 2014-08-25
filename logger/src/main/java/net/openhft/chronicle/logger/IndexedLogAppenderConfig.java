@@ -37,15 +37,15 @@ public class IndexedLogAppenderConfig {
 
     public ChronicleConfig config() {
         return this.config;
-    }
+        }
 
-    public void setIndexFileCapacity(int indexFileCapacity) {
-        config.indexFileCapacity(indexFileCapacity);
-    }
+        public void setIndexFileCapacity(int indexFileCapacity) {
+            config.indexFileCapacity(indexFileCapacity);
+        }
 
-    public int getIndexFileCapacity() {
-        return config.indexFileCapacity();
-    }
+        public int getIndexFileCapacity() {
+            return config.indexFileCapacity();
+        }
 
     public int getDataBlockSize() {
         return config.dataBlockSize();
