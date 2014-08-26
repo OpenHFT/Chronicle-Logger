@@ -18,7 +18,6 @@
 
 package net.openhft.chronicle.logger.logback;
 
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import net.openhft.chronicle.Chronicle;
@@ -47,12 +46,13 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
     @Test
     public void testBinaryVanillaChronicleAppenderConfig() throws IOException {
-        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final String loggerName = "config-binary-vanilla-chronicle";
+        final String appenderName = "CONFIG-BINARY-VANILLA-CHRONICLE";
 
-        final ch.qos.logback.classic.Logger logger = context.getLogger("config-binary-vanilla-chronicle");
+        final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);
         assertNotNull(logger);
 
-        final Appender<ILoggingEvent> appender =logger.getAppender("CONFIG-BINARY-VANILLA-CHRONICLE");
+        final ch.qos.logback.core.Appender<ILoggingEvent> appender =logger.getAppender(appenderName);
         assertNotNull(appender);
         assertTrue(appender instanceof BinaryVanillaChronicleAppender);
 
@@ -62,12 +62,13 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
     @Test
     public void testTextVanillaChronicleAppenderConfig() throws IOException {
-        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final String loggerName = "config-text-vanilla-chronicle";
+        final String appenderName = "CONFIG-TEXT-VANILLA-CHRONICLE";
 
-        final ch.qos.logback.classic.Logger logger = context.getLogger("config-text-vanilla-chronicle");
+        final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);
         assertNotNull(logger);
 
-        final Appender<ILoggingEvent> appender =logger.getAppender("CONFIG-TEXT-VANILLA-CHRONICLE");
+        final Appender<ILoggingEvent> appender =logger.getAppender(appenderName);
         assertNotNull(appender);
         assertTrue(appender instanceof TextVanillaChronicleAppender);
 

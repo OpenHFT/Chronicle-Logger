@@ -18,6 +18,7 @@
 
 package net.openhft.chronicle.logger.logback;
 
+import ch.qos.logback.classic.LoggerContext;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
@@ -91,6 +92,10 @@ public class LogbackTestBase {
     // *************************************************************************
     //
     // *************************************************************************
+
+    protected LoggerContext getLoggerContext() {
+        return (LoggerContext)LoggerFactory.getILoggerFactory();
+    }
 
     /**
      * @param type

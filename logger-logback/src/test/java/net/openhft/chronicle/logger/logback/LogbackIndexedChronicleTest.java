@@ -18,9 +18,7 @@
 
 package net.openhft.chronicle.logger.logback;
 
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.logger.ChronicleLog;
@@ -47,12 +45,13 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
     @Test
     public void testBinaryIndexedChronicleAppenderConfig() throws IOException {
-        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final String loggerName = "config-binary-indexed-chronicle";
+        final String appenderName = "CONFIG-BINARY-INDEXED-CHRONICLE";
 
-        final ch.qos.logback.classic.Logger logger = context.getLogger("config-binary-indexed-chronicle");
+        final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);
         assertNotNull(logger);
 
-        final Appender<ILoggingEvent> appender =logger.getAppender("CONFIG-BINARY-INDEXED-CHRONICLE");
+        final ch.qos.logback.core.Appender<ILoggingEvent> appender =logger.getAppender(appenderName);
         assertNotNull(appender);
         assertTrue(appender instanceof BinaryIndexedChronicleAppender);
 
@@ -62,12 +61,13 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
     @Test
     public void testTextIndexedChronicleAppenderConfig() throws IOException {
-        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final String loggerName = "config-text-indexed-chronicle";
+        final String appenderName = "CONFIG-TEXT-INDEXED-CHRONICLE";
 
-        final ch.qos.logback.classic.Logger logger = context.getLogger("config-text-indexed-chronicle");
+        final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);
         assertNotNull(logger);
 
-        final Appender<ILoggingEvent> appender =logger.getAppender("CONFIG-TEXT-INDEXED-CHRONICLE");
+        final ch.qos.logback.core.Appender<ILoggingEvent> appender = logger.getAppender(appenderName);
         assertNotNull(appender);
         assertTrue(appender instanceof TextIndexedChronicleAppender);
 
