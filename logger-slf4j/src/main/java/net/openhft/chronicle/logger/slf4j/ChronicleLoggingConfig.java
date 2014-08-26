@@ -19,14 +19,14 @@
 package net.openhft.chronicle.logger.slf4j;
 
 
-import net.openhft.chronicle.ChronicleConfig;
-import net.openhft.chronicle.VanillaChronicleConfig;
+import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
+import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 
+import java.beans.PropertyDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -59,7 +59,7 @@ public class ChronicleLoggingConfig {
     public static final String KEY_PROPERTIES_FILE = "slf4j.chronicle.properties";
     public static final String KEY_PREFIX = "slf4j.chronicle.";
     public static final String KEY_CFG_PREFIX = "slf4j.chronicle.config.";
-    public static final String KEY_CFG_TYPE = "slf4j.chronicle.config.type";
+    public static final String KEY_CHRONICLE_TYPE = "slf4j.chronicle.type";
     public static final String KEY_LOGER = "logger";
     public static final String KEY_LEVEL = "level";
     public static final String KEY_PATH = "path";
@@ -87,13 +87,13 @@ public class ChronicleLoggingConfig {
     private static final String PID = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 
     private final Properties properties;
-    private final ChronicleConfig indexedConfig;
-    private final VanillaChronicleConfig vanillaConfig;
+    private final IndexedLogAppenderConfig indexedConfig;
+    private final VanillaLogAppenderConfig vanillaConfig;
 
     /**
      * @param   properties
      */
-    private ChronicleLoggingConfig(final Properties properties, final ChronicleConfig indexedConfig, final VanillaChronicleConfig vanillaConfig) {
+    private ChronicleLoggingConfig(final Properties properties, final IndexedLogAppenderConfig indexedConfig, final VanillaLogAppenderConfig vanillaConfig) {
         this.properties = properties;
         this.indexedConfig = indexedConfig;
         this.vanillaConfig = vanillaConfig;
@@ -208,12 +208,12 @@ public class ChronicleLoggingConfig {
      * @param properties
      * @return
      */
-    private static ChronicleConfig loadIndexedConfig(final Properties properties) {
-        if(!properties.getProperty("slf4j.chronicle.type").equalsIgnoreCase(TYPE_INDEXED)) {
+    private static IndexedLogAppenderConfig loadIndexedConfig(final Properties properties) {
+        if(!properties.getProperty(KEY_CHRONICLE_TYPE).equalsIgnoreCase(TYPE_INDEXED)) {
             return null;
         }
 
-        return loadConfig(ChronicleConfig.class, ChronicleConfig.DEFAULT.clone() , properties);
+        return loadConfig(new IndexedLogAppenderConfig() , properties);
     }
 
     /**
@@ -221,39 +221,20 @@ public class ChronicleLoggingConfig {
      * @param properties
      * @return
      */
-    private static VanillaChronicleConfig loadVanillaConfig(final Properties properties) {
-        if(!properties.getProperty("slf4j.chronicle.type").equalsIgnoreCase(TYPE_VANILLA)) {
+    private static VanillaLogAppenderConfig loadVanillaConfig(final Properties properties) {
+        if(!properties.getProperty(KEY_CHRONICLE_TYPE).equalsIgnoreCase(TYPE_VANILLA)) {
             return null;
         }
 
-        return loadConfig(VanillaChronicleConfig.class, VanillaChronicleConfig.DEFAULT.clone() , properties);
+        return loadConfig(new VanillaLogAppenderConfig() , properties);
     }
 
-    private static <T> T loadConfig(Class<T> type, final T defaultCfg, final Properties properties) {
-        T cfg = null;
-
-        try {
-            String cfgType = properties.getProperty(KEY_CFG_TYPE);
-            if(type != null) {
-                Field f = type.getField(cfgType);
-                if(f != null) {
-                    cfg = (T)f.get(null);
-
-                    final Method clone = type.getMethod("clone");
-                    clone.setAccessible(true);
-
-                    cfg = (T)clone.invoke(cfg);
-                }
-            }
-        } catch(Exception ex) {
-            cfg = defaultCfg;
-        }
-
+    private static <T> T loadConfig(final T cfg, final Properties properties) {
         for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
             final String name = entry.getKey().toString();
             final String value = entry.getValue().toString();
 
-            if(name.startsWith(KEY_CFG_PREFIX) && !name.equals(KEY_CFG_TYPE)) {
+            if(name.startsWith(KEY_CFG_PREFIX)) {
                 setProperty(cfg, name.substring(KEY_CFG_PREFIX.length()), value);
             }
         }
@@ -261,30 +242,20 @@ public class ChronicleLoggingConfig {
         return cfg;
     }
 
-    private static void setProperty(final Object target, final String propName, final String propValue)
-    {
+    private static void setProperty(final Object target, final String propName, final String propValue) {
         try {
-            Method[] methods = target.getClass().getDeclaredMethods();
-            if(methods != null) {
-                Method method = null;
-                Class<?> paramClass = null;
+            final PropertyDescriptor property = new PropertyDescriptor(propName, target.getClass());
+            final Method method = property.getWriteMethod();
+            final Class<?> type = method.getParameterTypes()[0];
 
-                for (final Method m : methods) {
-                    if(m.getName().equalsIgnoreCase(propName) && m.getParameterTypes().length == 1) {
-                        method = m;
-                        paramClass = m.getParameterTypes()[0];
-
-                        break;
-                    }
-                }
-
-                if (paramClass == int.class) {
+            if(type != null) {
+                if (type == int.class) {
                     method.invoke(target, Integer.parseInt(propValue));
-                } else if (paramClass == long.class) {
+                } else if (type == long.class) {
                     method.invoke(target, Long.parseLong(propValue));
-                } else if (paramClass == boolean.class) {
+                } else if (type == boolean.class) {
                     method.invoke(target, Boolean.parseBoolean(propValue));
-                } else if (paramClass == String.class) {
+                } else if (type == String.class) {
                     method.invoke(target, propValue);
                 }
             }
@@ -302,7 +273,7 @@ public class ChronicleLoggingConfig {
      *
      * @return  the IndexedChronicle configuration
      */
-    public ChronicleConfig getIndexedChronicleConfig() {
+    public IndexedLogAppenderConfig getIndexedChronicleConfig() {
         return this.indexedConfig;
     }
 
@@ -310,7 +281,7 @@ public class ChronicleLoggingConfig {
      *
      * @return  the VanillaChronicle configuration
      */
-    public VanillaChronicleConfig getVanillaChronicleConfig() {
+    public VanillaLogAppenderConfig getVanillaChronicleConfig() {
         return this.vanillaConfig;
     }
 

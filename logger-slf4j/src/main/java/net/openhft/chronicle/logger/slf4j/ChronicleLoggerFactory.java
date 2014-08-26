@@ -241,7 +241,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     private Chronicle newVanillaChronicle(String path, String name) throws IOException {
         final VanillaChronicle chronicle = new VanillaChronicle(
             path,
-            this.cfg.getVanillaChronicleConfig());
+            this.cfg.getVanillaChronicleConfig().config());
 
         if (!cfg.getBoolean(name, ChronicleLoggingConfig.KEY_APPEND, true)) {
             chronicle.clear();
@@ -263,7 +263,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             new File(path + ".index").delete();
         }
 
-        return new IndexedChronicle(path, this.cfg.getIndexedChronicleConfig());
+        return new IndexedChronicle(path, this.cfg.getIndexedChronicleConfig().config());
     }
 }
 

@@ -74,7 +74,6 @@ public class Slf4jIndexedChronicleConfigurationTest extends Slf4jTestBase {
     public void testLoadConfig() {
         final Properties properties = new Properties();
         properties.setProperty("slf4j.chronicle.type","indexed");
-        properties.setProperty("slf4j.chronicle.config.type","DEFAULT");
         properties.setProperty("slf4j.chronicle.config.indexFileCapacity","128");
         properties.setProperty("slf4j.chronicle.config.dataBlockSize","256");
         properties.setProperty("slf4j.chronicle.config.synchronousMode","true");
@@ -82,10 +81,10 @@ public class Slf4jIndexedChronicleConfigurationTest extends Slf4jTestBase {
 
         final ChronicleLoggingConfig clc = ChronicleLoggingConfig.load(properties);
         assertNotNull(clc.getIndexedChronicleConfig());
-        assertTrue(ChronicleConfig.DEFAULT != clc.getIndexedChronicleConfig());
+        assertTrue(ChronicleConfig.DEFAULT != clc.getIndexedChronicleConfig().config());
         assertNull(clc.getVanillaChronicleConfig());
 
-        final ChronicleConfig cfg = clc.getIndexedChronicleConfig();
+        final ChronicleConfig cfg = clc.getIndexedChronicleConfig().config();
         assertEquals(128, cfg.indexFileCapacity());
         assertEquals(256, cfg.dataBlockSize());
         assertTrue(cfg.synchronousMode());

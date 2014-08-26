@@ -116,6 +116,7 @@ public abstract class AbstractChronicleAppender
         } else {
             try {
                 this.chronicle = createChronicle();
+                this.started = true;
             } catch(IOException e) {
                 this.chronicle = null;
                 addError("Appender " + getName() + " " + e.getMessage());
@@ -132,6 +133,8 @@ public abstract class AbstractChronicleAppender
                 addError("Appender " + getName() + " " + e.getMessage());
             }
         }
+
+        this.started = false;
     }
 
     // *************************************************************************

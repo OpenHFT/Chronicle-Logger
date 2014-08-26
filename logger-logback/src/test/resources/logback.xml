@@ -27,6 +27,89 @@
     </appender>
 
     <!-- ******************************************************************* -->
+    <!-- CONFIG - INDEXED                                                    -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "CONFIG-BINARY-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/config-binary-indexed-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+
+        <chronicleConfig>
+            <indexFileCapacity>128</indexFileCapacity>
+        </chronicleConfig>
+
+    </appender>
+
+    <logger name="config-binary-indexed-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="CONFIG-BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <appender name  = "CONFIG-TEXT-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.TextIndexedChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/config-text-indexed-chronicle</path>
+
+        <chronicleConfig>
+            <indexFileCapacity>128</indexFileCapacity>
+        </chronicleConfig>
+
+    </appender>
+
+    <logger name="config-text-indexed-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="CONFIG-TEXT-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!-- CONFIG - VANILLA                                                    -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "CONFIG-BINARY-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/config-binary-vanilla-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+
+        <chronicleConfig>
+            <dataCacheCapacity>128</dataCacheCapacity>
+        </chronicleConfig>
+
+    </appender>
+
+    <logger name="config-binary-vanilla-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="CONFIG-BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <appender name  = "CONFIG-TEXT-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.TextVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/config-text-vanilla-chronicle</path>
+
+        <chronicleConfig>
+            <dataCacheCapacity>128</dataCacheCapacity>
+        </chronicleConfig>
+
+    </appender>
+
+    <logger name="config-text-vanilla-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="CONFIG-TEXT-VANILLA-CHRONICLE"/>
+    </logger>
+
+
+    <!-- ******************************************************************* -->
+    <!-- CONFIG - VANILLA                                                    -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "CONFIG-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronology-logback/config-vanilla-chronicle</path>
+        <formatMessage>false</formatMessage>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+    <!-- ******************************************************************* -->
     <!-- PLAIN                                                               -->
     <!-- ******************************************************************* -->
 
