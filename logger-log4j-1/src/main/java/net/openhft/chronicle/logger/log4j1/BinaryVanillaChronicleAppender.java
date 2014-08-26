@@ -21,25 +21,29 @@ package net.openhft.chronicle.logger.log4j1;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
-import net.openhft.chronicle.VanillaChronicleConfig;
+import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 
 import java.io.IOException;
 
 public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
-    private VanillaChronicleConfig config;
+    private VanillaLogAppenderConfig config;
 
     public BinaryVanillaChronicleAppender() {
         this.config = null;
     }
 
-    public void setConfig(VanillaChronicleConfig config) {
+    public void setChronicleConfig(final VanillaLogAppenderConfig config) {
         this.config = config;
+    }
+
+    public VanillaLogAppenderConfig getChronicleConfig() {
+        return this.config;
     }
 
     @Override
     protected Chronicle createChronicle() throws IOException {
         return (this.config != null)
-            ? new VanillaChronicle(this.getPath(),this.config)
+            ? new VanillaChronicle(this.getPath(), this.config.config())
             : new VanillaChronicle(this.getPath());
     }
 

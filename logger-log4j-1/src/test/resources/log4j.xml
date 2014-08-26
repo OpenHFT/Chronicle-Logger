@@ -20,6 +20,13 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
 
+    <appender name  = "CONFIG-BINARY-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronology-log4j1/binary-vanilla-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+    </appender>
+
     <appender name  = "BINARY-VANILLA-CHRONICLE"
               class = "net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronology-log4j1/binary-vanilla-chronicle"/>
