@@ -18,6 +18,7 @@
 
 package net.openhft.chronicle.logger.logback;
 
+import ch.qos.logback.core.joran.spi.DefaultClass;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
@@ -25,16 +26,27 @@ import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 
 import java.io.IOException;
 
-public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender<VanillaLogAppenderConfig> {
+public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
 
+    private VanillaLogAppenderConfig config;
 
     public BinaryVanillaChronicleAppender() {
+        this.config = null;
+    }
+
+    @DefaultClass(value=VanillaLogAppenderConfig.class)
+    public void setChronicleConfig(final VanillaLogAppenderConfig config) {
+        this.config = config;
+    }
+
+    public VanillaLogAppenderConfig getChronicleConfig() {
+        return this.config;
     }
 
     @Override
     protected Chronicle createChronicle() throws IOException {
         return (this.config != null)
-            ? new VanillaChronicle(this.getPath(), getConfig().config())
+            ? new VanillaChronicle(this.getPath(), this.config.config())
             : new VanillaChronicle(this.getPath());
     }
 

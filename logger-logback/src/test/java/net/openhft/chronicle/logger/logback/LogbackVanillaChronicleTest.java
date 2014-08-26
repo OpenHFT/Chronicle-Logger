@@ -18,6 +18,9 @@
 
 package net.openhft.chronicle.logger.logback;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.logger.ChronicleLog;
@@ -25,15 +28,16 @@ import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.IOTools;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
@@ -41,12 +45,34 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
     //
     // *************************************************************************
 
-    @Before
-    public void setUp() {
+    @Test
+    public void testBinaryVanillaChronicleAppenderConfig() throws IOException {
+        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        final ch.qos.logback.classic.Logger logger = context.getLogger("config-binary-vanilla-chronicle");
+        assertNotNull(logger);
+
+        final Appender<ILoggingEvent> appender =logger.getAppender("CONFIG-BINARY-VANILLA-CHRONICLE");
+        assertNotNull(appender);
+        assertTrue(appender instanceof BinaryVanillaChronicleAppender);
+
+        BinaryVanillaChronicleAppender ba = (BinaryVanillaChronicleAppender)appender;
+        assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
     }
 
-    @After
-    public void tearDown() {
+    @Test
+    public void testTextVanillaChronicleAppenderConfig() throws IOException {
+        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        final ch.qos.logback.classic.Logger logger = context.getLogger("config-text-vanilla-chronicle");
+        assertNotNull(logger);
+
+        final Appender<ILoggingEvent> appender =logger.getAppender("CONFIG-TEXT-VANILLA-CHRONICLE");
+        assertNotNull(appender);
+        assertTrue(appender instanceof TextVanillaChronicleAppender);
+
+        TextVanillaChronicleAppender ba = (TextVanillaChronicleAppender)appender;
+        assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
     }
 
     // *************************************************************************
