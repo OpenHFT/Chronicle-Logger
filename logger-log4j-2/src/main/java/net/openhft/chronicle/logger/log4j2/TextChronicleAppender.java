@@ -31,8 +31,8 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
     private TimeStampFormatter timeStampFormatter;
     private int stackTradeDepth;
 
-    protected TextChronicleAppender(String name, Filter filter) {
-        super(name, filter);
+    protected TextChronicleAppender(final String name, final Filter filter, final String path) {
+        super(name, filter, path);
 
         this.dateFormat = null;
         this.timeStampFormatter = null;

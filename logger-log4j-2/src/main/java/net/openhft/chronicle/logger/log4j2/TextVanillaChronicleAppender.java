@@ -21,7 +21,7 @@ package net.openhft.chronicle.logger.log4j2;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
-import net.openhft.chronicle.VanillaChronicleConfig;
+import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -37,22 +37,19 @@ import java.io.IOException;
     printObject = true)
 public class TextVanillaChronicleAppender extends TextChronicleAppender {
 
-    private VanillaChronicleConfig config;
+    private final VanillaLogAppenderConfig config;
 
-    public TextVanillaChronicleAppender(String name, Filter filter) {
-        super(name,filter);
+    public TextVanillaChronicleAppender(
+        final String name, final Filter filter, final String path, VanillaLogAppenderConfig config) {
+        super(name, filter, path);
 
-        this.config = null;
-    }
-
-    public void setConfig(VanillaChronicleConfig config) {
         this.config = config;
     }
 
     @Override
     protected Chronicle createChronicle() throws IOException {
         return (this.config != null)
-            ? new VanillaChronicle(this.getPath(),this.config)
+            ? new VanillaChronicle(this.getPath(), this.config.config())
             : new VanillaChronicle(this.getPath());
     }
 
@@ -67,6 +64,10 @@ public class TextVanillaChronicleAppender extends TextChronicleAppender {
         return null;
     }
 
+    protected VanillaLogAppenderConfig getChronicleConfig() {
+        return this.config;
+    }
+
     // *************************************************************************
     //
     // *************************************************************************
@@ -77,6 +78,7 @@ public class TextVanillaChronicleAppender extends TextChronicleAppender {
         @PluginAttribute("path") final String path,
         @PluginAttribute("dateFormat") final String dateFormat,
         @PluginAttribute("stackTradeDepth") final String stackTradeDepth,
+        @PluginElement("chronicleConfig") final VanillaLogAppenderConfig chronicleConfig,
         @PluginElement("filters") final Filter filter) {
 
         if(name == null) {
@@ -89,8 +91,8 @@ public class TextVanillaChronicleAppender extends TextChronicleAppender {
             return null;
         }
 
-        TextVanillaChronicleAppender appender = new TextVanillaChronicleAppender(name, filter);
-        appender.setPath(path);
+        final TextVanillaChronicleAppender appender =
+            new TextVanillaChronicleAppender(name, filter, path, chronicleConfig);
 
         if(dateFormat != null) {
             appender.setDateFormat(dateFormat);

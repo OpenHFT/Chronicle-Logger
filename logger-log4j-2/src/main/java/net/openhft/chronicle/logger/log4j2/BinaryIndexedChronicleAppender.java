@@ -19,9 +19,9 @@
 package net.openhft.chronicle.logger.log4j2;
 
 import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleConfig;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.IndexedChronicle;
+import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -38,25 +38,22 @@ import java.io.IOException;
     printObject = true)
 public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
 
-    private ChronicleConfig config;
-    private Object lock;
+    private final IndexedLogAppenderConfig config;
+    private final Object lock;
     private ExcerptAppender appender;
 
-    public BinaryIndexedChronicleAppender(String name, Filter filter) {
-        super(name,filter);
-        this.config = null;
+    public BinaryIndexedChronicleAppender(
+        final String name, final Filter filter, final String path, final IndexedLogAppenderConfig config) {
+        super(name, filter, path);
+        this.config = config;
         this.appender = null;
         this.lock = new Object();
-    }
-
-    public void setConfig(ChronicleConfig config) {
-        this.config = config;
     }
 
     @Override
     protected Chronicle createChronicle() throws IOException {
         Chronicle chronicle = (this.config != null)
-            ? new IndexedChronicle(this.getPath(),this.config)
+            ? new IndexedChronicle(this.getPath(), this.config.config())
             : new IndexedChronicle(this.getPath());
 
         this.appender = chronicle.createAppender();
@@ -76,6 +73,10 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
         }
     }
 
+    protected IndexedLogAppenderConfig getChronicleConfig() {
+        return this.config;
+    }
+
     // *************************************************************************
     //
     // *************************************************************************
@@ -87,6 +88,7 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
         @PluginAttribute("formatMessage") final String formatMessage,
         @PluginAttribute("includeCallerData") final String includeCallerData,
         @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
+        @PluginElement("chronicleConfig") final IndexedLogAppenderConfig chronicleConfig,
         @PluginElement("filters") final Filter filter) {
 
         if(name == null) {
@@ -99,8 +101,8 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
             return null;
         }
 
-        BinaryIndexedChronicleAppender appender = new BinaryIndexedChronicleAppender(name, filter);
-        appender.setPath(path);
+        final BinaryIndexedChronicleAppender appender =
+            new BinaryIndexedChronicleAppender(name, filter, path, chronicleConfig);
 
         if(formatMessage != null) {
             appender.setFormatMessage("true".equalsIgnoreCase(formatMessage));

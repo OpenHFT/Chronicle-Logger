@@ -33,10 +33,10 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
 
     protected Chronicle chronicle;
 
-    protected AbstractChronicleAppender(String name, Filter filter) {
+    protected AbstractChronicleAppender(String name, Filter filter, String path) {
         super(name, filter, null, true);
 
-        this.path = null;
+        this.path = path;
         this.chronicle = null;
     }
 

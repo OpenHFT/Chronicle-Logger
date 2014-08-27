@@ -53,6 +53,25 @@
         <!-- VANILLA                                                         -->
         <!-- *************************************************************** -->
 
+        <BinaryVanillaChronicle name="CONF-BINARY-VANILLA-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-binary-vanilla-chronicle</path>
+            <formatMessage>false</formatMessage>
+            <includeCallerData>false</includeCallerData>
+            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+            <chronicleConfig>
+                <dataCacheCapacity>128</dataCacheCapacity>
+            </chronicleConfig>
+        </BinaryVanillaChronicle>
+
+        <TextVanillaChronicle name="CONF-TEXT-VANILLA-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-text-vanilla-chronicle</path>
+            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+            <stackTradeDepth>3</stackTradeDepth>
+            <chronicleConfig>
+                <dataCacheCapacity>128</dataCacheCapacity>
+            </chronicleConfig>
+        </TextVanillaChronicle>
+
         <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-vanilla-chronicle</path>
             <formatMessage>false</formatMessage>
@@ -79,6 +98,7 @@
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
             <stackTradeDepth>3</stackTradeDepth>
         </TextVanillaChronicle>
+
 
         <!-- *************************************************************** -->
         <!-- INDEXED                                                         -->
