@@ -22,7 +22,6 @@ package net.openhft.chronicle.logger;
 import net.openhft.lang.io.ByteStringAppender;
 import net.openhft.lang.io.RandomDataInput;
 import net.openhft.lang.io.RandomDataOutput;
-import net.openhft.lang.model.constraints.NotNull;
 
 
 public enum ChronicleLogLevel {
@@ -31,31 +30,6 @@ public enum ChronicleLogLevel {
     INFO (30,"INFO" ),
     DEBUG(20,"DEBUG"),
     TRACE(10,"TRACE");
-
-    private static final int CASE_DIFF = 'A' - 'a';
-
-    /**
-     * Package-private for testing.
-     *
-     * @param upperCase string of A-Z characters
-     * @param other     a {@code CharSequence} to compare
-     * @return          {@code true} if {@code upperCase} and {@code other} equals ignore case
-     */
-    static boolean fastEqualsIgnoreCase(@NotNull String upperCase,
-                                        @NotNull CharSequence other) {
-        int l;
-        if ((l = upperCase.length()) != other.length()) {
-            return false;
-        }
-
-        for (int i = 0; i < l; i++) {
-            int uC, oC;
-            if ((uC = upperCase.charAt(i)) != (oC = other.charAt(i)) && (uC != oC + CASE_DIFF)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * Array is not cached in Java enum internals, make the single copy to prevent garbage creation
@@ -98,7 +72,7 @@ public enum ChronicleLogLevel {
     public static ChronicleLogLevel fromStringLevel(final CharSequence levelStr) {
         if (levelStr != null) {
             for (ChronicleLogLevel cll : VALUES) {
-                if (fastEqualsIgnoreCase(cll.levelStr, levelStr)) {
+                if (ChronicleLog.fastEqualsIgnoreCase(cll.levelStr, levelStr)) {
                     return cll;
                 }
             }

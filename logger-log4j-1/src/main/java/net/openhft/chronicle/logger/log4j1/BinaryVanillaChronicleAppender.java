@@ -34,7 +34,7 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
 
     @Override
     protected Chronicle createChronicle() throws IOException {
-        return new VanillaChronicle(this.getPath(), this.config.config());
+        return new VanillaChronicle(this.getPath(), this.config.cfg());
     }
 
     @Override

@@ -54,7 +54,7 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
     @Override
     protected Chronicle createChronicle() throws IOException {
         Chronicle chronicle = (this.config != null)
-            ? new IndexedChronicle(this.getPath(), this.config.config())
+            ? new IndexedChronicle(this.getPath(), this.config.cfg())
             : new IndexedChronicle(this.getPath());
 
         this.appender = chronicle.createAppender();
@@ -88,7 +88,7 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
         @PluginAttribute("path") final String path,
         @PluginAttribute("dateFormat") final String dateFormat,
         @PluginAttribute("stackTraceDepth") final String stackTraceDepth,
-        @PluginElement("filters") final Filter filter) {
+        @PluginElement("filter") final Filter filter) {
 
         if(name == null) {
             LOGGER.error("No name provided for TextIndexedChronicleAppender");

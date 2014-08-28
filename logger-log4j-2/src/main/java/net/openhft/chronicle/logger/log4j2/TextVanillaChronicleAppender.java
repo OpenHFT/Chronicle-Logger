@@ -49,7 +49,7 @@ public class TextVanillaChronicleAppender extends TextChronicleAppender {
     @Override
     protected Chronicle createChronicle() throws IOException {
         return (this.config != null)
-            ? new VanillaChronicle(this.getPath(), this.config.config())
+            ? new VanillaChronicle(this.getPath(), this.config.cfg())
             : new VanillaChronicle(this.getPath());
     }
 
@@ -78,7 +78,7 @@ public class TextVanillaChronicleAppender extends TextChronicleAppender {
         @PluginAttribute("path") final String path,
         @PluginAttribute("dateFormat") final String dateFormat,
         @PluginAttribute("stackTraceDepth") final String stackTraceDepth,
-        @PluginElement("filters") final Filter filter) {
+        @PluginElement("filter") final Filter filter) {
 
         if(name == null) {
             LOGGER.error("No name provided for TextVanillaChronicleAppender");

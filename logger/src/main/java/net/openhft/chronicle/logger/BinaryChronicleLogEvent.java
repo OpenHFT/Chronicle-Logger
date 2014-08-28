@@ -78,8 +78,8 @@ final class BinaryChronicleLogEvent implements ChronicleLogEvent {
     private final Throwable throwable;
 
     private BinaryChronicleLogEvent(byte version, ChronicleLog.Type type, long timestamp,
-                                    ChronicleLogLevel level, String threadName, String loggerName,
-                                    String message, Object[] args, Throwable throwable) {
+        ChronicleLogLevel level, String threadName, String loggerName,
+        String message, Object[] args, Throwable throwable) {
         this.version = version;
         this.type = type;
         this.timestamp = timestamp;

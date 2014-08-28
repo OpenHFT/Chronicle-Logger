@@ -93,7 +93,7 @@ final class TextChronicleLogEvent implements ChronicleLogEvent {
     private final String message;
 
     private TextChronicleLogEvent(long timestamp, ChronicleLogLevel level, String threadName,
-                                  String loggerName, String message) {
+        String loggerName, String message) {
         this.timestamp = timestamp;
         this.level = level;
         this.threadName = threadName;

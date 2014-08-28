@@ -22,6 +22,7 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
+import net.openhft.chronicle.logger.log4j2.config.VanillaChronicleCfg;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -48,7 +49,7 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
     @Override
     protected Chronicle createChronicle() throws IOException {
         return (this.config != null)
-            ? new VanillaChronicle(this.getPath(), this.config.config())
+            ? new VanillaChronicle(this.getPath(), this.config.cfg())
             : new VanillaChronicle(this.getPath());
     }
 
@@ -78,8 +79,8 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
         @PluginAttribute("formatMessage") final String formatMessage,
         @PluginAttribute("includeCallerData") final String includeCallerData,
         @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
-        @PluginElement("chronicleConfig") final VanillaLogAppenderConfig chronicleConfig,
-        @PluginElement("filters") final Filter filter) {
+        @PluginElement("vanillaChronicleConfig") final VanillaChronicleCfg chronicleConfig,
+        @PluginElement("filter") final Filter filter) {
 
         if(name == null) {
             LOGGER.error("No name provided for BinaryVanillaChronicleAppender");
@@ -92,7 +93,11 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
         }
 
         final BinaryVanillaChronicleAppender appender =
-            new BinaryVanillaChronicleAppender(name, filter, path, chronicleConfig);
+            new BinaryVanillaChronicleAppender(
+                name,
+                filter,
+                path,
+                chronicleConfig);
 
         if(formatMessage != null) {
             appender.setFormatMessage("true".equalsIgnoreCase(formatMessage));

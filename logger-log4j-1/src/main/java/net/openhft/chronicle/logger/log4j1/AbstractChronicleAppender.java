@@ -127,7 +127,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     public synchronized void setErrorHandler(ErrorHandler eh) {
         if(eh == null) {
             // We do not throw exception here since the cause is probably a
-            // bad config file.
+            // bad cfg file.
             LogLog.warn("You have tried to set a null error-handler.");
         } else {
             this.errorHandler = eh;

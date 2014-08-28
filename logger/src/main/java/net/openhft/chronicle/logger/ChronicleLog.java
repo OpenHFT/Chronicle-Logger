@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger;
 
 
@@ -23,6 +22,7 @@ import net.openhft.chronicle.*;
 import net.openhft.chronicle.tools.ChronicleTools;
 import net.openhft.lang.io.RandomDataInput;
 import net.openhft.lang.io.RandomDataOutput;
+import net.openhft.lang.model.constraints.NotNull;
 
 import java.io.IOException;
 
@@ -35,9 +35,14 @@ public final class ChronicleLog {
     public static final String DEFAULT_DATE_FORMAT = "yyyy.MM.dd-HH:mm:ss.SSS";
     
     public static final byte VERSION = 1;
+    private static final int CASE_DIFF = 'A' - 'a';
 
     public enum Type {
-        UNKNOWN, SLF4J, LOGBACK, LOG4J_1, LOG4J_2;
+        UNKNOWN,
+        SLF4J,
+        LOGBACK,
+        LOG4J_1,
+        LOG4J_2;
 
         private static final Type[] VALUES = values();
 
@@ -48,6 +53,33 @@ public final class ChronicleLog {
         public static Type read(final RandomDataInput in) {
             return VALUES[in.readByte()];
         }
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    /**
+     * Package-private for testing.
+     *
+     * @param upperCase string of A-Z characters
+     * @param other     a {@code CharSequence} to compare
+     * @return          {@code true} if {@code upperCase} and {@code other} equals ignore case
+     */
+    public static boolean fastEqualsIgnoreCase(@NotNull String upperCase, @NotNull CharSequence other) {
+        int l;
+        if ((l = upperCase.length()) != other.length()) {
+            return false;
+        }
+
+        for (int i = 0; i < l; i++) {
+            int uC, oC;
+            if ((uC = upperCase.charAt(i)) != (oC = other.charAt(i)) && (uC != oC + CASE_DIFF)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     // *************************************************************************

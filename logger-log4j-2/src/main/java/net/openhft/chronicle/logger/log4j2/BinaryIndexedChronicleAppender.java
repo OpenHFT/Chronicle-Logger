@@ -53,7 +53,7 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
     @Override
     protected Chronicle createChronicle() throws IOException {
         Chronicle chronicle = (this.config != null)
-            ? new IndexedChronicle(this.getPath(), this.config.config())
+            ? new IndexedChronicle(this.getPath(), this.config.cfg())
             : new IndexedChronicle(this.getPath());
 
         this.appender = chronicle.createAppender();
@@ -88,7 +88,7 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
         @PluginAttribute("formatMessage") final String formatMessage,
         @PluginAttribute("includeCallerData") final String includeCallerData,
         @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
-        @PluginElement("filters") final Filter filter) {
+        @PluginElement("filter") final Filter filter) {
 
         if(name == null) {
             LOGGER.error("No name provided for BinaryVanillaChronicleAppender");

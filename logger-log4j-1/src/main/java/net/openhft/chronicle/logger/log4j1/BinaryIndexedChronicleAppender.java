@@ -41,7 +41,7 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
 
     @Override
     protected Chronicle createChronicle() throws IOException {
-        Chronicle chronicle = new IndexedChronicle(this.getPath(), this.config.config());
+        Chronicle chronicle = new IndexedChronicle(this.getPath(), this.config.cfg());
         this.appender = chronicle.createAppender();
 
         return chronicle;
@@ -92,7 +92,7 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
     }
 
     public void seMinimiseFootprint(boolean minimiseFootprint) {
-        config.seMinimiseFootprint(minimiseFootprint);
+        config.setMinimiseFootprint(minimiseFootprint);
     }
 
     public void setUseCheckedExcerpt(boolean useCheckedExcerpt) {

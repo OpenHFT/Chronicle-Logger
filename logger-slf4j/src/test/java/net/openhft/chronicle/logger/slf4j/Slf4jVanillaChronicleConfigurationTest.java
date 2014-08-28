@@ -74,16 +74,16 @@ public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
     public void testLoadConfig() {
         final Properties properties = new Properties();
         properties.setProperty("slf4j.chronicle.type","vanilla");
-        properties.setProperty("slf4j.chronicle.config.dataCacheCapacity","128");
-        properties.setProperty("slf4j.chronicle.config.indexCacheCapacity","256");
-        properties.setProperty("slf4j.chronicle.config.synchronous","true");
+        properties.setProperty("slf4j.chronicle.cfg.dataCacheCapacity","128");
+        properties.setProperty("slf4j.chronicle.cfg.indexCacheCapacity","256");
+        properties.setProperty("slf4j.chronicle.cfg.synchronous","true");
 
         final ChronicleLoggingConfig clc = ChronicleLoggingConfig.load(properties);
         assertNull(clc.getIndexedChronicleConfig());
         assertNotNull(clc.getVanillaChronicleConfig());
-        assertTrue(VanillaChronicleConfig.DEFAULT != clc.getVanillaChronicleConfig().config());
+        assertTrue(VanillaChronicleConfig.DEFAULT != clc.getVanillaChronicleConfig().cfg());
 
-        final VanillaChronicleConfig cfg = clc.getVanillaChronicleConfig().config();
+        final VanillaChronicleConfig cfg = clc.getVanillaChronicleConfig().cfg();
         assertEquals(128, cfg.dataCacheCapacity());
         assertEquals(256, cfg.indexCacheCapacity());
         assertTrue(cfg.synchronous());

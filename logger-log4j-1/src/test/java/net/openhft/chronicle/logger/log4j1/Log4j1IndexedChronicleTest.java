@@ -46,7 +46,7 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
     @Ignore
     @Test
     public void testBinaryIndexedChronicleAppenderConfig() throws IOException {
-        final String loggerName = "config-binary-indexed-chronicle";
+        final String loggerName = "cfg-binary-indexed-chronicle";
         final String appenderName = "CONFIG-BINARY-INDEXED-CHRONICLE";
 
         final org.apache.log4j.Logger logger =  org.apache.log4j.Logger.getLogger(loggerName);
@@ -63,7 +63,7 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
     @Ignore
     @Test
     public void testTextIndexedChronicleAppenderConfig() throws IOException {
-        final String loggerName = "config-text-indexed-chronicle";
+        final String loggerName = "cfg-text-indexed-chronicle";
         final String appenderName = "CONFIG-TEXT-INDEXED-CHRONICLE";
 
         final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(loggerName);

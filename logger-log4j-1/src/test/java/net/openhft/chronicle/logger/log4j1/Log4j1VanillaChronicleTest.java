@@ -45,7 +45,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
 
     @Test
     public void testBinaryVanillaChronicleAppenderConfig() throws IOException {
-        final String loggerName = "config-binary-vanilla-chronicle";
+        final String loggerName = "cfg-binary-vanilla-chronicle";
         final String appenderName = "CONFIG-BINARY-VANILLA-CHRONICLE";
 
         final org.apache.log4j.Logger logger =  org.apache.log4j.Logger.getLogger(loggerName);
@@ -61,7 +61,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
 
     @Test
     public void testTextVanillaChronicleAppenderConfig() throws IOException {
-        final String loggerName = "config-text-vanilla-chronicle";
+        final String loggerName = "cfg-text-vanilla-chronicle";
         final String appenderName = "CONFIG-TEXT-VANILLA-CHRONICLE";
 
         final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(loggerName);

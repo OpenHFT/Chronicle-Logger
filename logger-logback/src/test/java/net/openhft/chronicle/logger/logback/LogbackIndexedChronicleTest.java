@@ -45,7 +45,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
     @Test
     public void testBinaryIndexedChronicleAppenderConfig() throws IOException {
-        final String loggerName = "config-binary-indexed-chronicle";
+        final String loggerName = "cfg-binary-indexed-chronicle";
         final String appenderName = "CONFIG-BINARY-INDEXED-CHRONICLE";
 
         final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);
@@ -61,7 +61,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
     @Test
     public void testTextIndexedChronicleAppenderConfig() throws IOException {
-        final String loggerName = "config-text-indexed-chronicle";
+        final String loggerName = "cfg-text-indexed-chronicle";
         final String appenderName = "CONFIG-TEXT-INDEXED-CHRONICLE";
 
         final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);

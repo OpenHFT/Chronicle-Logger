@@ -20,9 +20,9 @@ package net.openhft.chronicle.logger.log4j2;
 
 
 import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleConfig;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -115,42 +115,5 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         }
 
         throw new IllegalArgumentException(level.intLevel() + " not a valid level value");
-    }
-
-
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    @Plugin(
-        name        = "indexedChronicleCofig",
-        category    = "Core")
-    public static class IndexedChronicleCfg {
-        private final ChronicleConfig config;
-
-        protected IndexedChronicleCfg(final ChronicleConfig config) {
-            this.config = config;
-        }
-
-        protected ChronicleConfig config() {
-            return this.config;
-        }
-
-        @PluginFactory
-        public static IndexedChronicleCfg create(
-            @PluginAttribute("indexFileCapacity") final int indexFileCapacity,
-            @PluginAttribute("useUnsafe") final boolean useUnsafe,
-            @PluginAttribute("indexBlockSize") final int indexBlockSize,
-            @PluginAttribute("synchronousMode") final boolean synchronousMode,
-            @PluginAttribute("cacheLineSize") final int cacheLineSize,
-            @PluginAttribute("messageCapacity") final int messageCapacity,
-            @PluginAttribute("minimiseFootprint") final boolean minimiseFootprint,
-            @PluginAttribute("useCheckedExcerpt") final boolean useCheckedExcerpt,
-            @PluginAttribute("dataBlockSize") final int dataBlockSize,
-            @PluginAttribute("indexFileExcerpts") final int indexFileExcerpts) {
-
-            return new IndexedChronicleCfg(null);
-        }
     }
 }

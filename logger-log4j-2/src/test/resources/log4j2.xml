@@ -16,8 +16,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<configuration packages="net.openhft.chronicle.logger,net.openhft.chronicle.logger.log4j2">
+<configuration packages="net.openhft.chronicle.logger,net.openhft.chronicle.logger.log4j2,net.openhft.chronicle.logger.log4j2.config">
 
     <!-- ******************************************************************* -->
     <!-- APPENDERS                                                           -->
@@ -58,9 +57,9 @@
             <formatMessage>false</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-            <chronicleConfig>
+            <vanillaChronicleConfig>
                 <dataCacheCapacity>128</dataCacheCapacity>
-            </chronicleConfig>
+            </vanillaChronicleConfig>
         </BinaryVanillaChronicle>
 
         <TextVanillaChronicle name="CONF-TEXT-VANILLA-CHRONICLE">
@@ -74,9 +73,6 @@
             <formatMessage>false</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-            <chronicleConfig>
-                <dataCacheCapacity>128</dataCacheCapacity>
-            </chronicleConfig>
         </BinaryVanillaChronicle>
 
         <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE-FMT">
@@ -84,9 +80,6 @@
             <formatMessage>true</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-            <chronicleConfig>
-                <dataCacheCapacity>128</dataCacheCapacity>
-            </chronicleConfig>
         </BinaryVanillaChronicle>
 
         <BinaryVanillaChronicle name="PERF-BINARY-VANILLA-CHRONICLE">
@@ -94,9 +87,6 @@
             <formatMessage>false</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-            <chronicleConfig>
-                <dataCacheCapacity>128</dataCacheCapacity>
-            </chronicleConfig>
         </BinaryVanillaChronicle>
 
         <TextVanillaChronicle name="TEXT-VANILLA-CHRONICLE">

@@ -22,12 +22,10 @@ package net.openhft.chronicle.logger.slf4j;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 
-import java.beans.PropertyDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -58,7 +56,7 @@ import java.util.Properties;
 public class ChronicleLoggingConfig {
     public static final String KEY_PROPERTIES_FILE = "slf4j.chronicle.properties";
     public static final String KEY_PREFIX = "slf4j.chronicle.";
-    public static final String KEY_CFG_PREFIX = "slf4j.chronicle.config.";
+    public static final String KEY_CFG_PREFIX = "slf4j.chronicle.cfg.";
     public static final String KEY_CHRONICLE_TYPE = "slf4j.chronicle.type";
     public static final String KEY_LOGER = "logger";
     public static final String KEY_LEVEL = "level";
@@ -209,11 +207,14 @@ public class ChronicleLoggingConfig {
      * @return
      */
     private static IndexedLogAppenderConfig loadIndexedConfig(final Properties properties) {
-        if(!properties.getProperty(KEY_CHRONICLE_TYPE).equalsIgnoreCase(TYPE_INDEXED)) {
+        if(!TYPE_INDEXED.equalsIgnoreCase(properties.getProperty(KEY_CHRONICLE_TYPE))) {
             return null;
         }
 
-        return loadConfig(new IndexedLogAppenderConfig() , properties);
+        final IndexedLogAppenderConfig cfg = new IndexedLogAppenderConfig();
+        cfg.setProperties(properties, KEY_CFG_PREFIX);
+
+        return cfg;
     }
 
     /**
@@ -222,46 +223,14 @@ public class ChronicleLoggingConfig {
      * @return
      */
     private static VanillaLogAppenderConfig loadVanillaConfig(final Properties properties) {
-        if(!properties.getProperty(KEY_CHRONICLE_TYPE).equalsIgnoreCase(TYPE_VANILLA)) {
+        if(!TYPE_VANILLA.equalsIgnoreCase(properties.getProperty(KEY_CHRONICLE_TYPE))) {
             return null;
         }
 
-        return loadConfig(new VanillaLogAppenderConfig() , properties);
-    }
-
-    private static <T> T loadConfig(final T cfg, final Properties properties) {
-        for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
-            final String name = entry.getKey().toString();
-            final String value = entry.getValue().toString();
-
-            if(name.startsWith(KEY_CFG_PREFIX)) {
-                setProperty(cfg, name.substring(KEY_CFG_PREFIX.length()), value);
-            }
-        }
+        final VanillaLogAppenderConfig cfg = new VanillaLogAppenderConfig();
+        cfg.setProperties(properties, KEY_CFG_PREFIX);
 
         return cfg;
-    }
-
-    private static void setProperty(final Object target, final String propName, final String propValue) {
-        try {
-            final PropertyDescriptor property = new PropertyDescriptor(propName, target.getClass());
-            final Method method = property.getWriteMethod();
-            final Class<?> type = method.getParameterTypes()[0];
-
-            if(type != null) {
-                if (type == int.class) {
-                    method.invoke(target, Integer.parseInt(propValue));
-                } else if (type == long.class) {
-                    method.invoke(target, Long.parseLong(propValue));
-                } else if (type == boolean.class) {
-                    method.invoke(target, Boolean.parseBoolean(propValue));
-                } else if (type == String.class) {
-                    method.invoke(target, propValue);
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     // *************************************************************************
