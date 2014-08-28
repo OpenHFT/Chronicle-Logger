@@ -93,11 +93,7 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
         }
 
         final BinaryVanillaChronicleAppender appender =
-            new BinaryVanillaChronicleAppender(
-                name,
-                filter,
-                path,
-                chronicleConfig);
+            new BinaryVanillaChronicleAppender(name, filter, path, chronicleConfig);
 
         if(formatMessage != null) {
             appender.setFormatMessage("true".equalsIgnoreCase(formatMessage));

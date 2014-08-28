@@ -22,6 +22,7 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
+import net.openhft.chronicle.logger.log4j2.config.VanillaChronicleCfg;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -78,6 +79,7 @@ public class TextVanillaChronicleAppender extends TextChronicleAppender {
         @PluginAttribute("path") final String path,
         @PluginAttribute("dateFormat") final String dateFormat,
         @PluginAttribute("stackTraceDepth") final String stackTraceDepth,
+        @PluginElement("vanillaChronicleConfig") final VanillaChronicleCfg chronicleConfig,
         @PluginElement("filter") final Filter filter) {
 
         if(name == null) {
@@ -91,7 +93,7 @@ public class TextVanillaChronicleAppender extends TextChronicleAppender {
         }
 
         final TextVanillaChronicleAppender appender =
-            new TextVanillaChronicleAppender(name, filter, path, null);
+            new TextVanillaChronicleAppender(name, filter, path, chronicleConfig);
 
         if(dateFormat != null) {
             appender.setDateFormat(dateFormat);

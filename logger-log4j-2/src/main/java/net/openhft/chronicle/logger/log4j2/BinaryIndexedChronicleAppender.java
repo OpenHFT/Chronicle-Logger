@@ -22,6 +22,7 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
+import net.openhft.chronicle.logger.log4j2.config.IndexedChronicleCfg;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -88,6 +89,7 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
         @PluginAttribute("formatMessage") final String formatMessage,
         @PluginAttribute("includeCallerData") final String includeCallerData,
         @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
+        @PluginElement("indexedChronicleConfig") final IndexedChronicleCfg chronicleConfig,
         @PluginElement("filter") final Filter filter) {
 
         if(name == null) {
@@ -101,7 +103,7 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
         }
 
         final BinaryIndexedChronicleAppender appender =
-            new BinaryIndexedChronicleAppender(name, filter, path, null);
+            new BinaryIndexedChronicleAppender(name, filter, path, chronicleConfig);
 
         if(formatMessage != null) {
             appender.setFormatMessage("true".equalsIgnoreCase(formatMessage));
