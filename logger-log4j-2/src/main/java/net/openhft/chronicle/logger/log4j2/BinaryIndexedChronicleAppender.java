@@ -88,7 +88,6 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
         @PluginAttribute("formatMessage") final String formatMessage,
         @PluginAttribute("includeCallerData") final String includeCallerData,
         @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
-        //@PluginElement("chronicleConfig") final IndexedLogAppenderConfig chronicleConfig,
         @PluginElement("filters") final Filter filter) {
 
         if(name == null) {

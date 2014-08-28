@@ -88,7 +88,6 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
         @PluginAttribute("path") final String path,
         @PluginAttribute("dateFormat") final String dateFormat,
         @PluginAttribute("stackTraceDepth") final String stackTraceDepth,
-        //@PluginElement("chronicleConfig") final IndexedLogAppenderConfig chronicleConfig,
         @PluginElement("filters") final Filter filter) {
 
         if(name == null) {

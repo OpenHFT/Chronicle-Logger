@@ -17,7 +17,7 @@
   ~ limitations under the License.
   -->
 
-<configuration packages="com.higherfrequencytrading.chronology.log4j2">
+<configuration packages="net.openhft.chronicle.logger,net.openhft.chronicle.logger.log4j2">
 
     <!-- ******************************************************************* -->
     <!-- APPENDERS                                                           -->
@@ -67,11 +67,6 @@
             <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-text-vanilla-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
             <stackTraceDepth>3</stackTraceDepth>
-            <!--
-            <chronicleConfig>
-                <dataCacheCapacity>128</dataCacheCapacity>
-            </chronicleConfig>
-            -->
         </TextVanillaChronicle>
 
         <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE">
@@ -79,7 +74,9 @@
             <formatMessage>false</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-            <chronicleConfig/>
+            <chronicleConfig>
+                <dataCacheCapacity>128</dataCacheCapacity>
+            </chronicleConfig>
         </BinaryVanillaChronicle>
 
         <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE-FMT">
@@ -87,7 +84,9 @@
             <formatMessage>true</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-            <chronicleConfig/>
+            <chronicleConfig>
+                <dataCacheCapacity>128</dataCacheCapacity>
+            </chronicleConfig>
         </BinaryVanillaChronicle>
 
         <BinaryVanillaChronicle name="PERF-BINARY-VANILLA-CHRONICLE">
@@ -95,7 +94,9 @@
             <formatMessage>false</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-            <chronicleConfig/>
+            <chronicleConfig>
+                <dataCacheCapacity>128</dataCacheCapacity>
+            </chronicleConfig>
         </BinaryVanillaChronicle>
 
         <TextVanillaChronicle name="TEXT-VANILLA-CHRONICLE">
