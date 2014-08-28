@@ -66,10 +66,12 @@
         <TextVanillaChronicle name="CONF-TEXT-VANILLA-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-text-vanilla-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
-            <stackTradeDepth>3</stackTradeDepth>
+            <stackTraceDepth>3</stackTraceDepth>
+            <!--
             <chronicleConfig>
                 <dataCacheCapacity>128</dataCacheCapacity>
             </chronicleConfig>
+            -->
         </TextVanillaChronicle>
 
         <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE">
@@ -77,6 +79,7 @@
             <formatMessage>false</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+            <chronicleConfig/>
         </BinaryVanillaChronicle>
 
         <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE-FMT">
@@ -84,6 +87,7 @@
             <formatMessage>true</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+            <chronicleConfig/>
         </BinaryVanillaChronicle>
 
         <BinaryVanillaChronicle name="PERF-BINARY-VANILLA-CHRONICLE">
@@ -91,12 +95,13 @@
             <formatMessage>false</formatMessage>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+            <chronicleConfig/>
         </BinaryVanillaChronicle>
 
         <TextVanillaChronicle name="TEXT-VANILLA-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/text-vanilla-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
-            <stackTradeDepth>3</stackTradeDepth>
+            <stackTraceDepth>3</stackTraceDepth>
         </TextVanillaChronicle>
 
 
@@ -128,7 +133,7 @@
         <TextIndexedChronicle name="TEXT-INDEXED-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/text-indexed-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
-            <stackTradeDepth>3</stackTradeDepth>
+            <stackTraceDepth>3</stackTraceDepth>
         </TextIndexedChronicle>
 
     </appenders>

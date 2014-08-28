@@ -43,38 +43,7 @@ public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
     //
     // *************************************************************************
 
-    @Test
-    public void testBinaryVanillaChronicleAppenderConfig() throws IOException {
-        org.apache.logging.log4j.core.LoggerContext ctx =
-            (org.apache.logging.log4j.core.LoggerContext)LogManager.getContext();
-        org.apache.logging.log4j.core.Appender appender =
-            ctx.getConfiguration().getAppender("CONFIG-BINARY-VANILLA-CHRONICLE");
 
-
-        assertNotNull(appender);
-        assertTrue(appender instanceof BinaryVanillaChronicleAppender);
-
-        BinaryVanillaChronicleAppender ba = (BinaryVanillaChronicleAppender)appender;
-        assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
-    }
-
-    @Test
-    public void testTextVanillaChronicleAppenderConfig() throws IOException {
-        final String loggerName = "config-text-vanilla-chronicle";
-        final String appenderName = "CONFIG-TEXT-VANILLA-CHRONICLE";
-
-        final org.apache.logging.log4j.Logger logger = LogManager.getLogger(loggerName);
-        assertNotNull(logger);
-
-        /*
-        final Appender<ILoggingEvent> appender =logger.getAppender(appenderName);
-        assertNotNull(appender);
-        assertTrue(appender instanceof TextVanillaChronicleAppender);
-
-        TextVanillaChronicleAppender ba = (TextVanillaChronicleAppender)appender;
-        assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
-        */
-    }
 
     // *************************************************************************
     //

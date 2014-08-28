@@ -29,14 +29,14 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
     private String dateFormat;
     private TimeStampFormatter timeStampFormatter;
-    private int stackTradeDepth;
+    private int stackTraceDepth;
 
     protected TextChronicleAppender(final String name, final Filter filter, final String path) {
         super(name, filter, path);
 
         this.dateFormat = null;
         this.timeStampFormatter = null;
-        this.stackTradeDepth = -1;
+        this.stackTraceDepth = -1;
     }
 
     // *************************************************************************
@@ -52,12 +52,12 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
         return this.dateFormat;
     }
 
-    public void setStackTradeDepth(int stackTradeDepth) {
-        this.stackTradeDepth = stackTradeDepth;
+    public void setStackTraceDepth(int stackTraceDepth) {
+        this.stackTraceDepth = stackTraceDepth;
     }
 
-    public int getStackTradeDepth() {
-        return this.stackTradeDepth;
+    public int getStackTraceDepth() {
+        return this.stackTraceDepth;
     }
 
     // *************************************************************************
@@ -86,7 +86,7 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
                     appender,
                     th,
                     ChronicleLog.COMMA,
-                    this.stackTradeDepth
+                    this.stackTraceDepth
                 );
             }
 
