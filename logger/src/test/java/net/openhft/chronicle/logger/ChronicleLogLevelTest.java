@@ -20,7 +20,6 @@ package net.openhft.chronicle.logger;
 
 import org.junit.Test;
 
-import static net.openhft.chronicle.logger.ChronicleLogLevel.fastEqualsIgnoreCase;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -29,12 +28,12 @@ public class ChronicleLogLevelTest {
 
     @Test
     public void fastEqualsIgnoreCaseTest() {
-        assertTrue(fastEqualsIgnoreCase("ERROR", new String("ERROR")));
-        assertTrue(fastEqualsIgnoreCase("ERROR", "error"));
-        assertTrue(fastEqualsIgnoreCase("ERROR", "eRrOr"));
+        assertTrue(ChronicleLog.fastEqualsIgnoreCase("ERROR", new String("ERROR")));
+        assertTrue(ChronicleLog.fastEqualsIgnoreCase("ERROR", "error"));
+        assertTrue(ChronicleLog.fastEqualsIgnoreCase("ERROR", "eRrOr"));
 
-        assertFalse(fastEqualsIgnoreCase("ERROR", "ERRO"));
-        assertFalse(fastEqualsIgnoreCase("ERROR", "ERRORR"));
-        assertFalse(fastEqualsIgnoreCase("ERROR", "ERRAR"));
+        assertFalse(ChronicleLog.fastEqualsIgnoreCase("ERROR", "ERRO"));
+        assertFalse(ChronicleLog.fastEqualsIgnoreCase("ERROR", "ERRORR"));
+        assertFalse(ChronicleLog.fastEqualsIgnoreCase("ERROR", "ERRAR"));
     }
 }

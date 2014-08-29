@@ -29,22 +29,12 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
     private VanillaLogAppenderConfig config;
 
     public BinaryVanillaChronicleAppender() {
-        this.config = null;
-    }
-
-    public void setChronicleConfig(final VanillaLogAppenderConfig config) {
-        this.config = config;
-    }
-
-    public VanillaLogAppenderConfig getChronicleConfig() {
-        return this.config;
+        this.config = new VanillaLogAppenderConfig();
     }
 
     @Override
     protected Chronicle createChronicle() throws IOException {
-        return (this.config != null)
-            ? new VanillaChronicle(this.getPath(), this.config.config())
-            : new VanillaChronicle(this.getPath());
+        return new VanillaChronicle(this.getPath(), this.config.cfg());
     }
 
     @Override
@@ -56,5 +46,53 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
         }
 
         return null;
+    }
+
+    // *************************************************************************
+    // VanillaLogAppenderConfig
+    // *************************************************************************
+
+    protected VanillaLogAppenderConfig getChronicleConfig() {
+        return this.config;
+    }
+
+    public void setDataCacheCapacity(int dataCacheCapacity) {
+        config.setDataCacheCapacity(dataCacheCapacity);
+    }
+
+    public void setCycleLength(int cycleLength) {
+        config.setCycleLength(cycleLength);
+    }
+
+    public void setCleanupOnClose(boolean cleanupOnClose) {
+        config.setCleanupOnClose(cleanupOnClose);
+    }
+
+    public void setSynchronous(boolean synchronous) {
+        config.setSynchronous(synchronous);
+    }
+
+    public void setDefaultMessageSize(int defaultMessageSize) {
+        config.setDefaultMessageSize(defaultMessageSize);
+    }
+
+    public void setUseCheckedExcerpt(boolean useCheckedExcerpt) {
+        config.setUseCheckedExcerpt(useCheckedExcerpt);
+    }
+
+    public void setEntriesPerCycle(long entriesPerCycle) {
+        config.setEntriesPerCycle(entriesPerCycle);
+    }
+
+    public void setCycleLength(int cycleLength, boolean check) {
+        config.setCycleLength(cycleLength, check);
+    }
+
+    public void setIndexCacheCapacity(int indexCacheCapacity) {
+        config.setIndexCacheCapacity(indexCacheCapacity);
+    }
+
+    public void setIndexBlockSize(long indexBlockSize) {
+        config.setIndexBlockSize(indexBlockSize);
     }
 }

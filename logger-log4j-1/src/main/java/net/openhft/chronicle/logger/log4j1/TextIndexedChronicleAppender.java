@@ -25,33 +25,23 @@ import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;
+import java.nio.ByteOrder;
 
 public class TextIndexedChronicleAppender extends TextChronicleAppender {
 
-    private IndexedLogAppenderConfig config;
-    private Object lock;
+    private final IndexedLogAppenderConfig config;
+    private final Object lock;
     private ExcerptAppender appender;
 
     public TextIndexedChronicleAppender() {
-        this.config = null;
+        this.config = new IndexedLogAppenderConfig();
         this.lock = new Object();
         this.appender = null;
     }
 
-    public void setChronicleConfig(final IndexedLogAppenderConfig config) {
-        this.config = config;
-    }
-
-    public IndexedLogAppenderConfig getChronicleConfig() {
-        return this.config;
-    }
-
     @Override
     protected Chronicle createChronicle() throws IOException {
-        Chronicle chronicle = (this.config != null)
-            ? new IndexedChronicle(this.getPath(), this.config.config())
-            : new IndexedChronicle(this.getPath());
-
+        Chronicle chronicle = new IndexedChronicle(this.getPath(), this.config.cfg());
         this.appender = chronicle.createAppender();
 
         return chronicle;
@@ -67,5 +57,53 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
         synchronized (this.lock) {
             super.doAppend(event);
         }
+    }
+
+    // *************************************************************************
+    // IndexedLogAppenderConfig
+    // *************************************************************************
+
+    protected IndexedLogAppenderConfig getChronicleConfig() {
+        return this.config;
+    }
+
+    public void setUseUnsafe(boolean useUnsafe) {
+        config.setUseUnsafe(useUnsafe);
+    }
+
+    public void setByteOrder(ByteOrder byteOrder) {
+        config.setByteOrder(byteOrder);
+    }
+
+    public void setIndexBlockSize(int indexBlockSize) {
+        config.setIndexBlockSize(indexBlockSize);
+    }
+
+    public void setSynchronousMode(boolean synchronousMode) {
+        config.setSynchronousMode(synchronousMode);
+    }
+
+    public void setCacheLineSize(int cacheLineSize) {
+        config.setCacheLineSize(cacheLineSize);
+    }
+
+    public void setMessageCapacity(int messageCapacity) {
+        config.setMessageCapacity(messageCapacity);
+    }
+
+    public void seMinimiseFootprint(boolean minimiseFootprint) {
+        config.setMinimiseFootprint(minimiseFootprint);
+    }
+
+    public void setUseCheckedExcerpt(boolean useCheckedExcerpt) {
+        config.setUseCheckedExcerpt(useCheckedExcerpt);
+    }
+
+    public void setDataBlockSize(int dataBlockSize) {
+        config.setDataBlockSize(dataBlockSize);
+    }
+
+    public void setIndexFileExcerpts(int indexFileExcerpts) {
+        config.setIndexFileExcerpts(indexFileExcerpts);
     }
 }

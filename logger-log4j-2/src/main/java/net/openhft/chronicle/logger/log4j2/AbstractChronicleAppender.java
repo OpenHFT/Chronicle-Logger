@@ -22,9 +22,14 @@ package net.openhft.chronicle.logger.log4j2;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
+import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 import java.io.IOException;
 
@@ -33,10 +38,10 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
 
     protected Chronicle chronicle;
 
-    protected AbstractChronicleAppender(String name, Filter filter) {
+    protected AbstractChronicleAppender(String name, Filter filter, String path) {
         super(name, filter, null, true);
 
-        this.path = null;
+        this.path = path;
         this.chronicle = null;
     }
 
@@ -111,5 +116,81 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         }
 
         throw new IllegalArgumentException(level.intLevel() + " not a valid level value");
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    @Plugin(
+        name     = "indexedChronicleConfig",
+        category = "Core")
+    public static final class IndexedChronicleCfg extends IndexedLogAppenderConfig {
+
+        protected IndexedChronicleCfg() {
+        }
+
+        @PluginFactory
+        public static IndexedChronicleCfg create(
+            @PluginAttribute("indexFileCapacity") final String indexFileCapacity,
+            @PluginAttribute("indexFileExcerpts") final String indexFileExcerpts,
+            @PluginAttribute("indexBlockSize") final String indexBlockSize,
+            @PluginAttribute("useUnsafe") final String useUnsafe,
+            @PluginAttribute("synchronousMode") final String synchronousMode,
+            @PluginAttribute("cacheLineSize") final String cacheLineSize,
+            @PluginAttribute("messageCapacity") final String messageCapacity,
+            @PluginAttribute("minimiseFootprint") final String minimiseFootprint,
+            @PluginAttribute("useCheckedExcerpt") final String useCheckedExcerpt,
+            @PluginAttribute("dataBlockSize") final String dataBlockSize) {
+
+            final IndexedChronicleCfg cfg = new IndexedChronicleCfg();
+            cfg.setProperty("indexFileCapacity",indexFileCapacity);
+            cfg.setProperty("useUnsafe",useUnsafe);
+            cfg.setProperty("indexBlockSize",indexBlockSize);
+            cfg.setProperty("synchronousMode",synchronousMode);
+            cfg.setProperty("cacheLineSize",cacheLineSize);
+            cfg.setProperty("messageCapacity",messageCapacity);
+            cfg.setProperty("minimiseFootprint",minimiseFootprint);
+            cfg.setProperty("useCheckedExcerpt",useCheckedExcerpt);
+            cfg.setProperty("dataBlockSize",dataBlockSize);
+            cfg.setProperty("indexFileExcerpts",indexFileExcerpts);
+
+            return cfg;
+        }
+    }
+
+    @Plugin(
+        name     = "vanillaChronicleConfig",
+        category = "Core")
+    public static final class VanillaChronicleCfg extends VanillaLogAppenderConfig {
+
+        protected VanillaChronicleCfg() {
+        }
+
+        @PluginFactory
+        public static VanillaChronicleCfg create(
+            @PluginAttribute("dataCacheCapacity") final String dataCacheCapacity,
+            @PluginAttribute("cycleLength") final String cycleLength,
+            @PluginAttribute("cleanupOnClose") final String cleanupOnClose,
+            @PluginAttribute("synchronous") final String synchronous,
+            @PluginAttribute("defaultMessageSize") final String defaultMessageSize,
+            @PluginAttribute("useCheckedExcerpt") final String useCheckedExcerpt,
+            @PluginAttribute("entriesPerCycle") final String entriesPerCycle,
+            @PluginAttribute("indexCacheCapacity") final String indexCacheCapacity,
+            @PluginAttribute("indexBlockSize") final String indexBlockSize) {
+
+            final VanillaChronicleCfg cfg = new VanillaChronicleCfg();
+            cfg.setProperty("dataCacheCapacity",dataCacheCapacity);
+            cfg.setProperty("cycleLength",cycleLength);
+            cfg.setProperty("cleanupOnClose",cleanupOnClose);
+            cfg.setProperty("synchronous",synchronous);
+            cfg.setProperty("defaultMessageSize",defaultMessageSize);
+            cfg.setProperty("useCheckedExcerpt",useCheckedExcerpt);
+            cfg.setProperty("entriesPerCycle",entriesPerCycle);
+            cfg.setProperty("indexBlockSize",indexBlockSize);
+            cfg.setProperty("indexCacheCapacity",indexCacheCapacity);
+
+            return cfg;
+        }
     }
 }

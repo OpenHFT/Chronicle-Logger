@@ -25,15 +25,17 @@ import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.tools.ChronicleTools;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
 
@@ -41,12 +43,38 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
     //
     // *************************************************************************
 
-    @Before
-    public void setUp() {
+    @Ignore
+    @Test
+    public void testBinaryIndexedChronicleAppenderConfig() throws IOException {
+        final String loggerName = "cfg-binary-indexed-chronicle";
+        final String appenderName = "CONFIG-BINARY-INDEXED-CHRONICLE";
+
+        final org.apache.log4j.Logger logger =  org.apache.log4j.Logger.getLogger(loggerName);
+        assertNotNull(logger);
+
+        final org.apache.log4j.Appender appender = logger.getAppender(appenderName);
+        assertNotNull(appender);
+        assertTrue(appender instanceof BinaryIndexedChronicleAppender);
+
+        BinaryIndexedChronicleAppender ba = (BinaryIndexedChronicleAppender)appender;
+        assertEquals(128, ba.getChronicleConfig().getIndexFileCapacity());
     }
 
-    @After
-    public void tearDown() {
+    @Ignore
+    @Test
+    public void testTextIndexedChronicleAppenderConfig() throws IOException {
+        final String loggerName = "cfg-text-indexed-chronicle";
+        final String appenderName = "CONFIG-TEXT-INDEXED-CHRONICLE";
+
+        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(loggerName);
+        assertNotNull(logger);
+
+        final org.apache.log4j.Appender appender = logger.getAppender(appenderName);
+        assertNotNull(appender);
+        assertTrue(appender instanceof TextIndexedChronicleAppender);
+
+        TextIndexedChronicleAppender ba = (TextIndexedChronicleAppender)appender;
+        assertEquals(128, ba.getChronicleConfig().getIndexFileCapacity());
     }
 
     // *************************************************************************

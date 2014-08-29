@@ -25,15 +25,16 @@ import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.IOTools;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
 
@@ -41,12 +42,30 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
     //
     // *************************************************************************
 
-    @Before
-    public void setUp() {
+    @Test
+    public void testBinaryVanillaChronicleAppenderConfig() throws IOException {
+        final String appenderName = "CONF-BINARY-VANILLA-CHRONICLE";
+        final org.apache.logging.log4j.core.Appender appender = getAppender(appenderName);
+
+        assertNotNull(appender);
+        assertEquals(appenderName, appender.getName());
+        assertTrue(appender instanceof BinaryVanillaChronicleAppender);
+
+        final BinaryVanillaChronicleAppender ba = (BinaryVanillaChronicleAppender)appender;
+        assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
     }
 
-    @After
-    public void tearDown() {
+    @Test
+    public void testTextVanillaChronicleAppenderConfig() throws IOException {
+        final String appenderName = "CONF-TEXT-VANILLA-CHRONICLE";
+        final org.apache.logging.log4j.core.Appender appender = getAppender(appenderName);
+
+        assertNotNull(appender);
+        assertEquals(appenderName, appender.getName());
+        assertTrue(appender instanceof TextVanillaChronicleAppender);
+
+        final TextVanillaChronicleAppender ba = (TextVanillaChronicleAppender)appender;
+        assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
     }
 
     // *************************************************************************

@@ -46,7 +46,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
     @Test
     public void testBinaryVanillaChronicleAppenderConfig() throws IOException {
-        final String loggerName = "config-binary-vanilla-chronicle";
+        final String loggerName = "cfg-binary-vanilla-chronicle";
         final String appenderName = "CONFIG-BINARY-VANILLA-CHRONICLE";
 
         final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);
@@ -62,7 +62,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
     @Test
     public void testTextVanillaChronicleAppenderConfig() throws IOException {
-        final String loggerName = "config-text-vanilla-chronicle";
+        final String loggerName = "cfg-text-vanilla-chronicle";
         final String appenderName = "CONFIG-TEXT-VANILLA-CHRONICLE";
 
         final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);

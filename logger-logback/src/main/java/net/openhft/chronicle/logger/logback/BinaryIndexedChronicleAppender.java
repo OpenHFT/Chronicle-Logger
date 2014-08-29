@@ -51,7 +51,7 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
     @Override
     protected Chronicle createChronicle() throws IOException {
         Chronicle chronicle = (this.config != null)
-            ? new IndexedChronicle(this.getPath(), this.config.config())
+            ? new IndexedChronicle(this.getPath(), this.config.cfg())
             : new IndexedChronicle(this.getPath());
 
         this.appender = chronicle.createAppender();

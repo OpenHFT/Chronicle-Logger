@@ -25,6 +25,7 @@ import net.openhft.lang.io.Bytes;
 import net.openhft.lang.io.serialization.BytesMarshallable;
 import net.openhft.lang.model.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +88,18 @@ public class Log4j2TestBase {
     // *************************************************************************
     //
     // *************************************************************************
+
+    /**
+     *
+     * @param name  appender name
+     * @return      the appender
+     */
+    protected org.apache.logging.log4j.core.Appender getAppender(String name) {
+        final org.apache.logging.log4j.core.LoggerContext ctx =
+            (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext();
+
+        return ctx.getConfiguration().getAppender(name);
+    }
 
     /**
      * @param type

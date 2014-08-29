@@ -16,8 +16,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<configuration packages="com.higherfrequencytrading.chronology.log4j2">
+<configuration packages="net.openhft.chronicle.logger,net.openhft.chronicle.logger.log4j2">
 
     <!-- ******************************************************************* -->
     <!-- APPENDERS                                                           -->
@@ -53,6 +52,22 @@
         <!-- VANILLA                                                         -->
         <!-- *************************************************************** -->
 
+        <BinaryVanillaChronicle name="CONF-BINARY-VANILLA-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-binary-vanilla-chronicle</path>
+            <formatMessage>false</formatMessage>
+            <includeCallerData>false</includeCallerData>
+            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+            <vanillaChronicleConfig>
+                <dataCacheCapacity>128</dataCacheCapacity>
+            </vanillaChronicleConfig>
+        </BinaryVanillaChronicle>
+
+        <TextVanillaChronicle name="CONF-TEXT-VANILLA-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-text-vanilla-chronicle</path>
+            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+            <stackTraceDepth>3</stackTraceDepth>
+        </TextVanillaChronicle>
+
         <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-vanilla-chronicle</path>
             <formatMessage>false</formatMessage>
@@ -74,15 +89,33 @@
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
         </BinaryVanillaChronicle>
 
+        <TextVanillaChronicle name="CONF-TEXT-VANILLA-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-text-vanilla-chronicle</path>
+            <vanillaChronicleConfig>
+                <dataCacheCapacity>128</dataCacheCapacity>
+            </vanillaChronicleConfig>
+        </TextVanillaChronicle>
+
         <TextVanillaChronicle name="TEXT-VANILLA-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/text-vanilla-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
-            <stackTradeDepth>3</stackTradeDepth>
+            <stackTraceDepth>3</stackTraceDepth>
         </TextVanillaChronicle>
+
 
         <!-- *************************************************************** -->
         <!-- INDEXED                                                         -->
         <!-- *************************************************************** -->
+
+        <BinaryIndexedChronicle name="CONF-BINARY-INDEXED-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-binary-indexed-chronicle</path>
+            <formatMessage>false</formatMessage>
+            <includeCallerData>false</includeCallerData>
+            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+            <indexedChronicleConfig>
+                <indexBlockSize>128</indexBlockSize>
+            </indexedChronicleConfig>
+        </BinaryIndexedChronicle>
 
         <BinaryIndexedChronicle name="BINARY-INDEXED-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-indexed-chronicle</path>
@@ -105,10 +138,19 @@
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
         </BinaryIndexedChronicle>
 
+        <TextIndexedChronicle name="CONF-TEXT-INDEXED-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-text-indexed-chronicle</path>
+            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+            <stackTraceDepth>3</stackTraceDepth>
+            <indexedChronicleConfig>
+                <indexBlockSize>128</indexBlockSize>
+            </indexedChronicleConfig>
+        </TextIndexedChronicle>
+
         <TextIndexedChronicle name="TEXT-INDEXED-CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronology-log4j2/text-indexed-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
-            <stackTradeDepth>3</stackTradeDepth>
+            <stackTraceDepth>3</stackTraceDepth>
         </TextIndexedChronicle>
 
     </appenders>

@@ -31,8 +31,8 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
     private boolean includeMDC;
     private boolean formatMessage;
 
-    protected BinaryChronicleAppender(String name, Filter filter) {
-        super(name, filter);
+    protected BinaryChronicleAppender(final String name, final Filter filter, final String path) {
+        super(name, filter, path);
 
         this.includeCallerData = true;
         this.includeMDC = true;

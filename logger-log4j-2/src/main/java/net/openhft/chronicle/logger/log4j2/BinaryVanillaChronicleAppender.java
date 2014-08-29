@@ -21,7 +21,7 @@ package net.openhft.chronicle.logger.log4j2;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
-import net.openhft.chronicle.VanillaChronicleConfig;
+import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -37,21 +37,18 @@ import java.io.IOException;
     printObject = true)
 public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
 
-    private VanillaChronicleConfig config;
+    private final VanillaLogAppenderConfig config;
 
-    public BinaryVanillaChronicleAppender(String name, Filter filter) {
-        super(name,filter);
-        this.config = null;
-    }
-
-    public void setConfig(VanillaChronicleConfig config) {
+    public BinaryVanillaChronicleAppender(
+        final String name, final Filter filter, final String path, final VanillaLogAppenderConfig config) {
+        super(name, filter, path);
         this.config = config;
     }
 
     @Override
     protected Chronicle createChronicle() throws IOException {
         return (this.config != null)
-            ? new VanillaChronicle(this.getPath(),this.config)
+            ? new VanillaChronicle(this.getPath(), this.config.cfg())
             : new VanillaChronicle(this.getPath());
     }
 
@@ -66,6 +63,10 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
         return null;
     }
 
+    protected VanillaLogAppenderConfig getChronicleConfig() {
+        return this.config;
+    }
+
     // *************************************************************************
     //
     // *************************************************************************
@@ -77,7 +78,8 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
         @PluginAttribute("formatMessage") final String formatMessage,
         @PluginAttribute("includeCallerData") final String includeCallerData,
         @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
-        @PluginElement("filters") final Filter filter) {
+        @PluginElement("vanillaChronicleConfig") final VanillaChronicleCfg chronicleConfig,
+        @PluginElement("filter") final Filter filter) {
 
         if(name == null) {
             LOGGER.error("No name provided for BinaryVanillaChronicleAppender");
@@ -89,8 +91,8 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
             return null;
         }
 
-        BinaryVanillaChronicleAppender appender = new BinaryVanillaChronicleAppender(name, filter);
-        appender.setPath(path);
+        final BinaryVanillaChronicleAppender appender =
+            new BinaryVanillaChronicleAppender(name, filter, path, chronicleConfig);
 
         if(formatMessage != null) {
             appender.setFormatMessage("true".equalsIgnoreCase(formatMessage));
