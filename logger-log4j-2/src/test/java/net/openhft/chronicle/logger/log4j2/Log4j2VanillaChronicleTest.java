@@ -25,7 +25,6 @@ import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.IOTools;
-import org.apache.logging.log4j.LogManager;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,37 +44,28 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
 
     @Test
     public void testBinaryVanillaChronicleAppenderConfig() throws IOException {
-        org.apache.logging.log4j.core.LoggerContext ctx =
-            (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext();
-        org.apache.logging.log4j.core.Appender appender =
-            ctx.getConfiguration().getAppender("CONF-BINARY-VANILLA-CHRONICLE");
-
+        final String appenderName = "CONF-BINARY-VANILLA-CHRONICLE";
+        final org.apache.logging.log4j.core.Appender appender = getAppender(appenderName);
 
         assertNotNull(appender);
+        assertEquals(appenderName, appender.getName());
         assertTrue(appender instanceof BinaryVanillaChronicleAppender);
 
-        BinaryVanillaChronicleAppender ba = (BinaryVanillaChronicleAppender)appender;
+        final BinaryVanillaChronicleAppender ba = (BinaryVanillaChronicleAppender)appender;
         assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
     }
 
     @Test
     public void testTextVanillaChronicleAppenderConfig() throws IOException {
-        org.apache.logging.log4j.core.LoggerContext ctx =
-            (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext();
-        org.apache.logging.log4j.core.Appender appender =
-            ctx.getConfiguration().getAppender("CONF-TEXT-VANILLA-CHRONICLE");
+        final String appenderName = "CONF-TEXT-VANILLA-CHRONICLE";
+        final org.apache.logging.log4j.core.Appender appender = getAppender(appenderName);
 
         assertNotNull(appender);
+        assertEquals(appenderName, appender.getName());
         assertTrue(appender instanceof TextVanillaChronicleAppender);
 
-        /*
-        final Appender<ILoggingEvent> appender =logger.getAppender(appenderName);
-        assertNotNull(appender);
-        assertTrue(appender instanceof TextVanillaChronicleAppender);
-
-        TextVanillaChronicleAppender ba = (TextVanillaChronicleAppender)appender;
+        final TextVanillaChronicleAppender ba = (TextVanillaChronicleAppender)appender;
         assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
-        */
     }
 
     // *************************************************************************

@@ -22,7 +22,6 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
-import net.openhft.chronicle.logger.log4j2.config.IndexedChronicleCfg;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;

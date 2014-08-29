@@ -22,7 +22,6 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
-import net.openhft.chronicle.logger.log4j2.config.VanillaChronicleCfg;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;

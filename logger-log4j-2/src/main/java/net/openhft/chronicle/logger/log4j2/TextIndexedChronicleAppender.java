@@ -22,7 +22,6 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
-import net.openhft.chronicle.logger.log4j2.config.IndexedChronicleCfg;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -47,7 +46,7 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
         final String name, final Filter filter, final String path, final IndexedLogAppenderConfig config) {
         super(name, filter, path);
 
-        this.config = null;
+        this.config = config;
         this.appender = null;
         this.lock = new Object();
     }
