@@ -1,7 +1,7 @@
 Chronicle-Logger
 ================
 
-### Example for :
+#### Example for :
 * [slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
 * [logger-logback](https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-logback)
 * [logger-slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
