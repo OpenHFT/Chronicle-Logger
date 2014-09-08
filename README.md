@@ -1,11 +1,13 @@
 Chronicle-Logger
 ================
 
-##### Example for :
+##### Binding for :
 * [slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
 * [logger-logback](https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-logback)
 * [logger-slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
 
+tools :
+[tools] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-tools)
 
 ### What is it ?
 Chronicle Logger is an extremely fast java logger. We feel logging should not slow down your system.
