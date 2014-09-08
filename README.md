@@ -1,6 +1,6 @@
 Chronicle-Logger
 ================
-
+![Chronicle](http://openhft.net/wp-content/uploads/2014/07/ChronicleLogger_200px_ver2.png)
 ##### Binding for :
 * [slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
 * [logger-logback](https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-logback)
