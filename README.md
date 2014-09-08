@@ -6,8 +6,7 @@ Chronicle-Logger
 * [logger-logback](https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-logback)
 * [logger-slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
 
-tools :
-[tools] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-tools)
+We also have some very helpfull [tools ( find out more ) ] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-tools)
 
 ### What is it ?
 Chronicle Logger is an extremely fast java logger. We feel logging should not slow down your system.
