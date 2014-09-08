@@ -1,13 +1,13 @@
 Chronicle-Logger
 ================
 
-# Example for 
-[slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
-[logger-logback](https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-logback)
-[logger-slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
+### Example for :
+* [slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
+* [logger-logback](https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-logback)
+* [logger-slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
 
 
-# What is it ?
+### What is it ?
 Chronicle Logger is an extremely fast java logger. We feel logging should not slow down your system.
 
 Chronicle logger is able to aggregate all your logs to a central store. It has built in resilience, so you will never loose messages.
