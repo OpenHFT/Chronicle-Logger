@@ -37,7 +37,7 @@ public class VanillChronicleQueuePerfTest {
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
 
-        final int RUNS = 2000000;
+        final int RUNS = 15000000;
         final int THREADS = Runtime.getRuntime().availableProcessors();
 
         for (int size : new int[]{64, 128, 256}) {
@@ -50,7 +50,7 @@ public class VanillChronicleQueuePerfTest {
                 }
 
                 es.shutdown();
-                es.awaitTermination(10, TimeUnit.SECONDS);
+                es.awaitTermination(2, TimeUnit.MINUTES);
 
                 final long time = System.nanoTime() - start;
 
@@ -66,24 +66,34 @@ public class VanillChronicleQueuePerfTest {
 
     protected final class RunnableLogger implements Runnable {
         private static final String fmtBase = " > val1={}, val2={}, val3={}";
+        final ThreadLocal<String> THREAD_NAME = new ThreadLocal<String>();
         private final String fmt;
         private final int runs;
 
         public RunnableLogger(int runs, int pad) {
             this.runs = runs;
-            fmt = StringUtils.rightPad(fmtBase, pad + fmtBase.length(), "X");
+            fmt = StringUtils.rightPad(fmtBase, pad + fmtBase.length() - (4 + 8 + 8), "X");
         }
 
         @Override
         public void run() {
             for (int i = 0; i < this.runs; i++) {
                 logger.startExcerpt();
+                logger.writeLong(System.currentTimeMillis());
+                logger.writeUTFΔ(getThreadName());
                 logger.writeUTFΔ(fmt);
                 logger.writeInt(i);
-                logger.writeInt(i * 7);
-                logger.writeInt(i / 16);
+                logger.writeLong(i * 7L);
+                logger.writeDouble(i / 16.0);
                 logger.finish();
             }
+        }
+
+        String getThreadName() {
+            String name = THREAD_NAME.get();
+            if (name == null)
+                THREAD_NAME.set(name = Thread.currentThread().getName());
+            return name;
         }
     }
 }

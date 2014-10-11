@@ -130,8 +130,8 @@ public class Slf4jVanillaChronicleBinaryLoggerPerfTest extends Slf4jTestBase {
     public void testMultiThreadLogging() throws IOException, InterruptedException {
         warmup(LoggerFactory.getLogger("perf-binary-vanilla-chronicle"));
 
-        final int RUNS = 1000000;
-        final int THREADS = 10;
+        final int RUNS = 300000;
+        final int THREADS = Runtime.getRuntime().availableProcessors();
 
         for (int size : new int[]{64, 128, 256}) {
             {
@@ -143,7 +143,7 @@ public class Slf4jVanillaChronicleBinaryLoggerPerfTest extends Slf4jTestBase {
                 }
 
                 es.shutdown();
-                es.awaitTermination(5, TimeUnit.SECONDS);
+                es.awaitTermination(2, TimeUnit.MINUTES);
 
                 final long time = System.nanoTime() - start;
 

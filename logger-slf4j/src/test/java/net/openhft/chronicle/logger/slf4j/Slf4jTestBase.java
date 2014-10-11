@@ -45,48 +45,48 @@ public class Slf4jTestBase {
 
     protected static String basePath(String type) {
         return System.getProperty("java.io.tmpdir")
-            + File.separator
-            + "chronology-slf4j"
-            + File.separator
-            + type
-            + File.separator
-            + new SimpleDateFormat("yyyyMMdd").format(new Date());
+                + File.separator
+                + "chronology-slf4j"
+                + File.separator
+                + type
+                + File.separator
+                + new SimpleDateFormat("yyyyMMdd").format(new Date());
     }
 
     protected static String basePath(String type, String loggerName) {
         return basePath(type)
-            + File.separator
-            + loggerName;
+                + File.separator
+                + loggerName;
     }
 
     protected static String indexedBasePath(String loggerName) {
         return basePath(ChronicleLoggingConfig.TYPE_INDEXED)
-            + File.separator
-            + loggerName;
+                + File.separator
+                + loggerName;
     }
 
     protected static String vanillaBasePath(String loggerName) {
         return basePath(ChronicleLoggingConfig.TYPE_VANILLA)
-            + File.separator
-            + loggerName;
+                + File.separator
+                + loggerName;
     }
 
     protected static void log(Logger logger, ChronicleLogLevel level, String fmt, Object... args) {
-        switch(level) {
+        switch (level) {
             case TRACE:
-                logger.trace(fmt,args);
+                logger.trace(fmt, args);
                 break;
             case DEBUG:
-                logger.debug(fmt,args);
+                logger.debug(fmt, args);
                 break;
             case INFO:
-                logger.info(fmt,args);
+                logger.info(fmt, args);
                 break;
             case WARN:
-                logger.warn(fmt,args);
+                logger.warn(fmt, args);
                 break;
             case ERROR:
-                logger.error(fmt,args);
+                logger.error(fmt, args);
                 break;
             default:
                 throw new UnsupportedOperationException();
@@ -94,7 +94,7 @@ public class Slf4jTestBase {
     }
 
     protected static void warmup(Logger logger) {
-        for(int i=0;i<10;i++) {
+        for (int i = 0; i < 10; i++) {
             logger.info("warmup");
         }
     }
@@ -197,13 +197,13 @@ public class Slf4jTestBase {
         public RunnableLogger(int runs, int pad, String loggerName) {
             this.logger = LoggerFactory.getLogger(loggerName);
             this.runs = runs;
-            this.fmt = StringUtils.rightPad(fmtBase, pad + fmtBase.length(), "X");
+            this.fmt = StringUtils.rightPad(fmtBase, pad + fmtBase.length() - (4 + 8 + 8), "X");
         }
 
         @Override
         public void run() {
             for (int i = 0; i < this.runs; i++) {
-                this.logger.info(fmt,i, i * 7,i / 16);
+                this.logger.info(fmt, i, i * 7L, i / 16.0);
             }
         }
     }

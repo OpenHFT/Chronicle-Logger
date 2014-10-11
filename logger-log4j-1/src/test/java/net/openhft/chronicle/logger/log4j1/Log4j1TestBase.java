@@ -45,32 +45,32 @@ public class Log4j1TestBase {
 
     protected static String rootPath() {
         return System.getProperty("java.io.tmpdir")
-            + File.separator
-            + "chronology-log4j1";
+                + File.separator
+                + "chronology-log4j1";
     }
 
     protected static String basePath(String type) {
         return rootPath()
-            + File.separator
-            + type;
+                + File.separator
+                + type;
     }
 
     protected static void log(Logger logger, ChronicleLogLevel level, String fmt, Object... args) {
-        switch(level) {
+        switch (level) {
             case TRACE:
-                logger.trace(fmt,args);
+                logger.trace(fmt, args);
                 break;
             case DEBUG:
-                logger.debug(fmt,args);
+                logger.debug(fmt, args);
                 break;
             case INFO:
-                logger.info(fmt,args);
+                logger.info(fmt, args);
                 break;
             case WARN:
-                logger.warn(fmt,args);
+                logger.warn(fmt, args);
                 break;
             case ERROR:
-                logger.error(fmt,args);
+                logger.error(fmt, args);
                 break;
             default:
                 throw new UnsupportedOperationException();
@@ -78,8 +78,8 @@ public class Log4j1TestBase {
     }
 
     protected static void warmup(Logger logger) {
-        final String str = StringUtils.rightPad("X",64);
-        for(int i=0;i<10;i++) {
+        final String str = StringUtils.rightPad("X", 64);
+        for (int i = 0; i < 10; i++) {
             logger.info(str);
         }
     }
@@ -157,13 +157,13 @@ public class Log4j1TestBase {
         public RunnableLogger(int runs, int pad, String loggerName) {
             this.logger = LoggerFactory.getLogger(loggerName);
             this.runs = runs;
-            this.fmt = StringUtils.rightPad(fmtBase, pad + fmtBase.length(), "X");
+            this.fmt = StringUtils.rightPad(fmtBase, pad + fmtBase.length() - (4 + 8 + 8), "X");
         }
 
         @Override
         public void run() {
             for (int i = 0; i < this.runs; i++) {
-                this.logger.info(fmt,i, i * 7,i / 16);
+                this.logger.info(fmt, i, i * 7L, i / 16.0);
             }
         }
     }
