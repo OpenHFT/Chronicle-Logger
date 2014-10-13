@@ -23,7 +23,7 @@ public class VanillChronicleQueuePerfTest {
 
     @Before
     public void setUp() throws IOException {
-        String baseDir = System.getProperty("java.io.tmpdir") + "/perf-binary-vanilla-chronicle";
+        String baseDir = System.getProperty("java.io.tmpdir") + "/perf-binary-vanilla-only";
         ChronicleTools.deleteDirOnExit(baseDir);
         chronicle = new VanillaChronicle(baseDir);
         logger = chronicle.createAppender();
