@@ -35,11 +35,10 @@ import java.util.Properties;
 /**
  * @author lburgazzoli
  *
- * <p/>
  * Configurationn example:
  * # default
  * slf4j.chronicle.base = ${java.io.tmpdir}/chronicle/${today}/${pid}
- * <p/>
+ *
  * # logger : root
  * slf4j.chronicle.type      = vanilla
  * slf4j.chronicle.path      = ${slf4j.chronicle.base}/root
@@ -48,7 +47,7 @@ import java.util.Properties;
  * slf4j.chronicle.append    = false
  * slf4j.chronicle.format    = binary
  * slf4j.chronicle.serialize = false
- * <p/>
+ *
  * # logger : Logger1
  * slf4j.chronicle.logger.Logger1.path = ${slf4j.chronicle.base}/logger_1
  * slf4j.chronicle.logger.Logger1.level = info
