@@ -22,6 +22,7 @@ package net.openhft.chronicle.logger.slf4j;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,7 +117,20 @@ public class ChronicleLoggingConfig {
         Properties properties = new Properties();
 
         try {
-            InputStream in = new FileInputStream(cfgPath);
+            InputStream in = null;
+            File cfgFile = new File(cfgPath);
+            if (!cfgFile.exists()) {
+                in = Thread.currentThread().getContextClassLoader().getResourceAsStream(cfgPath);
+                if (in == null) {
+                    String msg = "unable to load " + KEY_PROPERTIES_FILE + ": " + cfgPath;
+                    throw new IllegalStateException(msg);
+                }
+            } else if (!cfgFile.canRead()) {
+                String msg = "unable to read " + KEY_PROPERTIES_FILE + ": " + cfgPath;
+                throw new IllegalStateException(msg);
+            } else {
+                in = new FileInputStream(cfgFile);
+            }
 
             try {
                 properties.load(in);
@@ -126,9 +140,9 @@ public class ChronicleLoggingConfig {
             }
 
             interpolate(properties);
-
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            // is printing stack trace and falling through really the right thing to do here, or should it throw out?
+            e.printStackTrace();
         }
 
         return load(properties);
