@@ -42,7 +42,7 @@ public class LogbackTestBase {
     //
     // *************************************************************************
 
-    protected static ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
+    protected static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     // *************************************************************************
     //

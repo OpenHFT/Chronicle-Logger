@@ -41,7 +41,7 @@ public class Log4j1TestBase {
     //
     // *************************************************************************
 
-    protected static ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
+    protected static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     protected static String rootPath() {
         return System.getProperty("java.io.tmpdir")
