@@ -52,7 +52,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
             "slf4j.chronicle.properties",
             System.getProperty("slf4j.chronicle.vanilla.properties"));
 
-        getChronicleLoggerFactory().relaod();
+        getChronicleLoggerFactory().reload();
     }
 
     @After

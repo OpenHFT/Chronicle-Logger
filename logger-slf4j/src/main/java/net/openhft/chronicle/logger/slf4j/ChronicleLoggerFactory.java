@@ -128,7 +128,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     /**
      *
      */
-    public synchronized void relaod() {
+    public synchronized void reload() {
         shutdown();
 
         this.cfg = ChronicleLoggingConfig.load();

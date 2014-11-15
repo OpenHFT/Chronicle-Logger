@@ -53,7 +53,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
             System.getProperty("slf4j.chronicle.indexed.properties")
         );
 
-        getChronicleLoggerFactory().relaod();
+        getChronicleLoggerFactory().reload();
     }
 
     @After

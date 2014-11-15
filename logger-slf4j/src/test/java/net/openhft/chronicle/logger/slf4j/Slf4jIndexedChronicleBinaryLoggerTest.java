@@ -52,7 +52,7 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
             "slf4j.chronicle.properties",
             System.getProperty("slf4j.chronicle.indexed.binary.properties"));
 
-        getChronicleLoggerFactory().relaod();
+        getChronicleLoggerFactory().reload();
     }
 
     @After
