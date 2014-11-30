@@ -493,7 +493,6 @@ public class ChronicleLogAppenders {
             synchronized (this.sync) {
                 this.writer.log(level, name, message, args);
             }
-
         }
 
         @Override

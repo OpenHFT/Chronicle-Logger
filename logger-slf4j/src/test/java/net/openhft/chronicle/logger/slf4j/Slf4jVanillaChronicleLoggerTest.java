@@ -248,6 +248,5 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         chronicle.close();
 
         IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA,testId));
-
     }
 }
