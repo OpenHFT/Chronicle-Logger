@@ -141,7 +141,6 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
             @PluginAttribute("minimiseFootprint") final String minimiseFootprint,
             @PluginAttribute("useCheckedExcerpt") final String useCheckedExcerpt,
             @PluginAttribute("dataBlockSize") final String dataBlockSize) {
-
             final IndexedChronicleCfg cfg = new IndexedChronicleCfg();
             cfg.setProperty("indexFileCapacity",indexFileCapacity);
             cfg.setProperty("useUnsafe",useUnsafe);
@@ -177,7 +176,6 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
             @PluginAttribute("entriesPerCycle") final String entriesPerCycle,
             @PluginAttribute("indexCacheCapacity") final String indexCacheCapacity,
             @PluginAttribute("indexBlockSize") final String indexBlockSize) {
-
             final VanillaChronicleCfg cfg = new VanillaChronicleCfg();
             cfg.setProperty("dataCacheCapacity",dataCacheCapacity);
             cfg.setProperty("cycleLength",cycleLength);

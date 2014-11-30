@@ -311,7 +311,6 @@ public class ChronicleLogAppenders {
         public void log(ChronicleLogLevel level, String name, String message, Throwable throwable) {
             final ExcerptAppender appender = getAppender();
             if(appender != null) {
-
                 appender.startExcerpt();
 
                 final FormattingTuple ft = MessageFormatter.format(message, throwable);

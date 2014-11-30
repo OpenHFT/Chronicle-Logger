@@ -90,7 +90,6 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
         @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
         @PluginElement("indexedChronicleConfig") final IndexedChronicleCfg chronicleConfig,
         @PluginElement("filter") final Filter filter) {
-
         if(name == null) {
             LOGGER.error("No name provided for BinaryVanillaChronicleAppender");
             return null;

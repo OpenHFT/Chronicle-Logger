@@ -103,7 +103,6 @@ public class Slf4jIndexedChronicleBinaryLoggerPerfTest extends Slf4jTestBase {
         warmup(clogger);
 
         for(int n=0;n<10;n++) {
-
             long cStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {

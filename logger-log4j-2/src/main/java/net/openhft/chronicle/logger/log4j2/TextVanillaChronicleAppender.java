@@ -80,7 +80,6 @@ public class TextVanillaChronicleAppender extends TextChronicleAppender {
         @PluginAttribute("stackTraceDepth") final String stackTraceDepth,
         @PluginElement("vanillaChronicleConfig") final VanillaChronicleCfg chronicleConfig,
         @PluginElement("filter") final Filter filter) {
-
         if(name == null) {
             LOGGER.error("No name provided for TextVanillaChronicleAppender");
             return null;

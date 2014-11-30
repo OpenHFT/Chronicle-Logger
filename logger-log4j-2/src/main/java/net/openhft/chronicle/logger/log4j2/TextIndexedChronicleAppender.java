@@ -90,7 +90,6 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
         @PluginAttribute("stackTraceDepth") final String stackTraceDepth,
         @PluginElement("indexedChronicleConfig") final IndexedChronicleCfg chronicleConfig,
         @PluginElement("filter") final Filter filter) {
-
         if(name == null) {
             LOGGER.error("No name provided for TextIndexedChronicleAppender");
             return null;
