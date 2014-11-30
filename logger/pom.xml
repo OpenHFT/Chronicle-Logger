@@ -30,7 +30,6 @@
     <name>OpenHFT/Chronicle-Logger/logger</name>
     <artifactId>chronicle-logger</artifactId>
 
-
     <dependencies>
 
         <dependency>

@@ -18,7 +18,6 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
-
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 

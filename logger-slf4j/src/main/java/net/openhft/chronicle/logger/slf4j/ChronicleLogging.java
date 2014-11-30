@@ -18,7 +18,6 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
-
 import org.slf4j.ILoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
 

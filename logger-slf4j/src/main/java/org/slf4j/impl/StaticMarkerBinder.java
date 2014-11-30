@@ -55,5 +55,4 @@ public class StaticMarkerBinder implements MarkerFactoryBinder {
         return BasicMarkerFactory.class.getName();
     }
 
-
 }

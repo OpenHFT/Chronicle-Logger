@@ -18,11 +18,9 @@
 
 package net.openhft.chronicle.logger;
 
-
 import net.openhft.lang.io.ByteStringAppender;
 import net.openhft.lang.io.RandomDataInput;
 import net.openhft.lang.io.RandomDataOutput;
-
 
 public enum ChronicleLogLevel {
     ERROR(50,"ERROR"),

@@ -17,7 +17,6 @@
  */
 package net.openhft.chronicle.logger;
 
-
 import net.openhft.chronicle.*;
 import net.openhft.chronicle.tools.ChronicleTools;
 import net.openhft.lang.io.RandomDataInput;

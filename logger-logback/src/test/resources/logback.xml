@@ -96,7 +96,6 @@
         <appender-ref ref="CONFIG-TEXT-VANILLA-CHRONICLE"/>
     </logger>
 
-
     <!-- ******************************************************************* -->
     <!-- CONFIG - VANILLA                                                    -->
     <!-- ******************************************************************* -->
@@ -239,7 +238,6 @@
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
     </appender>
-
 
     <logger name="binary-indexed-chronicle" level="TRACE" additivity="false">
         <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>

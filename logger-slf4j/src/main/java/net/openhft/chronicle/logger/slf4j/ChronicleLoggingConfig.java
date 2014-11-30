@@ -18,7 +18,6 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
-
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 
@@ -249,7 +248,6 @@ public class ChronicleLoggingConfig {
     // *************************************************************************
     //
     // *************************************************************************
-
 
     /**
      *

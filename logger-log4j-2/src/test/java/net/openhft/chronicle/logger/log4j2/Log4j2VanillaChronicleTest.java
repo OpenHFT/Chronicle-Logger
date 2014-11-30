@@ -31,10 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
 
@@ -124,7 +121,6 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
-
 
         tailer.close();
         chronicle.close();

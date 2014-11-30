@@ -18,7 +18,9 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
-import net.openhft.chronicle.*;
+import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.IndexedChronicle;
+import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
@@ -101,7 +103,6 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     // *************************************************************************
     //
     // *************************************************************************
-
 
     /**
      * Preload loggers

@@ -102,7 +102,6 @@
             <stackTraceDepth>3</stackTraceDepth>
         </TextVanillaChronicle>
 
-
         <!-- *************************************************************** -->
         <!-- INDEXED                                                         -->
         <!-- *************************************************************** -->
@@ -172,7 +171,6 @@
         <logger name="perf-plain-indexed" level="trace" additivity="false">
             <appender-ref ref="PERF-PLAIN-INDEXED"/>
         </logger>
-
 
         <!-- *************************************************************** -->
         <!-- VANILLA                                                         -->

@@ -18,7 +18,6 @@
 
 package net.openhft.chronicle.logger.log4j2;
 
-
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLogLevel;

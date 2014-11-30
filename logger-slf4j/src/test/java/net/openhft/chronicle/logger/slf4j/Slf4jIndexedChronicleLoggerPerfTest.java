@@ -111,8 +111,6 @@ public class Slf4jIndexedChronicleLoggerPerfTest extends Slf4jTestBase {
 
             long cEnd1 = System.nanoTime();
 
-
-
             System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us\n",
                 items,
                 (cEnd1 - cStart1) / 1e6,

@@ -18,7 +18,6 @@
 
 package net.openhft.chronicle.logger;
 
-
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.lang.io.Bytes;
 
