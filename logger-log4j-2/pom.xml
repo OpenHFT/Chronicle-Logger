@@ -90,6 +90,7 @@
                         </Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>net.openhft.chronicle.logger.log4j2.*</Export-Package>
+                        <Include-Resource>META-INF=target/classes/META-INF</Include-Resource>
                     </instructions>
                 </configuration>
                 <executions>
