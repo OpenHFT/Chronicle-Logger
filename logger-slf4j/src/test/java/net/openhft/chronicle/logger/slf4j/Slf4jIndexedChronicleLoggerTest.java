@@ -49,8 +49,8 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
     @Before
     public void setUp() {
         System.setProperty(
-            "slf4j.chronicle.properties",
-            System.getProperty("slf4j.chronicle.indexed.properties")
+            "chronicle.logger.properties",
+            System.getProperty("chronicle.logger.indexed.properties")
         );
 
         getChronicleLoggerFactory().reload();
@@ -104,24 +104,24 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         assertEquals(cl1.getLevel(), ChronicleLogLevel.DEBUG);
         assertEquals(cl1.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
         assertTrue(cl1.getWriter().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl1.getWriter() instanceof ChronicleLogAppenders.SynchronizedWriter);
+        assertTrue(cl1.getWriter() instanceof ChronicleLoggerAppenders.SynchronizedWriter);
 
         ChronicleLogger cl2 = (ChronicleLogger) l2;
         assertEquals(cl2.getLevel(), ChronicleLogLevel.DEBUG);
         assertEquals(cl2.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
         assertTrue(cl2.getWriter().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl2.getWriter() instanceof ChronicleLogAppenders.SynchronizedWriter);
+        assertTrue(cl2.getWriter() instanceof ChronicleLoggerAppenders.SynchronizedWriter);
 
         ChronicleLogger cl3 = (ChronicleLogger) l3;
         assertEquals(cl3.getLevel(), ChronicleLogLevel.INFO);
         assertTrue(cl3.getWriter().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl3.getWriter() instanceof ChronicleLogAppenders.SynchronizedWriter);
+        assertTrue(cl3.getWriter() instanceof ChronicleLoggerAppenders.SynchronizedWriter);
         assertEquals(cl3.getName(), "logger_1");
 
         ChronicleLogger cl4 = (ChronicleLogger) l4;
         assertEquals(cl4.getLevel(), ChronicleLogLevel.DEBUG);
         assertTrue(cl4.getWriter().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl4.getWriter() instanceof ChronicleLogAppenders.SynchronizedWriter);
+        assertTrue(cl4.getWriter() instanceof ChronicleLoggerAppenders.SynchronizedWriter);
         assertEquals(cl4.getName(), "readwrite");
     }
 

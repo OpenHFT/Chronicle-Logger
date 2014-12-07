@@ -49,8 +49,8 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
     @Before
     public void setUp() {
         System.setProperty(
-            "slf4j.chronicle.properties",
-            System.getProperty("slf4j.chronicle.vanilla.binary.properties"));
+            "chronicle.logger.properties",
+            System.getProperty("chronicle.logger.vanilla.binary.properties"));
 
         getChronicleLoggerFactory().reload();
     }
@@ -84,7 +84,7 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         assertEquals(cl.getLevel(), ChronicleLogLevel.DEBUG);
         assertEquals(cl.getName(), Slf4jVanillaChronicleBinaryLoggerTest.class.getName());
-        assertTrue(cl.getWriter() instanceof ChronicleLogAppenders.BinaryWriter);
+        assertTrue(cl.getWriter() instanceof ChronicleLoggerAppenders.BinaryWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof VanillaChronicle);
     }
 

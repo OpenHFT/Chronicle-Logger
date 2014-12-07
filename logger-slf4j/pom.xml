@@ -84,30 +84,30 @@
                     <forkCount>0</forkCount>
                     <reuseForks>false</reuseForks>
                     <systemPropertyVariables>
-                        <slf4j.chronicle.vanilla.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.properties
-                        </slf4j.chronicle.vanilla.properties>
-                        <slf4j.chronicle.vanilla.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.perf.properties
-                        </slf4j.chronicle.vanilla.perf.properties>
-                        <slf4j.chronicle.vanilla.binary.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.binary.properties
-                        </slf4j.chronicle.vanilla.binary.properties>
-                        <slf4j.chronicle.vanilla.binary.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.binary.perf.properties
-                        </slf4j.chronicle.vanilla.binary.perf.properties>
-                        <slf4j.chronicle.indexed.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.properties
-                        </slf4j.chronicle.indexed.properties>
-                        <slf4j.chronicle.indexed.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.perf.properties
-                        </slf4j.chronicle.indexed.perf.properties>
-                        <slf4j.chronicle.indexed.binary.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.binary.properties
-                        </slf4j.chronicle.indexed.binary.properties>
-                        <slf4j.chronicle.indexed.binary.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.binary.perf.properties
-                        </slf4j.chronicle.indexed.binary.perf.properties>
+                        <chronicle.logger.vanilla.properties>
+                            ${project.basedir}/src/test/resources/chronicle.logger.vanilla.properties
+                        </chronicle.logger.vanilla.properties>
+                        <chronicle.logger.vanilla.perf.properties>
+                            ${project.basedir}/src/test/resources/chronicle.logger.vanilla.perf.properties
+                        </chronicle.logger.vanilla.perf.properties>
+                        <chronicle.logger.vanilla.binary.properties>
+                            ${project.basedir}/src/test/resources/chronicle.logger.vanilla.binary.properties
+                        </chronicle.logger.vanilla.binary.properties>
+                        <chronicle.logger.vanilla.binary.perf.properties>
+                            ${project.basedir}/src/test/resources/chronicle.logger.vanilla.binary.perf.properties
+                        </chronicle.logger.vanilla.binary.perf.properties>
+                        <chronicle.logger.indexed.properties>
+                            ${project.basedir}/src/test/resources/chronicle.logger.indexed.properties
+                        </chronicle.logger.indexed.properties>
+                        <chronicle.logger.indexed.perf.properties>
+                            ${project.basedir}/src/test/resources/chronicle.logger.indexed.perf.properties
+                        </chronicle.logger.indexed.perf.properties>
+                        <chronicle.logger.indexed.binary.properties>
+                            ${project.basedir}/src/test/resources/chronicle.logger.indexed.binary.properties
+                        </chronicle.logger.indexed.binary.properties>
+                        <chronicle.logger.indexed.binary.perf.properties>
+                            ${project.basedir}/src/test/resources/chronicle.logger.indexed.binary.perf.properties
+                        </chronicle.logger.indexed.binary.perf.properties>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

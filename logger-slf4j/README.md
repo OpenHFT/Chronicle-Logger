@@ -3,7 +3,7 @@ chronicle-logger-slf4j
 
 To configure this sl4j binding you need to specify the location of a properties files via system properties:
 ```
--Dslf4j.chronicle.properties=${pathOfYourPropertiesFile}
+-Dchronicle.logger.properties=${pathOfYourPropertiesFile}
 ```
 
 The following properties are supported to configure the behavior of the logger:
@@ -19,30 +19,30 @@ binaryFormat  | format or serialize log arguments        | formatted, serialized
 dateFormat    | the date format for text loggers         |                                  | no 
 synchronous   | synchronous mode                         | true, false                      | yes
 
-The default configuration needs slf4j.chronicle as prefix but you can set per-logger settings using slf4j.chronicle.logger as prefix, here an example:
+The default configuration needs chronicle.logger. as prefix but you can set per-logger settings using chronicle.logger.logger as prefix, here an example:
 
 ```properties
 # default
-slf4j.chronicle.base         = ${java.io.tmpdir}/chronicle/${today}/${pid}
+chronicle.logger.base         = ${java.io.tmpdir}/chronicle/${today}/${pid}
 
 # logger : root
-slf4j.chronicle.type         = vanilla
-slf4j.chronicle.path         = ${slf4j.chronicle.base}/main
-slf4j.chronicle.level        = debug
-slf4j.chronicle.shortName    = false
-slf4j.chronicle.append       = false
-slf4j.chronicle.format       = binary
-slf4j.chronicle.binaryFormat = formatted
+chronicle.logger.type         = vanilla
+chronicle.logger.path         = ${chronicle.logger.base}/main
+chronicle.logger.level        = debug
+chronicle.logger.shortName    = false
+chronicle.logger.append       = false
+chronicle.logger.format       = binary
+chronicle.logger.binaryFormat = formatted
 
 # logger : Logger1
-slf4j.chronicle.logger.Logger1.path           = ${slf4j.chronicle.base}/logger_1
-slf4j.chronicle.logger.Logger1.level          = info
+chronicle.logger.logger.Logger1.path           = ${chronicle.logger.base}/logger_1
+chronicle.logger.logger.Logger1.level          = info
 
 # logger : TextLogger
-slf4j.chronicle.logger.TextLogger.path        = ${slf4j.chronicle.base}/text
-slf4j.chronicle.logger.TextLogger.level       = debug
-slf4j.chronicle.logger.TextLogger.format      = text
-slf4j.chronicle.logger.TextLogger.dateFormat  = yyyyMMdd-HHmmss-S
+chronicle.logger.logger.TextLogger.path        = ${chronicle.logger.base}/text
+chronicle.logger.logger.TextLogger.level       = debug
+chronicle.logger.logger.TextLogger.format      = text
+chronicle.logger.logger.TextLogger.dateFormat  = yyyyMMdd-HHmmss-S
 ```
 
 

@@ -35,7 +35,7 @@ public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
 
     @Test
     public void testLoadProperties() {
-        final String cfgPath = System.getProperty("slf4j.chronicle.vanilla.properties");
+        final String cfgPath = System.getProperty("chronicle.logger.vanilla.properties");
         final ChronicleLoggingConfig cfg = ChronicleLoggingConfig.load(cfgPath);
 
         assertEquals(
@@ -73,10 +73,10 @@ public class Slf4jVanillaChronicleConfigurationTest extends Slf4jTestBase {
     @Test
     public void testLoadConfig() {
         final Properties properties = new Properties();
-        properties.setProperty("slf4j.chronicle.type","vanilla");
-        properties.setProperty("slf4j.chronicle.cfg.dataCacheCapacity","128");
-        properties.setProperty("slf4j.chronicle.cfg.indexCacheCapacity","256");
-        properties.setProperty("slf4j.chronicle.cfg.synchronous","true");
+        properties.setProperty("chronicle.logger.type","vanilla");
+        properties.setProperty("chronicle.logger.cfg.dataCacheCapacity","128");
+        properties.setProperty("chronicle.logger.cfg.indexCacheCapacity","256");
+        properties.setProperty("chronicle.logger.cfg.synchronous","true");
 
         final ChronicleLoggingConfig clc = ChronicleLoggingConfig.load(properties);
         assertNull(clc.getIndexedChronicleConfig());

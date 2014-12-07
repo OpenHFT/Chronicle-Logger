@@ -19,6 +19,7 @@
 package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.*;
+import net.openhft.chronicle.logger.ChronicleLogAppender;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
@@ -37,18 +38,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * To configure this sl4j binding you need to specify the location of a properties
  * files via system properties:
  * </p>
- * <code>-Dslf4j.chronicle.properties=${pathOfYourPropertiesFile}</code>
+ * <code>-Dchronicle.logger.properties=${pathOfYourPropertiesFile}</code>
  * <p>
  * The following system properties are supported to configure the behavior of this
  * logger:
  * </p>
  * <ul>
- * <li><code>slf4j.chronicle.path</code></li>
- * <li><code>slf4j.chronicle.level</code></li>
- * <li><code>slf4j.chronicle.shortName</code></li>
- * <li><code>slf4j.chronicle.append</code></li>
- * <li><code>slf4j.chronicle.format</code></li>
- * <li><code>slf4j.chronicle.type</code></li>
+ * <li><code>chronicle.logger.path</code></li>
+ * <li><code>chronicle.logger.level</code></li>
+ * <li><code>chronicle.logger.shortName</code></li>
+ * <li><code>chronicle.logger.append</code></li>
+ * <li><code>chronicle.logger.format</code></li>
+ * <li><code>chronicle.logger.type</code></li>
  * </ul>
  */
 public class ChronicleLoggerFactory implements ILoggerFactory {
@@ -158,9 +159,9 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             } else {
                 if (path == null) {
                     throw new IllegalArgumentException(new StringBuilder()
-                        .append("slf4j.chronicle.path is not defined")
+                        .append("chronicle.logger.path is not defined")
                         .append(",")
-                        .append("slf4j.chronicle.logger.")
+                        .append("chronicle.logger.logger.")
                             .append(name)
                             .append(".path is not defined")
                         .toString()
@@ -189,10 +190,10 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             if (ChronicleLoggingConfig.FORMAT_BINARY.equalsIgnoreCase(format)) {
                 Chronicle chronicle = newChronicle(type, path, name);
                 appender = ChronicleLoggingConfig.BINARY_MODE_SERIALIZED.equalsIgnoreCase(binaryMode)
-                    ? new ChronicleLogAppenders.BinaryWriter(chronicle)
-                    : new ChronicleLogAppenders.BinaryFormattingWriter(chronicle);
+                    ? new ChronicleLoggerAppenders.BinaryWriter(chronicle)
+                    : new ChronicleLoggerAppenders.BinaryFormattingWriter(chronicle);
             } else if (ChronicleLoggingConfig.FORMAT_TEXT.equalsIgnoreCase(format)) {
-                appender = new ChronicleLogAppenders.TextWriter(
+                appender = new ChronicleLoggerAppenders.TextWriter(
                     newChronicle(type, path, name),
                     null, // TODO: this.cfg.getString(name, ChronicleLoggingConfig.KEY_DATE_FORMAT)
                     stDepth
@@ -203,7 +204,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
                 // If the underlying chronicle is an Indexed chronicle, wrap the appender
                 // so it is thread safe (synchronized)
                 if (appender.getChronicle() instanceof IndexedChronicle) {
-                    appender = new ChronicleLogAppenders.SynchronizedWriter(appender);
+                    appender = new ChronicleLoggerAppenders.SynchronizedWriter(appender);
                 }
             }
 

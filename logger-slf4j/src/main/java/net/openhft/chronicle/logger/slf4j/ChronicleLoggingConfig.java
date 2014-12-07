@@ -38,26 +38,26 @@ import java.util.Properties;
  *
  * Configurationn example:
  * # default
- * slf4j.chronicle.base = ${java.io.tmpdir}/chronicle/${today}/${pid}
+ * chronicle.logger.base = ${java.io.tmpdir}/chronicle/${today}/${pid}
  *
  * # logger : root
- * slf4j.chronicle.type      = vanilla
- * slf4j.chronicle.path      = ${slf4j.chronicle.base}/root
- * slf4j.chronicle.level     = debug
- * slf4j.chronicle.shortName = false
- * slf4j.chronicle.append    = false
- * slf4j.chronicle.format    = binary
- * slf4j.chronicle.serialize = false
+ * chronicle.logger.type      = vanilla
+ * chronicle.logger.path      = ${chronicle.logger.base}/root
+ * chronicle.logger.level     = debug
+ * chronicle.logger.shortName = false
+ * chronicle.logger.append    = false
+ * chronicle.logger.format    = binary
+ * chronicle.logger.serialize = false
  *
  * # logger : Logger1
- * slf4j.chronicle.logger.Logger1.path = ${slf4j.chronicle.base}/logger_1
- * slf4j.chronicle.logger.Logger1.level = info
+ * chronicle.logger.logger.Logger1.path = ${chronicle.logger.base}/logger_1
+ * chronicle.logger.logger.Logger1.level = info
  */
 public class ChronicleLoggingConfig {
-    public static final String KEY_PROPERTIES_FILE = "slf4j.chronicle.properties";
-    public static final String KEY_PREFIX = "slf4j.chronicle.";
-    public static final String KEY_CFG_PREFIX = "slf4j.chronicle.cfg.";
-    public static final String KEY_CHRONICLE_TYPE = "slf4j.chronicle.type";
+    public static final String KEY_PROPERTIES_FILE = "chronicle.logger.properties";
+    public static final String KEY_PREFIX = "chronicle.logger.";
+    public static final String KEY_CFG_PREFIX = "chronicle.logger.cfg.";
+    public static final String KEY_CHRONICLE_TYPE = "chronicle.logger.type";
     public static final String KEY_LOGER = "logger";
     public static final String KEY_LEVEL = "level";
     public static final String KEY_PATH = "path";

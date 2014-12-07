@@ -16,11 +16,10 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.logger.slf4j;
+package net.openhft.chronicle.logger;
 
 
 import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.logger.ChronicleLogLevel;
 
 import java.io.Closeable;
 

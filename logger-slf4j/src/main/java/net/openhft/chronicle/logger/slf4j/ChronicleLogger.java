@@ -18,6 +18,7 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.logger.ChronicleLogAppender;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.helpers.MarkerIgnoringBase;
 

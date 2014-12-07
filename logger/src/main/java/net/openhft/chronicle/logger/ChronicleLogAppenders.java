@@ -16,15 +16,11 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.logger.slf4j;
+package net.openhft.chronicle.logger;
 
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
-import net.openhft.chronicle.logger.ChronicleLog;
-import net.openhft.chronicle.logger.ChronicleLogHelper;
-import net.openhft.chronicle.logger.ChronicleLogLevel;
-import net.openhft.chronicle.logger.TimeStampFormatter;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -37,11 +33,11 @@ public class ChronicleLogAppenders {
     //
     // *************************************************************************
 
-    private static interface ExcerptAppenderProvider {
+    public static interface ExcerptAppenderProvider {
         public ExcerptAppender get();
     }
 
-    private static class IndexedExcerptAppenderProvider implements ExcerptAppenderProvider {
+    public static class IndexedExcerptAppenderProvider implements ExcerptAppenderProvider {
         private ExcerptAppender appender;
 
         public IndexedExcerptAppenderProvider(final Chronicle chronicle) {
@@ -60,7 +56,7 @@ public class ChronicleLogAppenders {
         }
     }
 
-    private static class VanillaExcerptAppenderProvider implements ExcerptAppenderProvider {
+    public static class VanillaExcerptAppenderProvider implements ExcerptAppenderProvider {
         private final Chronicle chronicle;
 
         public VanillaExcerptAppenderProvider(final Chronicle chronicle) {
@@ -83,7 +79,7 @@ public class ChronicleLogAppenders {
     //
     // *************************************************************************
 
-    private static abstract class AbstractChronicleLogWriter implements ChronicleLogAppender {
+    public static abstract class AbstractChronicleLogWriter implements ChronicleLogAppender {
 
         protected final ExcerptAppenderProvider appenderProvider;
         private final Chronicle chronicle;
@@ -134,7 +130,7 @@ public class ChronicleLogAppenders {
         @Override
         public void log(ChronicleLogLevel level, String name, String message, Object arg1) {
             final ExcerptAppender appender = getAppender();
-            if(appender != null) {
+            if (appender != null) {
                 appender.startExcerpt();
 
                 logCommon(appender, level, name, message);
@@ -156,7 +152,7 @@ public class ChronicleLogAppenders {
         @Override
         public void log(ChronicleLogLevel level, String name, String message, Object arg1, Object arg2) {
             final ExcerptAppender appender = getAppender();
-            if(appender != null) {
+            if (appender != null) {
                 appender.startExcerpt();
 
                 logCommon(appender, level, name, message);
@@ -180,7 +176,7 @@ public class ChronicleLogAppenders {
         @Override
         public void log(ChronicleLogLevel level, String name, String message, Object... args) {
             final ExcerptAppender appender = getAppender();
-            if(appender != null) {
+            if (appender != null) {
                 appender.startExcerpt();
 
                 logCommon(appender, level, name, message);
@@ -209,7 +205,7 @@ public class ChronicleLogAppenders {
         @Override
         public void log(ChronicleLogLevel level, String name, String message, Throwable throwable) {
             final ExcerptAppender appender = getAppender();
-            if(appender != null) {
+            if (appender != null) {
                 appender.startExcerpt();
 
                 logCommon(appender, level, name, message);
@@ -227,99 +223,29 @@ public class ChronicleLogAppenders {
     //
     // *************************************************************************
 
-    public static final class BinaryFormattingWriter extends AbstractChronicleLogWriter {
+    public static abstract class AbstractBinaryFormattingWriter extends AbstractChronicleLogWriter {
 
-        public BinaryFormattingWriter(Chronicle chronicle) throws IOException {
+        public AbstractBinaryFormattingWriter(Chronicle chronicle) throws IOException {
             super(chronicle);
         }
 
-        private Throwable logCommon(ExcerptAppender appender, ChronicleLogLevel level, String name, FormattingTuple tp) {
-            appender.writeByte(ChronicleLog.VERSION);
-            appender.writeLong(System.currentTimeMillis());
-            level.writeTo(appender);
-            appender.writeUTF(Thread.currentThread().getName());
-            appender.writeUTF(name);
-            appender.writeUTF(tp.getMessage());
-            appender.writeStopBit(0);
-
-            return tp.getThrowable();
-        }
-
-        @Override
-        public void log(ChronicleLogLevel level, String name, String message, Object arg1) {
+        protected void doLog(final ChronicleLogLevel level, final String name, final String message, final Throwable throwable) {
             final ExcerptAppender appender = getAppender();
-            if(appender != null) {
+            if (appender != null) {
                 appender.startExcerpt();
+                appender.writeByte(ChronicleLog.VERSION);
+                appender.writeLong(System.currentTimeMillis());
+                level.writeTo(appender);
+                appender.writeUTF(Thread.currentThread().getName());
+                appender.writeUTF(name);
+                appender.writeUTF(message);
+                appender.writeStopBit(0);
 
-                final FormattingTuple ft = MessageFormatter.format(message, arg1);
-                final Throwable thw = logCommon(appender,level,name,ft);
-
-                if (thw == null) {
+                if (throwable == null) {
                     appender.writeBoolean(false);
                 } else {
                     appender.writeBoolean(true);
-                    appender.writeObject(thw);
-                }
-
-                appender.finish();
-            }
-        }
-
-        @Override
-        public void log(ChronicleLogLevel level, String name, String message, Object arg1, Object arg2) {
-            final ExcerptAppender appender = getAppender();
-            if(appender != null) {
-                appender.startExcerpt();
-
-                final FormattingTuple ft = MessageFormatter.format(message, arg1, arg2);
-                final Throwable thw = logCommon(appender,level,name,ft);
-
-                if (thw == null) {
-                    appender.writeBoolean(false);
-                } else {
-                    appender.writeBoolean(true);
-                    appender.writeObject(thw);
-                }
-
-                appender.finish();
-            }
-        }
-
-        @Override
-        public void log(ChronicleLogLevel level, String name, String message, Object... args) {
-            final ExcerptAppender appender = getAppender();
-            if(appender != null) {
-                appender.startExcerpt();
-
-                final FormattingTuple ft = MessageFormatter.arrayFormat(message, args);
-                final Throwable thw = logCommon(appender,level,name,ft);
-
-                if (thw == null) {
-                    appender.writeBoolean(false);
-                } else {
-                    appender.writeBoolean(true);
-                    appender.writeObject(thw);
-                }
-
-                appender.finish();
-            }
-        }
-
-        @Override
-        public void log(ChronicleLogLevel level, String name, String message, Throwable throwable) {
-            final ExcerptAppender appender = getAppender();
-            if(appender != null) {
-
-                appender.startExcerpt();
-
-                final FormattingTuple ft = MessageFormatter.format(message, throwable);
-                final Throwable thw = logCommon(appender,level,name,ft);
-
-                if (thw == null) {
-                    appender.writeBoolean(false);
-                } else {
-                    appender.writeBoolean(true);
-                    appender.writeObject(thw);
+                    appender.writeObject(throwable);
                 }
 
                 appender.finish();
@@ -331,119 +257,37 @@ public class ChronicleLogAppenders {
     //
     // *************************************************************************
 
-    public static final class TextWriter extends AbstractChronicleLogWriter {
+    public static abstract class AbstractTextWriter extends AbstractChronicleLogWriter {
 
         private final TimeStampFormatter timeStampFormatter;
         private final int stackTraceDepth;
 
-        public TextWriter(Chronicle chronicle, String dateFormat, Integer stackTraceDepth) throws IOException {
+        public AbstractTextWriter(Chronicle chronicle, String dateFormat, Integer stackTraceDepth) throws IOException {
             super(chronicle);
 
             this.stackTraceDepth = stackTraceDepth != null ? stackTraceDepth : -1;
-            this.timeStampFormatter = TimeStampFormatter.fromDateFormat(
-                dateFormat != null
-                    ? dateFormat
-                    : ChronicleLoggingConfig.DEFAULT_DATE_FORMAT
-            );
+            this.timeStampFormatter = TimeStampFormatter.fromDateFormat(dateFormat);
         }
 
-        private Throwable logCommon(ExcerptAppender appender, ChronicleLogLevel level, String name, FormattingTuple tp) {
-            timeStampFormatter.format(System.currentTimeMillis(), appender);
-            appender.append('|');
-            level.printTo(appender);
-            appender.append('|');
-            appender.append(Thread.currentThread().getName());
-            appender.append('|');
-            appender.append(name);
-            appender.append('|');
-            appender.append(tp.getMessage());
-
-            return tp.getThrowable();
-        }
-
-        @Override
-        public void log(ChronicleLogLevel level, String name, String message, Object arg1) {
+        protected void doLog(final ChronicleLogLevel level, final String name, final String message, final Throwable throwable) {
             final ExcerptAppender appender = getAppender();
             if (appender != null) {
                 appender.startExcerpt();
+                timeStampFormatter.format(System.currentTimeMillis(), appender);
+                appender.append('|');
+                level.printTo(appender);
+                appender.append('|');
+                appender.append(Thread.currentThread().getName());
+                appender.append('|');
+                appender.append(name);
+                appender.append('|');
+                appender.append(message);
 
-                final FormattingTuple ft = MessageFormatter.format(message, arg1);
-                final Throwable thw = logCommon(appender,level,name,ft);
-
-                if (thw != null) {
+                if (throwable != null) {
                     appender.append(" - ");
                     ChronicleLogHelper.appendStackTraceAsString(
                         appender,
-                        thw,
-                        ChronicleLog.COMMA,
-                        this.stackTraceDepth);
-                }
-
-                appender.append('\n');
-                appender.finish();
-            }
-        }
-
-        @Override
-        public void log(ChronicleLogLevel level, String name, String message, Object arg1, Object arg2) {
-            final ExcerptAppender appender = getAppender();
-            if (appender != null) {
-                appender.startExcerpt();
-
-                final FormattingTuple ft = MessageFormatter.format(message, arg1, arg2);
-                final Throwable thw = logCommon(appender,level,name,ft);
-
-                if (thw != null) {
-                    appender.append(" - ");
-                    ChronicleLogHelper.appendStackTraceAsString(
-                        appender,
-                        thw,
-                        ChronicleLog.COMMA,
-                        this.stackTraceDepth);
-                }
-
-                appender.append('\n');
-                appender.finish();
-            }
-        }
-
-        @Override
-        public void log(ChronicleLogLevel level, String name, String message, Object... args) {
-            final ExcerptAppender appender = getAppender();
-            if (appender != null) {
-                appender.startExcerpt();
-
-                final FormattingTuple ft = MessageFormatter.arrayFormat(message, args);
-                final Throwable thw = logCommon(appender,level,name,ft);
-
-                if (thw != null) {
-                    appender.append(" - ");
-                    ChronicleLogHelper.appendStackTraceAsString(
-                        appender,
-                        thw,
-                        ChronicleLog.COMMA,
-                        this.stackTraceDepth);
-                }
-
-                appender.append('\n');
-                appender.finish();
-            }
-        }
-
-        @Override
-        public void log(ChronicleLogLevel level, String name, String message, Throwable throwable) {
-            final ExcerptAppender appender = getAppender();
-            if (appender != null) {
-                appender.startExcerpt();
-
-                final FormattingTuple ft = MessageFormatter.format(message, throwable);
-                final Throwable thw = logCommon(appender,level,name,ft);
-
-                if (thw != null) {
-                    appender.append(" - ");
-                    ChronicleLogHelper.appendStackTraceAsString(
-                        appender,
-                        thw,
+                        throwable,
                         ChronicleLog.COMMA,
                         this.stackTraceDepth);
                 }
@@ -491,7 +335,6 @@ public class ChronicleLogAppenders {
             synchronized (this.sync) {
                 this.writer.log(level, name, message, args);
             }
-
         }
 
         @Override
