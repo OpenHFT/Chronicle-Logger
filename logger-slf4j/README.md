@@ -1,5 +1,5 @@
-chronicle-slf4j
-================
+chronicle-logger-slf4j
+======================
 
 To configure this sl4j binding you need to specify the location of a properties files via system properties:
 ```
