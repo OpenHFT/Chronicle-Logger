@@ -77,7 +77,6 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
         if(appender != null) {
             appender.startExcerpt();
             appender.writeByte(ChronicleLog.VERSION);
-            ChronicleLog.Type.LOG4J_2.writeTo(appender);
             appender.writeLong(event.getTimeMillis());
             toChronicleLogLevel(event.getLevel()).writeTo(appender);
             appender.writeUTF(event.getThreadName());

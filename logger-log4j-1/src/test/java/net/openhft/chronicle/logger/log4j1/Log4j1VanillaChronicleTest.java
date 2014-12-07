@@ -102,7 +102,6 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
             evt = ChronicleLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), ChronicleLog.VERSION);
-            assertEquals(evt.getType(), ChronicleLog.Type.LOG4J_1);
             assertTrue(evt.getTimeStamp() >= timestamp);
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());

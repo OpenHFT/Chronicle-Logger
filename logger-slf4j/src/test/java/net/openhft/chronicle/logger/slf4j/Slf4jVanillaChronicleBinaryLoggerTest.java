@@ -115,7 +115,6 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
         ChronicleLogEvent evt = ChronicleLogHelper.decodeBinary(tailer);
         assertNotNull(evt);
         assertEquals(evt.getVersion(), ChronicleLog.VERSION);
-        assertEquals(evt.getType(), ChronicleLog.Type.SLF4J);
         assertTrue(timestamp <= evt.getTimeStamp());
         assertEquals(ChronicleLogLevel.DEBUG,evt.getLevel());
         assertEquals("data {}, {}",evt.getMessage());
@@ -163,7 +162,6 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
             evt = ChronicleLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), ChronicleLog.VERSION);
-            assertEquals(evt.getType(), ChronicleLog.Type.SLF4J);
             assertTrue(evt.getTimeStamp() >= timestamp);
             assertEquals(ChronicleLogLevel.INFO, evt.getLevel());
             assertEquals("args", evt.getMessage());

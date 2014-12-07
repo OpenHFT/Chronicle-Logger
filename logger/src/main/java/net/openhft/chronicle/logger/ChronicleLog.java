@@ -37,24 +37,6 @@ public final class ChronicleLog {
     public static final byte VERSION = 1;
     private static final int CASE_DIFF = 'A' - 'a';
 
-    public enum Type {
-        UNKNOWN,
-        SLF4J,
-        LOGBACK,
-        LOG4J_1,
-        LOG4J_2;
-
-        private static final Type[] VALUES = values();
-
-        public void writeTo(final RandomDataOutput out) {
-            out.writeByte(ordinal());
-        }
-
-        public static Type read(final RandomDataInput in) {
-            return VALUES[in.readByte()];
-        }
-    }
-
     // *************************************************************************
     //
     // *************************************************************************

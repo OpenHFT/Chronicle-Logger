@@ -124,7 +124,6 @@ public class ChronicleLogAppenders {
 
         private void logCommon(ExcerptAppender appender, ChronicleLogLevel level, String name, String message) {
             appender.writeByte(ChronicleLog.VERSION);
-            ChronicleLog.Type.SLF4J.writeTo(appender);
             appender.writeLong(System.currentTimeMillis());
             level.writeTo(appender);
             appender.writeUTF(Thread.currentThread().getName());
@@ -236,7 +235,6 @@ public class ChronicleLogAppenders {
 
         private Throwable logCommon(ExcerptAppender appender, ChronicleLogLevel level, String name, FormattingTuple tp) {
             appender.writeByte(ChronicleLog.VERSION);
-            ChronicleLog.Type.SLF4J.writeTo(appender);
             appender.writeLong(System.currentTimeMillis());
             level.writeTo(appender);
             appender.writeUTF(Thread.currentThread().getName());
