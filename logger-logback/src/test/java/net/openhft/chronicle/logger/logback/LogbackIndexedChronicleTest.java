@@ -56,7 +56,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
         assertTrue(appender instanceof BinaryIndexedChronicleAppender);
 
         BinaryIndexedChronicleAppender ba = (BinaryIndexedChronicleAppender)appender;
-        assertEquals(128, ba.getChronicleConfig().getIndexFileCapacity());
+        assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
         assertTrue(appender instanceof TextIndexedChronicleAppender);
 
         TextIndexedChronicleAppender ba = (TextIndexedChronicleAppender)appender;
-        assertEquals(128, ba.getChronicleConfig().getIndexFileCapacity());
+        assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
     }
 
     // *************************************************************************

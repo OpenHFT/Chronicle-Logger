@@ -18,6 +18,7 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.logger.ChronicleLogConfig;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -26,7 +27,7 @@ import static org.junit.Assert.assertNotNull;
 public class ChronicleLoggingConfigTest {
     //@Test
     //public void testLoadNoProperty() throws Exception {
-    //    assertNull("config should not load if no system property set up", ChronicleLoggingConfig.load());
+    //    assertNull("config should not load if no system property set up", ChronicleLogConfig.load());
     //}
 
     @Test
@@ -42,10 +43,10 @@ public class ChronicleLoggingConfigTest {
     }
 
     private void assertLoadsValidVanillaConfig() {
-        ChronicleLoggingConfig config = ChronicleLoggingConfig.load();
+        ChronicleLogConfig config = ChronicleLogConfig.load();
         assertNotNull("unable to load config", config);
         assertNotNull("is not a vanilla config", config.getVanillaChronicleConfig());
-        assertEquals(ChronicleLoggingConfig.FORMAT_BINARY, config.getString(ChronicleLoggingConfig.KEY_FORMAT));
+        assertEquals(ChronicleLogConfig.FORMAT_BINARY, config.getString(ChronicleLogConfig.KEY_FORMAT));
     }
 
     @Test
@@ -61,9 +62,9 @@ public class ChronicleLoggingConfigTest {
     }
 
     private void assertLoadsValidIndexedConfig() {
-        ChronicleLoggingConfig config = ChronicleLoggingConfig.load();
+        ChronicleLogConfig config = ChronicleLogConfig.load();
         assertNotNull("unable to load config", config);
         assertNotNull("is not a indexed config", config.getIndexedChronicleConfig());
-        assertEquals(ChronicleLoggingConfig.FORMAT_BINARY, config.getString(ChronicleLoggingConfig.KEY_FORMAT));
+        assertEquals(ChronicleLogConfig.FORMAT_BINARY, config.getString(ChronicleLogConfig.KEY_FORMAT));
     }
 }

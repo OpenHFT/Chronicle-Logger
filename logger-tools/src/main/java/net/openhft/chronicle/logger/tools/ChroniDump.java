@@ -18,6 +18,7 @@
 
 package net.openhft.chronicle.logger.tools;
 
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLogReader;
@@ -92,8 +93,8 @@ public final class ChroniDump {
             if (args.length >= 1) {
                 ChroniTool.process(
                     indexed
-                        ? new IndexedChronicle(args[args.length - 1])
-                        : new VanillaChronicle(args[args.length - 1]),
+                        ? ChronicleQueueBuilder.indexed(args[args.length - 1]).build()
+                        : ChronicleQueueBuilder.vanilla(args[args.length - 1]).build(),
                     HEXDUMP,
                     false,
                     false

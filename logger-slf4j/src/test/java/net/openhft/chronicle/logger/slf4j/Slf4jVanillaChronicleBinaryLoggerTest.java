@@ -22,6 +22,7 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLog;
+import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
@@ -59,7 +60,7 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
     public void tearDown() {
         getChronicleLoggerFactory().shutdown();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_VANILLA));
     }
 
     // *************************************************************************

@@ -31,6 +31,7 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
     private String dateFormat;
     private TimeStampFormatter timeStampFormatter;
     private int stackTradeDepth;
+    private String newLine;
 
     protected TextChronicleAppender() {
         super();
@@ -38,6 +39,7 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
         this.dateFormat = null;
         this.timeStampFormatter = null;
         this.stackTradeDepth = -1;
+        this.newLine = ChronicleLog.getLineSeparator();
     }
 
     // *************************************************************************
@@ -92,7 +94,7 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
                     );
                 }
 
-                appender.append(ChronicleLog.NEWLINE);
+                appender.append(this.newLine);
                 appender.finish();
             }
         }

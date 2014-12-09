@@ -18,6 +18,7 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.tools.ChronicleTools;
 import net.openhft.lang.io.IOTools;
 import org.apache.commons.lang3.StringUtils;
@@ -53,7 +54,7 @@ public class Slf4jIndexedChronicleBinaryLoggerPerfTest extends Slf4jTestBase {
     public void tearDown() {
         getChronicleLoggerFactory().shutdown();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_INDEXED));
     }
 
     // *************************************************************************

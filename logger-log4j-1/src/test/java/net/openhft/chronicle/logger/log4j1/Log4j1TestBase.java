@@ -18,6 +18,8 @@
 
 package net.openhft.chronicle.logger.log4j1;
 
+import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
@@ -92,16 +94,16 @@ public class Log4j1TestBase {
      * @param type
      * @return
      */
-    protected IndexedChronicle getIndexedChronicle(String type) throws IOException {
-        return new IndexedChronicle(basePath(type));
+    protected Chronicle getIndexedChronicle(String type) throws IOException {
+        return ChronicleQueueBuilder.indexed(basePath(type)).build();
     }
 
     /**
      * @param type
      * @return
      */
-    protected VanillaChronicle getVanillaChronicle(String type) throws IOException {
-        return new VanillaChronicle(basePath(type));
+    protected Chronicle getVanillaChronicle(String type) throws IOException {
+        return ChronicleQueueBuilder.vanilla(basePath(type)).build();
     }
 
     // *************************************************************************

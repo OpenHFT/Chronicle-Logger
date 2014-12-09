@@ -17,113 +17,149 @@
  */
 package net.openhft.chronicle.logger;
 
-import net.openhft.chronicle.VanillaChronicleConfig;
+import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
+
+import java.io.File;
+import java.io.IOException;
 
 public class VanillaLogAppenderConfig extends ChronicleLogAppenderConfig {
-
-    private final VanillaChronicleConfig chronicleConfig;
+    private final ChronicleQueueBuilder.VanillaChronicleQueueBuilder builder;
 
     public VanillaLogAppenderConfig() {
-        this(VanillaChronicleConfig.DEFAULT);
+        this.builder = ChronicleQueueBuilder.vanilla((File)null);
     }
 
-    public VanillaLogAppenderConfig(final VanillaChronicleConfig config) {
-        this.chronicleConfig = config.clone();
-    }
+    // *************************************************************************
+    //
+    // *************************************************************************
 
-    public VanillaChronicleConfig cfg() {
-        return this.chronicleConfig;
-    }
-
-    public VanillaChronicleConfig cycleFormat(String cycleFormat) {
-        return chronicleConfig.cycleFormat(cycleFormat);
-    }
-
-    public long getDataBlockSize() {
-        return chronicleConfig.dataBlockSize();
-    }
-
-    public int getCycleLength() {
-        return chronicleConfig.cycleLength();
-    }
-
-    public void getDataBlockSize(int dataBlockSize) {
-        chronicleConfig.dataBlockSize(dataBlockSize);
-    }
-
-    public int getDataCacheCapacity() {
-        return chronicleConfig.dataCacheCapacity();
-    }
-
-    public String getCycleFormat() {
-        return chronicleConfig.cycleFormat();
-    }
-
-    public void setDataCacheCapacity(int dataCacheCapacity) {
-        chronicleConfig.dataCacheCapacity(dataCacheCapacity);
-    }
-
-    public boolean getCleanupOnClose() {
-        return chronicleConfig.cleanupOnClose();
-    }
-
-    public boolean getSynchronous() {
-        return chronicleConfig.synchronous();
-    }
-
-    public long getEntriesPerCycle() {
-        return chronicleConfig.entriesPerCycle();
-    }
-
-    public int getDefaultMessageSize() {
-        return chronicleConfig.defaultMessageSize();
-    }
-
-    public void setCycleLength(int cycleLength) {
-        chronicleConfig.cycleLength(cycleLength);
-    }
-
-    public void setCleanupOnClose(boolean cleanupOnClose) {
-        chronicleConfig.cleanupOnClose(cleanupOnClose);
+    public boolean isSynchronous() {
+        return this.builder.synchronous();
     }
 
     public void setSynchronous(boolean synchronous) {
-        chronicleConfig.synchronous(synchronous);
+        this.builder.synchronous(synchronous);
     }
 
-    public long getIndexBlockSize() {
-        return chronicleConfig.indexBlockSize();
-    }
-
-    public void setDefaultMessageSize(int defaultMessageSize) {
-        chronicleConfig.defaultMessageSize(defaultMessageSize);
+    public boolean isUseCheckedExcerpt() {
+        return this.builder.useCheckedExcerpt();
     }
 
     public void setUseCheckedExcerpt(boolean useCheckedExcerpt) {
-        chronicleConfig.useCheckedExcerpt(useCheckedExcerpt);
+        this.builder.useCheckedExcerpt(useCheckedExcerpt);
     }
 
-    public int getIndexCacheCapacity() {
-        return chronicleConfig.indexCacheCapacity();
+    public String getCycleFormat() {
+        return this.builder.cycleFormat();
     }
 
-    public void setEntriesPerCycle(long entriesPerCycle) {
-        chronicleConfig.entriesPerCycle(entriesPerCycle);
+    public void setCycleFormat(String cycleFormat) {
+        this.builder.cycleFormat(cycleFormat);
+    }
+
+    public int getCycleLength() {
+        return this.builder.cycleLength();
+    }
+
+    public void setCycleLength(int cycleLength) {
+        this.builder.cycleLength(cycleLength);
     }
 
     public void setCycleLength(int cycleLength, boolean check) {
-        chronicleConfig.cycleLength(cycleLength, check);
+        this.builder.cycleLength(cycleLength, check);
+    }
+
+    public int getDefaultMessageSize() {
+        return this.builder.defaultMessageSize();
+    }
+
+    public void setDefaultMessageSize(int defaultMessageSize) {
+        this.builder.defaultMessageSize(defaultMessageSize);
+    }
+
+    public int getDataCacheCapacity() {
+        return this.builder.dataCacheCapacity();
+    }
+
+    public void setDataCacheCapacity(int dataCacheCapacity) {
+        this.builder.dataCacheCapacity(dataCacheCapacity);
+    }
+
+    public int getIndexCacheCapacity() {
+        return this.builder.indexCacheCapacity();
     }
 
     public void setIndexCacheCapacity(int indexCacheCapacity) {
-        chronicleConfig.indexCacheCapacity(indexCacheCapacity);
+        this.builder.indexCacheCapacity(indexCacheCapacity);
     }
 
-    public boolean getUseCheckedExcerpt() {
-        return chronicleConfig.useCheckedExcerpt();
+    public long getIndexBlockSize() {
+        return this.builder.indexBlockSize();
     }
 
     public void setIndexBlockSize(long indexBlockSize) {
-        chronicleConfig.indexBlockSize(indexBlockSize);
+        this.builder.indexBlockSize(indexBlockSize);
+    }
+
+    public long getDataBlockSize() {
+        return this.builder.dataBlockSize();
+    }
+
+    //TODO: long vs int
+    public void setDataBlockSize(int dataBlockSize) {
+        this.builder.dataBlockSize(dataBlockSize);
+    }
+
+    public long getEntriesPerCycle() {
+        return this.builder.entriesPerCycle();
+    }
+
+    public void setEntriesPerCycle(long entriesPerCycle) {
+        this.builder.entriesPerCycle(entriesPerCycle);
+    }
+
+    public boolean isCleanupOnClose() {
+        return this.builder.cleanupOnClose();
+    }
+
+    public void setCleanupOnClose(boolean cleanupOnClose) {
+        this.builder.cleanupOnClose(cleanupOnClose);
+    }
+
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    @Override
+    public Chronicle build(String path) throws IOException {
+        /*
+        private boolean synchronous;
+        private boolean useCheckedExcerpt;
+        private String cycleFormat;
+        private int cycleLength;
+        private int defaultMessageSize;
+        private int dataCacheCapacity;
+        private int indexCacheCapacity;
+        private long indexBlockSize;
+        private long dataBlockSize;
+        private long entriesPerCycle;
+        private boolean cleanupOnClose;
+        */
+
+        return ChronicleQueueBuilder.vanilla(path)
+            .synchronous(this.builder.synchronous())
+            .useCheckedExcerpt(this.builder.useCheckedExcerpt())
+            .cycleFormat(this.builder.cycleFormat())
+            .cycleLength(this.builder.cycleLength())
+            .defaultMessageSize(this.builder.defaultMessageSize())
+            .dataCacheCapacity(this.builder.dataCacheCapacity())
+            .indexCacheCapacity(this.builder.indexCacheCapacity())
+            .indexBlockSize(this.builder.indexBlockSize())
+            .dataBlockSize((int) this.builder.dataBlockSize())
+            .entriesPerCycle(this.builder.entriesPerCycle())
+            .cleanupOnClose(this.builder.cleanupOnClose())
+            .build();
     }
 }

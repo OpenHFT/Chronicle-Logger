@@ -18,15 +18,20 @@
 
 package net.openhft.chronicle.logger;
 
+import net.openhft.chronicle.Chronicle;
 import net.openhft.lang.model.constraints.NotNull;
 import net.openhft.lang.model.constraints.Nullable;
 
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Properties;
 
-public class ChronicleLogAppenderConfig {
+public abstract class ChronicleLogAppenderConfig {
+
+    public abstract Chronicle build(String path)
+        throws IOException;
 
     public void setProperties(final @NotNull Properties properties, final @Nullable String prefix) {
         for (final Map.Entry<Object, Object> entry : properties.entrySet()) {

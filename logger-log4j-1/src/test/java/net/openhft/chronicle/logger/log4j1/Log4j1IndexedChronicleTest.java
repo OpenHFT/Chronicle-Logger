@@ -57,7 +57,7 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
         assertTrue(appender instanceof BinaryIndexedChronicleAppender);
 
         BinaryIndexedChronicleAppender ba = (BinaryIndexedChronicleAppender)appender;
-        assertEquals(128, ba.getChronicleConfig().getIndexFileCapacity());
+        assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
     }
 
     @Ignore
@@ -74,7 +74,7 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
         assertTrue(appender instanceof TextIndexedChronicleAppender);
 
         TextIndexedChronicleAppender ba = (TextIndexedChronicleAppender)appender;
-        assertEquals(128, ba.getChronicleConfig().getIndexFileCapacity());
+        assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
     }
 
     // *************************************************************************

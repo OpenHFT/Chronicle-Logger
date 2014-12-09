@@ -18,8 +18,11 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
+import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.Bytes;
 import net.openhft.lang.io.serialization.BytesMarshallable;
@@ -60,13 +63,13 @@ public class Slf4jTestBase {
     }
 
     protected static String indexedBasePath(String loggerName) {
-        return basePath(ChronicleLoggingConfig.TYPE_INDEXED)
+        return basePath(ChronicleLogConfig.TYPE_INDEXED)
                 + File.separator
                 + loggerName;
     }
 
     protected static String vanillaBasePath(String loggerName) {
-        return basePath(ChronicleLoggingConfig.TYPE_VANILLA)
+        return basePath(ChronicleLogConfig.TYPE_VANILLA)
                 + File.separator
                 + loggerName;
     }
@@ -114,8 +117,8 @@ public class Slf4jTestBase {
      * @param id
      * @return
      */
-    protected IndexedChronicle getIndexedChronicle(String id) throws IOException {
-        return new IndexedChronicle(basePath(ChronicleLoggingConfig.TYPE_INDEXED, id));
+    protected Chronicle getIndexedChronicle(String id) throws IOException {
+        return ChronicleQueueBuilder.indexed(basePath(ChronicleLogConfig.TYPE_INDEXED, id)).build();
     }
 
     /**
@@ -123,16 +126,16 @@ public class Slf4jTestBase {
      * @param id
      * @return
      */
-    protected IndexedChronicle getIndexedChronicle(String type, String id) throws IOException {
-        return new IndexedChronicle(basePath(type, id));
+    protected Chronicle getIndexedChronicle(String type, String id) throws IOException {
+        return ChronicleQueueBuilder.indexed(basePath(type, id)).build();
     }
 
     /**
      * @param id
      * @return
      */
-    protected VanillaChronicle getVanillaChronicle(String id) throws IOException {
-        return new VanillaChronicle(basePath(ChronicleLoggingConfig.TYPE_VANILLA, id));
+    protected Chronicle getVanillaChronicle(String id) throws IOException {
+        return ChronicleQueueBuilder.vanilla(basePath(ChronicleLogConfig.TYPE_VANILLA, id)).build();
     }
 
     /**
@@ -140,8 +143,8 @@ public class Slf4jTestBase {
      * @param id
      * @return
      */
-    protected VanillaChronicle getVanillaChronicle(String type, String id) throws IOException {
-        return new VanillaChronicle(basePath(type, id));
+    protected Chronicle getVanillaChronicle(String type, String id) throws IOException {
+        return ChronicleQueueBuilder.vanilla(basePath(type, id)).build();
     }
 
     // *************************************************************************

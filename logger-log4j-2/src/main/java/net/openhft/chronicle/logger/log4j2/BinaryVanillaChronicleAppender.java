@@ -19,6 +19,7 @@
 package net.openhft.chronicle.logger.log4j2;
 
 import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
@@ -48,8 +49,8 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
     @Override
     protected Chronicle createChronicle() throws IOException {
         return (this.config != null)
-            ? new VanillaChronicle(this.getPath(), this.config.cfg())
-            : new VanillaChronicle(this.getPath());
+            ? this.config.build(this.getPath())
+            : ChronicleQueueBuilder.vanilla(this.getPath()).build();
     }
 
     @Override

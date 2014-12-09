@@ -22,6 +22,7 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.logger.ChronicleLog;
+import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
@@ -60,7 +61,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
     public void tearDown() {
         getChronicleLoggerFactory().shutdown();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_INDEXED));
     }
 
     // *************************************************************************
@@ -136,14 +137,14 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED,testId));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_INDEXED,testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
             log(logger,level,"level is {}",level);
         }
 
-        Chronicle          chronicle = getIndexedChronicle(ChronicleLoggingConfig.TYPE_INDEXED,testId);
+        Chronicle          chronicle = getIndexedChronicle(ChronicleLogConfig.TYPE_INDEXED,testId);
         ExcerptTailer      tailer    = chronicle.createTailer().toStart();
         ChronicleLogEvent evt       = null;
 
@@ -187,7 +188,7 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         tailer.close();
         chronicle.close();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED,testId));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_INDEXED,testId));
     }
 
     @Test
@@ -196,14 +197,14 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         final String threadId  = testId + "-th";
         final Logger logger    = LoggerFactory.getLogger(testId);
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED,testId));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_INDEXED,testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
             log(logger,level,"level is {}",level);
         }
 
-        Chronicle          chronicle = getIndexedChronicle(ChronicleLoggingConfig.TYPE_INDEXED,testId);
+        Chronicle          chronicle = getIndexedChronicle(ChronicleLogConfig.TYPE_INDEXED,testId);
         ExcerptTailer      tailer    = chronicle.createTailer().toStart();
         ChronicleLogEvent evt       = null;
 
@@ -253,6 +254,6 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         tailer.close();
         chronicle.close();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED,testId));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_INDEXED,testId));
     }
 }

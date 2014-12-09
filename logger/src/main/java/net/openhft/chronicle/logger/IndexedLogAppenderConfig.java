@@ -18,111 +18,94 @@
 
 package net.openhft.chronicle.logger;
 
-import net.openhft.chronicle.ChronicleConfig;
 
-import java.nio.ByteOrder;
+import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
+
+import java.io.File;
+import java.io.IOException;
 
 public class IndexedLogAppenderConfig extends ChronicleLogAppenderConfig {
-
-    private final ChronicleConfig chronicleConfig;
+    private final ChronicleQueueBuilder.IndexedChronicleQueueBuilder builder;
 
     public IndexedLogAppenderConfig() {
-        this(ChronicleConfig.DEFAULT);
+        this.builder = ChronicleQueueBuilder.indexed((File)null);
     }
 
-    public IndexedLogAppenderConfig(final ChronicleConfig config) {
-        this.chronicleConfig = config.clone();
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public boolean isSynchronous() {
+        return this.builder.synchronous();
     }
 
-    public ChronicleConfig cfg() {
-        return this.chronicleConfig;
+    public void setSynchronous(boolean synchronous) {
+        this.builder.synchronous(synchronous);
     }
 
-    public void setIndexFileCapacity(int indexFileCapacity) {
-        chronicleConfig.indexFileCapacity(indexFileCapacity);
-    }
-
-    public int getIndexFileCapacity() {
-        return chronicleConfig.indexFileCapacity();
-    }
-
-    public int getDataBlockSize() {
-        return chronicleConfig.dataBlockSize();
-    }
-
-    public void setUseUnsafe(boolean useUnsafe) {
-        chronicleConfig.useUnsafe(useUnsafe);
-    }
-
-    public int getCacheLineSize() {
-        return chronicleConfig.cacheLineSize();
-    }
-
-    public void setByteOrder(ByteOrder byteOrder) {
-        chronicleConfig.byteOrder(byteOrder);
-    }
-
-    public void setIndexBlockSize(int indexBlockSize) {
-        chronicleConfig.indexBlockSize(indexBlockSize);
-    }
-
-    public void setSynchronousMode(boolean synchronousMode) {
-        chronicleConfig.synchronousMode(synchronousMode);
-    }
-
-    public void setCacheLineSize(int cacheLineSize) {
-        chronicleConfig.cacheLineSize(cacheLineSize);
-    }
-
-    public void setMessageCapacity(int messageCapacity) {
-        chronicleConfig.messageCapacity(messageCapacity);
-    }
-
-    public void setMinimiseFootprint(boolean minimiseFootprint) {
-        chronicleConfig.minimiseFootprint(minimiseFootprint);
-    }
-
-    public int getIndexFileExcerpts() {
-        return chronicleConfig.indexFileExcerpts();
-    }
-
-    public int getIndexBlockSize() {
-        return chronicleConfig.indexBlockSize();
-    }
-
-    public boolean getMinimiseFootprint() {
-        return chronicleConfig.minimiseFootprint();
+    public boolean isUseCheckedExcerpt() {
+        return this.builder.useCheckedExcerpt();
     }
 
     public void setUseCheckedExcerpt(boolean useCheckedExcerpt) {
-        chronicleConfig.useCheckedExcerpt(useCheckedExcerpt);
+        this.builder.useCheckedExcerpt(useCheckedExcerpt);
     }
 
-    public boolean getSynchronousMode() {
-        return chronicleConfig.synchronousMode();
+    public int getCacheLineSize() {
+        return this.builder.cacheLineSize();
     }
 
-    public int getMessageCapacity() {
-        return chronicleConfig.messageCapacity();
+    public void setCacheLineSize(int cacheLineSize) {
+        this.builder.cacheLineSize(cacheLineSize);
     }
 
-    public boolean getUseUnsafe() {
-        return chronicleConfig.useUnsafe();
+    public int getDataBlockSize() {
+        return this.builder.dataBlockSize();
     }
 
     public void setDataBlockSize(int dataBlockSize) {
-        chronicleConfig.dataBlockSize(dataBlockSize);
+        this.builder.dataBlockSize(dataBlockSize);
     }
 
-    public boolean getUseCheckedExcerpt() {
-        return chronicleConfig.useCheckedExcerpt();
+    public int getMessageCapacity() {
+        return this.builder.messageCapacity();
     }
 
-    public void setIndexFileExcerpts(int indexFileExcerpts) {
-        chronicleConfig.indexFileExcerpts(indexFileExcerpts);
+    public void setMessageCapacity(int messageCapacity) {
+        this.builder.messageCapacity(messageCapacity);
     }
 
-    public ByteOrder getByteOrder() {
-        return chronicleConfig.byteOrder();
+    public int getIndexBlockSize() {
+        return this.builder.indexBlockSize();
+    }
+
+    public void setIndexBlockSize(int indexBlockSize) {
+        this.builder.indexBlockSize(indexBlockSize);
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    @Override
+    public Chronicle build(String path) throws IOException {
+        /*
+        private boolean synchronous;
+        private boolean useCheckedExcerpt;
+        private int cacheLineSize;
+        private int dataBlockSize;
+        private int messageCapacity;
+        private int indexBlockSize;
+        */
+
+        return ChronicleQueueBuilder.indexed(path)
+            .synchronous(this.builder.synchronous())
+            .useCheckedExcerpt(this.builder.useCheckedExcerpt())
+            .cacheLineSize(this.builder.cacheLineSize())
+            .dataBlockSize(this.builder.dataBlockSize())
+            .messageCapacity(this.builder.messageCapacity())
+            .indexBlockSize(this.builder.indexBlockSize())
+            .build();
     }
 }

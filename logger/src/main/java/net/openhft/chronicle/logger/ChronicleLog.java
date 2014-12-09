@@ -18,17 +18,9 @@
 package net.openhft.chronicle.logger;
 
 
-import net.openhft.chronicle.*;
-import net.openhft.chronicle.tools.ChronicleTools;
-import net.openhft.lang.io.RandomDataInput;
-import net.openhft.lang.io.RandomDataOutput;
 import net.openhft.lang.model.constraints.NotNull;
 
-import java.io.IOException;
-
 public final class ChronicleLog {
-    public static final String NEWLINE = System.getProperty("line.separator");
-    public static final String TMPDIR = System.getProperty("java.io.tmpdir");
     public static final String COMMA = ", ";
     public static final String STR_FALSE = "false";
     public static final String STR_TRUE = "true";
@@ -36,6 +28,18 @@ public final class ChronicleLog {
     
     public static final byte VERSION = 1;
     private static final int CASE_DIFF = 'A' - 'a';
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public static String getLineSeparator() {
+        return System.getProperty("line.separator");
+    }
+
+    public static String getTmpDir() {
+        return System.getProperty("java.io.tmpdir");
+    }
 
     // *************************************************************************
     //
@@ -63,94 +67,6 @@ public final class ChronicleLog {
 
         return true;
     }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    public static void warmup() {
-        //noinspection UnusedDeclaration needed to laod class.
-        boolean vanillaDone = VanillaWarmup.DONE;
-        boolean indexedDone = IndexedWarmup.DONE;
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    private static class VanillaWarmup {
-        public  static final boolean DONE;
-        private static final int WARMUP_ITER = 1000;
-
-        static {
-            VanillaChronicleConfig cc = new VanillaChronicleConfig();
-            cc.dataBlockSize(64);
-            cc.indexBlockSize(64);
-
-            String basePath = TMPDIR + "/vanilla-warmup-" + Math.random();
-            ChronicleTools.deleteDirOnExit(basePath);
-
-            try {
-                final VanillaChronicle chronicle = new VanillaChronicle(basePath, cc);
-                final ExcerptAppender appender = chronicle.createAppender();
-                final ExcerptTailer tailer = chronicle.createTailer();
-
-                for (int i = 0; i < WARMUP_ITER; i++) {
-                    appender.startExcerpt();
-                    appender.writeInt(i);
-                    appender.finish();
-                    boolean b = tailer.nextIndex() || tailer.nextIndex();
-                    tailer.readInt();
-                    tailer.finish();
-                }
-
-                chronicle.close();
-                chronicle.clear();
-
-                System.gc();
-                DONE = true;
-            } catch (IOException e) {
-                throw new AssertionError();
-            }
-        }
-    }
-
-    private static class IndexedWarmup {
-        public  static final boolean DONE;
-        private static final int WARMUP_ITER = 1000;
-
-        static {
-            ChronicleConfig cc = ChronicleConfig.SMALL.clone();
-            cc.dataBlockSize(64);
-            cc.indexBlockSize(64);
-
-            String basePath = TMPDIR + "/indexed-warmup-" + Math.random();
-            ChronicleTools.deleteOnExit(basePath);
-
-            try {
-                final IndexedChronicle chronicle = new IndexedChronicle(basePath, cc);
-                final ExcerptAppender appender = chronicle.createAppender();
-                final ExcerptTailer tailer = chronicle.createTailer();
-
-                for (int i = 0; i < WARMUP_ITER; i++) {
-                    appender.startExcerpt();
-                    appender.writeInt(i);
-                    appender.finish();
-                    boolean b = tailer.nextIndex() || tailer.nextIndex();
-                    tailer.readInt();
-                    tailer.finish();
-                }
-
-                chronicle.close();
-
-                System.gc();
-                DONE = true;
-            } catch (IOException e) {
-                throw new AssertionError();
-            }
-        }
-    }
-    
 
     private ChronicleLog() {
     }

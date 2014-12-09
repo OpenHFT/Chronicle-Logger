@@ -38,7 +38,7 @@
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
 
         <chronicleConfig>
-            <indexFileCapacity>128</indexFileCapacity>
+            <indexBlockSize>128</indexBlockSize>
         </chronicleConfig>
 
     </appender>
@@ -52,7 +52,7 @@
         <path>${java.io.tmpdir}/chronology-logback/config-text-indexed-chronicle</path>
 
         <chronicleConfig>
-            <indexFileCapacity>128</indexFileCapacity>
+            <indexBlockSize>128</indexBlockSize>
         </chronicleConfig>
 
     </appender>

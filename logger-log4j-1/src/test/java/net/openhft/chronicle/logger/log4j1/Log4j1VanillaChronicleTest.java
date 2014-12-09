@@ -92,8 +92,8 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
             log(logger,level,"level is {}",level);
         }
 
-        VanillaChronicle   chronicle = getVanillaChronicle(testId);
-        ExcerptTailer      tailer    = chronicle.createTailer().toStart();
+        Chronicle         chronicle = getVanillaChronicle(testId);
+        ExcerptTailer     tailer    = chronicle.createTailer().toStart();
         ChronicleLogEvent evt       = null;
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
