@@ -22,7 +22,7 @@ import net.openhft.chronicle.ChronicleConfig;
 
 import java.nio.ByteOrder;
 
-public class IndexedLogAppenderConfig extends ChronicleLogConfig {
+public class IndexedLogAppenderConfig extends ChronicleLogAppenderConfig {
 
     private final ChronicleConfig chronicleConfig;
 

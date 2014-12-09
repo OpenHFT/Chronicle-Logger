@@ -19,7 +19,7 @@ package net.openhft.chronicle.logger;
 
 import net.openhft.chronicle.VanillaChronicleConfig;
 
-public class VanillaLogAppenderConfig extends ChronicleLogConfig {
+public class VanillaLogAppenderConfig extends ChronicleLogAppenderConfig {
 
     private final VanillaChronicleConfig chronicleConfig;
 

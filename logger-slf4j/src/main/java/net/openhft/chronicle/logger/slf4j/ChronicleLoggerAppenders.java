@@ -20,6 +20,7 @@ package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.logger.ChronicleLogAppenders;
+import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
@@ -73,7 +74,7 @@ public class ChronicleLoggerAppenders extends ChronicleLogAppenders {
                 chronicle,
                 dateFormat != null
                     ? dateFormat
-                    : ChronicleLoggingConfig.DEFAULT_DATE_FORMAT,
+                    : ChronicleLogConfig.DEFAULT_DATE_FORMAT,
                 stackTraceDepth != null
                     ? stackTraceDepth
                     : -1);
