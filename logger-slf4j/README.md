@@ -16,33 +16,32 @@ level         | the default log level                    | trace, debug, info, w
 append        |                                          | true, false                      | yes
 format        | write log as text or binary              | binary, text                     | yes
 binaryFormat  | format or serialize log arguments        | formatted, serialized            | no
-dateFormat    | the date format for text loggers         |                                  | no 
-synchronous   | synchronous mode                         | true, false                      | yes
+dateFormat    | the date format for text loggers         |                                  | no
 
-The default configuration needs chronicle.logger. as prefix but you can set per-logger settings using chronicle.logger.logger as prefix, here an example:
+The default configuration needs chronicle.logger.root as prefix but you can set per-logger settings using chronicle.logger. as prefix, here an example:
 
 ```properties
 # default
 chronicle.logger.base         = ${java.io.tmpdir}/chronicle/${today}/${pid}
 
 # logger : root
-chronicle.logger.type         = vanilla
-chronicle.logger.path         = ${chronicle.logger.base}/main
-chronicle.logger.level        = debug
-chronicle.logger.shortName    = false
-chronicle.logger.append       = false
-chronicle.logger.format       = binary
-chronicle.logger.binaryFormat = formatted
+chronicle.logger.root.type         = vanilla
+chronicle.logger.root.path         = ${chronicle.logger.base}/main
+chronicle.logger.root.level        = debug
+chronicle.logger.root.shortName    = false
+chronicle.logger.root.append       = false
+chronicle.logger.root.format       = binary
+chronicle.logger.root.binaryFormat = formatted
 
 # logger : Logger1
-chronicle.logger.logger.Logger1.path           = ${chronicle.logger.base}/logger_1
-chronicle.logger.logger.Logger1.level          = info
+chronicle.logger.Logger1.path           = ${chronicle.logger.base}/logger_1
+chronicle.logger.Logger1.level          = info
 
 # logger : TextLogger
-chronicle.logger.logger.TextLogger.path        = ${chronicle.logger.base}/text
-chronicle.logger.logger.TextLogger.level       = debug
-chronicle.logger.logger.TextLogger.format      = text
-chronicle.logger.logger.TextLogger.dateFormat  = yyyyMMdd-HHmmss-S
+chronicle.logger.TextLogger.path        = ${chronicle.logger.base}/text
+chronicle.logger.TextLogger.level       = debug
+chronicle.logger.TextLogger.format      = text
+chronicle.logger.TextLogger.dateFormat  = yyyyMMdd-HHmmss-S
 ```
 
 

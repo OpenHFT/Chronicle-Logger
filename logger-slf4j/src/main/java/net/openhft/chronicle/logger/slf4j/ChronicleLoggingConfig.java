@@ -41,24 +41,24 @@ import java.util.Properties;
  * chronicle.logger.base = ${java.io.tmpdir}/chronicle/${today}/${pid}
  *
  * # logger : root
- * chronicle.logger.type      = vanilla
- * chronicle.logger.path      = ${chronicle.logger.base}/root
- * chronicle.logger.level     = debug
- * chronicle.logger.shortName = false
- * chronicle.logger.append    = false
- * chronicle.logger.format    = binary
- * chronicle.logger.serialize = false
+ * chronicle.logger.root.type      = vanilla
+ * chronicle.logger.root.path      = ${chronicle.logger.base}/root
+ * chronicle.logger.root.level     = debug
+ * chronicle.logger.root.shortName = false
+ * chronicle.logger.root.append    = false
+ * chronicle.logger.root.format    = binary
+ * chronicle.logger.root.serialize = false
  *
  * # logger : Logger1
- * chronicle.logger.logger.Logger1.path = ${chronicle.logger.base}/logger_1
- * chronicle.logger.logger.Logger1.level = info
+ * chronicle.logger.Logger1.path = ${chronicle.logger.base}/logger_1
+ * chronicle.logger.Logger1.level = info
  */
 public class ChronicleLoggingConfig {
     public static final String KEY_PROPERTIES_FILE = "chronicle.logger.properties";
     public static final String KEY_PREFIX = "chronicle.logger.";
-    public static final String KEY_CFG_PREFIX = "chronicle.logger.cfg.";
-    public static final String KEY_CHRONICLE_TYPE = "chronicle.logger.type";
-    public static final String KEY_LOGER = "logger";
+    public static final String KEY_PREFIX_ROOT = "chronicle.logger.root.";
+    public static final String KEY_CFG_PREFIX = "chronicle.logger.root.cfg.";
+    public static final String KEY_CHRONICLE_TYPE = "chronicle.logger.root.type";
     public static final String KEY_LEVEL = "level";
     public static final String KEY_PATH = "path";
     public static final String KEY_SHORTNAME = "shortName";
@@ -272,7 +272,7 @@ public class ChronicleLoggingConfig {
      * @return
      */
     public String getString(final String shortName) {
-        String name = KEY_PREFIX + shortName;
+        String name = KEY_PREFIX_ROOT + shortName;
         return this.properties.getProperty(name);
     }
 
@@ -281,7 +281,7 @@ public class ChronicleLoggingConfig {
      * @return
      */
     public String getString(final String loggerName, final String shortName) {
-        String key = KEY_PREFIX + KEY_LOGER + "." + loggerName + "." + shortName;
+        String key = KEY_PREFIX  + loggerName + "." + shortName;
         String val = this.properties.getProperty(key);
 
         if (val == null) {

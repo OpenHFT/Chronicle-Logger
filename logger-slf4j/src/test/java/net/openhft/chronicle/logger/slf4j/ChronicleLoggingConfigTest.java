@@ -47,4 +47,23 @@ public class ChronicleLoggingConfigTest {
         assertNotNull("is not a vanilla config", config.getVanillaChronicleConfig());
         assertEquals(ChronicleLoggingConfig.FORMAT_BINARY, config.getString(ChronicleLoggingConfig.KEY_FORMAT));
     }
+
+    @Test
+    public void testLoadFileIndexed() throws Exception {
+        System.setProperty("chronicle.logger.properties", System.getProperty("chronicle.logger.indexed.properties"));
+        assertLoadsValidIndexedConfig();
+    }
+
+    @Test
+    public void testLoadClasspathIndexed() throws Exception {
+        System.setProperty("chronicle.logger.properties", "chronicle.logger.indexed.properties");
+        assertLoadsValidIndexedConfig();
+    }
+
+    private void assertLoadsValidIndexedConfig() {
+        ChronicleLoggingConfig config = ChronicleLoggingConfig.load();
+        assertNotNull("unable to load config", config);
+        assertNotNull("is not a indexed config", config.getIndexedChronicleConfig());
+        assertEquals(ChronicleLoggingConfig.FORMAT_BINARY, config.getString(ChronicleLoggingConfig.KEY_FORMAT));
+    }
 }

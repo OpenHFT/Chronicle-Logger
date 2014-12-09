@@ -182,10 +182,10 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     private ChronicleLogAppender newAppender(String path, String name) throws Exception {
         ChronicleLogAppender appender = appenders.get(path);
         if(appender == null) {
-            String type       = cfg.getString(name, ChronicleLoggingConfig.KEY_TYPE);
-            String format     = cfg.getString(name, ChronicleLoggingConfig.KEY_FORMAT);
-            String binaryMode = cfg.getString(ChronicleLoggingConfig.KEY_BINARY_MODE);
-            Integer stDepth   = cfg.getInteger(ChronicleLoggingConfig.KEY_STACK_TRACE_DEPTH);
+            String  type       = cfg.getString(name, ChronicleLoggingConfig.KEY_TYPE);
+            String  format     = cfg.getString(name, ChronicleLoggingConfig.KEY_FORMAT);
+            String  binaryMode = cfg.getString(ChronicleLoggingConfig.KEY_BINARY_MODE);
+            Integer stDepth    = cfg.getInteger(ChronicleLoggingConfig.KEY_STACK_TRACE_DEPTH);
 
             if (ChronicleLoggingConfig.FORMAT_BINARY.equalsIgnoreCase(format)) {
                 Chronicle chronicle = newChronicle(type, path, name);
