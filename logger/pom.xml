@@ -32,14 +32,6 @@
 
 
     <dependencies>
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>affinity</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle</artifactId>
-        </dependency>
 
         <!-- modules for testing -->
         <dependency>

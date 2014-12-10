@@ -31,21 +31,23 @@
     <artifactId>chronicle-logger-slf4j</artifactId>
     <packaging>bundle</packaging>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>chronicle-logger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>affinity</artifactId>
-        </dependency>
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-logger</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle</artifactId>
-        </dependency>
 
-        <!-- SLF4J -->
+        <!-- slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -143,10 +145,12 @@
             </plugin>
         </plugins>
     </build>
+
     <scm>
         <url>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</url>
         <connection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</connection>
         <developerConnection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</developerConnection>
         <tag>master</tag>
     </scm>
+
 </project>

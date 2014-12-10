@@ -30,20 +30,24 @@
     <name>OpenHFT/Chronicle-Logger/logger-log4j-1</name>
     <artifactId>chronicle-logger-log4j-1</artifactId>
     <packaging>bundle</packaging>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>chronicle-logger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>affinity</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.openhft</groupId>
             <artifactId>chronicle-logger</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle</artifactId>
-        </dependency>
+
+        <!-- slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -56,6 +60,8 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
+
+        <!-- log4j 1.2 -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
