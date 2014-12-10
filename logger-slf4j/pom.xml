@@ -57,30 +57,6 @@
             <artifactId>jul-to-slf4j</artifactId>
         </dependency>
 
-        <!-- modules for testing -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- jmh -->
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-core-benchmarks</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -91,32 +67,6 @@
                 <configuration>
                     <forkCount>0</forkCount>
                     <reuseForks>false</reuseForks>
-                    <systemPropertyVariables>
-                        <chronicle.logger.vanilla.properties>
-                            ${project.basedir}/src/test/resources/chronicle.logger.vanilla.properties
-                        </chronicle.logger.vanilla.properties>
-                        <chronicle.logger.vanilla.perf.properties>
-                            ${project.basedir}/src/test/resources/chronicle.logger.vanilla.perf.properties
-                        </chronicle.logger.vanilla.perf.properties>
-                        <chronicle.logger.vanilla.binary.properties>
-                            ${project.basedir}/src/test/resources/chronicle.logger.vanilla.binary.properties
-                        </chronicle.logger.vanilla.binary.properties>
-                        <chronicle.logger.vanilla.binary.perf.properties>
-                            ${project.basedir}/src/test/resources/chronicle.logger.vanilla.binary.perf.properties
-                        </chronicle.logger.vanilla.binary.perf.properties>
-                        <chronicle.logger.indexed.properties>
-                            ${project.basedir}/src/test/resources/chronicle.logger.indexed.properties
-                        </chronicle.logger.indexed.properties>
-                        <chronicle.logger.indexed.perf.properties>
-                            ${project.basedir}/src/test/resources/chronicle.logger.indexed.perf.properties
-                        </chronicle.logger.indexed.perf.properties>
-                        <chronicle.logger.indexed.binary.properties>
-                            ${project.basedir}/src/test/resources/chronicle.logger.indexed.binary.properties
-                        </chronicle.logger.indexed.binary.properties>
-                        <chronicle.logger.indexed.binary.perf.properties>
-                            ${project.basedir}/src/test/resources/chronicle.logger.indexed.binary.perf.properties
-                        </chronicle.logger.indexed.binary.perf.properties>
-                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>

@@ -51,7 +51,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
     public void setUp() {
         System.setProperty(
             "chronicle.logger.properties",
-            System.getProperty("chronicle.logger.vanilla.properties"));
+            "chronicle.logger.vanilla.properties");
 
         getChronicleLoggerFactory().reload();
     }

@@ -45,7 +45,7 @@ public class Slf4jIndexedChronicleLoggerPerfTest extends Slf4jTestBase {
     public void setUp() {
         System.setProperty(
             "chronicle.logger.properties",
-            System.getProperty("chronicle.logger.indexed.perf.properties"));
+            "chronicle.logger.indexed.perf.properties");
 
         getChronicleLoggerFactory().reload();
     }

@@ -45,7 +45,7 @@ public class Slf4jVanillaChronicleBinaryLoggerPerfTest extends Slf4jTestBase {
     public void setUp() {
         System.setProperty(
             "chronicle.logger.properties",
-            System.getProperty("chronicle.logger.vanilla.perf.properties"));
+            "chronicle.logger.vanilla.perf.properties");
 
         getChronicleLoggerFactory().reload();
     }
