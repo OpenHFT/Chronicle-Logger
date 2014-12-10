@@ -18,14 +18,14 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class ChronicleLoggingConfigTest {
     @Test
+    @Ignore
     public void testLoadNoProperty() throws Exception {
         assertNull("config should not load if no system property set up", ChronicleLoggingConfig.load());
     }
