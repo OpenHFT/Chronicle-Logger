@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 
 public class ChronicleLoggingConfigTest {
     @Test
-    @Ignore
+    @Ignore("Fails in mvn run from IDEA")
     public void testLoadNoProperty() throws Exception {
         assertNull("config should not load if no system property set up", ChronicleLoggingConfig.load());
     }
