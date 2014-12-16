@@ -18,7 +18,6 @@
 
 package net.openhft.chronicle.logger;
 
-
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.lang.io.Bytes;
 
@@ -54,7 +53,6 @@ public final class ChronicleLogHelper {
      */
     public static ExcerptAppender appendStackTraceAsString(
         final ExcerptAppender appender, final Throwable throwable, String separator, int depth) {
-
         final StackTraceElement[] elements = throwable.getStackTrace();
         final int nbElements = (depth == -1) ? elements.length : Math.min(depth,elements.length);
         final int sepLen = separator.length();

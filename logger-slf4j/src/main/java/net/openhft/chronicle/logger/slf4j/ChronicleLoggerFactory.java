@@ -106,7 +106,6 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     //
     // *************************************************************************
 
-
     /**
      * Preload loggers
      */

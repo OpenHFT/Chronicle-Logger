@@ -75,6 +75,7 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
 
         TextIndexedChronicleAppender ba = (TextIndexedChronicleAppender)appender;
         assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
+        assertNotNull(ba.getDateFormat());
     }
 
     // *************************************************************************

@@ -131,7 +131,6 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
                     for(int i=0; i < callerDataLen; i++) {
                         appender.writeObject(callerData[i]);
                     }
-
                 } else {
                     appender.writeInt(0);
                 }

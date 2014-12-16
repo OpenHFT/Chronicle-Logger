@@ -94,7 +94,6 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
         warmup(plogger);
 
         for(int n=0;n<10;n++) {
-
             long cStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {
@@ -136,7 +135,6 @@ public class Log4j1IndexedChroniclePerfTest extends Log4j1TestBase {
         warmup(plogger);
 
         for(int n=0;n<10;n++) {
-
             long cStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {

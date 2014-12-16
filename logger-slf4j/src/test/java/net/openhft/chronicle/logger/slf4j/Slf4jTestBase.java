@@ -44,7 +44,7 @@ public class Slf4jTestBase {
     //
     // *************************************************************************
 
-    protected static ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
+    protected static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     protected static String basePath(String type) {
         return System.getProperty("java.io.tmpdir")

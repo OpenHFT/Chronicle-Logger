@@ -18,7 +18,6 @@
 
 package net.openhft.chronicle.logger.log4j2;
 
-
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLog;
 import org.apache.logging.log4j.core.Filter;
@@ -132,7 +131,6 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
                 for(int i=0; i < callerDataLen; i++) {
                     appender.writeObject(callerData[i]);
                 }
-
             } else {
                 appender.writeInt(0);
             }

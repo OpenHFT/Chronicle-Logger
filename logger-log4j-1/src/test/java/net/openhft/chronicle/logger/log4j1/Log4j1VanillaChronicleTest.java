@@ -73,6 +73,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
 
         TextVanillaChronicleAppender ba = (TextVanillaChronicleAppender)appender;
         assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
+        assertNotNull(ba.getDateFormat());
     }
 
     // *************************************************************************

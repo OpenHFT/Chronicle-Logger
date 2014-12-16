@@ -18,7 +18,6 @@
 
 package net.openhft.chronicle.logger.slf4j.jmh;
 
-
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;

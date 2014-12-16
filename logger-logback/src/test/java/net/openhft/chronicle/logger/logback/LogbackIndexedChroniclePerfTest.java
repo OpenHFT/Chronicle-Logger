@@ -94,7 +94,6 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
         warmup(plogger);
 
         for(int n=0;n<10;n++) {
-
             long cStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {
@@ -133,7 +132,6 @@ public class LogbackIndexedChroniclePerfTest extends LogbackTestBase {
         final String strFmt    = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
 
         for(int n=0;n<10;n++) {
-
             long cStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {

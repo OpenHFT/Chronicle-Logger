@@ -44,7 +44,6 @@ chronicle.logger.TextLogger.format      = text
 chronicle.logger.TextLogger.dateFormat  = yyyyMMdd-HHmmss-S
 ```
 
-
 The configuration of chronicle-slf4j supports variable interpolation where the variables are replaced with the corresponding values from the same configuration file, the system properties and from some predefined values. System properties have the precedence in placeholder replacement so one can override a value via system properties.
 
 Predefined values are:

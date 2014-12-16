@@ -17,7 +17,6 @@
  */
 package net.openhft.chronicle.logger;
 
-
 import net.openhft.lang.model.constraints.NotNull;
 
 public final class ChronicleLog {

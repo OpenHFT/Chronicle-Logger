@@ -71,7 +71,6 @@ public abstract class AbstractChronicleAppender
 
     protected abstract Chronicle createChronicle() throws IOException;
 
-
     protected abstract ExcerptAppender getAppender();
 
     // *************************************************************************

@@ -34,8 +34,8 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
     protected TextChronicleAppender() {
         super();
 
-        this.dateFormat = null;
-        this.timeStampFormatter = null;
+        this.dateFormat = ChronicleLog.DEFAULT_DATE_FORMAT;
+        this.timeStampFormatter = TimeStampFormatter.fromDateFormat(dateFormat);
         this.stackTradeDepth = -1;
     }
 

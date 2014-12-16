@@ -93,7 +93,6 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         assertNotNull(l4);
         assertEquals(l4.getClass(), ChronicleLogger.class);
 
-
         assertEquals(l1, l2);
         assertNotEquals(l1, l3);
         assertNotEquals(l3, l4);
@@ -179,7 +178,6 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
 
-
         tailer.close();
         chronicle.close();
 
@@ -250,6 +248,5 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         chronicle.close();
 
         IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_VANILLA,testId));
-
     }
 }

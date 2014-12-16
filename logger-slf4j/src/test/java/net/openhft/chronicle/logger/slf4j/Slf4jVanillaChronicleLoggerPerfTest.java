@@ -103,7 +103,6 @@ public class Slf4jVanillaChronicleLoggerPerfTest extends Slf4jTestBase {
         warmup(clogger);
 
         for(int n=0;n<10;n++) {
-
             long cStart1 = System.nanoTime();
 
             for (int i = 1; i <= items; i++) {
@@ -111,8 +110,6 @@ public class Slf4jVanillaChronicleLoggerPerfTest extends Slf4jTestBase {
             }
 
             long cEnd1 = System.nanoTime();
-
-
 
             System.out.printf("items=%03d => chronology=%.3f ms, chronology-average=%.3f us\n",
                 items,
