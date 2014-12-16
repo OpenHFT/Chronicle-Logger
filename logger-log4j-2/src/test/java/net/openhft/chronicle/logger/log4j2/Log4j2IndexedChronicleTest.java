@@ -25,17 +25,13 @@ import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.tools.ChronicleTools;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
 
@@ -43,7 +39,6 @@ public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
     //
     // *************************************************************************
 
-    @Ignore
     @Test
     public void testBinaryIndexedChronicleAppenderConfig() throws IOException {
         final String appenderName = "CONF-BINARY-INDEXED-CHRONICLE";
@@ -57,7 +52,6 @@ public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
         assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
     }
 
-    @Ignore
     @Test
     public void testTextIndexedChronicleAppenderConfig() throws IOException {
         final String appenderName = "CONF-TEXT-INDEXED-CHRONICLE";
@@ -69,6 +63,7 @@ public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
 
         final TextIndexedChronicleAppender ba = (TextIndexedChronicleAppender)appender;
         assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
+        assertNotNull(ba.getDateFormat());
     }
 
     // *************************************************************************
