@@ -73,6 +73,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
         TextIndexedChronicleAppender ba = (TextIndexedChronicleAppender)appender;
         assertEquals(128, ba.getChronicleConfig().getIndexFileCapacity());
+        assertNotNull(ba.getDateFormat());
     }
 
     // *************************************************************************
@@ -81,7 +82,7 @@ public class LogbackIndexedChronicleTest extends LogbackTestBase {
 
     @Test
     public void testBinaryAppender1() throws IOException {
-        final String testId = "binary-indexed-chronicle";
+        final String testId    = "binary-indexed-chronicle";
         final String threadId  = testId + "-th";
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);

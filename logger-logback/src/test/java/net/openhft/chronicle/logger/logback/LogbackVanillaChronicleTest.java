@@ -74,6 +74,7 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
 
         TextVanillaChronicleAppender ba = (TextVanillaChronicleAppender)appender;
         assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
+        assertNotNull(ba.getDateFormat());
     }
 
     // *************************************************************************
