@@ -30,6 +30,8 @@ import java.util.Properties;
 
 public abstract class ChronicleLogAppenderConfig {
 
+    public abstract String[] keys();
+
     public abstract Chronicle build(String path)
         throws IOException;
 
@@ -66,7 +68,6 @@ public abstract class ChronicleLogAppenderConfig {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 }

@@ -24,6 +24,23 @@ import java.io.File;
 import java.io.IOException;
 
 public class VanillaLogAppenderConfig extends ChronicleLogAppenderConfig {
+    private static final String[] KEYS = new String[] {
+        //TODO
+        /*
+        private boolean synchronous;
+        private boolean useCheckedExcerpt;
+        private String cycleFormat;
+        private int cycleLength;
+        private int defaultMessageSize;
+        private int dataCacheCapacity;
+        private int indexCacheCapacity;
+        private long indexBlockSize;
+        private long dataBlockSize;
+        private long entriesPerCycle;
+        private boolean cleanupOnClose;
+        */
+    };
+
     private final ChronicleQueueBuilder.VanillaChronicleQueueBuilder builder;
 
     public VanillaLogAppenderConfig() {
@@ -127,27 +144,17 @@ public class VanillaLogAppenderConfig extends ChronicleLogAppenderConfig {
         this.builder.cleanupOnClose(cleanupOnClose);
     }
 
-
     // *************************************************************************
     //
     // *************************************************************************
 
     @Override
-    public Chronicle build(String path) throws IOException {
-        /*
-        private boolean synchronous;
-        private boolean useCheckedExcerpt;
-        private String cycleFormat;
-        private int cycleLength;
-        private int defaultMessageSize;
-        private int dataCacheCapacity;
-        private int indexCacheCapacity;
-        private long indexBlockSize;
-        private long dataBlockSize;
-        private long entriesPerCycle;
-        private boolean cleanupOnClose;
-        */
+    public String[] keys() {
+        return KEYS;
+    }
 
+    @Override
+    public Chronicle build(String path) throws IOException {
         return ChronicleQueueBuilder.vanilla(path)
             .synchronous(this.builder.synchronous())
             .useCheckedExcerpt(this.builder.useCheckedExcerpt())

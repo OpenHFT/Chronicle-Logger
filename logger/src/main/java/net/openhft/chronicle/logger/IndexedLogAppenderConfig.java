@@ -26,6 +26,17 @@ import java.io.File;
 import java.io.IOException;
 
 public class IndexedLogAppenderConfig extends ChronicleLogAppenderConfig {
+
+    private static final String[] KEYS = new String[] {
+        "synchronous",
+        "useCheckedExcerpt",
+        "cacheLineSize",
+        "cacheLineSize",
+        "dataBlockSize",
+        "messageCapacity",
+        "indexBlockSize"
+    };
+
     private final ChronicleQueueBuilder.IndexedChronicleQueueBuilder builder;
 
     public IndexedLogAppenderConfig() {
@@ -89,16 +100,12 @@ public class IndexedLogAppenderConfig extends ChronicleLogAppenderConfig {
     // *************************************************************************
 
     @Override
-    public Chronicle build(String path) throws IOException {
-        /*
-        private boolean synchronous;
-        private boolean useCheckedExcerpt;
-        private int cacheLineSize;
-        private int dataBlockSize;
-        private int messageCapacity;
-        private int indexBlockSize;
-        */
+    public String[] keys() {
+        return KEYS;
+    }
 
+    @Override
+    public Chronicle build(String path) throws IOException {
         return ChronicleQueueBuilder.indexed(path)
             .synchronous(this.builder.synchronous())
             .useCheckedExcerpt(this.builder.useCheckedExcerpt())
