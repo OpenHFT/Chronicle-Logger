@@ -26,14 +26,12 @@ import java.io.IOException;
 
 public class BinaryVanillaChronicleHandler extends BinaryChronicleHandler {
     private ExcerptAppender appender;
-    private Object lock;
     private IndexedLogAppenderConfig config;
 
     public BinaryVanillaChronicleHandler() throws IOException {
         super();
 
         this.appender = null;
-        this.lock = new Object();
         this.config = null;
     }
 

@@ -23,19 +23,14 @@ import net.openhft.chronicle.logger.ChronicleLog;
 
 import java.io.IOException;
 import java.util.logging.ChronicleHandlerConfig;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-public abstract class BinaryChronicleHandler extends Handler {
+public abstract class BinaryChronicleHandler extends AbstractChronicleHandler {
 
-    private String path;
-    private Chronicle chronicle;
     private boolean formatMessage;
 
     protected BinaryChronicleHandler() throws IOException {
-        this.path = null;
-        this.chronicle = null;
         this.formatMessage = false;
 
         configure();
@@ -83,49 +78,15 @@ public abstract class BinaryChronicleHandler extends Handler {
         }
     }
 
-    @Override
-    public void flush() {
-    }
-
-    @Override
-    public void close() throws SecurityException {
-        if(this.chronicle != null) {
-            try {
-                this.chronicle.close();
-            } catch (IOException e) {
-                // Ignore
-            }
-        }
-    }
-
     // *************************************************************************
     //
     // *************************************************************************
-
-    protected abstract Chronicle createChronicle() throws IOException;
-    protected abstract ExcerptAppender getAppender();
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    protected String getPath() {
-        return this.path;
-    }
-
-    protected Chronicle getChronicle() {
-        return this.chronicle;
-    }
 
     protected void configure() throws IOException {
         final ChronicleHandlerConfig cfg = new ChronicleHandlerConfig(getClass());
 
-        this.path = cfg.getString("path", null);
         this.formatMessage = cfg.getBoolean("formatMessage", false);
 
-        setLevel(cfg.getLevel("level", Level.ALL));
-        setFilter(cfg.getFilter("filter", null));
-
-        this.chronicle = createChronicle();
+        super.configure(cfg);
     }
 }
