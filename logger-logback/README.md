@@ -1,29 +1,4 @@
-chronology-logback
-==================
+logger-logback
+==============
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <Pattern>%d %contextName [%t] %level %logger{36} - %msg%n</Pattern>
-        </encoder>
-    </appender>
-
-    <appender name="VANILLA-CHRONICLE" class="net.openhft.chronicle.logger.logback.VanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronicle-logger-logback/vanilla-chronicle</path>
-        <includeCallerData>true</includeCallerData>
-        <includeMappedDiagnosticContext>true</includeMappedDiagnosticContext>
-    </appender>
-
-    <logger name="vanilla-chronicle" level="TRACE" additivity="false">
-        <appender-ref ref="VANILLA-CHRONICLE"/>
-    </logger>
-
-    <root level="DEBUG">
-        <appender-ref ref="STDOUT" />
-    </root>
-
-</configuration>
-``
+For logger-logback configuration please see the [Wiki Page](https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-logback)
