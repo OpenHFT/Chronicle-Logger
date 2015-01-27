@@ -21,11 +21,10 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 
 import java.io.IOException;
-import java.util.logging.ChronicleHandlerConfig;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
-public abstract class AbstractChronicleHandler extends Handler {
+abstract class AbstractChronicleHandler extends Handler {
 
     private String path;
     private Chronicle chronicle;
@@ -67,14 +66,15 @@ public abstract class AbstractChronicleHandler extends Handler {
 
         setLevel(cfg.getLevel("level", Level.ALL));
         setFilter(cfg.getFilter("filter", null));
+    }
 
-        this.chronicle = createChronicle();
+    protected void setChronicle(Chronicle chronicle) {
+        this.chronicle = chronicle;
     }
 
     // *************************************************************************
     //
     // *************************************************************************
 
-    protected abstract Chronicle createChronicle() throws IOException;
     protected abstract ExcerptAppender getAppender();
 }

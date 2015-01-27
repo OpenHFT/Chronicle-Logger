@@ -17,23 +17,18 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLog;
 
 import java.io.IOException;
-import java.util.logging.ChronicleHandlerConfig;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-public abstract class BinaryChronicleHandler extends AbstractChronicleHandler {
+abstract class BinaryChronicleHandler extends AbstractChronicleHandler {
 
     private boolean formatMessage;
 
     protected BinaryChronicleHandler() throws IOException {
         this.formatMessage = false;
-
-        configure();
     }
 
     @Override
@@ -44,7 +39,7 @@ public abstract class BinaryChronicleHandler extends AbstractChronicleHandler {
                 appender.startExcerpt();
                 appender.writeByte(ChronicleLog.VERSION);
                 appender.writeLong(record.getMillis());
-                ChronicleHandleHelper.getLogLevel(record).writeTo(appender);
+                ChronicleHandlerHelper.getLogLevel(record).writeTo(appender);
                 appender.writeUTF("thread-" + record.getThreadID());
                 appender.writeUTF(record.getLoggerName());
 
@@ -82,11 +77,7 @@ public abstract class BinaryChronicleHandler extends AbstractChronicleHandler {
     //
     // *************************************************************************
 
-    protected void configure() throws IOException {
-        final ChronicleHandlerConfig cfg = new ChronicleHandlerConfig(getClass());
-
-        this.formatMessage = cfg.getBoolean("formatMessage", false);
-
-        super.configure(cfg);
+    protected void setFormatMessage(boolean formatMessage) {
+        this.formatMessage = formatMessage;
     }
 }

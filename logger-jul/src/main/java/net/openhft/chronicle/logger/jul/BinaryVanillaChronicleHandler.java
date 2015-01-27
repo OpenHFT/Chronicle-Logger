@@ -17,33 +17,18 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
+import net.openhft.chronicle.logger.ChronicleLogAppenderConfig;
 
 import java.io.IOException;
 
 public class BinaryVanillaChronicleHandler extends BinaryChronicleHandler {
-    private ExcerptAppender appender;
-    private IndexedLogAppenderConfig config;
+    private ChronicleLogAppenderConfig config;
 
     public BinaryVanillaChronicleHandler() throws IOException {
         super();
-
-        this.appender = null;
         this.config = null;
-    }
-
-    @Override
-    protected Chronicle createChronicle() throws IOException {
-        Chronicle chronicle = (this.config != null)
-            ? this.config.build(this.getPath())
-            : ChronicleQueueBuilder.indexed(this.getPath()).build();
-
-        this.appender = chronicle.createAppender();
-
-        return chronicle;
+        this.configure();
     }
 
     @Override
@@ -55,5 +40,19 @@ public class BinaryVanillaChronicleHandler extends BinaryChronicleHandler {
         }
 
         return null;
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    protected void configure() throws IOException {
+        final ChronicleHandlerConfig cfg = new ChronicleHandlerConfig(getClass());
+
+        this.config = cfg.getIndexedAppenderConfig();
+
+        super.configure(cfg);
+        super.setFormatMessage(cfg.getBoolean("formatMessage", false));
+        super.setChronicle(this.config.build(this.getPath()));
     }
 }

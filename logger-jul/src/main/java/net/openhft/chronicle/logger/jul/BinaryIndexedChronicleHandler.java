@@ -17,10 +17,8 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
+import net.openhft.chronicle.logger.ChronicleLogAppenderConfig;
 
 import java.io.IOException;
 import java.util.logging.LogRecord;
@@ -28,7 +26,7 @@ import java.util.logging.LogRecord;
 public class BinaryIndexedChronicleHandler extends BinaryChronicleHandler {
     private ExcerptAppender appender;
     private Object lock;
-    private IndexedLogAppenderConfig config;
+    private ChronicleLogAppenderConfig config;
 
     public BinaryIndexedChronicleHandler() throws IOException {
         super();
@@ -36,6 +34,7 @@ public class BinaryIndexedChronicleHandler extends BinaryChronicleHandler {
         this.appender = null;
         this.lock = new Object();
         this.config = null;
+        this.configure();
     }
 
     @Override
@@ -46,18 +45,21 @@ public class BinaryIndexedChronicleHandler extends BinaryChronicleHandler {
     }
 
     @Override
-    protected Chronicle createChronicle() throws IOException {
-        Chronicle chronicle = (this.config != null)
-            ? this.config.build(this.getPath())
-            : ChronicleQueueBuilder.indexed(this.getPath()).build();
-
-        this.appender = chronicle.createAppender();
-
-        return chronicle;
-    }
-
-    @Override
     protected ExcerptAppender getAppender() {
         return this.appender;
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    protected void configure() throws IOException {
+        final ChronicleHandlerConfig cfg = new ChronicleHandlerConfig(getClass());
+
+        this.config = cfg.getIndexedAppenderConfig();
+
+        super.configure(cfg);
+        super.setFormatMessage(cfg.getBoolean("formatMessage", false));
+        super.setChronicle(this.config.build(this.getPath()));
     }
 }
