@@ -18,17 +18,18 @@
 package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.ExcerptAppender;
+import net.openhft.chronicle.logger.ChronicleLog;
 import net.openhft.chronicle.logger.ChronicleLogAppenderConfig;
 
 import java.io.IOException;
 import java.util.logging.LogRecord;
 
-public class BinaryIndexedChronicleHandler extends BinaryChronicleHandler {
+public class TextIndexedChronicleHandler extends TextChronicleHandler {
     private ExcerptAppender appender;
     private Object lock;
     private ChronicleLogAppenderConfig config;
 
-    public BinaryIndexedChronicleHandler() throws IOException {
+    public TextIndexedChronicleHandler() throws IOException {
         super();
 
         this.appender = null;
@@ -59,7 +60,8 @@ public class BinaryIndexedChronicleHandler extends BinaryChronicleHandler {
         this.config = cfg.getIndexedAppenderConfig();
 
         super.configure(cfg);
-        super.setFormatMessage(cfg.getBoolean("formatMessage", false));
+        super.setDateFormat(cfg.getString("dateFormat", ChronicleLog.DEFAULT_DATE_FORMAT));
+        super.setStackTradeDepth(cfg.getInt("stackTradeDepth", -1));
         super.setChronicle(this.config.build(this.getPath()));
 
         this.appender = getChronicle().createAppender();

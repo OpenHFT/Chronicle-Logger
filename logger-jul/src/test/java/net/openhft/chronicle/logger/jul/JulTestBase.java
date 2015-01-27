@@ -20,6 +20,10 @@ package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleQueueBuilder;
+import net.openhft.chronicle.ExcerptTailer;
+import net.openhft.chronicle.logger.ChronicleLog;
+import net.openhft.chronicle.logger.ChronicleLogEvent;
+import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.Bytes;
 import net.openhft.lang.io.serialization.BytesMarshallable;
@@ -30,12 +34,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class JulTestBase {
 
@@ -189,5 +193,82 @@ public class JulTestBase {
                 this.logger.log(Level.INFO, fmt, new Object[]{i, i * 7L, i / 16.0});
             }
         }
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    protected void testChronicleConfiguration(
+            String testId, Class<? extends Handler> expectedHandlerType) throws IOException {
+
+        setupLogManager(testId);
+        Logger logger = Logger.getLogger(testId);
+
+        assertEquals(Level.INFO, logger.getLevel());
+        assertFalse(logger.getUseParentHandlers());
+        assertNull(logger.getFilter());
+        assertNotNull(logger.getHandlers());
+        assertEquals(1, logger.getHandlers().length);
+
+        assertTrue(logger.getHandlers()[0].getClass() == expectedHandlerType);
+    }
+
+    protected void testBinaryAppender(
+            String testId, Chronicle chronicle) throws IOException {
+
+        final String threadId = "thread-" + Thread.currentThread().getId();
+        final long timestamp = System.currentTimeMillis();
+
+        setupLogManager(testId);
+        final Logger logger = Logger.getLogger(testId);
+
+        for(ChronicleLogLevel level : LOG_LEVELS) {
+            log(logger,level,"level is {}",level);
+        }
+
+        ExcerptTailer tailer = chronicle.createTailer().toStart();
+        ChronicleLogEvent evt = null;
+
+        for(ChronicleLogLevel level : LOG_LEVELS) {
+            assertTrue(tailer.nextIndex());
+
+            evt = ChronicleLogHelper.decodeBinary(tailer);
+            assertNotNull(evt);
+            assertEquals(evt.getVersion(), ChronicleLog.VERSION);
+            assertTrue(evt.getTimeStamp() >= timestamp);
+            assertEquals(level, evt.getLevel());
+            assertEquals(threadId, evt.getThreadName());
+            assertEquals(testId, evt.getLoggerName());
+            assertEquals("level is {}", evt.getMessage());
+            assertNotNull(evt.getArgumentArray());
+            assertEquals(1, evt.getArgumentArray().length);
+            assertEquals(level , evt.getArgumentArray()[0]);
+            assertNull(evt.getThrowable());
+
+            tailer.finish();
+        }
+
+        logger.log(Level.FINE, "Throwable test", new UnsupportedOperationException());
+        logger.log(Level.FINE, "Throwable test", new UnsupportedOperationException("Exception message"));
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronicleLogHelper.decodeBinary(tailer);
+        assertEquals("Throwable test",evt.getMessage());
+        assertNotNull(evt.getThrowable());
+        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+        assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronicleLogHelper.decodeBinary(tailer);
+        assertEquals("Throwable test",evt.getMessage());
+        assertNotNull(evt.getThrowable());
+        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+        assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
+
+        tailer.close();
+
+        chronicle.close();
+        chronicle.clear();
     }
 }

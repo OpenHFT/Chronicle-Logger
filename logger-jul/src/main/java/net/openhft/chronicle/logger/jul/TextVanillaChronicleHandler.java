@@ -18,35 +18,29 @@
 package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.ExcerptAppender;
+import net.openhft.chronicle.logger.ChronicleLog;
 import net.openhft.chronicle.logger.ChronicleLogAppenderConfig;
 
 import java.io.IOException;
-import java.util.logging.LogRecord;
 
-public class BinaryIndexedChronicleHandler extends BinaryChronicleHandler {
-    private ExcerptAppender appender;
-    private Object lock;
+public class TextVanillaChronicleHandler extends TextChronicleHandler {
     private ChronicleLogAppenderConfig config;
 
-    public BinaryIndexedChronicleHandler() throws IOException {
+    public TextVanillaChronicleHandler() throws IOException {
         super();
-
-        this.appender = null;
-        this.lock = new Object();
         this.config = null;
         this.configure();
     }
 
     @Override
-    public void publish(final LogRecord record) {
-        synchronized (this.lock) {
-            super.publish(record);
+    protected ExcerptAppender getAppender()  {
+        try {
+            return getChronicle().createAppender();
+        } catch(IOException e) {
+            e.printStackTrace();
         }
-    }
 
-    @Override
-    protected ExcerptAppender getAppender() {
-        return this.appender;
+        return null;
     }
 
     // *************************************************************************
@@ -56,12 +50,11 @@ public class BinaryIndexedChronicleHandler extends BinaryChronicleHandler {
     protected void configure() throws IOException {
         final ChronicleHandlerConfig cfg = new ChronicleHandlerConfig(getClass());
 
-        this.config = cfg.getIndexedAppenderConfig();
+        this.config = cfg.getVanillaAppenderConfig();
 
         super.configure(cfg);
-        super.setFormatMessage(cfg.getBoolean("formatMessage", false));
+        super.setDateFormat(cfg.getString("dateFormat", ChronicleLog.DEFAULT_DATE_FORMAT));
+        super.setStackTradeDepth(cfg.getInt("stackTradeDepth", -1));
         super.setChronicle(this.config.build(this.getPath()));
-
-        this.appender = getChronicle().createAppender();
     }
 }

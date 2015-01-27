@@ -18,35 +18,17 @@
 
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ExcerptTailer;
-import net.openhft.chronicle.logger.ChronicleLog;
-import net.openhft.chronicle.logger.ChronicleLogEvent;
-import net.openhft.chronicle.logger.ChronicleLogHelper;
-import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.IOTools;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static org.junit.Assert.*;
 
 public class JulVanillaChronicleTest extends JulTestBase{
 
     @Test
-    public void testBinaryVanillaChronicleConfiguration() throws IOException {
-        final String testId = "binary-vanilla-cfg";
-        setupLogManager(testId);
-
-        final Logger logger = Logger.getLogger(testId);
-        assertEquals(Level.INFO, logger.getLevel());
-        assertFalse(logger.getUseParentHandlers());
-        assertNull(logger.getFilter());
-        assertNotNull(logger.getHandlers());
-        assertEquals(1, logger.getHandlers().length);
-        assertTrue(logger.getHandlers()[0] instanceof BinaryVanillaChronicleHandler);
+    public void testVanillaChronicleConfiguration() throws IOException {
+        testChronicleConfiguration("binary-vanilla-cfg", BinaryVanillaChronicleHandler.class);
+        testChronicleConfiguration("text-vanilla-cfg", TextVanillaChronicleHandler.class);
     }
 
     // *************************************************************************
@@ -56,60 +38,8 @@ public class JulVanillaChronicleTest extends JulTestBase{
     @Test
     public void testVanillaBinaryAppender() throws IOException {
         final String testId = "binary-vanilla-chronicle";
-        final String threadId = "thread-" + Thread.currentThread().getId();
-        final long timestamp = System.currentTimeMillis();
-
         IOTools.deleteDir(basePath(testId));
-        setupLogManager(testId);
 
-        final Logger logger = Logger.getLogger(testId);
-
-        for(ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level);
-        }
-
-        Chronicle chronicle = getVanillaChronicle(testId);
-        ExcerptTailer tailer = chronicle.createTailer().toStart();
-        ChronicleLogEvent evt = null;
-
-        for(ChronicleLogLevel level : LOG_LEVELS) {
-            assertTrue(tailer.nextIndex());
-
-            evt = ChronicleLogHelper.decodeBinary(tailer);
-            assertNotNull(evt);
-            assertEquals(evt.getVersion(), ChronicleLog.VERSION);
-            assertTrue(evt.getTimeStamp() >= timestamp);
-            assertEquals(level, evt.getLevel());
-            assertEquals(threadId, evt.getThreadName());
-            assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is {}", evt.getMessage());
-            assertNotNull(evt.getArgumentArray());
-            assertEquals(1, evt.getArgumentArray().length);
-            assertEquals(level , evt.getArgumentArray()[0]);
-            assertNull(evt.getThrowable());
-
-            tailer.finish();
-        }
-
-        logger.log(Level.FINE, "Throwable test", new UnsupportedOperationException());
-        logger.log(Level.FINE, "Throwable test", new UnsupportedOperationException("Exception message"));
-
-        assertTrue(tailer.nextIndex());
-        evt = ChronicleLogHelper.decodeBinary(tailer);
-        assertEquals("Throwable test",evt.getMessage());
-        assertNotNull(evt.getThrowable());
-        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
-
-        assertTrue(tailer.nextIndex());
-        evt = ChronicleLogHelper.decodeBinary(tailer);
-        assertEquals("Throwable test",evt.getMessage());
-        assertNotNull(evt.getThrowable());
-        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
-
-        tailer.close();
-        chronicle.close();
-        chronicle.clear();
+        testBinaryAppender(testId, getVanillaChronicle(testId));
     }
 }

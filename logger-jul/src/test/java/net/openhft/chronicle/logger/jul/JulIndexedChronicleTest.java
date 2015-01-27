@@ -18,28 +18,28 @@
 
 package net.openhft.chronicle.logger.jul;
 
+import net.openhft.chronicle.tools.ChronicleTools;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static org.junit.Assert.*;
 
 public class JulIndexedChronicleTest extends JulTestBase {
 
     @Test
-    public void testBinaryIndexedChronicleConfiguration() throws IOException {
-        final String testId = "binary-indexed-cfg";
-        setupLogManager(testId);
+    public void testIndexedChronicleConfiguration() throws IOException {
+        testChronicleConfiguration("binary-indexed-cfg", BinaryIndexedChronicleHandler.class);
+        testChronicleConfiguration("text-indexed-cfg", TextIndexedChronicleHandler.class);
+    }
 
-        Logger logger = Logger.getLogger("binary-indexed-cfg");
+    // *************************************************************************
+    // BINARY
+    // *************************************************************************
 
-        assertEquals(Level.INFO, logger.getLevel());
-        assertFalse(logger.getUseParentHandlers());
-        assertNull(logger.getFilter());
-        assertNotNull(logger.getHandlers());
-        assertEquals(1, logger.getHandlers().length);
-        assertTrue(logger.getHandlers()[0] instanceof BinaryIndexedChronicleHandler);
+    @Test
+    public void testIndexedBinaryAppender() throws IOException {
+        final String testId = "binary-indexed-chronicle";
+        ChronicleTools.deleteOnExit(basePath(testId));
+
+        testBinaryAppender(testId, getIndexedChronicle(testId));
     }
 }
