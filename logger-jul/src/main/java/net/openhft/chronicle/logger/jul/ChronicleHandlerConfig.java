@@ -22,6 +22,7 @@ import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 
 import java.util.logging.Filter;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
@@ -52,6 +53,10 @@ public class ChronicleHandlerConfig {
 
     public Filter getFilter(String name, Filter defaultValue) {
         return getFilterProperty(this.prefix + "." + name, defaultValue);
+    }
+
+    public Formatter getFormatter(String name, Formatter defaultValue) {
+        return getFormatterProperty(this.prefix + "." + name, defaultValue);
     }
 
     public ChronicleLogAppenderConfig getIndexedAppenderConfig() {
@@ -139,5 +144,21 @@ public class ChronicleHandlerConfig {
         }
         Level l = Level.parse(val.trim());
         return l != null ? l : defaultValue;
+    }
+
+    Formatter getFormatterProperty(String name, Formatter defaultValue) {
+        String val = this.manager.getProperty(name);
+        try {
+            if (val != null) {
+                Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(val);
+                return (Formatter) clz.newInstance();
+            }
+        } catch (Exception ex) {
+            // We got one of a variety of exceptions in creating the
+            // class or creating an instance.
+            // Drop through.
+        }
+        // We got an exception.  Return the defaultValue.
+        return defaultValue;
     }
 }

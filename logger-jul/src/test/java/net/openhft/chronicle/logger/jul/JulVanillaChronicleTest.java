@@ -31,15 +31,19 @@ public class JulVanillaChronicleTest extends JulTestBase{
         testChronicleConfiguration("text-vanilla-cfg", TextVanillaChronicleHandler.class);
     }
 
-    // *************************************************************************
-    // BINARY
-    // *************************************************************************
-
     @Test
     public void testVanillaBinaryAppender() throws IOException {
         final String testId = "binary-vanilla-chronicle";
         IOTools.deleteDir(basePath(testId));
 
         testBinaryAppender(testId, getVanillaChronicle(testId));
+    }
+
+    @Test
+    public void testVanillaTextAppender() throws IOException {
+        final String testId = "text-vanilla-chronicle";
+        IOTools.deleteDir(basePath(testId));
+
+        testTextAppender(testId, getVanillaChronicle(testId));
     }
 }

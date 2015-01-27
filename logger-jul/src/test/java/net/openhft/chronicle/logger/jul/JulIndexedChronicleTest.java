@@ -31,15 +31,19 @@ public class JulIndexedChronicleTest extends JulTestBase {
         testChronicleConfiguration("text-indexed-cfg", TextIndexedChronicleHandler.class);
     }
 
-    // *************************************************************************
-    // BINARY
-    // *************************************************************************
-
     @Test
     public void testIndexedBinaryAppender() throws IOException {
         final String testId = "binary-indexed-chronicle";
         ChronicleTools.deleteOnExit(basePath(testId));
 
         testBinaryAppender(testId, getIndexedChronicle(testId));
+    }
+
+    @Test
+    public void testIndexedTextAppender() throws IOException {
+        final String testId = "text-indexed-chronicle";
+        ChronicleTools.deleteOnExit(basePath(testId));
+
+        testTextAppender(testId, getIndexedChronicle(testId));
     }
 }

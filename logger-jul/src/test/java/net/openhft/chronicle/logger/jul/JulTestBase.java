@@ -271,4 +271,67 @@ public class JulTestBase {
         chronicle.close();
         chronicle.clear();
     }
+
+    protected void testTextAppender(
+            String testId, Chronicle chronicle) throws IOException {
+
+        final String threadId = "thread-" + Thread.currentThread().getId();
+
+        setupLogManager(testId);
+        final Logger logger = Logger.getLogger(testId);
+
+        for(ChronicleLogLevel level : LOG_LEVELS) {
+            log(logger,level,"level is {0}",level);
+        }
+
+        ExcerptTailer     tailer    = chronicle.createTailer().toStart();
+        ChronicleLogEvent evt       = null;
+
+        for(ChronicleLogLevel level : LOG_LEVELS) {
+            assertTrue(tailer.nextIndex());
+
+            evt = ChronicleLogHelper.decodeText(tailer);
+            assertNotNull(evt);
+            assertEquals(level,evt.getLevel());
+            assertEquals(threadId, evt.getThreadName());
+            assertEquals(testId, evt.getLoggerName());
+            assertEquals("level is " + level, evt.getMessage());
+            assertNotNull(evt.getArgumentArray());
+            assertEquals(0, evt.getArgumentArray().length);
+
+            tailer.finish();
+        }
+
+        logger.log(Level.FINE, "Throwable test", new UnsupportedOperationException());
+        logger.log(Level.FINE, "Throwable test", new UnsupportedOperationException("Exception message"));
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronicleLogHelper.decodeText(tailer);
+        assertNotNull(evt);
+        assertEquals(threadId, evt.getThreadName());
+        assertEquals(testId, evt.getLoggerName());
+        assertTrue(evt.getMessage().contains("Throwable test"));
+        assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
+        assertTrue(evt.getMessage().contains(this.getClass().getName()));
+        assertNotNull(evt.getArgumentArray());
+        assertEquals(0, evt.getArgumentArray().length);
+        assertNull(evt.getThrowable());
+
+        assertTrue(tailer.nextIndex());
+        evt = ChronicleLogHelper.decodeText(tailer);assertNotNull(evt);
+        assertEquals(threadId, evt.getThreadName());
+        assertEquals(testId, evt.getLoggerName());
+        assertTrue(evt.getMessage().contains("Throwable test"));
+        assertTrue(evt.getMessage().contains("Exception message"));
+        assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
+        assertTrue(evt.getMessage().contains(this.getClass().getName()));
+        assertNotNull(evt.getArgumentArray());
+        assertEquals(0, evt.getArgumentArray().length);
+        assertNull(evt.getThrowable());
+
+        tailer.close();
+
+        chronicle.close();
+        chronicle.clear();
+    }
 }

@@ -23,6 +23,7 @@ import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.TimeStampFormatter;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.logging.LogRecord;
 
 abstract class TextChronicleHandler extends AbstractChronicleHandler {
@@ -51,10 +52,17 @@ abstract class TextChronicleHandler extends AbstractChronicleHandler {
                 appender.append('|');
                 appender.append(record.getLoggerName());
                 appender.append('|');
-                appender.writeUTF(getFormatter().formatMessage(record));
-                appender.writeStopBit(0);
 
-                Throwable tp = record.getThrown();
+                Object parameters[] = record.getParameters();
+                String format = record.getMessage();
+
+                if (parameters != null && parameters.length > 0) {
+                    format = MessageFormat.format(format, parameters);
+                }
+
+                appender.append(format);
+
+                final Throwable tp = record.getThrown();
                 if (tp != null) {
                     appender.append(" - ");
                     ChronicleLogHelper.appendStackTraceAsString(
