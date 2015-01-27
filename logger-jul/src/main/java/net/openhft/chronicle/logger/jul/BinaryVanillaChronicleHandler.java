@@ -49,7 +49,7 @@ public class BinaryVanillaChronicleHandler extends BinaryChronicleHandler {
     protected void configure() throws IOException {
         final ChronicleHandlerConfig cfg = new ChronicleHandlerConfig(getClass());
 
-        this.config = cfg.getIndexedAppenderConfig();
+        this.config = cfg.getVanillaAppenderConfig();
 
         super.configure(cfg);
         super.setFormatMessage(cfg.getBoolean("formatMessage", false));

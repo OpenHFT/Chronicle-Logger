@@ -20,27 +20,19 @@ package net.openhft.chronicle.logger.jul;
 
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
 
-public class JulConfigurationTest {
+public class JulIndexedChronicleTest extends JulTestBase {
 
     @Test
-    public void testBinaryVanillaChronicleConfiguration() {
-        Logger logger = Logger.getLogger("binary-vanilla-cfg");
+    public void testBinaryIndexedChronicleConfiguration() throws IOException {
+        final String testId = "binary-indexed-cfg";
+        setupLogManager(testId);
 
-        assertEquals(Level.INFO, logger.getLevel());
-        assertFalse(logger.getUseParentHandlers());
-        assertNull(logger.getFilter());
-        assertNotNull(logger.getHandlers());
-        assertEquals(1, logger.getHandlers().length);
-        assertTrue(logger.getHandlers()[0] instanceof BinaryVanillaChronicleHandler);
-    }
-
-    @Test
-    public void testBinaryIndexedChronicleConfiguration() {
         Logger logger = Logger.getLogger("binary-indexed-cfg");
 
         assertEquals(Level.INFO, logger.getLevel());

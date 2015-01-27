@@ -46,6 +46,12 @@
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-logger</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.6</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -57,9 +63,9 @@
                     <forkCount>0</forkCount>
                     <reuseForks>false</reuseForks>
                     <systemPropertyVariables>
-                        <java.util.logging.config.file>
-                            ${project.basedir}/src/test/resources/logging.properties
-                        </java.util.logging.config.file>
+                        <resources.path>
+                            ${project.basedir}/src/test/resources
+                        </resources.path>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
