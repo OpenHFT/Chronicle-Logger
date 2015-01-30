@@ -1,2 +1,0 @@
-chronicle-logger-jul
-====================
