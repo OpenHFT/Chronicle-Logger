@@ -17,53 +17,34 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLog;
 import net.openhft.chronicle.logger.ChronicleLogAppenderConfig;
+import net.openhft.chronicle.logger.ChronicleLogAppenders;
 
 import java.io.IOException;
-import java.util.logging.LogRecord;
+import java.util.logging.Level;
 
-public class TextIndexedChronicleHandler extends TextChronicleHandler {
-    private ExcerptAppender appender;
-    private Object lock;
-    private ChronicleLogAppenderConfig config;
+public class TextIndexedChronicleHandler extends AbstractChronicleHandler {
+
+    private final ChronicleHandlerConfig handlerCfg;
+    private final ChronicleLogAppenderConfig appenderCfg;
+    private final String appenderPath;
 
     public TextIndexedChronicleHandler() throws IOException {
         super();
 
-        this.appender = null;
-        this.lock = new Object();
-        this.config = null;
-        this.configure();
-    }
+        this.handlerCfg = new ChronicleHandlerConfig(getClass());
+        this.appenderCfg = handlerCfg.getIndexedAppenderConfig();
+        this.appenderPath = handlerCfg.getString("path", null);
 
-    @Override
-    public void publish(final LogRecord record) {
-        synchronized (this.lock) {
-            super.publish(record);
-        }
-    }
+        setLevel(handlerCfg.getLevel("level", Level.ALL));
+        setFilter(handlerCfg.getFilter("filter", null));
 
-    @Override
-    protected ExcerptAppender getAppender() {
-        return this.appender;
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    protected void configure() throws IOException {
-        final ChronicleHandlerConfig cfg = new ChronicleHandlerConfig(getClass());
-
-        this.config = cfg.getIndexedAppenderConfig();
-
-        super.configure(cfg);
-        super.setDateFormat(cfg.getString("dateFormat", ChronicleLog.DEFAULT_DATE_FORMAT));
-        super.setStackTradeDepth(cfg.getInt("stackTradeDepth", -1));
-        super.setChronicle(this.config.build(this.getPath()));
-
-        this.appender = getChronicle().createAppender();
+        setAppender(new ChronicleLogAppenders.TextWriter(
+            appenderCfg.build(appenderPath),
+            Formatter.INSTANCE,
+            handlerCfg.getString("dateFormat", ChronicleLog.DEFAULT_DATE_FORMAT),
+            handlerCfg.getInt("stackTradeDepth", -1))
+        );
     }
 }

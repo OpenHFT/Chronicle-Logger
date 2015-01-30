@@ -17,21 +17,23 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ExcerptAppender;
+import net.openhft.chronicle.logger.ChronicleLogAppender;
+import net.openhft.chronicle.logger.ChronicleLogFormatter;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 abstract class AbstractChronicleHandler extends Handler {
 
     private String path;
-    private Chronicle chronicle;
+    private ChronicleLogAppender appender;
 
     protected AbstractChronicleHandler() {
         this.path = null;
-        this.chronicle = null;
+        this.appender = null;
     }
 
     @Override
@@ -40,12 +42,26 @@ abstract class AbstractChronicleHandler extends Handler {
 
     @Override
     public void close() throws SecurityException {
-        if(this.chronicle != null) {
+        if(this.appender != null && this.appender.getChronicle() != null) {
             try {
-                this.chronicle.close();
+                this.appender.getChronicle().close();
             } catch (IOException e) {
                 // Ignore
             }
+        }
+    }
+
+    @Override
+    public void publish(final LogRecord record) {
+        if((appender != null) && isLoggable(record)) {
+            this.appender.log(
+                ChronicleHandlerHelper.getLogLevel(record),
+                record.getMillis(),
+                "thread-" + record.getThreadID(),
+                record.getLoggerName(),
+                record.getMessage(),
+                record.getThrown(),
+                record.getParameters());
         }
     }
 
@@ -53,28 +69,39 @@ abstract class AbstractChronicleHandler extends Handler {
     //
     // *************************************************************************
 
-    protected String getPath() {
-        return this.path;
+    protected ChronicleLogAppender getAppender() {
+        return this.appender;
     }
 
-    protected Chronicle getChronicle() {
-        return this.chronicle;
+    protected void setAppender(ChronicleLogAppender appender) {
+        this.appender = appender;
     }
 
     protected void configure(ChronicleHandlerConfig cfg) throws IOException {
-        this.path = cfg.getString("path", null);
-
         setLevel(cfg.getLevel("level", Level.ALL));
         setFilter(cfg.getFilter("filter", null));
-    }
-
-    protected void setChronicle(Chronicle chronicle) {
-        this.chronicle = chronicle;
     }
 
     // *************************************************************************
     //
     // *************************************************************************
 
-    protected abstract ExcerptAppender getAppender();
+    static class Formatter implements ChronicleLogFormatter {
+        static final Formatter INSTANCE = new Formatter();
+
+        @Override
+        public String format(String message, Object arg1) {
+            return MessageFormat.format(message, arg1);
+        }
+
+        @Override
+        public String format(String message, Object arg1, Object arg2) {
+            return MessageFormat.format(message, arg1, arg2);
+        }
+
+        @Override
+        public String format(String message, Throwable throwable, Object... args) {
+            return MessageFormat.format(message, args);
+        }
+    }
 }

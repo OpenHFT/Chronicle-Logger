@@ -22,14 +22,20 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLogAppender;
+import net.openhft.chronicle.logger.ChronicleLogAppenders;
 import net.openhft.chronicle.logger.ChronicleLogConfig;
+import net.openhft.chronicle.logger.ChronicleLogFormatter;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.helpers.FormattingTuple;
+import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.helpers.NOPLogger;
+import org.slf4j.impl.StaticLoggerBinder;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.Normalizer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -184,20 +190,21 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     private ChronicleLogAppender newAppender(String path, String name) throws Exception {
         ChronicleLogAppender appender = appenders.get(path);
         if(appender == null) {
-            String  type       = cfg.getString(name, ChronicleLogConfig.KEY_TYPE);
-            String  format     = cfg.getString(name, ChronicleLogConfig.KEY_FORMAT);
-            String  binaryMode = cfg.getString(ChronicleLogConfig.KEY_BINARY_MODE);
-            Integer stDepth    = cfg.getInteger(ChronicleLogConfig.KEY_STACK_TRACE_DEPTH);
+            final String  type       = cfg.getString(name, ChronicleLogConfig.KEY_TYPE);
+            final String  format     = cfg.getString(name, ChronicleLogConfig.KEY_FORMAT);
+            final String  binaryMode = cfg.getString(ChronicleLogConfig.KEY_BINARY_MODE);
+            final Integer stDepth    = cfg.getInteger(ChronicleLogConfig.KEY_STACK_TRACE_DEPTH);
 
             if (ChronicleLogConfig.FORMAT_BINARY.equalsIgnoreCase(format)) {
                 Chronicle chronicle = newChronicle(type, path, name);
                 appender = ChronicleLogConfig.BINARY_MODE_SERIALIZED.equalsIgnoreCase(binaryMode)
-                    ? new ChronicleLoggerAppenders.BinaryWriter(chronicle)
-                    : new ChronicleLoggerAppenders.BinaryFormattingWriter(chronicle);
+                    ? new ChronicleLogAppenders.BinaryWriter(chronicle)
+                    : new ChronicleLogAppenders.BinaryFormattingWriter(chronicle, Formatter.INSTANCE);
             } else if (ChronicleLogConfig.FORMAT_TEXT.equalsIgnoreCase(format)) {
-                appender = new ChronicleLoggerAppenders.TextWriter(
+                appender = new ChronicleLogAppenders.TextWriter(
                     newChronicle(type, path, name),
-                    null, // TODO: this.cfg.getString(name, ChronicleLogConfig.KEY_DATE_FORMAT)
+                    Formatter.INSTANCE,
+                    ChronicleLogConfig.DEFAULT_DATE_FORMAT,
                     stDepth
                 );
             }
@@ -206,7 +213,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
                 // If the underlying chronicle is an Indexed chronicle, wrap the appender
                 // so it is thread safe (synchronized)
                 if (appender.getChronicle() instanceof IndexedChronicle) {
-                    appender = new ChronicleLoggerAppenders.SynchronizedWriter(appender);
+                    appender = new ChronicleLogAppenders.SynchronizedWriter(appender);
                 }
             }
 
@@ -264,6 +271,29 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
         }
 
         return this.cfg.getIndexedChronicleConfig().build(path);
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    static class Formatter implements ChronicleLogFormatter {
+        static final Formatter INSTANCE = new Formatter();
+
+        @Override
+        public String format(String message, Object arg1) {
+            return MessageFormatter.format(message, arg1).getMessage();
+        }
+
+        @Override
+        public String format(String message, Object arg1, Object arg2) {
+            return MessageFormatter.format(message, arg1, arg2).getMessage();
+        }
+
+        @Override
+        public String format(String message, Throwable throwable, Object... args) {
+            return new FormattingTuple(message, args, throwable).getMessage();
+        }
     }
 }
 

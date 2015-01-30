@@ -22,45 +22,16 @@ import net.openhft.chronicle.Chronicle;
 
 import java.io.Closeable;
 
-/**
- *
- */
 public interface ChronicleLogAppender extends Closeable {
-    /**
-     * @return
-     */
+
     public Chronicle getChronicle();
 
-    /**
-     * @param level
-     * @param name
-     * @param message
-     * @param arg1
-     */
-    public void log(ChronicleLogLevel level, String name, String message, Object arg1);
+    public void log(ChronicleLogLevel level, long timestamp, Thread thread, String name, String message, Object arg1);
+    public void log(ChronicleLogLevel level, long timestamp, String threadName, String name, String message, Object arg1);
 
-    /**
-     * @param level
-     * @param name
-     * @param message
-     * @param arg1
-     * @param arg2
-     */
-    public void log(ChronicleLogLevel level, String name, String message, Object arg1, Object arg2);
+    public void log(ChronicleLogLevel level, long timestamp, Thread thread, String name, String message, Object arg1, Object arg2);
+    public void log(ChronicleLogLevel level, long timestamp, String threadName, String name, String message, Object arg1, Object arg2);
 
-    /**
-     * @param level
-     * @param name
-     * @param message
-     * @param args
-     */
-    public void log(ChronicleLogLevel level, String name, String message, Object... args);
-
-    /**
-     * @param level
-     * @param name
-     * @param message
-     * @param throwable
-     */
-    public void log(ChronicleLogLevel level, String name, String message, Throwable throwable);
+    public void log(ChronicleLogLevel level, long timestamp, Thread thread, String name, String message, Throwable throwable, Object... args);
+    public void log(ChronicleLogLevel level, long timestamp, String threadName, String name, String message, Throwable throwable, Object... args);
 }

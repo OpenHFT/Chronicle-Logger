@@ -251,25 +251,25 @@ public class ChronicleLogger extends MarkerIgnoringBase {
 
     private void append(ChronicleLogLevel level, String message, Object arg1) {
         if(level.isHigherOrEqualTo(this.level)) {
-            this.writer.log(level, this.name, message, arg1);
+            this.writer.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, arg1);
         }
     }
 
     private void append(ChronicleLogLevel level, String message, Object arg1, Object arg2) {
         if(level.isHigherOrEqualTo(this.level)) {
-            this.writer.log(level, this.name, message, arg1, arg2);
+            this.writer.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, arg1, arg2);
         }
     }
 
     private void append(ChronicleLogLevel level, String message, Object... args) {
         if(level.isHigherOrEqualTo(this.level)) {
-            this.writer.log(level, this.name, message, args);
+            this.writer.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, null, args);
         }
     }
 
     private void append(ChronicleLogLevel level, String message, Throwable throwable) {
         if(level.isHigherOrEqualTo(this.level)) {
-            this.writer.log(level, this.name, message, throwable);
+            this.writer.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, throwable, null);
         }
     }
 }

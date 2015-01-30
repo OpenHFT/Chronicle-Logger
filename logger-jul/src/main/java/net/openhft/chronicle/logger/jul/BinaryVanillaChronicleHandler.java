@@ -17,42 +17,35 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLogAppenderConfig;
+import net.openhft.chronicle.logger.ChronicleLogAppenders;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
-public class BinaryVanillaChronicleHandler extends BinaryChronicleHandler {
-    private ChronicleLogAppenderConfig config;
+public class BinaryVanillaChronicleHandler extends AbstractChronicleHandler {
+
+    private final ChronicleHandlerConfig handlerCfg;
+    private final ChronicleLogAppenderConfig appenderCfg;
+    private final String appenderPath;
 
     public BinaryVanillaChronicleHandler() throws IOException {
         super();
-        this.config = null;
-        this.configure();
-    }
 
-    @Override
-    protected ExcerptAppender getAppender()  {
-        try {
-            return getChronicle().createAppender();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+        this.handlerCfg = new ChronicleHandlerConfig(getClass());
+        this.appenderCfg = handlerCfg.getVanillaAppenderConfig();
+        this.appenderPath = handlerCfg.getString("path", null);
 
-        return null;
-    }
+        setLevel(handlerCfg.getLevel("level", Level.ALL));
+        setFilter(handlerCfg.getFilter("filter", null));
 
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    protected void configure() throws IOException {
-        final ChronicleHandlerConfig cfg = new ChronicleHandlerConfig(getClass());
-
-        this.config = cfg.getVanillaAppenderConfig();
-
-        super.configure(cfg);
-        super.setFormatMessage(cfg.getBoolean("formatMessage", false));
-        super.setChronicle(this.config.build(this.getPath()));
+        setAppender(
+            handlerCfg.getBoolean("formatMessage", false)
+                ? new ChronicleLogAppenders.BinaryFormattingWriter(
+                    appenderCfg.build(appenderPath),
+                    Formatter.INSTANCE)
+                : new ChronicleLogAppenders.BinaryWriter(
+                    appenderCfg.build(appenderPath))
+        );
     }
 }

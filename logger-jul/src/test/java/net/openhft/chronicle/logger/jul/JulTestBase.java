@@ -224,7 +224,7 @@ public class JulTestBase {
         final Logger logger = Logger.getLogger(testId);
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level);
+            log(logger,level,"level is {0}",level);
         }
 
         ExcerptTailer tailer = chronicle.createTailer().toStart();
@@ -240,7 +240,7 @@ public class JulTestBase {
             assertEquals(level, evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
             assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is {}", evt.getMessage());
+            assertEquals("level is {0}", evt.getMessage());
             assertNotNull(evt.getArgumentArray());
             assertEquals(1, evt.getArgumentArray().length);
             assertEquals(level , evt.getArgumentArray()[0]);

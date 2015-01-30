@@ -22,6 +22,7 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.logger.ChronicleLog;
+import net.openhft.chronicle.logger.ChronicleLogAppenders;
 import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
@@ -104,24 +105,24 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         assertEquals(cl1.getLevel(), ChronicleLogLevel.DEBUG);
         assertEquals(cl1.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
         assertTrue(cl1.getWriter().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl1.getWriter() instanceof ChronicleLoggerAppenders.SynchronizedWriter);
+        assertTrue(cl1.getWriter() instanceof ChronicleLogAppenders.SynchronizedWriter);
 
         ChronicleLogger cl2 = (ChronicleLogger) l2;
         assertEquals(cl2.getLevel(), ChronicleLogLevel.DEBUG);
         assertEquals(cl2.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
         assertTrue(cl2.getWriter().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl2.getWriter() instanceof ChronicleLoggerAppenders.SynchronizedWriter);
+        assertTrue(cl2.getWriter() instanceof ChronicleLogAppenders.SynchronizedWriter);
 
         ChronicleLogger cl3 = (ChronicleLogger) l3;
         assertEquals(cl3.getLevel(), ChronicleLogLevel.INFO);
         assertTrue(cl3.getWriter().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl3.getWriter() instanceof ChronicleLoggerAppenders.SynchronizedWriter);
+        assertTrue(cl3.getWriter() instanceof ChronicleLogAppenders.SynchronizedWriter);
         assertEquals(cl3.getName(), "logger_1");
 
         ChronicleLogger cl4 = (ChronicleLogger) l4;
         assertEquals(cl4.getLevel(), ChronicleLogLevel.DEBUG);
         assertTrue(cl4.getWriter().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl4.getWriter() instanceof ChronicleLoggerAppenders.SynchronizedWriter);
+        assertTrue(cl4.getWriter() instanceof ChronicleLogAppenders.SynchronizedWriter);
         assertEquals(cl4.getName(), "readwrite");
     }
 
@@ -140,11 +141,11 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level);
+            log(logger,level,"level is {}", level);
         }
 
-        Chronicle          chronicle = getIndexedChronicle(ChronicleLogConfig.TYPE_INDEXED,testId);
-        ExcerptTailer      tailer    = chronicle.createTailer().toStart();
+        Chronicle         chronicle = getIndexedChronicle(ChronicleLogConfig.TYPE_INDEXED,testId);
+        ExcerptTailer     tailer    = chronicle.createTailer().toStart();
         ChronicleLogEvent evt       = null;
 
         for(ChronicleLogLevel level : LOG_LEVELS) {

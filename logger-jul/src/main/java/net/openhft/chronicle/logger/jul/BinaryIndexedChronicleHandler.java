@@ -17,51 +17,37 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLogAppenderConfig;
+import net.openhft.chronicle.logger.ChronicleLogAppenders;
 
 import java.io.IOException;
-import java.util.logging.LogRecord;
+import java.util.logging.Level;
 
-public class BinaryIndexedChronicleHandler extends BinaryChronicleHandler {
-    private ExcerptAppender appender;
-    private Object lock;
-    private ChronicleLogAppenderConfig config;
+public class BinaryIndexedChronicleHandler extends AbstractChronicleHandler {
+
+    private final ChronicleHandlerConfig handlerCfg;
+    private final ChronicleLogAppenderConfig appenderCfg;
+    private final String appenderPath;
 
     public BinaryIndexedChronicleHandler() throws IOException {
         super();
 
-        this.appender = null;
-        this.lock = new Object();
-        this.config = null;
-        this.configure();
-    }
+        this.handlerCfg = new ChronicleHandlerConfig(getClass());
+        this.appenderCfg = handlerCfg.getIndexedAppenderConfig();
+        this.appenderPath = handlerCfg.getString("path", null);
 
-    @Override
-    public void publish(final LogRecord record) {
-        synchronized (this.lock) {
-            super.publish(record);
+        setLevel(handlerCfg.getLevel("level", Level.ALL));
+        setFilter(handlerCfg.getFilter("filter", null));
+
+        if(handlerCfg.getBoolean("formatMessage", false)) {
+            setAppender(new ChronicleLogAppenders.BinaryFormattingWriter(
+                appenderCfg.build(appenderPath),
+                Formatter.INSTANCE)
+            );
+        } else {
+            setAppender(new ChronicleLogAppenders.BinaryWriter(
+                appenderCfg.build(appenderPath))
+            );
         }
-    }
-
-    @Override
-    protected ExcerptAppender getAppender() {
-        return this.appender;
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    protected void configure() throws IOException {
-        final ChronicleHandlerConfig cfg = new ChronicleHandlerConfig(getClass());
-
-        this.config = cfg.getIndexedAppenderConfig();
-
-        super.configure(cfg);
-        super.setFormatMessage(cfg.getBoolean("formatMessage", false));
-        super.setChronicle(this.config.build(this.getPath()));
-
-        this.appender = getChronicle().createAppender();
     }
 }
