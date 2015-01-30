@@ -95,7 +95,6 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
     //
     // *************************************************************************
 
-    @Ignore("Fails reading MyMarshallableData")
     @Test
     public void testLogging1() throws IOException {
         final String theradName = "th-test-binary-logging-1";
@@ -107,8 +106,8 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         final Logger l = LoggerFactory.getLogger(loggerName);
         l.debug("data {}, {}",
-            new MySerializableData("a Serializable object"),
-            new MyMarshallableData("a Marshallable object")
+            new MyMarshallableData("a Marshallable object 1"),
+            new MyMarshallableData("a Marshallable object 2")
         );
 
         Chronicle reader = getVanillaChronicle(loggerName);
@@ -126,15 +125,15 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
         assertNotNull(evt.getArgumentArray());
         assertEquals(2, evt.getArgumentArray().length);
 
-        Object serializableObject = evt.getArgumentArray()[0];
-        assertNotNull(serializableObject);
-        assertTrue(serializableObject instanceof MySerializableData);
-        assertEquals(serializableObject.toString(), "a Serializable object");
+        Object marshallableObject1 = evt.getArgumentArray()[0];
+        assertNotNull(marshallableObject1);
+        assertTrue(marshallableObject1 instanceof MyMarshallableData);
+        assertEquals(marshallableObject1.toString(), "a Marshallable object 1");
 
-        Object marshallableObject = evt.getArgumentArray()[1];
-        assertNotNull(marshallableObject);
-        assertTrue(marshallableObject instanceof MyMarshallableData);
-        assertEquals(marshallableObject.toString(), "a Marshallable object");
+        Object marshallableObject2 = evt.getArgumentArray()[1];
+        assertNotNull(marshallableObject2);
+        assertTrue(marshallableObject2 instanceof MyMarshallableData);
+        assertEquals(marshallableObject2.toString(), "a Marshallable object 2");
 
         tailer.close();
         reader.close();
