@@ -39,13 +39,8 @@ public class BinaryVanillaChronicleHandler extends AbstractChronicleHandler {
         setLevel(handlerCfg.getLevel("level", Level.ALL));
         setFilter(handlerCfg.getFilter("filter", null));
 
-        setAppender(
-            handlerCfg.getBoolean("formatMessage", false)
-                ? new ChronicleLogAppenders.BinaryFormattingWriter(
-                    appenderCfg.build(appenderPath),
-                    Formatter.INSTANCE)
-                : new ChronicleLogAppenders.BinaryWriter(
-                    appenderCfg.build(appenderPath))
+        setAppender(new ChronicleLogAppenders.BinaryWriter(
+            appenderCfg.build(appenderPath))
         );
     }
 }

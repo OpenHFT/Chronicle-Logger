@@ -26,6 +26,8 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
+import static net.openhft.chronicle.logger.ChronicleLogConfig.*;
+
 public class ChronicleHandlerConfig {
     private final LogManager manager;
     private final String prefix;
@@ -92,11 +94,12 @@ public class ChronicleHandlerConfig {
         if (val == null) {
             return defaultValue;
         }
-        return val.trim();
+
+        return resolvePlaceholder(val.trim());
     }
 
     int getIntProperty(String name, int defaultValue) {
-        String val = this.manager.getProperty(name);
+        String val = getStringProperty(name, null);
         if (val == null) {
             return defaultValue;
         }
@@ -108,21 +111,24 @@ public class ChronicleHandlerConfig {
     }
 
     boolean getBooleanProperty(String name, boolean defaultValue) {
-        String val = this.manager.getProperty(name);
+        String val = getStringProperty(name, null);
         if (val == null) {
             return defaultValue;
         }
+
         val = val.toLowerCase();
         if (val.equals("true") || val.equals("1")) {
             return true;
         } else if (val.equals("false") || val.equals("0")) {
             return false;
         }
+
         return defaultValue;
     }
 
     Filter getFilterProperty(String name, Filter defaultValue) {
-        String val = this.manager.getProperty(name);
+        String val = getStringProperty(name, null);
+
         try {
             if (val != null) {
                 Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(val);
@@ -138,7 +144,8 @@ public class ChronicleHandlerConfig {
     }
 
     Level getLevelProperty(String name, Level defaultValue) {
-        String val = this.manager.getProperty(name);
+        String val = getStringProperty(name, null);
+
         if (val == null) {
             return defaultValue;
         }
@@ -147,7 +154,8 @@ public class ChronicleHandlerConfig {
     }
 
     Formatter getFormatterProperty(String name, Formatter defaultValue) {
-        String val = this.manager.getProperty(name);
+        String val = getStringProperty(name, null);
+
         try {
             if (val != null) {
                 Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(val);
@@ -160,5 +168,34 @@ public class ChronicleHandlerConfig {
         }
         // We got an exception.  Return the defaultValue.
         return defaultValue;
+    }
+
+    private String resolvePlaceholder(String placeholder) {
+        int startIndex = 0;
+        int endIndex = 0;
+
+        do {
+            startIndex = placeholder.indexOf(PLACEHOLDER_START, endIndex);
+            if (startIndex != -1) {
+                endIndex = placeholder.indexOf(PLACEHOLDER_END, startIndex);
+                if (endIndex != -1) {
+                    String envKey = placeholder.substring(startIndex + 2, endIndex);
+                    String newVal = null;
+                    if (System.getProperties().containsKey(envKey)) {
+                        newVal = System.getProperties().getProperty(envKey);
+                    }
+
+                    if (newVal != null) {
+                        placeholder = placeholder.replace(
+                            PLACEHOLDER_START + envKey + PLACEHOLDER_END, newVal
+                        );
+
+                        endIndex += newVal.length() - envKey.length() + 3;
+                    }
+                }
+            }
+        } while (startIndex != -1 && endIndex != -1 && endIndex < placeholder.length());
+
+        return placeholder;
     }
 }

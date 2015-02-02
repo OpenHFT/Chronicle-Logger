@@ -90,16 +90,6 @@ abstract class AbstractChronicleHandler extends Handler {
         static final Formatter INSTANCE = new Formatter();
 
         @Override
-        public String format(String message, Object arg1) {
-            return MessageFormat.format(message, arg1);
-        }
-
-        @Override
-        public String format(String message, Object arg1, Object arg2) {
-            return MessageFormat.format(message, arg1, arg2);
-        }
-
-        @Override
         public String format(String message, Throwable throwable, Object... args) {
             return MessageFormat.format(message, args);
         }

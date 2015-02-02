@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -49,7 +48,7 @@ public class Slf4jTestBase {
     protected static String basePath(String type) {
         return System.getProperty("java.io.tmpdir")
                 + System.getProperty("file.separator")
-                + "chronology-slf4j"
+                + "chronicle-slf4j"
                 + System.getProperty("file.separator")
                 + type
                 + System.getProperty("file.separator")
