@@ -20,22 +20,14 @@ package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.IndexedChronicle;
-import net.openhft.chronicle.VanillaChronicle;
-import net.openhft.chronicle.logger.ChronicleLogAppender;
-import net.openhft.chronicle.logger.ChronicleLogAppenders;
-import net.openhft.chronicle.logger.ChronicleLogConfig;
-import net.openhft.chronicle.logger.ChronicleLogFormatter;
-import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.*;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.helpers.NOPLogger;
-import org.slf4j.impl.StaticLoggerBinder;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.Normalizer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -95,7 +87,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             return doGetLogger(name);
         } catch(Exception e) {
             System.err.println(
-                new StringBuilder("Unable to inzialize chroncile-slf4j ")
+                new StringBuilder("Unable to inzialize chronicle-slf4j ")
                     .append("(")
                     .append(name)
                     .append(")")

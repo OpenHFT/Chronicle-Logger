@@ -22,10 +22,7 @@ import net.openhft.chronicle.logger.ChronicleLogAppender;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.helpers.MarkerIgnoringBase;
 
-/**
- *
- */
-public class ChronicleLogger extends MarkerIgnoringBase {
+class ChronicleLogger extends MarkerIgnoringBase {
 
     private final ChronicleLogAppender writer;
     private final ChronicleLogLevel level;

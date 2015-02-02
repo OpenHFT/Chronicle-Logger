@@ -151,7 +151,7 @@ public class ChronicleLogConfig {
         String cfgPath = System.getProperty(KEY_PROPERTIES_FILE);
         if (cfgPath == null) {
             System.err.printf(
-                "Unable to configure chroncile-slf4j, property %s is not defined\n",
+                "Unable to configure chronicle-logger, property %s is not defined\n",
                 KEY_PROPERTIES_FILE);
 
             return null;
