@@ -127,4 +127,15 @@ public class TimeStampFormatter {
         ms.format.format(date, sb, unusedFieldPosition);
         appender.append(sb);
     }
+
+    public String format(long timeStamp) {
+        Mutables ms = mutablesCache.get();
+        StringBuffer sb = ms.sb;
+        sb.setLength(0);
+        Date date = ms.date;
+        date.setTime(timeStamp);
+        ms.format.format(date, sb, unusedFieldPosition);
+
+        return sb.toString();
+    }
 }

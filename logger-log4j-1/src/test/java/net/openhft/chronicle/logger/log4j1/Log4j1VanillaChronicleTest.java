@@ -81,7 +81,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
     // *************************************************************************
 
     @Test
-    public void testAppender() throws IOException {
+    public void testVanillaBinaryAppender() throws IOException {
         final String testId    = "binary-vanilla-chronicle";
         final String threadId  = testId + "-th";
         final long   timestamp = System.currentTimeMillis();
@@ -138,7 +138,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
     }
 
     @Test
-    public void testTextAppender1() throws IOException {
+    public void testVanillaTextAppender() throws IOException {
         final String testId    = "text-vanilla-chronicle";
         final String threadId  = testId + "-th";
         final Logger logger    = LoggerFactory.getLogger(testId);

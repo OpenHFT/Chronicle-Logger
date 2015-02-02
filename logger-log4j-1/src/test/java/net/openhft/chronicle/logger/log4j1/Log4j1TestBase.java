@@ -47,8 +47,8 @@ public class Log4j1TestBase {
 
     protected static String rootPath() {
         return System.getProperty("java.io.tmpdir")
-                + File.separator
-                + "chronology-log4j1";
+                + System.getProperty("file.separator")
+                + "chronicle-log4j1";
     }
 
     protected static String basePath(String type) {

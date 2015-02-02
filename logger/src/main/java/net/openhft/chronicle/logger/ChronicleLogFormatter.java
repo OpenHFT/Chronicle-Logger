@@ -18,7 +18,5 @@
 package net.openhft.chronicle.logger;
 
 public interface ChronicleLogFormatter {
-    public String format(String message, Object arg1);
-    public String format(String message, Object arg1, Object arg2);
     public String format(String message, Throwable throwable, Object... args);
 }

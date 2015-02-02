@@ -124,7 +124,10 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     public synchronized void shutdown() {
         for (ChronicleLogAppender appender : this.appenders.values()) {
             try {
-                appender.getChronicle().close();
+                Chronicle chronicle = appender.getChronicle();
+                if(chronicle != null) {
+                    chronicle.close();
+                }
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
@@ -190,22 +193,27 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     private ChronicleLogAppender newAppender(String path, String name) throws Exception {
         ChronicleLogAppender appender = appenders.get(path);
         if(appender == null) {
-            final String  type       = cfg.getString(name, ChronicleLogConfig.KEY_TYPE);
-            final String  format     = cfg.getString(name, ChronicleLogConfig.KEY_FORMAT);
-            final String  binaryMode = cfg.getString(ChronicleLogConfig.KEY_BINARY_MODE);
-            final Integer stDepth    = cfg.getInteger(ChronicleLogConfig.KEY_STACK_TRACE_DEPTH);
+            final String  type    = cfg.getString(name, ChronicleLogConfig.KEY_TYPE);
+            final String  format  = cfg.getString(name, ChronicleLogConfig.KEY_FORMAT);
+            final Integer stDepth = cfg.getInteger(ChronicleLogConfig.KEY_STACK_TRACE_DEPTH);
 
-            if (ChronicleLogConfig.FORMAT_BINARY.equalsIgnoreCase(format)) {
-                Chronicle chronicle = newChronicle(type, path, name);
-                appender = ChronicleLogConfig.BINARY_MODE_SERIALIZED.equalsIgnoreCase(binaryMode)
-                    ? new ChronicleLogAppenders.BinaryWriter(chronicle)
-                    : new ChronicleLogAppenders.BinaryFormattingWriter(chronicle, Formatter.INSTANCE);
-            } else if (ChronicleLogConfig.FORMAT_TEXT.equalsIgnoreCase(format)) {
-                appender = new ChronicleLogAppenders.TextWriter(
-                    newChronicle(type, path, name),
+            if(!name.startsWith("net.openhft")) {
+                if (ChronicleLogConfig.FORMAT_BINARY.equalsIgnoreCase(format)) {
+                    appender = new ChronicleLogAppenders.BinaryWriter(
+                        newChronicle(type, path, name)
+                    );
+                } else if (ChronicleLogConfig.FORMAT_TEXT.equalsIgnoreCase(format)) {
+                    appender = new ChronicleLogAppenders.TextWriter(
+                        newChronicle(type, path, name),
+                        Formatter.INSTANCE,
+                        ChronicleLogConfig.DEFAULT_DATE_FORMAT,
+                        stDepth
+                    );
+                }
+            } else {
+                appender = new ChronicleLogAppenders.SimpleWriter(
                     Formatter.INSTANCE,
-                    ChronicleLogConfig.DEFAULT_DATE_FORMAT,
-                    stDepth
+                    System.out
                 );
             }
 
@@ -281,18 +289,8 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
         static final Formatter INSTANCE = new Formatter();
 
         @Override
-        public String format(String message, Object arg1) {
-            return MessageFormatter.format(message, arg1).getMessage();
-        }
-
-        @Override
-        public String format(String message, Object arg1, Object arg2) {
-            return MessageFormatter.format(message, arg1, arg2).getMessage();
-        }
-
-        @Override
         public String format(String message, Throwable throwable, Object... args) {
-            return new FormattingTuple(message, args, throwable).getMessage();
+            return MessageFormatter.arrayFormat(message, args).getMessage();
         }
     }
 }

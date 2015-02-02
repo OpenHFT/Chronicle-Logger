@@ -78,7 +78,7 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
 
     @Test
     public void testLogger() {
-        Logger logger = LoggerFactory.getLogger(Slf4jVanillaChronicleBinaryLoggerTest.class);
+        Logger logger = LoggerFactory.getLogger("slf4j-vanilla-binary-logger");
 
         assertNotNull(logger);
         assertEquals(logger.getClass(), ChronicleLogger.class);
@@ -86,7 +86,7 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
         ChronicleLogger cl = (ChronicleLogger) logger;
 
         assertEquals(cl.getLevel(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl.getName(), Slf4jVanillaChronicleBinaryLoggerTest.class.getName());
+        assertEquals(cl.getName(), "slf4j-vanilla-binary-logger");
         assertTrue(cl.getWriter() instanceof ChronicleLogAppenders.BinaryWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof VanillaChronicle);
     }

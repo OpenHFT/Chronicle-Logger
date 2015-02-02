@@ -48,29 +48,29 @@ public class Slf4jTestBase {
 
     protected static String basePath(String type) {
         return System.getProperty("java.io.tmpdir")
-                + File.separator
+                + System.getProperty("file.separator")
                 + "chronology-slf4j"
-                + File.separator
+                + System.getProperty("file.separator")
                 + type
-                + File.separator
+                + System.getProperty("file.separator")
                 + new SimpleDateFormat("yyyyMMdd").format(new Date());
     }
 
     protected static String basePath(String type, String loggerName) {
         return basePath(type)
-                + File.separator
+                + System.getProperty("file.separator")
                 + loggerName;
     }
 
     protected static String indexedBasePath(String loggerName) {
         return basePath(ChronicleLogConfig.TYPE_INDEXED)
-                + File.separator
+                + System.getProperty("file.separator")
                 + loggerName;
     }
 
     protected static String vanillaBasePath(String loggerName) {
         return basePath(ChronicleLogConfig.TYPE_VANILLA)
-                + File.separator
+                + System.getProperty("file.separator")
                 + loggerName;
     }
 

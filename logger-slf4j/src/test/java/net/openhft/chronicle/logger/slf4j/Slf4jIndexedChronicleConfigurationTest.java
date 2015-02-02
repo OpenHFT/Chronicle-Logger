@@ -43,9 +43,6 @@ public class Slf4jIndexedChronicleConfigurationTest extends Slf4jTestBase {
             ChronicleLogConfig.TYPE_INDEXED,
             cfg.getString(ChronicleLogConfig.KEY_TYPE));
         assertEquals(
-            ChronicleLogConfig.BINARY_MODE_FORMATTED,
-            cfg.getString(ChronicleLogConfig.KEY_BINARY_MODE));
-        assertEquals(
             ChronicleLogLevel.DEBUG.toString(),
             cfg.getString(ChronicleLogConfig.KEY_LEVEL).toUpperCase());
         assertEquals(

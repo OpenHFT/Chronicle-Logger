@@ -52,8 +52,8 @@ public class LogbackTestBase {
 
     protected static String rootPath() {
         return System.getProperty("java.io.tmpdir")
-                + File.separator
-                + "chronology-logback";
+                + System.getProperty("file.separator")
+                + "chronicle-logback";
     }
 
     protected static String basePath(String type) {

@@ -30,7 +30,7 @@
 
         <RandomAccessFile
                 name           = "PERF-PLAIN-VANILLA"
-                fileName       = "logs/$${sys:java.io.tmpdir}/chronology-log4j2/perf-plain-vanilla.log"
+                fileName       = "${sys:java.io.tmpdir}/chronicle-log4j2/perf-plain-vanilla.log"
                 immediateFlush = "false"
                 append         = "false">
             <PatternLayout>
@@ -40,7 +40,7 @@
 
         <RandomAccessFile
                 name           = "PERF-PLAIN-INDEXED"
-                fileName       = "logs/$${sys:java.io.tmpdir}/chronology-log4j2/perf-plain-indexed.log"
+                fileName       = "${sys:java.io.tmpdir}/chronicle-log4j2/perf-plain-indexed.log"
                 immediateFlush = "false"
                 append         = "false">
             <PatternLayout>
@@ -53,8 +53,7 @@
         <!-- *************************************************************** -->
 
         <BinaryVanillaChronicle name="CONF-BINARY-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-binary-vanilla-chronicle</path>
-            <formatMessage>false</formatMessage>
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/conf-binary-vanilla-chronicle</path>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
             <vanillaChronicleConfig>
@@ -63,41 +62,32 @@
         </BinaryVanillaChronicle>
 
         <TextVanillaChronicle name="CONF-TEXT-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-text-vanilla-chronicle</path>
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/conf-text-vanilla-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
             <stackTraceDepth>3</stackTraceDepth>
         </TextVanillaChronicle>
 
         <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-vanilla-chronicle</path>
-            <formatMessage>false</formatMessage>
-            <includeCallerData>false</includeCallerData>
-            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-        </BinaryVanillaChronicle>
-
-        <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE-FMT">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-vanilla-chronicle-fmt</path>
-            <formatMessage>true</formatMessage>
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-vanilla-chronicle</path>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
         </BinaryVanillaChronicle>
 
         <BinaryVanillaChronicle name="PERF-BINARY-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/perf-binary-vanilla-chronicle</path>
-            <formatMessage>false</formatMessage>
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/perf-binary-vanilla-chronicle</path>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
         </BinaryVanillaChronicle>
 
         <TextVanillaChronicle name="CONF-TEXT-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-text-vanilla-chronicle</path>
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/conf-text-vanilla-chronicle</path>
             <vanillaChronicleConfig>
                 <dataCacheCapacity>128</dataCacheCapacity>
             </vanillaChronicleConfig>
         </TextVanillaChronicle>
 
         <TextVanillaChronicle name="TEXT-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/text-vanilla-chronicle</path>
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/text-vanilla-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
             <stackTraceDepth>3</stackTraceDepth>
         </TextVanillaChronicle>
@@ -107,8 +97,7 @@
         <!-- *************************************************************** -->
 
         <BinaryIndexedChronicle name="CONF-BINARY-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-binary-indexed-chronicle</path>
-            <formatMessage>false</formatMessage>
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/conf-binary-indexed-chronicle</path>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
             <indexedChronicleConfig>
@@ -117,28 +106,19 @@
         </BinaryIndexedChronicle>
 
         <BinaryIndexedChronicle name="BINARY-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-indexed-chronicle</path>
-            <formatMessage>false</formatMessage>
-            <includeCallerData>false</includeCallerData>
-            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-        </BinaryIndexedChronicle>
-
-        <BinaryIndexedChronicle name="BINARY-INDEXED-CHRONICLE-FMT">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/binary-indexed-chronicle-fmt</path>
-            <formatMessage>true</formatMessage>
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-indexed-chronicle</path>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
         </BinaryIndexedChronicle>
 
         <BinaryIndexedChronicle name="PERF-BINARY-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/perf-binary-indexed-chronicle</path>
-            <formatMessage>false</formatMessage>
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/perf-binary-indexed-chronicle</path>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
         </BinaryIndexedChronicle>
 
         <TextIndexedChronicle name="CONF-TEXT-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/conf-text-indexed-chronicle</path>
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/conf-text-indexed-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
             <stackTraceDepth>3</stackTraceDepth>
             <indexedChronicleConfig>
@@ -147,7 +127,7 @@
         </TextIndexedChronicle>
 
         <TextIndexedChronicle name="TEXT-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronology-log4j2/text-indexed-chronicle</path>
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/text-indexed-chronicle</path>
             <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
             <stackTraceDepth>3</stackTraceDepth>
         </TextIndexedChronicle>
@@ -179,9 +159,6 @@
         <logger name="binary-vanilla-chronicle" level="trace" additivity="false">
             <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
         </logger>
-        <logger name="binary-vanilla-chronicle-fmt" level="trace" additivity="false">
-            <appender-ref ref="BINARY-VANILLA-CHRONICLE-FMT"/>
-        </logger>
         <logger name="perf-binary-vanilla-chronicle" level="trace" additivity="false">
             <appender-ref ref="PERF-BINARY-VANILLA-CHRONICLE"/>
         </logger>
@@ -195,9 +172,6 @@
 
         <logger name="binary-indexed-chronicle" level="trace" additivity="false">
             <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
-        </logger>
-        <logger name="binary-indexed-chronicle-fmt" level="trace" additivity="false">
-            <appender-ref ref="BINARY-INDEXED-CHRONICLE-FMT"/>
         </logger>
         <logger name="perf-binary-indexed-chronicle" level="trace" additivity="false">
             <appender-ref ref="PERF-BINARY-INDEXED-CHRONICLE"/>

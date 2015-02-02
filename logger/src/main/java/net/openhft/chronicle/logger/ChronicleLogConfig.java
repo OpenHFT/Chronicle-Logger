@@ -63,7 +63,6 @@ public class ChronicleLogConfig {
     public static final String KEY_FORMAT = "format";
     public static final String KEY_TYPE = "type";
     public static final String KEY_DATE_FORMAT = "dateFormat";
-    public static final String KEY_BINARY_MODE = "binaryMode";
     public static final String KEY_STACK_TRACE_DEPTH = "stackTraceDepth";
     public static final String FORMAT_BINARY = "binary";
     public static final String FORMAT_TEXT = "text";

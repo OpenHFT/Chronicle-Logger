@@ -76,7 +76,6 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
     public static BinaryVanillaChronicleAppender createAppender(
         @PluginAttribute("name") final String name,
         @PluginAttribute("path") final String path,
-        @PluginAttribute("formatMessage") final String formatMessage,
         @PluginAttribute("includeCallerData") final String includeCallerData,
         @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
         @PluginElement("vanillaChronicleConfig") final VanillaChronicleCfg chronicleConfig,
@@ -93,10 +92,6 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
 
         final BinaryVanillaChronicleAppender appender =
             new BinaryVanillaChronicleAppender(name, filter, path, chronicleConfig);
-
-        if(formatMessage != null) {
-            appender.setFormatMessage("true".equalsIgnoreCase(formatMessage));
-        }
 
         if(includeCallerData != null) {
             appender.setIncludeCallerData("true".equalsIgnoreCase(includeCallerData));

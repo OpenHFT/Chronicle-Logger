@@ -86,7 +86,6 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
     public static BinaryIndexedChronicleAppender createAppender(
         @PluginAttribute("name") final String name,
         @PluginAttribute("path") final String path,
-        @PluginAttribute("formatMessage") final String formatMessage,
         @PluginAttribute("includeCallerData") final String includeCallerData,
         @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
         @PluginElement("indexedChronicleConfig") final IndexedChronicleCfg chronicleConfig,
@@ -103,10 +102,6 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
 
         final BinaryIndexedChronicleAppender appender =
             new BinaryIndexedChronicleAppender(name, filter, path, chronicleConfig);
-
-        if(formatMessage != null) {
-            appender.setFormatMessage("true".equalsIgnoreCase(formatMessage));
-        }
 
         if(includeCallerData != null) {
             appender.setIncludeCallerData("true".equalsIgnoreCase(includeCallerData));

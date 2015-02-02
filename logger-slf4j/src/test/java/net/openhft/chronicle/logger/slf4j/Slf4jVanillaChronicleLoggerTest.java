@@ -76,8 +76,8 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
 
     @Test
     public void testLogger() {
-        Logger l1 = LoggerFactory.getLogger(Slf4jVanillaChronicleLoggerTest.class);
-        Logger l2 = LoggerFactory.getLogger(Slf4jVanillaChronicleLoggerTest.class);
+        Logger l1 = LoggerFactory.getLogger("slf4j-vanilla-chronicle");
+        Logger l2 = LoggerFactory.getLogger("slf4j-vanilla-chronicle");
         Logger l3 = LoggerFactory.getLogger("logger_1");
         Logger l4 = LoggerFactory.getLogger("readwrite");
 
@@ -101,12 +101,12 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         ChronicleLogger cl1 = (ChronicleLogger) l1;
 
         assertEquals(cl1.getLevel(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl1.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
+        assertEquals(cl1.getName(), "slf4j-vanilla-chronicle");
         assertTrue(cl1.getWriter().getChronicle() instanceof VanillaChronicle);
 
         ChronicleLogger cl2 = (ChronicleLogger) l2;
         assertEquals(cl2.getLevel(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl2.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
+        assertEquals(cl2.getName(), "slf4j-vanilla-chronicle");
         assertTrue(cl2.getWriter().getChronicle() instanceof VanillaChronicle);
 
         ChronicleLogger cl3 = (ChronicleLogger) l3;
@@ -153,9 +153,10 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
                 assertEquals(level, evt.getLevel());
                 assertEquals(threadId, evt.getThreadName());
                 assertEquals(testId, evt.getLoggerName());
-                assertEquals("level is " + level, evt.getMessage());
+                assertEquals("level is {}", evt.getMessage());
                 assertNotNull(evt.getArgumentArray());
-                assertEquals(0, evt.getArgumentArray().length);
+                assertEquals(1, evt.getArgumentArray().length);
+                assertEquals(level, evt.getArgumentArray()[0]);
 
                 tailer.finish();
             }
