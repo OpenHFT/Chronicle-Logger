@@ -20,8 +20,6 @@ package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.IndexedChronicle;
-import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.Bytes;
 import net.openhft.lang.io.serialization.BytesMarshallable;
@@ -46,9 +44,14 @@ public class Log4j1TestBase {
     protected static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     protected static String rootPath() {
-        return System.getProperty("java.io.tmpdir")
-                + System.getProperty("file.separator")
-                + "chronicle-log4j1";
+        String path = System.getProperty("java.io.tmpdir");
+        String sep  = System.getProperty("file.separator");
+
+        if(!path.endsWith(sep)) {
+            path += sep;
+        }
+
+        return path + "chronicle-log4j1";
     }
 
     protected static String basePath(String type) {

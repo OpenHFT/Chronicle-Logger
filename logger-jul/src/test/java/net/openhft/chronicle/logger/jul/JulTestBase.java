@@ -54,9 +54,14 @@ public class JulTestBase {
     // *************************************************************************
 
     protected static String rootPath() {
-        return System.getProperty("java.io.tmpdir")
-                + System.getProperty("file.separator")
-                + "chronicle-jul";
+        String path = System.getProperty("java.io.tmpdir");
+        String sep  = System.getProperty("file.separator");
+
+        if(!path.endsWith(sep)) {
+            path += sep;
+        }
+
+        return path + "chronicle-jul";
     }
 
     protected static String basePath(String type) {

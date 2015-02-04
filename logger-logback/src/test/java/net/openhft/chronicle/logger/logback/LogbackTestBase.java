@@ -25,6 +25,7 @@ import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.Bytes;
+import net.openhft.lang.io.IOTools;
 import net.openhft.lang.io.serialization.BytesMarshallable;
 import net.openhft.lang.model.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
@@ -49,16 +50,36 @@ public class LogbackTestBase {
     // *************************************************************************
     //
     // *************************************************************************
+    protected static void deleteVanillaFiles(String testId) {
+        IOTools.deleteDir(basePath(testId));
+    }
+
+    protected static void deleteIndexedFiles(String testId) {
+        String basePath = basePath(testId);
+        String[] arr$ = new String[]{basePath + ".data", basePath + ".index"};
+        int len$ = arr$.length;
+
+        for(int i$ = 0; i$ < len$; ++i$) {
+            String name = arr$[i$];
+            File file = new File(name);
+            file.delete();
+        }
+    }
 
     protected static String rootPath() {
-        return System.getProperty("java.io.tmpdir")
-                + System.getProperty("file.separator")
-                + "chronicle-logback";
+        String path = System.getProperty("java.io.tmpdir");
+        String sep  = System.getProperty("file.separator");
+
+        if(!path.endsWith(sep)) {
+            path += sep;
+        }
+
+        return path + "chronicle-logback";
     }
 
     protected static String basePath(String type) {
         return rootPath()
-                + File.separator
+                + System.getProperty("file.separator")
                 + type;
     }
 

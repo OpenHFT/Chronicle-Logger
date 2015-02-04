@@ -46,8 +46,14 @@ public class Slf4jTestBase {
     protected static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     protected static String basePath(String type) {
-        return System.getProperty("java.io.tmpdir")
-                + System.getProperty("file.separator")
+        String path = System.getProperty("java.io.tmpdir");
+        String sep  = System.getProperty("file.separator");
+
+        if(!path.endsWith(sep)) {
+            path += sep;
+        }
+
+        return path
                 + "chronicle-slf4j"
                 + System.getProperty("file.separator")
                 + type

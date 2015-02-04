@@ -86,122 +86,133 @@ public class LogbackVanillaChronicleTest extends LogbackTestBase {
         final String testId    = "binary-vanilla-chronicle";
         final String threadId  = testId + "-th";
         final long   timestamp = System.currentTimeMillis();
-        final Logger logger    = LoggerFactory.getLogger(testId);
 
-        Thread.currentThread().setName(threadId);
+        deleteVanillaFiles(testId);
 
-        for(ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level);
-        }
+        try {
+            final Logger logger = LoggerFactory.getLogger(testId);
 
-        Chronicle          chronicle = getVanillaChronicle(testId);
-        ExcerptTailer      tailer    = chronicle.createTailer().toStart();
-        ChronicleLogEvent evt       = null;
+            Thread.currentThread().setName(threadId);
 
-        for(ChronicleLogLevel level : LOG_LEVELS) {
+            for (ChronicleLogLevel level : LOG_LEVELS) {
+                log(logger, level, "level is {}", level);
+            }
+
+            final Chronicle chronicle = getVanillaChronicle(testId);
+            final ExcerptTailer tailer = chronicle.createTailer().toStart();
+
+            ChronicleLogEvent evt = null;
+            for (ChronicleLogLevel level : LOG_LEVELS) {
+                assertTrue(tailer.nextIndex());
+
+                evt = ChronicleLogHelper.decodeBinary(tailer);
+                assertNotNull(evt);
+                assertEquals(evt.getVersion(), ChronicleLog.VERSION);
+                assertTrue(evt.getTimeStamp() >= timestamp);
+                assertEquals(level, evt.getLevel());
+                assertEquals(threadId, evt.getThreadName());
+                assertEquals(testId, evt.getLoggerName());
+                assertEquals("level is {}", evt.getMessage());
+                assertNotNull(evt.getArgumentArray());
+                assertEquals(1, evt.getArgumentArray().length);
+                assertEquals(level, evt.getArgumentArray()[0]);
+                assertNull(evt.getThrowable());
+
+                tailer.finish();
+            }
+
+            logger.debug("Throwable test", new UnsupportedOperationException());
+            logger.debug("Throwable test", new UnsupportedOperationException("Exception message"));
+
             assertTrue(tailer.nextIndex());
-
             evt = ChronicleLogHelper.decodeBinary(tailer);
-            assertNotNull(evt);
-            assertEquals(evt.getVersion(), ChronicleLog.VERSION);
-            assertTrue(evt.getTimeStamp() >= timestamp);
-            assertEquals(level,evt.getLevel());
-            assertEquals(threadId, evt.getThreadName());
-            assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is {}", evt.getMessage());
-            assertNotNull(evt.getArgumentArray());
-            assertEquals(1, evt.getArgumentArray().length);
-            assertEquals(level , evt.getArgumentArray()[0]);
-            assertNull(evt.getThrowable());
+            assertEquals("Throwable test", evt.getMessage());
+            assertNotNull(evt.getThrowable());
+            assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+            assertEquals(UnsupportedOperationException.class.getName(), evt.getThrowable().getMessage());
 
-            tailer.finish();
+            assertTrue(tailer.nextIndex());
+            evt = ChronicleLogHelper.decodeBinary(tailer);
+            assertEquals("Throwable test", evt.getMessage());
+            assertNotNull(evt.getThrowable());
+            assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
+            assertEquals(UnsupportedOperationException.class.getName() + ": Exception message", evt.getThrowable().getMessage());
+
+            tailer.close();
+            chronicle.close();
+        } finally {
+            IOTools.deleteDir(basePath(testId));
         }
-
-        logger.debug("Throwable test",new UnsupportedOperationException());
-        logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
-
-        assertTrue(tailer.nextIndex());
-        evt = ChronicleLogHelper.decodeBinary(tailer);
-        assertEquals("Throwable test",evt.getMessage());
-        assertNotNull(evt.getThrowable());
-        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
-
-        assertTrue(tailer.nextIndex());
-        evt = ChronicleLogHelper.decodeBinary(tailer);
-        assertEquals("Throwable test",evt.getMessage());
-        assertNotNull(evt.getThrowable());
-        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
-
-        tailer.close();
-        chronicle.close();
-
-        IOTools.deleteDir(basePath(testId));
     }
 
     @Test
     public void testVanillaTextAppender() throws IOException {
         final String testId    = "text-vanilla-chronicle";
         final String threadId  = testId + "-th";
-        final Logger logger    = LoggerFactory.getLogger(testId);
 
-        Thread.currentThread().setName(threadId);
+        deleteVanillaFiles(testId);
 
-        for(ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level);
-        }
+        try {
+            final Logger logger = LoggerFactory.getLogger(testId);
 
-        Chronicle          chronicle = getVanillaChronicle(testId);
-        ExcerptTailer      tailer    = chronicle.createTailer().toStart();
-        ChronicleLogEvent evt       = null;
+            Thread.currentThread().setName(threadId);
 
-        for(ChronicleLogLevel level : LOG_LEVELS) {
+            for (ChronicleLogLevel level : LOG_LEVELS) {
+                log(logger, level, "level is {}", level);
+            }
+
+            final Chronicle chronicle = getVanillaChronicle(testId);
+            final ExcerptTailer tailer = chronicle.createTailer().toStart();
+
+            ChronicleLogEvent evt = null;
+            for (ChronicleLogLevel level : LOG_LEVELS) {
+                assertTrue(tailer.nextIndex());
+
+                evt = ChronicleLogHelper.decodeText(tailer);
+                assertNotNull(evt);
+                assertEquals(level, evt.getLevel());
+                assertEquals(threadId, evt.getThreadName());
+                assertEquals(testId, evt.getLoggerName());
+                assertEquals("level is " + level, evt.getMessage());
+                assertNotNull(evt.getArgumentArray());
+                assertEquals(0, evt.getArgumentArray().length);
+                assertNull(evt.getThrowable());
+
+                tailer.finish();
+            }
+
+            logger.debug("Throwable test", new UnsupportedOperationException());
+            logger.debug("Throwable test", new UnsupportedOperationException("Exception message"));
+
             assertTrue(tailer.nextIndex());
-
             evt = ChronicleLogHelper.decodeText(tailer);
             assertNotNull(evt);
-            assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
             assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is " + level, evt.getMessage());
+            assertTrue(evt.getMessage().contains("Throwable test"));
+            assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
+            assertTrue(evt.getMessage().contains(this.getClass().getName()));
             assertNotNull(evt.getArgumentArray());
             assertEquals(0, evt.getArgumentArray().length);
             assertNull(evt.getThrowable());
 
-            tailer.finish();
+            assertTrue(tailer.nextIndex());
+            evt = ChronicleLogHelper.decodeText(tailer);
+            assertNotNull(evt);
+            assertEquals(threadId, evt.getThreadName());
+            assertEquals(testId, evt.getLoggerName());
+            assertTrue(evt.getMessage().contains("Throwable test"));
+            assertTrue(evt.getMessage().contains("Exception message"));
+            assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
+            assertTrue(evt.getMessage().contains(this.getClass().getName()));
+            assertNotNull(evt.getArgumentArray());
+            assertEquals(0, evt.getArgumentArray().length);
+            assertNull(evt.getThrowable());
+
+            tailer.close();
+            chronicle.close();
+        } finally {
+            IOTools.deleteDir(basePath(testId));
         }
-
-        logger.debug("Throwable test",new UnsupportedOperationException());
-        logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
-
-        assertTrue(tailer.nextIndex());
-        evt = ChronicleLogHelper.decodeText(tailer);
-        assertNotNull(evt);
-        assertEquals(threadId, evt.getThreadName());
-        assertEquals(testId, evt.getLoggerName());
-        assertTrue(evt.getMessage().contains("Throwable test"));
-        assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
-        assertTrue(evt.getMessage().contains(this.getClass().getName()));
-        assertNotNull(evt.getArgumentArray());
-        assertEquals(0, evt.getArgumentArray().length);
-        assertNull(evt.getThrowable());
-
-        assertTrue(tailer.nextIndex());
-        evt = ChronicleLogHelper.decodeText(tailer);assertNotNull(evt);
-        assertEquals(threadId, evt.getThreadName());
-        assertEquals(testId, evt.getLoggerName());
-        assertTrue(evt.getMessage().contains("Throwable test"));
-        assertTrue(evt.getMessage().contains("Exception message"));
-        assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
-        assertTrue(evt.getMessage().contains(this.getClass().getName()));
-        assertNotNull(evt.getArgumentArray());
-        assertEquals(0, evt.getArgumentArray().length);
-        assertNull(evt.getThrowable());
-
-        tailer.close();
-        chronicle.close();
-
-        IOTools.deleteDir(basePath(testId));
     }
 }
