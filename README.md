@@ -21,12 +21,12 @@ An extremely fast java logger. We feel logging should not slow down your system.
 Today most programs require the logging of large amounts of data, especially in trading systems where this is a regulatory requirement. Loggers can affect your system performance, therefore logging is sometimes kept to a minimum, With chronicle we aim to eliminate this added overhead, freeing your system to focus on the business logic.
 
 Chronicle logger supports most of the standard logging API’s including: 
-  * [slf4j](https://github.com/OpenHFT/Chronicle-Logger#slf4j)
-  * [logback](https://github.com/OpenHFT/Chronicle-Logger#logback)
-  * [Apache log4j 1.2](https://github.com/OpenHFT/Chronicle-Logger#log4j-1)
-  * [Apache log4j 2](https://github.com/OpenHFT/Chronicle-Logger#log4j-2)
-  * [Java Util Logging](https://github.com/OpenHFT/Chronicle-Logger#jul)
-  * [Apache Common Logging](https://github.com/OpenHFT/Chronicle-Logger#jcl)
+  * [SLF4j](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-slf4j)
+  * [Logback](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-logback)
+  * [Apache log4j 1.2](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-log4j-1)
+  * [Apache log4j 2](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-log4j-2)
+  * [Java Util Logging](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-jul)
+  * [Apache Common Logging](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-jcl)
 
 Chronicle logger is able to aggregate all your logs to a central store. It has built in resilience, so you will never loose messages.
 
