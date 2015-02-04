@@ -9,12 +9,12 @@ An extremely fast java logger. We feel logging should not slow down your system.
 * [Overview](https://github.com/OpenHFT/Chronicle-Logger#overview)
 * [How it works](https://github.com/OpenHFT/Chronicle-Logger#How it works)
 * [Bindings](https://github.com/OpenHFT/Chronicle-Logger#bindings)
-*   [slf4j](https://github.com/OpenHFT/Chronicle-Logger#slf4j)
-*   [logback](https://github.com/OpenHFT/Chronicle-Logger#logback)
-*   [Apache log4j 1.2](https://github.com/OpenHFT/Chronicle-Logger#log4j-1)
-*   [Apache log4j 2](https://github.com/OpenHFT/Chronicle-Logger#log4j-2)
-*   [Java Util Logging](https://github.com/OpenHFT/Chronicle-Logger#jul)
-*   [Apache Common Logging](https://github.com/OpenHFT/Chronicle-Logger#jcl)
+  * [slf4j](https://github.com/OpenHFT/Chronicle-Logger#slf4j)
+  * [logback](https://github.com/OpenHFT/Chronicle-Logger#logback)
+  * [Apache log4j 1.2](https://github.com/OpenHFT/Chronicle-Logger#log4j-1)
+  * [Apache log4j 2](https://github.com/OpenHFT/Chronicle-Logger#log4j-2)
+  * [Java Util Logging](https://github.com/OpenHFT/Chronicle-Logger#jul)
+  * [Apache Common Logging](https://github.com/OpenHFT/Chronicle-Logger#jcl)
 
 
 ### Overview
@@ -37,6 +37,70 @@ Chronicle logger is built on Chronicle Queue. It provides multiple Chronicle Que
 
 ### Bindings
 ## slf4j
+To configure this sl4j binding you need to specify the location of a properties files (file-system or classpath) via system properties:
+```
+-Dchronicle.logger.properties=${pathOfYourPropertiesFile}
+```
+
+The following properties are supported:
+
+ **Property** | **Description**                          | **Values**                       | **Per-Logger**
+--------------|------------------------------------------|----------------------------------|----------------
+type          | the type of the underlying Chronicle     | indexed, vanilla                 | no
+path          | the base directory of a Chronicle        |                                  | yes
+level         | the default log level                    | trace, debug, info, warn, error  | yes
+append        |                                          | true, false                      | yes (if a specific path is defined)
+format        | write log as text or binary              | binary, text                     | yes (if a specific path is defined)
+dateFormat    | the date format for text loggers         |                                  | no 
+
+The default configuration is build using properties with chronicle.logger.root as prefix but you can also set per-logger settings i.e. chronicle.logger.L1, an example:
+
+```properties
+# shared properties
+chronicle.base                        = ${java.io.tmpdir}/chronicle/${today}/${pid}
+
+# logger : default
+chronicle.logger.root.type            = vanilla
+chronicle.logger.root.path            = ${slf4j.chronicle.base}/main
+chronicle.logger.root.level           = debug
+chronicle.logger.root.shortName       = false
+chronicle.logger.root.append          = false
+chronicle.logger.root.format          = binary
+
+# logger : L1 (binary)
+chronicle.logger.L1.path              = ${slf4j.chronicle.base}/L1
+chronicle.logger.L1.level             = info
+
+# logger : T1 (text)
+chronicle.logger.T1.path              = ${slf4j.chronicle.base}/T1
+chronicle.logger.T1.level             = debug
+chronicle.logger.T1.format            = text
+chronicle.logger.T1.dateFormat        = yyyyMMdd-HHmmss-S
+```
+
+The configuration of chronicle-slf4j supports variable interpolation where the variables are replaced with the corresponding values from the same configuration file, the system properties and from some predefined values. System properties have the precedence in placeholder replacement so they can be overriden.
+
+Predefined values are:
+  * pid which will replaced by the process id
+  * today which will be replaced by the current date (yyyyMMdd)
+
+
+By default the underlying Chronicle is set up using the default configuration but you can tweak it via chronicle.logger.${name}.cfg prefix where the name after the prefix should be the name of the related ChronicleQueueBuilder setter (depending of the value set for chronicle.logger.${name}.type) i.e:
+
+```properties
+chronicle.logger.root.cfg.indexFileCapacity = 128
+chronicle.logger.root.cfg.dataBlockSize     = 256
+chronicle.logger.root.cfg.synchronous       = true
+```
+
+The parameters will change those defined by the default configuration.
+
+
+###Notes
+  * Loggers are not hierarchical grouped so my.domain.package.MyClass1 and my.domain are two distinct entities.
+  * The _path_ is used to track the underlying Chronicle so two loggers configured with the same _path_ will share the same Chronicle  
+
+
 ## logback
 ## log4j-1
 ## log4j-2
