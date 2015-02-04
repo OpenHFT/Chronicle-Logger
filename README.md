@@ -30,7 +30,7 @@ Chronicle logger supports most of the standard logging API’s including:
 
 Chronicle logger is able to aggregate all your logs to a central store. It has built in resilience, so you will never loose messages.
 
-We also have some very helpfull [tools] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-tools)
+We also have some very helpfull [tools] (https://github.com/OpenHFT/Chronicle-Logger#tools)
 
 ### How it works
 Chronicle logger is built on Chronicle Queue. It provides multiple Chronicle Queue adapters and is a low latency, high throughput synchronous writer. Unlike asynchronous writers, you will always see the last message before the application dies.  As the last message is often the most valuable.
