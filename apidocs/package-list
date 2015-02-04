@@ -1,4 +1,6 @@
 net.openhft.chronicle.logger
+net.openhft.chronicle.logger.jcl
+net.openhft.chronicle.logger.jul
 net.openhft.chronicle.logger.log4j1
 net.openhft.chronicle.logger.log4j2
 net.openhft.chronicle.logger.logback
