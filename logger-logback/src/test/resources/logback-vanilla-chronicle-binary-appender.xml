@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2014 Higher Frequency Trading
+  ~
+  ~ http://www.higherfrequencytrading.com
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<configuration>
+
+    <appender name  = "STDOUT"
+              class = "ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d %contextName [%t] %level %logger{36} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+    <!-- ******************************************************************* -->
+    <!-- VANILLA - BINARY                                                    -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "BINARY-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
+        <path>${java.io.tmpdir}/chronicle-logback/binary-vanilla-chronicle</path>
+        <includeCallerData>false</includeCallerData>
+        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+    </appender>
+
+    <logger name="binary-vanilla-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
+
+    <logger name="net.openhft" level="WARN" additivity="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>
