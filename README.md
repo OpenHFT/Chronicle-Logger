@@ -201,7 +201,7 @@ The chronicle-logger-logback module provides appenders for Logback targeting [Ch
   
 ## chronicle-logger-log4j-1
 
-```
+```xml
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
 
@@ -295,7 +295,7 @@ The chronicle-logger-logback module provides appenders for Logback targeting [Ch
 
 ## chronicle-logger-log4j-2
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration packages="net.openhft.chronicle.logger,net.openhft.chronicle.logger.log4j2">
 
@@ -388,7 +388,7 @@ The chronicle-logger-logback module provides appenders for Logback targeting [Ch
 
 ## chronicle-logger-jul
 
-```
+```properties
 handlers=java.util.logging.ConsoleHandler, net.openhft.chronicle.logger.jul.BinaryVanillaChronicleHandler
 
 .level=ALL
