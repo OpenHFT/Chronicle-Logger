@@ -28,14 +28,12 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
 
     private boolean includeCallerData;
     private boolean includeMDC;
-    private boolean formatMessage;
 
     protected BinaryChronicleAppender() {
         super();
 
         this.includeCallerData = true;
-        this.includeMDC        = true;
-        this.formatMessage     = false;
+        this.includeMDC = true;
     }
 
     // *************************************************************************
@@ -58,14 +56,6 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
         return this.includeMDC;
     }
 
-    public void setFormatMessage(boolean formatMessage) {
-        this.formatMessage = formatMessage;
-    }
-
-    public boolean isFormatMessage() {
-        return this.formatMessage;
-    }
-
     // *************************************************************************
     //
     // *************************************************************************
@@ -77,35 +67,26 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
             if (appender != null) {
                 appender.startExcerpt();
                 appender.writeByte(ChronicleLog.VERSION);
-                ChronicleLog.Type.LOGBACK.writeTo(appender);
                 appender.writeLong(event.getTimeStamp());
                 toChronicleLogLevel(event.getLevel()).writeTo(appender);
                 appender.writeUTF(event.getThreadName());
                 appender.writeUTF(event.getLoggerName());
+                appender.writeUTF(event.getMessage());
 
-                if (!formatMessage) {
-                    appender.writeUTF(event.getMessage());
+                // Args
+                Object[] args = event.getArgumentArray();
+                int argsLen = null != args ? args.length : 0;
 
-                    // Args
-                    Object[] args = event.getArgumentArray();
-                    int argsLen = null != args ? args.length : 0;
-
-                    appender.writeStopBit(argsLen);
-                    for (int i = 0; i < argsLen; i++) {
-                        appender.writeObject(args[i]);
-                    }
-                }
-                else {
-                    appender.writeUTF(event.getFormattedMessage());
-                    appender.writeStopBit(0);
+                appender.writeStopBit(argsLen);
+                for (int i = 0; i < argsLen; i++) {
+                    appender.writeObject(args[i]);
                 }
 
                 ThrowableProxy tp = (ThrowableProxy) event.getThrowableProxy();
                 if (tp != null) {
                     appender.writeBoolean(true);
                     appender.writeObject(tp.getThrowable());
-                }
-                else {
+                } else {
                     appender.writeBoolean(false);
                 }
 

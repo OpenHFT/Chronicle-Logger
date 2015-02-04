@@ -2,9 +2,11 @@ Chronicle-Logger
 ================
 ![Chronicle](http://openhft.net/wp-content/uploads/2014/07/ChronicleLogger_200px_ver2.png)
 ##### Binding for :
+* [jul] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-jul)
 * [slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
-* [logger-logback](https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-logback)
-* [logger-slf4j] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-slf4j)
+* [logback](https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-logback)
+* [log4j 1.2] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-log4j-1)
+* [log4j 2] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-log4j-2)
 
 We also have some very helpfull [tools] (https://github.com/OpenHFT/Chronicle-Logger/wiki/logger-tools)
 

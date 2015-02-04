@@ -18,6 +18,7 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.tools.ChronicleTools;
 import net.openhft.lang.io.IOTools;
 import org.apache.commons.lang3.StringUtils;
@@ -43,8 +44,8 @@ public class Slf4jIndexedChronicleLoggerPerfTest extends Slf4jTestBase {
     @Before
     public void setUp() {
         System.setProperty(
-            "slf4j.chronicle.properties",
-            System.getProperty("slf4j.chronicle.indexed.perf.properties"));
+            "chronicle.logger.properties",
+            "chronicle.logger.indexed.perf.properties");
 
         getChronicleLoggerFactory().reload();
     }
@@ -52,7 +53,7 @@ public class Slf4jIndexedChronicleLoggerPerfTest extends Slf4jTestBase {
     @After
     public void tearDown() {getChronicleLoggerFactory().shutdown();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_INDEXED));
     }
 
     // *************************************************************************

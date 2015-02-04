@@ -111,11 +111,6 @@ final class TextChronicleLogEvent implements ChronicleLogEvent {
     }
 
     @Override
-    public ChronicleLog.Type getType() {
-        return ChronicleLog.Type.UNKNOWN;
-    }
-
-    @Override
     public long getTimeStamp() {
         return this.timestamp;
     }

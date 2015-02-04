@@ -22,6 +22,7 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLog;
+import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
@@ -49,8 +50,8 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
     @Before
     public void setUp() {
         System.setProperty(
-            "slf4j.chronicle.properties",
-            System.getProperty("slf4j.chronicle.vanilla.properties"));
+            "chronicle.logger.properties",
+            "chronicle.logger.vanilla.properties");
 
         getChronicleLoggerFactory().reload();
     }
@@ -59,7 +60,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
     public void tearDown() {
         getChronicleLoggerFactory().shutdown();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_VANILLA));
     }
 
     // *************************************************************************
@@ -69,14 +70,14 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
     @Test
     public void testLoggerFactory() {
         assertEquals(
-                StaticLoggerBinder.getSingleton().getLoggerFactory().getClass(),
-                ChronicleLoggerFactory.class);
+            StaticLoggerBinder.getSingleton().getLoggerFactory().getClass(),
+            ChronicleLoggerFactory.class);
     }
 
     @Test
     public void testLogger() {
-        Logger l1 = LoggerFactory.getLogger(Slf4jVanillaChronicleLoggerTest.class);
-        Logger l2 = LoggerFactory.getLogger(Slf4jVanillaChronicleLoggerTest.class);
+        Logger l1 = LoggerFactory.getLogger("slf4j-vanilla-chronicle");
+        Logger l2 = LoggerFactory.getLogger("slf4j-vanilla-chronicle");
         Logger l3 = LoggerFactory.getLogger("logger_1");
         Logger l4 = LoggerFactory.getLogger("readwrite");
 
@@ -100,12 +101,12 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         ChronicleLogger cl1 = (ChronicleLogger) l1;
 
         assertEquals(cl1.getLevel(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl1.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
+        assertEquals(cl1.getName(), "slf4j-vanilla-chronicle");
         assertTrue(cl1.getWriter().getChronicle() instanceof VanillaChronicle);
 
         ChronicleLogger cl2 = (ChronicleLogger) l2;
         assertEquals(cl2.getLevel(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl2.getName(), Slf4jVanillaChronicleLoggerTest.class.getName());
+        assertEquals(cl2.getName(), "slf4j-vanilla-chronicle");
         assertTrue(cl2.getWriter().getChronicle() instanceof VanillaChronicle);
 
         ChronicleLogger cl3 = (ChronicleLogger) l3;
@@ -130,14 +131,14 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         final long   timestamp = System.currentTimeMillis();
         final Logger logger    = LoggerFactory.getLogger(testId);
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA,testId));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_VANILLA,testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
             log(logger,level,"level is {}",level);
         }
 
-        Chronicle         chronicle = getVanillaChronicle(ChronicleLoggingConfig.TYPE_VANILLA,testId);
+        Chronicle         chronicle = getVanillaChronicle(ChronicleLogConfig.TYPE_VANILLA,testId);
         ExcerptTailer     tailer    = chronicle.createTailer().toStart();
         ChronicleLogEvent evt       = null;
 
@@ -148,14 +149,14 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
                 evt = ChronicleLogHelper.decodeBinary(tailer);
                 assertNotNull(evt);
                 assertEquals(evt.getVersion(), ChronicleLog.VERSION);
-                assertEquals(evt.getType(), ChronicleLog.Type.SLF4J);
                 assertTrue(evt.getTimeStamp() >= timestamp);
                 assertEquals(level, evt.getLevel());
                 assertEquals(threadId, evt.getThreadName());
                 assertEquals(testId, evt.getLoggerName());
-                assertEquals("level is " + level, evt.getMessage());
+                assertEquals("level is {}", evt.getMessage());
                 assertNotNull(evt.getArgumentArray());
-                assertEquals(0, evt.getArgumentArray().length);
+                assertEquals(1, evt.getArgumentArray().length);
+                assertEquals(level, evt.getArgumentArray()[0]);
 
                 tailer.finish();
             }
@@ -181,7 +182,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         tailer.close();
         chronicle.close();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA,testId));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_VANILLA,testId));
     }
 
     @Test
@@ -190,14 +191,14 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         final String threadId  = testId + "-th";
         final Logger logger    = LoggerFactory.getLogger(testId);
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA,testId));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_VANILLA,testId));
         Thread.currentThread().setName(threadId);
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
             log(logger,level,"level is {}",level);
         }
 
-        Chronicle          chronicle = getVanillaChronicle(ChronicleLoggingConfig.TYPE_VANILLA,testId);
+        Chronicle          chronicle = getVanillaChronicle(ChronicleLogConfig.TYPE_VANILLA,testId);
         ExcerptTailer      tailer    = chronicle.createTailer().toStart();
         ChronicleLogEvent evt       = null;
 
@@ -247,6 +248,6 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         tailer.close();
         chronicle.close();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_VANILLA,testId));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_VANILLA,testId));
     }
 }

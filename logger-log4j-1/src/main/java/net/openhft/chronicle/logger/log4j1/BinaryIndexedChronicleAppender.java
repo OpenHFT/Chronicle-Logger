@@ -20,12 +20,10 @@ package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;
-import java.nio.ByteOrder;
 
 public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
 
@@ -41,7 +39,7 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
 
     @Override
     protected Chronicle createChronicle() throws IOException {
-        Chronicle chronicle = new IndexedChronicle(this.getPath(), this.config.cfg());
+        Chronicle chronicle = this.config.build(this.getPath());
         this.appender = chronicle.createAppender();
 
         return chronicle;
@@ -67,20 +65,12 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
         return this.config;
     }
 
-    public void setUseUnsafe(boolean useUnsafe) {
-        config.setUseUnsafe(useUnsafe);
-    }
-
-    public void setByteOrder(ByteOrder byteOrder) {
-        config.setByteOrder(byteOrder);
-    }
-
     public void setIndexBlockSize(int indexBlockSize) {
         config.setIndexBlockSize(indexBlockSize);
     }
 
     public void setSynchronousMode(boolean synchronousMode) {
-        config.setSynchronousMode(synchronousMode);
+        config.setSynchronous(synchronousMode);
     }
 
     public void setCacheLineSize(int cacheLineSize) {
@@ -91,19 +81,11 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
         config.setMessageCapacity(messageCapacity);
     }
 
-    public void seMinimiseFootprint(boolean minimiseFootprint) {
-        config.setMinimiseFootprint(minimiseFootprint);
-    }
-
     public void setUseCheckedExcerpt(boolean useCheckedExcerpt) {
         config.setUseCheckedExcerpt(useCheckedExcerpt);
     }
 
     public void setDataBlockSize(int dataBlockSize) {
         config.setDataBlockSize(dataBlockSize);
-    }
-
-    public void setIndexFileExcerpts(int indexFileExcerpts) {
-        config.setIndexFileExcerpts(indexFileExcerpts);
     }
 }

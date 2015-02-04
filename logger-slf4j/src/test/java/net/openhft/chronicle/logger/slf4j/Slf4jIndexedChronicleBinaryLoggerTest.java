@@ -22,12 +22,15 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.logger.ChronicleLog;
+import net.openhft.chronicle.logger.ChronicleLogAppenders;
+import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.IOTools;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +52,8 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
     @Before
     public void setUp() {
         System.setProperty(
-            "slf4j.chronicle.properties",
-            System.getProperty("slf4j.chronicle.indexed.binary.properties"));
+            "chronicle.logger.properties",
+            "chronicle.logger.indexed.binary.properties");
 
         getChronicleLoggerFactory().reload();
     }
@@ -59,7 +62,7 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
     public void tearDown() {
         getChronicleLoggerFactory().shutdown();
 
-        IOTools.deleteDir(basePath(ChronicleLoggingConfig.TYPE_INDEXED));
+        IOTools.deleteDir(basePath(ChronicleLogConfig.TYPE_INDEXED));
     }
 
     // *************************************************************************
@@ -75,7 +78,7 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
 
     @Test
     public void testLogger() {
-        Logger logger = LoggerFactory.getLogger(Slf4jIndexedChronicleBinaryLoggerTest.class);
+        Logger logger = LoggerFactory.getLogger("slf4j-indexed-binary-logger");
 
         assertNotNull(logger);
         assertEquals(logger.getClass(), ChronicleLogger.class);
@@ -83,7 +86,7 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
         ChronicleLogger cl = (ChronicleLogger) logger;
 
         assertEquals(cl.getLevel(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl.getName(), Slf4jIndexedChronicleBinaryLoggerTest.class.getName());
+        assertEquals(cl.getName(), "slf4j-indexed-binary-logger");
         assertTrue(cl.getWriter() instanceof ChronicleLogAppenders.SynchronizedWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof IndexedChronicle);
     }
@@ -103,8 +106,8 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         final Logger l = LoggerFactory.getLogger(loggerName);
         l.debug("data {}, {}",
-            new MySerializableData("a Serializable object"),
-            new MyMarshallableData("a Marshallable object")
+            new MyMarshallableData("a Marshallable object 1"),
+            new MyMarshallableData("a Marshallable object 2")
         );
 
         Chronicle reader = getIndexedChronicle( loggerName);
@@ -115,7 +118,6 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
         ChronicleLogEvent evt = ChronicleLogHelper.decodeBinary(tailer);
         assertNotNull(evt);
         assertEquals(evt.getVersion(), ChronicleLog.VERSION);
-        assertEquals(evt.getType(), ChronicleLog.Type.SLF4J);
         assertTrue(timestamp <= evt.getTimeStamp());
         assertEquals(ChronicleLogLevel.DEBUG,evt.getLevel());
         assertEquals("data {}, {}",evt.getMessage());
@@ -123,15 +125,15 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
         assertNotNull(evt.getArgumentArray());
         assertEquals(2, evt.getArgumentArray().length);
 
-        Object serializableObject = evt.getArgumentArray()[0];
-        assertNotNull(serializableObject);
-        assertTrue(serializableObject instanceof MySerializableData);
-        assertEquals(serializableObject.toString(), "a Serializable object");
+        Object marshallableObject1 = evt.getArgumentArray()[0];
+        assertNotNull(marshallableObject1);
+        assertTrue(marshallableObject1 instanceof MyMarshallableData);
+        assertEquals(marshallableObject1.toString(), "a Marshallable object 1");
 
-        Object marshallableObject = evt.getArgumentArray()[1];
-        assertNotNull(marshallableObject);
-        assertTrue(marshallableObject instanceof MyMarshallableData);
-        assertEquals(marshallableObject.toString(), "a Marshallable object");
+        Object marshallableObject2 = evt.getArgumentArray()[1];
+        assertNotNull(marshallableObject2);
+        assertTrue(marshallableObject2 instanceof MyMarshallableData);
+        assertEquals(marshallableObject2.toString(), "a Marshallable object 2");
 
         tailer.close();
         reader.close();
@@ -163,7 +165,6 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
             evt = ChronicleLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), ChronicleLog.VERSION);
-            assertEquals(evt.getType(), ChronicleLog.Type.SLF4J);
             assertTrue(evt.getTimeStamp() >= timestamp);
             assertEquals(ChronicleLogLevel.INFO, evt.getLevel());
             assertEquals("args", evt.getMessage());

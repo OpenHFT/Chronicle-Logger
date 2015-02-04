@@ -18,34 +18,51 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.logger.ChronicleLogConfig;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class ChronicleLoggingConfigTest {
-    @Test
-    @Ignore("Fails in mvn run from IDEA")
-    public void testLoadNoProperty() throws Exception {
-        assertNull("config should not load if no system property set up", ChronicleLoggingConfig.load());
-    }
-
+    @Ignore
     @Test
     public void testLoadFileVanilla() throws Exception {
-        System.setProperty("slf4j.chronicle.properties", System.getProperty("slf4j.chronicle.vanilla.properties"));
+        System.setProperty("chronicle.logger.properties", System.getProperty("chronicle.logger.vanilla.properties"));
         assertLoadsValidVanillaConfig();
     }
 
     @Test
     public void testLoadClasspathVanilla() throws Exception {
-        System.setProperty("slf4j.chronicle.properties", "slf4j.chronicle.vanilla.properties");
+        System.setProperty("chronicle.logger.properties", "chronicle.logger.vanilla.properties");
         assertLoadsValidVanillaConfig();
     }
 
     private void assertLoadsValidVanillaConfig() {
-        ChronicleLoggingConfig config = ChronicleLoggingConfig.load();
+        ChronicleLogConfig config = ChronicleLogConfig.load();
         assertNotNull("unable to load config", config);
         assertNotNull("is not a vanilla config", config.getVanillaChronicleConfig());
-        assertEquals(ChronicleLoggingConfig.FORMAT_BINARY, config.getString(ChronicleLoggingConfig.KEY_FORMAT));
+        assertEquals(ChronicleLogConfig.FORMAT_BINARY, config.getString(ChronicleLogConfig.KEY_FORMAT));
+    }
+
+    @Ignore
+    @Test
+    public void testLoadFileIndexed() throws Exception {
+        System.setProperty("chronicle.logger.properties", System.getProperty("chronicle.logger.indexed.properties"));
+        assertLoadsValidIndexedConfig();
+    }
+
+    @Test
+    public void testLoadClasspathIndexed() throws Exception {
+        System.setProperty("chronicle.logger.properties", "chronicle.logger.indexed.properties");
+        assertLoadsValidIndexedConfig();
+    }
+
+    private void assertLoadsValidIndexedConfig() {
+        ChronicleLogConfig config = ChronicleLogConfig.load();
+        assertNotNull("unable to load config", config);
+        assertNotNull("is not a indexed config", config.getIndexedChronicleConfig());
+        assertEquals(ChronicleLogConfig.FORMAT_BINARY, config.getString(ChronicleLogConfig.KEY_FORMAT));
     }
 }

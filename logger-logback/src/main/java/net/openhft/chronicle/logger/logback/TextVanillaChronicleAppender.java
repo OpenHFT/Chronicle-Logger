@@ -20,6 +20,7 @@ package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.core.joran.spi.DefaultClass;
 import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
@@ -46,8 +47,8 @@ public class TextVanillaChronicleAppender extends TextChronicleAppender {
     @Override
     protected Chronicle createChronicle() throws IOException {
         return (this.config != null)
-            ? new VanillaChronicle(this.getPath(), this.config.cfg())
-            : new VanillaChronicle(this.getPath());
+            ? this.config.build(this.getPath())
+            : ChronicleQueueBuilder.vanilla(this.getPath()).build();
     }
 
     @Override

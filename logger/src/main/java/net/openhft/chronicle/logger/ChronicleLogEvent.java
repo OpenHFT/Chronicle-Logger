@@ -24,8 +24,6 @@ public interface ChronicleLogEvent {
 
     public byte getVersion();
 
-    public ChronicleLog.Type getType();
-
     public long getTimeStamp();
 
     public String getThreadName();

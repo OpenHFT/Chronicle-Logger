@@ -43,10 +43,9 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
     //
     // *************************************************************************
 
-    @Ignore
     @Test
     public void testBinaryIndexedChronicleAppenderConfig() throws IOException {
-        final String loggerName = "cfg-binary-indexed-chronicle";
+        final String loggerName = "config-binary-indexed-chronicle";
         final String appenderName = "CONFIG-BINARY-INDEXED-CHRONICLE";
 
         final org.apache.log4j.Logger logger =  org.apache.log4j.Logger.getLogger(loggerName);
@@ -57,13 +56,12 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
         assertTrue(appender instanceof BinaryIndexedChronicleAppender);
 
         BinaryIndexedChronicleAppender ba = (BinaryIndexedChronicleAppender)appender;
-        assertEquals(128, ba.getChronicleConfig().getIndexFileCapacity());
+        assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
     }
 
-    @Ignore
     @Test
     public void testTextIndexedChronicleAppenderConfig() throws IOException {
-        final String loggerName = "cfg-text-indexed-chronicle";
+        final String loggerName = "config-text-indexed-chronicle";
         final String appenderName = "CONFIG-TEXT-INDEXED-CHRONICLE";
 
         final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(loggerName);
@@ -74,7 +72,7 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
         assertTrue(appender instanceof TextIndexedChronicleAppender);
 
         TextIndexedChronicleAppender ba = (TextIndexedChronicleAppender)appender;
-        assertEquals(128, ba.getChronicleConfig().getIndexFileCapacity());
+        assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
         assertNotNull(ba.getDateFormat());
     }
 
@@ -83,7 +81,7 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
     // *************************************************************************
 
     @Test
-    public void testBinaryAppender1() throws IOException {
+    public void testIndexedBinaryAppender() throws IOException {
         final String testId    = "binary-indexed-chronicle";
         final String threadId  = testId + "-th";
         final long   timestamp = System.currentTimeMillis();
@@ -95,17 +93,16 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
             log(logger,level,"level is {}",level);
         }
 
-        Chronicle          chronicle = getIndexedChronicle(testId);
-        ExcerptTailer      tailer    = chronicle.createTailer().toStart();
-        ChronicleLogEvent evt       = null;
+        final Chronicle chronicle = getIndexedChronicle(testId);
+        final ExcerptTailer tailer = chronicle.createTailer().toStart();
 
+        ChronicleLogEvent evt = null;
         for(ChronicleLogLevel level : LOG_LEVELS) {
             assertTrue(tailer.nextIndex());
 
             evt = ChronicleLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), ChronicleLog.VERSION);
-            assertEquals(evt.getType(), ChronicleLog.Type.LOG4J_1);
             assertTrue(evt.getTimeStamp() >= timestamp);
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
@@ -141,7 +138,7 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
     }
 
     @Test
-    public void testTextAppender1() throws IOException {
+    public void testIndexedTextAppender() throws IOException {
         final String testId    = "text-indexed-chronicle";
         final String threadId  = testId + "-th";
         final Logger logger    = LoggerFactory.getLogger(testId);

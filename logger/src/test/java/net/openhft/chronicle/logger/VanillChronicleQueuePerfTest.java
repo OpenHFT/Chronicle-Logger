@@ -19,6 +19,7 @@
 package net.openhft.chronicle.logger;
 
 import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.tools.ChronicleTools;
@@ -43,7 +44,7 @@ public class VanillChronicleQueuePerfTest {
     public void setUp() throws IOException {
         String baseDir = System.getProperty("java.io.tmpdir") + "/perf-binary-vanilla-only";
         ChronicleTools.deleteDirOnExit(baseDir);
-        chronicle = new VanillaChronicle(baseDir);
+        chronicle = ChronicleQueueBuilder.vanilla(baseDir).build();
         logger = chronicle.createAppender();
     }
 

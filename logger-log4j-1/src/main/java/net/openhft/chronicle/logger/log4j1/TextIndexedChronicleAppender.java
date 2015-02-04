@@ -41,7 +41,7 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
 
     @Override
     protected Chronicle createChronicle() throws IOException {
-        Chronicle chronicle = new IndexedChronicle(this.getPath(), this.config.cfg());
+        Chronicle chronicle = this.config.build(this.getPath());
         this.appender = chronicle.createAppender();
 
         return chronicle;
@@ -67,20 +67,12 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
         return this.config;
     }
 
-    public void setUseUnsafe(boolean useUnsafe) {
-        config.setUseUnsafe(useUnsafe);
-    }
-
-    public void setByteOrder(ByteOrder byteOrder) {
-        config.setByteOrder(byteOrder);
-    }
-
     public void setIndexBlockSize(int indexBlockSize) {
         config.setIndexBlockSize(indexBlockSize);
     }
 
     public void setSynchronousMode(boolean synchronousMode) {
-        config.setSynchronousMode(synchronousMode);
+        config.setSynchronous(synchronousMode);
     }
 
     public void setCacheLineSize(int cacheLineSize) {
@@ -91,19 +83,11 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
         config.setMessageCapacity(messageCapacity);
     }
 
-    public void seMinimiseFootprint(boolean minimiseFootprint) {
-        config.setMinimiseFootprint(minimiseFootprint);
-    }
-
     public void setUseCheckedExcerpt(boolean useCheckedExcerpt) {
         config.setUseCheckedExcerpt(useCheckedExcerpt);
     }
 
     public void setDataBlockSize(int dataBlockSize) {
         config.setDataBlockSize(dataBlockSize);
-    }
-
-    public void setIndexFileExcerpts(int indexFileExcerpts) {
-        config.setIndexFileExcerpts(indexFileExcerpts);
     }
 }

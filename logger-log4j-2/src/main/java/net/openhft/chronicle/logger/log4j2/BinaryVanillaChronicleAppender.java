@@ -19,6 +19,7 @@
 package net.openhft.chronicle.logger.log4j2;
 
 import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
@@ -48,8 +49,8 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
     @Override
     protected Chronicle createChronicle() throws IOException {
         return (this.config != null)
-            ? new VanillaChronicle(this.getPath(), this.config.cfg())
-            : new VanillaChronicle(this.getPath());
+            ? this.config.build(this.getPath())
+            : ChronicleQueueBuilder.vanilla(this.getPath()).build();
     }
 
     @Override
@@ -75,7 +76,6 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
     public static BinaryVanillaChronicleAppender createAppender(
         @PluginAttribute("name") final String name,
         @PluginAttribute("path") final String path,
-        @PluginAttribute("formatMessage") final String formatMessage,
         @PluginAttribute("includeCallerData") final String includeCallerData,
         @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
         @PluginElement("vanillaChronicleConfig") final VanillaChronicleCfg chronicleConfig,
@@ -92,10 +92,6 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
 
         final BinaryVanillaChronicleAppender appender =
             new BinaryVanillaChronicleAppender(name, filter, path, chronicleConfig);
-
-        if(formatMessage != null) {
-            appender.setFormatMessage("true".equalsIgnoreCase(formatMessage));
-        }
 
         if(includeCallerData != null) {
             appender.setIncludeCallerData("true".equalsIgnoreCase(includeCallerData));

@@ -18,8 +18,9 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
-import net.openhft.chronicle.ChronicleConfig;
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.logger.ChronicleLog;
+import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.junit.Test;
 
@@ -32,59 +33,54 @@ public class Slf4jIndexedChronicleConfigurationTest extends Slf4jTestBase {
 
     @Test
     public void testLoadProperties() {
-        final String cfgPath = System.getProperty("slf4j.chronicle.indexed.properties");
-        final ChronicleLoggingConfig cfg = ChronicleLoggingConfig.load(cfgPath);
+        final String cfgPath = "chronicle.logger.indexed.properties";
+        final ChronicleLogConfig cfg = ChronicleLogConfig.load(cfgPath);
 
         assertEquals(
-            new File(basePath(ChronicleLoggingConfig.TYPE_INDEXED, "root")),
-            new File(cfg.getString(ChronicleLoggingConfig.KEY_PATH)));
+            new File(basePath(ChronicleLogConfig.TYPE_INDEXED, "root")),
+            new File(cfg.getString(ChronicleLogConfig.KEY_PATH)));
         assertEquals(
-            ChronicleLoggingConfig.TYPE_INDEXED,
-            cfg.getString(ChronicleLoggingConfig.KEY_TYPE));
-        assertEquals(
-            ChronicleLoggingConfig.BINARY_MODE_FORMATTED,
-            cfg.getString(ChronicleLoggingConfig.KEY_BINARY_MODE));
+            ChronicleLogConfig.TYPE_INDEXED,
+            cfg.getString(ChronicleLogConfig.KEY_TYPE));
         assertEquals(
             ChronicleLogLevel.DEBUG.toString(),
-            cfg.getString(ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
+            cfg.getString(ChronicleLogConfig.KEY_LEVEL).toUpperCase());
         assertEquals(
             ChronicleLog.STR_FALSE,
-            cfg.getString(ChronicleLoggingConfig.KEY_SHORTNAME));
+            cfg.getString(ChronicleLogConfig.KEY_SHORTNAME));
         assertEquals(
             ChronicleLog.STR_FALSE,
-            cfg.getString(ChronicleLoggingConfig.KEY_APPEND));
+            cfg.getString(ChronicleLogConfig.KEY_APPEND));
         assertEquals(
-            new File(basePath(ChronicleLoggingConfig.TYPE_INDEXED, "logger_1")),
-            new File(cfg.getString("logger_1", ChronicleLoggingConfig.KEY_PATH)));
+            new File(basePath(ChronicleLogConfig.TYPE_INDEXED, "logger_1")),
+            new File(cfg.getString("logger_1", ChronicleLogConfig.KEY_PATH)));
         assertEquals(
             ChronicleLogLevel.INFO.toString(),
-            cfg.getString("logger_1", ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
+            cfg.getString("logger_1", ChronicleLogConfig.KEY_LEVEL).toUpperCase());
         assertEquals(
-            new File(basePath(ChronicleLoggingConfig.TYPE_INDEXED, "readwrite")),
-            new File(cfg.getString("readwrite", ChronicleLoggingConfig.KEY_PATH)));
+            new File(basePath(ChronicleLogConfig.TYPE_INDEXED, "readwrite")),
+            new File(cfg.getString("readwrite", ChronicleLogConfig.KEY_PATH)));
         assertEquals(
             ChronicleLogLevel.DEBUG.toString(),
-            cfg.getString("readwrite", ChronicleLoggingConfig.KEY_LEVEL).toUpperCase());
+            cfg.getString("readwrite", ChronicleLogConfig.KEY_LEVEL).toUpperCase());
     }
 
     @Test
     public void testLoadConfig() {
         final Properties properties = new Properties();
-        properties.setProperty("slf4j.chronicle.type","indexed");
-        properties.setProperty("slf4j.chronicle.cfg.indexFileCapacity","128");
-        properties.setProperty("slf4j.chronicle.cfg.dataBlockSize","256");
-        properties.setProperty("slf4j.chronicle.cfg.synchronousMode","true");
+        properties.setProperty("chronicle.logger.root.type","indexed");
+        properties.setProperty("chronicle.logger.root.cfg.dataBlockSize","256");
+        properties.setProperty("chronicle.logger.root.cfg.synchronous","true");
 
-        final ChronicleLoggingConfig clc = ChronicleLoggingConfig.load(properties);
+        final ChronicleLogConfig clc = ChronicleLogConfig.load(properties);
         assertNotNull(clc.getIndexedChronicleConfig());
-        assertTrue(ChronicleConfig.DEFAULT != clc.getIndexedChronicleConfig().cfg());
         assertNull(clc.getVanillaChronicleConfig());
 
-        final ChronicleConfig cfg = clc.getIndexedChronicleConfig().cfg();
-        assertEquals(128, cfg.indexFileCapacity());
-        assertEquals(256, cfg.dataBlockSize());
-        assertTrue(cfg.synchronousMode());
-        assertEquals(ChronicleConfig.DEFAULT.indexFileExcerpts(), cfg.indexFileExcerpts());
-        assertEquals(ChronicleConfig.DEFAULT.cacheLineSize(), cfg.cacheLineSize());
+        final ChronicleQueueBuilder.IndexedChronicleQueueBuilder defaultCfg =
+            ChronicleQueueBuilder.indexed((File) null);
+
+        assertEquals(256, clc.getIndexedChronicleConfig().getDataBlockSize());
+        assertTrue(clc.getIndexedChronicleConfig().isSynchronous());
+        assertEquals(defaultCfg.cacheLineSize(), clc.getIndexedChronicleConfig().getCacheLineSize());
     }
 }

@@ -19,6 +19,7 @@
 package net.openhft.chronicle.logger.log4j2;
 
 import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
@@ -54,8 +55,8 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
     @Override
     protected Chronicle createChronicle() throws IOException {
         Chronicle chronicle = (this.config != null)
-            ? new IndexedChronicle(this.getPath(), this.config.cfg())
-            : new IndexedChronicle(this.getPath());
+            ? this.config.build(this.getPath())
+            : ChronicleQueueBuilder.indexed(this.getPath()).build();
 
         this.appender = chronicle.createAppender();
 

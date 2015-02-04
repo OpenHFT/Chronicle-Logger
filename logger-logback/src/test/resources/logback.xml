@@ -32,13 +32,12 @@
 
     <appender name  = "CONFIG-BINARY-INDEXED-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/config-binary-indexed-chronicle</path>
-        <formatMessage>false</formatMessage>
+        <path>${java.io.tmpdir}/chronicle-logback/config-binary-indexed-chronicle</path>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
 
         <chronicleConfig>
-            <indexFileCapacity>128</indexFileCapacity>
+            <indexBlockSize>128</indexBlockSize>
         </chronicleConfig>
 
     </appender>
@@ -49,10 +48,10 @@
 
     <appender name  = "CONFIG-TEXT-INDEXED-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.TextIndexedChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/config-text-indexed-chronicle</path>
+        <path>${java.io.tmpdir}/chronicle-logback/config-text-indexed-chronicle</path>
 
         <chronicleConfig>
-            <indexFileCapacity>128</indexFileCapacity>
+            <indexBlockSize>128</indexBlockSize>
         </chronicleConfig>
 
     </appender>
@@ -67,8 +66,7 @@
 
     <appender name  = "CONFIG-BINARY-VANILLA-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/config-binary-vanilla-chronicle</path>
-        <formatMessage>false</formatMessage>
+        <path>${java.io.tmpdir}/chronicle-logback/config-binary-vanilla-chronicle</path>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
 
@@ -84,7 +82,7 @@
 
     <appender name  = "CONFIG-TEXT-VANILLA-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.TextVanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/config-text-vanilla-chronicle</path>
+        <path>${java.io.tmpdir}/chronicle-logback/config-text-vanilla-chronicle</path>
 
         <chronicleConfig>
             <dataCacheCapacity>128</dataCacheCapacity>
@@ -102,8 +100,7 @@
 
     <appender name  = "CONFIG-VANILLA-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/config-vanilla-chronicle</path>
-        <formatMessage>false</formatMessage>
+        <path>${java.io.tmpdir}/chronicle-logback/config-vanilla-chronicle</path>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
     </appender>
@@ -114,7 +111,7 @@
 
     <appender name  = "PERF-PLAIN-VANILLA"
               class = "ch.qos.logback.core.FileAppender">
-        <File>${java.io.tmpdir}/chronology-logback/perf-plain-vanilla-log</File>
+        <File>${java.io.tmpdir}/chronicle-logback/perf-plain-vanilla-log</File>
         <encoder>
             <pattern>%d|%t|%c|%m%n</pattern>
         </encoder>
@@ -122,7 +119,7 @@
 
     <appender name  = "PERF-PLAIN-INDEXED"
               class = "ch.qos.logback.core.FileAppender">
-        <File>${java.io.tmpdir}/chronology-logback/perf-plain-indexed-log</File>
+        <File>${java.io.tmpdir}/chronicle-logback/perf-plain-indexed-log</File>
         <encoder>
             <pattern>%d|%t|%c|%m%n</pattern>
         </encoder>
@@ -162,34 +159,20 @@
 
     <appender name  = "BINARY-VANILLA-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/binary-vanilla-chronicle</path>
-        <formatMessage>false</formatMessage>
-        <includeCallerData>false</includeCallerData>
-        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-    </appender>
-
-    <appender name  = "BINARY-VANILLA-CHRONICLE-FMT"
-              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/binary-vanilla-chronicle-fmt</path>
-        <formatMessage>true</formatMessage>
+        <path>${java.io.tmpdir}/chronicle-logback/binary-vanilla-chronicle</path>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
     </appender>
 
     <appender name  = "PERF-BINARY-VANILLA-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/perf-binary-vanilla-chronicle</path>
-        <formatMessage>false</formatMessage>
+        <path>${java.io.tmpdir}/chronicle-logback/perf-binary-vanilla-chronicle</path>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
     </appender>
 
     <logger name="binary-vanilla-chronicle" level="TRACE" additivity="false">
         <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
-    </logger>
-
-    <logger name="binary-vanilla-chronicle-fmt" level="TRACE" additivity="false">
-        <appender-ref ref="BINARY-VANILLA-CHRONICLE-FMT"/>
     </logger>
 
     <logger name="perf-binary-vanilla-chronicle" level="TRACE" additivity="false">
@@ -202,7 +185,7 @@
 
     <appender name  = "TEXT-VANILLA-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.TextVanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/text-vanilla-chronicle</path>
+        <path>${java.io.tmpdir}/chronicle-logback/text-vanilla-chronicle</path>
         <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
         <stackTradeDepth>3</stackTradeDepth>
     </appender>
@@ -217,34 +200,20 @@
 
     <appender name  = "BINARY-INDEXED-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/binary-indexed-chronicle</path>
-        <formatMessage>false</formatMessage>
-        <includeCallerData>false</includeCallerData>
-        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-    </appender>
-
-    <appender name  = "BINARY-INDEXED-CHRONICLE-FMT"
-              class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/binary-indexed-chronicle-fmt</path>
-        <formatMessage>true</formatMessage>
+        <path>${java.io.tmpdir}/chronicle-logback/binary-indexed-chronicle</path>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
     </appender>
 
     <appender name  = "PERF-BINARY-INDEXED-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/perf-binary-indexed-chronicle</path>
-        <formatMessage>false</formatMessage>
+        <path>${java.io.tmpdir}/chronicle-logback/perf-binary-indexed-chronicle</path>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
     </appender>
 
     <logger name="binary-indexed-chronicle" level="TRACE" additivity="false">
         <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
-    </logger>
-
-    <logger name="binary-indexed-chronicle-fmt" level="TRACE" additivity="false">
-        <appender-ref ref="BINARY-INDEXED-CHRONICLE-FMT"/>
     </logger>
 
     <logger name="perf-binary-indexed-chronicle" level="TRACE" additivity="false">
@@ -257,7 +226,7 @@
 
     <appender name  = "TEXT-INDEXED-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.TextIndexedChronicleAppender">
-        <path>${java.io.tmpdir}/chronology-logback/text-indexed-chronicle</path>
+        <path>${java.io.tmpdir}/chronicle-logback/text-indexed-chronicle</path>
         <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
         <stackTradeDepth>3</stackTradeDepth>
     </appender>
@@ -271,12 +240,12 @@
     <!-- ******************************************************************* -->
 
     <!--
-    <appender name="VANILLA-CHRONICLE-CONNECT" class="com.higherfrequencytrading.chronology.logback.VanillaChronicleAppender">
+    <appender name="VANILLA-CHRONICLE-CONNECT" class="com.higherfrequencytrading.chronicle.logback.VanillaChronicleAppender">
         <path>/tmp/chronicle-logback/vanilla-chronicle-connect</path>
         <connect>localhost:9700</connect>
     </appender>
 
-    <appender name="VANILLA-CHRONICLE-LISTEN" class="com.higherfrequencytrading.chronology.logback.VanillaChronicleAppender">
+    <appender name="VANILLA-CHRONICLE-LISTEN" class="com.higherfrequencytrading.chronicle.logback.VanillaChronicleAppender">
         <path>/tmp/chronicle-logback/vanilla-chronicle-listen</path>
         <listen>localhost:9701</listen>
     </appender>

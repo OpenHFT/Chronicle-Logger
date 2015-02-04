@@ -26,7 +26,6 @@ final class BinaryChronicleLogEvent implements ChronicleLogEvent {
     static BinaryChronicleLogEvent read(@NotNull Bytes in) throws IllegalStateException {
         byte version = in.readByte();
         if(version == ChronicleLog.VERSION) {
-            ChronicleLog.Type type = ChronicleLog.Type.read(in);
             long timestamp = in.readLong();
             ChronicleLogLevel level = ChronicleLogLevel.readBinary(in);
             String threadName = in.readUTF();
@@ -50,7 +49,6 @@ final class BinaryChronicleLogEvent implements ChronicleLogEvent {
             final Throwable throwable = in.readBoolean() ? in.readObject(Throwable.class) : null;
             return new BinaryChronicleLogEvent(
                 version,
-                type,
                 timestamp,
                 level,
                 threadName,
@@ -68,7 +66,6 @@ final class BinaryChronicleLogEvent implements ChronicleLogEvent {
     // *********************************************************************
 
     private final byte version;
-    private final ChronicleLog.Type type;
     private final long timestamp;
     private final ChronicleLogLevel level;
     private final String threadName;
@@ -77,11 +74,10 @@ final class BinaryChronicleLogEvent implements ChronicleLogEvent {
     private final Object[] args;
     private final Throwable throwable;
 
-    private BinaryChronicleLogEvent(byte version, ChronicleLog.Type type, long timestamp,
+    private BinaryChronicleLogEvent(byte version, long timestamp,
         ChronicleLogLevel level, String threadName, String loggerName,
         String message, Object[] args, Throwable throwable) {
         this.version = version;
-        this.type = type;
         this.timestamp = timestamp;
         this.level = level;
         this.threadName = threadName;
@@ -98,11 +94,6 @@ final class BinaryChronicleLogEvent implements ChronicleLogEvent {
     @Override
     public byte getVersion() {
         return this.version;
-    }
-
-    @Override
-    public ChronicleLog.Type getType() {
-        return this.type;
     }
 
     @Override

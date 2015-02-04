@@ -28,14 +28,12 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
 
     private boolean includeCallerData;
     private boolean includeMDC;
-    private boolean formatMessage;
 
     protected BinaryChronicleAppender(final String name, final Filter filter, final String path) {
         super(name, filter, path);
 
         this.includeCallerData = true;
         this.includeMDC = true;
-        this.formatMessage = false;
     }
 
     // *************************************************************************
@@ -58,14 +56,6 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
         return this.includeMDC;
     }
 
-    public void setFormatMessage(boolean formatMessage) {
-        this.formatMessage = formatMessage;
-    }
-
-    public boolean isFormatMessage() {
-        return this.formatMessage;
-    }
-
     // *************************************************************************
     //
     // *************************************************************************
@@ -76,36 +66,27 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
         if(appender != null) {
             appender.startExcerpt();
             appender.writeByte(ChronicleLog.VERSION);
-            ChronicleLog.Type.LOG4J_2.writeTo(appender);
             appender.writeLong(event.getTimeMillis());
             toChronicleLogLevel(event.getLevel()).writeTo(appender);
             appender.writeUTF(event.getThreadName());
             appender.writeUTF(event.getLoggerName());
 
-            if (!formatMessage) {
-                Message message = event.getMessage();
+            Message message = event.getMessage();
+            appender.writeUTF(event.getMessage().getFormat());
 
-                appender.writeUTF(event.getMessage().getFormat());
+            // Args
+            Object[] args = message.getParameters();
+            int argsLen = null != args ? args.length : 0;
 
-                // Args
-                Object[] args = message.getParameters();
-                int argsLen = null != args ? args.length : 0;
-
-                appender.writeStopBit(argsLen);
-                for (int i = 0; i < argsLen; i++) {
-                    appender.writeObject(args[i]);
-                }
-            }
-            else {
-                appender.writeUTF(event.getMessage().getFormattedMessage());
-                appender.writeStopBit(0);
+            appender.writeStopBit(argsLen);
+            for (int i = 0; i < argsLen; i++) {
+                appender.writeObject(args[i]);
             }
 
             if (event.getThrown() != null) {
                 appender.writeBoolean(true);
                 appender.writeObject(event.getThrown());
-            }
-            else {
+            } else {
                 appender.writeBoolean(false);
             }
 

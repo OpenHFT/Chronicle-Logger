@@ -19,10 +19,13 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.LoggerContext;
+import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.Bytes;
+import net.openhft.lang.io.IOTools;
 import net.openhft.lang.io.serialization.BytesMarshallable;
 import net.openhft.lang.model.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
@@ -47,16 +50,36 @@ public class LogbackTestBase {
     // *************************************************************************
     //
     // *************************************************************************
+    protected static void deleteVanillaFiles(String testId) {
+        IOTools.deleteDir(basePath(testId));
+    }
+
+    protected static void deleteIndexedFiles(String testId) {
+        String basePath = basePath(testId);
+        String[] arr$ = new String[]{basePath + ".data", basePath + ".index"};
+        int len$ = arr$.length;
+
+        for(int i$ = 0; i$ < len$; ++i$) {
+            String name = arr$[i$];
+            File file = new File(name);
+            file.delete();
+        }
+    }
 
     protected static String rootPath() {
-        return System.getProperty("java.io.tmpdir")
-                + File.separator
-                + "chronology-logback";
+        String path = System.getProperty("java.io.tmpdir");
+        String sep  = System.getProperty("file.separator");
+
+        if(!path.endsWith(sep)) {
+            path += sep;
+        }
+
+        return path + "chronicle-logback";
     }
 
     protected static String basePath(String type) {
         return rootPath()
-                + File.separator
+                + System.getProperty("file.separator")
                 + type;
     }
 
@@ -101,16 +124,16 @@ public class LogbackTestBase {
      * @param type
      * @return
      */
-    protected IndexedChronicle getIndexedChronicle(String type) throws IOException {
-        return new IndexedChronicle(basePath(type));
+    protected Chronicle getIndexedChronicle(String type) throws IOException {
+        return ChronicleQueueBuilder.indexed(basePath(type)).build();
     }
 
     /**
      * @param type
      * @return
      */
-    protected VanillaChronicle getVanillaChronicle(String type) throws IOException {
-        return new VanillaChronicle(basePath(type));
+    protected Chronicle getVanillaChronicle(String type) throws IOException {
+        return ChronicleQueueBuilder.vanilla(basePath(type)).build();
     }
 
     // *************************************************************************

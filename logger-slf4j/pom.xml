@@ -22,7 +22,7 @@
     <parent>
         <groupId>net.openhft</groupId>
         <artifactId>chronicle-logger-parent</artifactId>
-        <version>1.0.4-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -31,15 +31,23 @@
     <artifactId>chronicle-logger-slf4j</artifactId>
     <packaging>bundle</packaging>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>chronicle-logger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-logger</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle</artifactId>
-        </dependency>
+
+        <!-- slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -49,67 +57,50 @@
             <artifactId>jul-to-slf4j</artifactId>
         </dependency>
 
-        <!-- modules for testing -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- jmh -->
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-core-benchmarks</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgument>-Xlint:deprecation</compilerArgument>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <forkCount>0</forkCount>
                     <reuseForks>false</reuseForks>
-                    <systemPropertyVariables>
-                        <slf4j.chronicle.vanilla.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.properties
-                        </slf4j.chronicle.vanilla.properties>
-                        <slf4j.chronicle.vanilla.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.perf.properties
-                        </slf4j.chronicle.vanilla.perf.properties>
-                        <slf4j.chronicle.vanilla.binary.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.binary.properties
-                        </slf4j.chronicle.vanilla.binary.properties>
-                        <slf4j.chronicle.vanilla.binary.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.vanilla.binary.perf.properties
-                        </slf4j.chronicle.vanilla.binary.perf.properties>
-                        <slf4j.chronicle.indexed.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.properties
-                        </slf4j.chronicle.indexed.properties>
-                        <slf4j.chronicle.indexed.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.perf.properties
-                        </slf4j.chronicle.indexed.perf.properties>
-                        <slf4j.chronicle.indexed.binary.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.binary.properties
-                        </slf4j.chronicle.indexed.binary.properties>
-                        <slf4j.chronicle.indexed.binary.perf.properties>
-                            ${project.basedir}/src/test/resources/slf4j.chronicle.indexed.binary.perf.properties
-                        </slf4j.chronicle.indexed.binary.perf.properties>
-                    </systemPropertyVariables>
+                    <excludes>
+                        <exclude>**/*PerfTest.java</exclude>
+                    </excludes>
                 </configuration>
+            </plugin>
+            <!--
+                generate maven dependencies versions file that can be used later
+                to install the right bundle in test phase.
+
+                The file is:
+
+                    target/classes/META-INF/maven/dependencies.properties
+            -->
+            <plugin>
+                <groupId>org.apache.servicemix.tooling</groupId>
+                <artifactId>depends-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-depends-file</id>
+                        <goals>
+                            <goal>generate-depends-file</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -117,9 +108,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}
-                        </Bundle-SymbolicName>
-                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>OpenHFT :: ${project.artifactId}</Bundle-Name>
+                        <Bundle-Version>${project.version}</Bundle-Version>
                         <Export-Package>net.openhft.chronicle.logger.slf4j.*</Export-Package>
                     </instructions>
                 </configuration>
@@ -137,10 +128,12 @@
             </plugin>
         </plugins>
     </build>
+
     <scm>
         <url>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</url>
         <connection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</connection>
         <developerConnection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</developerConnection>
         <tag>master</tag>
     </scm>
+
 </project>

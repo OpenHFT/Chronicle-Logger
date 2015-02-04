@@ -18,8 +18,11 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
+import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.Bytes;
 import net.openhft.lang.io.serialization.BytesMarshallable;
@@ -29,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -44,30 +46,36 @@ public class Slf4jTestBase {
     protected static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     protected static String basePath(String type) {
-        return System.getProperty("java.io.tmpdir")
-                + File.separator
-                + "chronology-slf4j"
-                + File.separator
+        String path = System.getProperty("java.io.tmpdir");
+        String sep  = System.getProperty("file.separator");
+
+        if(!path.endsWith(sep)) {
+            path += sep;
+        }
+
+        return path
+                + "chronicle-slf4j"
+                + System.getProperty("file.separator")
                 + type
-                + File.separator
+                + System.getProperty("file.separator")
                 + new SimpleDateFormat("yyyyMMdd").format(new Date());
     }
 
     protected static String basePath(String type, String loggerName) {
         return basePath(type)
-                + File.separator
+                + System.getProperty("file.separator")
                 + loggerName;
     }
 
     protected static String indexedBasePath(String loggerName) {
-        return basePath(ChronicleLoggingConfig.TYPE_INDEXED)
-                + File.separator
+        return basePath(ChronicleLogConfig.TYPE_INDEXED)
+                + System.getProperty("file.separator")
                 + loggerName;
     }
 
     protected static String vanillaBasePath(String loggerName) {
-        return basePath(ChronicleLoggingConfig.TYPE_VANILLA)
-                + File.separator
+        return basePath(ChronicleLogConfig.TYPE_VANILLA)
+                + System.getProperty("file.separator")
                 + loggerName;
     }
 
@@ -114,8 +122,8 @@ public class Slf4jTestBase {
      * @param id
      * @return
      */
-    protected IndexedChronicle getIndexedChronicle(String id) throws IOException {
-        return new IndexedChronicle(basePath(ChronicleLoggingConfig.TYPE_INDEXED, id));
+    protected Chronicle getIndexedChronicle(String id) throws IOException {
+        return ChronicleQueueBuilder.indexed(basePath(ChronicleLogConfig.TYPE_INDEXED, id)).build();
     }
 
     /**
@@ -123,16 +131,16 @@ public class Slf4jTestBase {
      * @param id
      * @return
      */
-    protected IndexedChronicle getIndexedChronicle(String type, String id) throws IOException {
-        return new IndexedChronicle(basePath(type, id));
+    protected Chronicle getIndexedChronicle(String type, String id) throws IOException {
+        return ChronicleQueueBuilder.indexed(basePath(type, id)).build();
     }
 
     /**
      * @param id
      * @return
      */
-    protected VanillaChronicle getVanillaChronicle(String id) throws IOException {
-        return new VanillaChronicle(basePath(ChronicleLoggingConfig.TYPE_VANILLA, id));
+    protected Chronicle getVanillaChronicle(String id) throws IOException {
+        return ChronicleQueueBuilder.vanilla(basePath(ChronicleLogConfig.TYPE_VANILLA, id)).build();
     }
 
     /**
@@ -140,8 +148,8 @@ public class Slf4jTestBase {
      * @param id
      * @return
      */
-    protected VanillaChronicle getVanillaChronicle(String type, String id) throws IOException {
-        return new VanillaChronicle(basePath(type, id));
+    protected Chronicle getVanillaChronicle(String type, String id) throws IOException {
+        return ChronicleQueueBuilder.vanilla(basePath(type, id)).build();
     }
 
     // *************************************************************************

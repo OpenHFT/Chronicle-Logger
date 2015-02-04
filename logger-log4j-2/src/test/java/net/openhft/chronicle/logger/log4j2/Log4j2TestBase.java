@@ -18,6 +18,8 @@
 
 package net.openhft.chronicle.logger.log4j2;
 
+import net.openhft.chronicle.Chronicle;
+import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
@@ -45,9 +47,14 @@ public class Log4j2TestBase {
     protected static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     protected static String rootPath() {
-        return System.getProperty("java.io.tmpdir")
-                + File.separator
-                + "chronology-log4j2";
+        String path = System.getProperty("java.io.tmpdir");
+        String sep  = System.getProperty("file.separator");
+
+        if(!path.endsWith(sep)) {
+            path += sep;
+        }
+
+        return path + "chronicle-log4j2";
     }
 
     protected static String basePath(String type) {
@@ -104,16 +111,16 @@ public class Log4j2TestBase {
      * @param type
      * @return
      */
-    protected IndexedChronicle getIndexedChronicle(String type) throws IOException {
-        return new IndexedChronicle(basePath(type));
+    protected Chronicle getIndexedChronicle(String type) throws IOException {
+        return ChronicleQueueBuilder.indexed(basePath(type)).build();
     }
 
     /**
      * @param type
      * @return
      */
-    protected VanillaChronicle getVanillaChronicle(String type) throws IOException {
-        return new VanillaChronicle(basePath(type));
+    protected Chronicle getVanillaChronicle(String type) throws IOException {
+        return ChronicleQueueBuilder.vanilla(basePath(type)).build();
     }
 
     // *************************************************************************

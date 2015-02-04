@@ -81,7 +81,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
     // *************************************************************************
 
     @Test
-    public void testAppender() throws IOException {
+    public void testVanillaBinaryAppender() throws IOException {
         final String testId    = "binary-vanilla-chronicle";
         final String threadId  = testId + "-th";
         final long   timestamp = System.currentTimeMillis();
@@ -93,8 +93,8 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
             log(logger,level,"level is {}",level);
         }
 
-        VanillaChronicle   chronicle = getVanillaChronicle(testId);
-        ExcerptTailer      tailer    = chronicle.createTailer().toStart();
+        Chronicle         chronicle = getVanillaChronicle(testId);
+        ExcerptTailer     tailer    = chronicle.createTailer().toStart();
         ChronicleLogEvent evt       = null;
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
@@ -103,7 +103,6 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
             evt = ChronicleLogHelper.decodeBinary(tailer);
             assertNotNull(evt);
             assertEquals(evt.getVersion(), ChronicleLog.VERSION);
-            assertEquals(evt.getType(), ChronicleLog.Type.LOG4J_1);
             assertTrue(evt.getTimeStamp() >= timestamp);
             assertEquals(level,evt.getLevel());
             assertEquals(threadId, evt.getThreadName());
@@ -139,7 +138,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
     }
 
     @Test
-    public void testTextAppender1() throws IOException {
+    public void testVanillaTextAppender() throws IOException {
         final String testId    = "text-vanilla-chronicle";
         final String threadId  = testId + "-th";
         final Logger logger    = LoggerFactory.getLogger(testId);
