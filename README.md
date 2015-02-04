@@ -200,8 +200,217 @@ The chronicle-logger-logback module provides appenders for Logback targeting [Ch
   ```
   
 ## chronicle-logger-log4j-1
+
+```
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "BINARY-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/binary-vanilla-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+    </appender>
+
+    <appender name  = "TEXT-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.TextVanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/text-vanilla-chronicle"/>
+        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
+        <param name="stackTradeDepth" value="3"/>
+    </appender>
+
+    <appender name  = "BINARY-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.BinaryIndexedChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/binary-indexed-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+    </appender>
+
+    <appender name  = "TEXT-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.TextIndexedChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/text-indexed-chronicle"/>
+        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
+        <param name="stackTradeDepth" value="3"/>
+    </appender>
+
+    <!-- ******************************************************************* -->
+    <!-- STDOUT                                                              -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "STDOUT"
+              class = "org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
+        </layout>
+    </appender>
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
+
+    <logger name="binary-vanilla-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="text-vanilla-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="binary-indexed-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <logger name="text-indexed-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
+
+    <logger name="net.openhft" additivity="false">
+        <level value="warn"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
+
+    <root>
+        <level value="debug" />
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</log4j:configuration>
+```
+
 ## chronicle-logger-log4j-2
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration packages="net.openhft.chronicle.logger,net.openhft.chronicle.logger.log4j2">
+
+    <!-- ******************************************************************* -->
+    <!-- APPENDERS                                                           -->
+    <!-- ******************************************************************* -->
+
+    <appenders>
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="[CHRONOLOGY] [%-5p] %c - %m%n%throwable{none}"/>
+        </Console>
+
+        <!-- *************************************************************** -->
+        <!-- VANILLA                                                         -->
+        <!-- *************************************************************** -->
+
+        <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-vanilla-chronicle</path>
+            <includeCallerData>false</includeCallerData>
+            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+        </BinaryVanillaChronicle>
+
+        <TextVanillaChronicle name="TEXT-VANILLA-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/text-vanilla-chronicle</path>
+            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+            <stackTraceDepth>3</stackTraceDepth>
+        </TextVanillaChronicle>
+
+        <!-- *************************************************************** -->
+        <!-- INDEXED                                                         -->
+        <!-- *************************************************************** -->
+
+        <BinaryIndexedChronicle name="BINARY-INDEXED-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-indexed-chronicle</path>
+            <includeCallerData>false</includeCallerData>
+            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+        </BinaryIndexedChronicle>
+
+        <TextIndexedChronicle name="TEXT-INDEXED-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/text-indexed-chronicle</path>
+            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
+            <stackTraceDepth>3</stackTraceDepth>
+        </TextIndexedChronicle>
+
+    </appenders>
+
+    <!-- ******************************************************************* -->
+    <!-- LOGGERS                                                             -->
+    <!-- ******************************************************************* -->
+
+    <loggers>
+
+        <root level="all">
+            <appender-ref ref="STDOUT"/>
+        </root>
+
+        <!-- *************************************************************** -->
+        <!-- VANILLA                                                         -->
+        <!-- *************************************************************** -->
+
+        <logger name="binary-vanilla-chronicle" level="trace" additivity="false">
+            <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
+        </logger>
+        <logger name="text-vanilla-chronicle" level="trace" additivity="false">
+            <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
+        </logger>
+
+        <!-- *************************************************************** -->
+        <!-- INDEXED                                                         -->
+        <!-- *************************************************************** -->
+
+        <logger name="binary-indexed-chronicle" level="trace" additivity="false">
+            <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
+        </logger>
+        <logger name="text-indexed-chronicle" level="trace" additivity="false">
+            <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
+        </logger>
+
+        <!-- *************************************************************** -->
+        <!--                                                                 -->
+        <!-- *************************************************************** -->
+
+        <logger name="net.openhft" level="warn"/>
+
+    </loggers>
+
+</configuration>
+```
+
 ## chronicle-logger-jul
+
+```
+handlers=java.util.logging.ConsoleHandler, net.openhft.chronicle.logger.jul.BinaryVanillaChronicleHandler
+
+.level=ALL
+
+java.util.logging.ConsoleHandler.level=ALL
+java.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter
+
+net.openhft.level=WARNING
+net.openhft.handlers=java.util.logging.ConsoleHandler
+
+################################################################################
+# BINARY VANILLA
+################################################################################
+
+net.openhft.chronicle.logger.jul.BinaryVanillaChronicleHandler.path = ${java.io.tmpdir}/chronicle-jul/vanilla
+net.openhft.chronicle.logger.jul.BinaryVanillaChronicleHandler.level = ALL
+
+binary-vanilla-cfg.level=INFO
+binary-vanilla-cfg.handlers=net.openhft.chronicle.logger.jul.BinaryVanillaChronicleHandler
+binary-vanilla-cfg.useParentHandlers=false
+```
+
 ## chronicle-logger-jcl
 
 ### Tools
