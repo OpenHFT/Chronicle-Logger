@@ -82,9 +82,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
                     <excludes>
                         <exclude>**/*PerfTest.java</exclude>
                     </excludes>
+                    <systemPropertyVariables>
+                        <resources.path>
+                            ${project.basedir}/src/test/resources
+                        </resources.path>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <!--
