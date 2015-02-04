@@ -38,7 +38,7 @@ Chronicle logger is built on Chronicle Queue. It provides multiple Chronicle Que
 ###Bindings
 
 #### logger-slf4j
-The logger-slf4j is an implementation of SLF4J API > 1.7.x with (Chronicle-Queue)[https://github.com/OpenHFT/Chronicle-Queue] as persistence engine.
+The logger-slf4j is an implementation of SLF4J API > 1.7.x with [Chronicle-Queue](https://github.com/OpenHFT/Chronicle-Queue) as persistence engine.
 
 To configure this sl4j binding you need to specify the location of a properties files (file-system or classpath) via system properties:
 ```
@@ -105,7 +105,7 @@ The parameters will change those defined by the default configuration.
 
 
 ## logger-logback
-The logger-logback module provides appenders for Logback targeting (Chronicle-Queue)[https://github.com/OpenHFT/Chronicle-Queue] as underlying persistence framework:
+The logger-logback module provides appenders for Logback targeting [Chronicle-Queue](https://github.com/OpenHFT/Chronicle-Queue) as underlying persistence framework:
 
   * BinaryIndexedChronicleAppender
   * TextIndexedChronicleAppender
