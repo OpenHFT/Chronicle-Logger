@@ -9,13 +9,13 @@ An extremely fast java logger. We feel logging should not slow down your system.
 * [Overview](https://github.com/OpenHFT/Chronicle-Logger#overview)
 * [How it works](https://github.com/OpenHFT/Chronicle-Logger#How it works)
 * [Bindings](https://github.com/OpenHFT/Chronicle-Logger#bindings)
-  * [slf4j](https://github.com/OpenHFT/Chronicle-Logger#logger-slf4j)
-  * [logback](https://github.com/OpenHFT/Chronicle-Logger#logger-logback)
-  * [Apache log4j 1.2](https://github.com/OpenHFT/Chronicle-Logger#logger-log4j-1)
-  * [Apache log4j 2](https://github.com/OpenHFT/Chronicle-Logger#logger-log4j-2)
-  * [Java Util Logging](https://github.com/OpenHFT/Chronicle-Logger#logger-jul)
-  * [Apache Common Logging](https://github.com/OpenHFT/Chronicle-Logger#logger-jcl)
-
+  * [SLF4j](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-slf4j)
+  * [Logback](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-logback)
+  * [Apache log4j 1.2](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-log4j-1)
+  * [Apache log4j 2](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-log4j-2)
+  * [Java Util Logging](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-jul)
+  * [Apache Common Logging](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-jcl)
+* [Tools](https://github.com/OpenHFT/Chronicle-Logger#tools)
 
 ### Overview
 Today most programs require the logging of large amounts of data, especially in trading systems where this is a regulatory requirement. Loggers can affect your system performance, therefore logging is sometimes kept to a minimum, With chronicle we aim to eliminate this added overhead, freeing your system to focus on the business logic.
@@ -37,8 +37,8 @@ Chronicle logger is built on Chronicle Queue. It provides multiple Chronicle Que
 
 ###Bindings
 
-#### logger-slf4j
-The logger-slf4j is an implementation of SLF4J API > 1.7.x with [Chronicle-Queue](https://github.com/OpenHFT/Chronicle-Queue) as persistence engine.
+#### chronicle-logger-slf4j
+The chronicle-logger-slf4j is an implementation of SLF4J API > 1.7.x with [Chronicle-Queue](https://github.com/OpenHFT/Chronicle-Queue) as persistence engine.
 
 To configure this sl4j binding you need to specify the location of a properties files (file-system or classpath) via system properties:
 ```
@@ -104,8 +104,8 @@ The parameters will change those defined by the default configuration.
   * The _path_ is used to track the underlying Chronicle so two loggers configured with the same _path_ will share the same Chronicle  
 
 
-## logger-logback
-The logger-logback module provides appenders for Logback targeting [Chronicle-Queue](https://github.com/OpenHFT/Chronicle-Queue) as underlying persistence framework:
+## chronicle-logger-logback
+The chronicle-logger-logback module provides appenders for Logback targeting [Chronicle-Queue](https://github.com/OpenHFT/Chronicle-Queue) as underlying persistence framework:
 
   * BinaryIndexedChronicleAppender
   * TextIndexedChronicleAppender
@@ -127,7 +127,7 @@ The logger-logback module provides appenders for Logback targeting [Chronicle-Qu
 
       <!--
       Configure the underlying IndexedChronicle, for a list of the options have
-      a look at net.openhft.chronicle.ChronicleConfig 
+      a look at net.openhft.chronicle.ChronicleQueueBuilder 
       -->
       <chronicleConfig>
           <indexFileCapacity>128</indexFileCapacity>
@@ -148,7 +148,7 @@ The logger-logback module provides appenders for Logback targeting [Chronicle-Qu
 
       <!--
       Configure the underlying IndexedChronicle, for a list of the options have
-      a look at net.openhft.chronicle.ChronicleConfig 
+      a look at net.openhft.chronicle.ChronicleQueueBuilder 
       -->
       <chronicleConfig>
           <indexFileCapacity>128</indexFileCapacity>
@@ -169,7 +169,7 @@ The logger-logback module provides appenders for Logback targeting [Chronicle-Qu
 
       <!--
       Configure the underlying VanillaChronicle, for a list of the options have
-      a look at net.openhft.chronicle.VanillaChronicleConfig 
+      a look at net.openhft.chronicle.ChronicleQueueBuilder 
       -->
       <chronicleConfig>
           <dataCacheCapacity>128</dataCacheCapacity>
@@ -190,7 +190,7 @@ The logger-logback module provides appenders for Logback targeting [Chronicle-Qu
 
       <!--
       Configure the underlying VanillaChronicle, for a list of the options have
-      a look at net.openhft.chronicle.VanillaChronicleConfig 
+      a look at net.openhft.chronicle.ChronicleQueueBuilder 
       -->
       <chronicleConfig>
           <dataCacheCapacity>128</dataCacheCapacity>
@@ -199,8 +199,105 @@ The logger-logback module provides appenders for Logback targeting [Chronicle-Qu
   </appender>
   ```
   
-## log4j-1
-## log4j-2
-## jul
-## jcl
+## chronicle-logger-log4j-1
+## chronicle-logger-log4j-2
+## chronicle-logger-jul
+## chronicle-logger-jcl
 
+### Tools
+
+  * net.openhft.chronicle.logger.tools.ChroniTail
+  ```
+    ChroniTail [-t|-i] path
+        -t = text chronicle, default binary
+        -i = IndexedCronicle, default VanillaChronicle
+
+    mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniTail" -Dexec.args="..."
+  ```
+
+  * net.openhft.chronicle.logger.tools.ChroniCat
+  ```
+      ChroniCat [-t|-i] path
+        -t = text chronicle, default binary
+        -i = IndexedCronicle, default VanillaChronicle
+
+      mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniCat" -Dexec.args="..."
+  ```
+
+  * net.openhft.chronicle.logger.tools.ChroniGrep
+  ```
+      ChroniCat [-t|-i] regexp1 ... regexpN path
+        -t = text chronicle, default binary
+        -i = IndexedCronicle, default VanillaChronicle
+
+      mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniCat" -Dexec.args="..."
+  ```
+
+### Writing a simple LogSearch with Groovy and Grape
+
+  * Binary log search
+  ```groovy
+  import net.openhft.chronicle.ChronicleQueueBuilder
+  import net.openhft.chronicle.logger.ChronicleLogProcessor
+  import net.openhft.chronicle.logger.tools.ChroniTool
+
+  @Grapes([
+     @Grab(group='net.openhft', module='chronicle'              , version='3.3.5'),
+     @Grab(group='net.openhft', module='chronicle-logger-tools' , version='1.1.0-SNAPSHOT' ),
+  ])
+  class LogSearch {
+      static def main(String[] args) {
+          def processor = { event ->
+              if(event.message =~ '.*n.*') {
+                  printf("%s => %s\n",ts,msg)
+              }
+          }
+
+          try {
+              if(args.length == 1) {
+                  ChroniTool.process(
+                      ChronicleQueueBuilder.vanilla(args[0]),
+                      ChroniTool.binaryReader(processor as ChronicleLogProcessor),
+                      false,
+                      false)
+              }
+          } catch(Exception e) {
+              e.printStackTrace(System.err);
+          }
+      }
+  }
+  ```
+
+  * Text log search
+  ```groovy
+  import net.openhft.chronicle.ChronicleQueueBuilder
+  import net.openhft.chronicle.logger.ChronicleLogProcessor
+  import net.openhft.chronicle.logger.tools.ChroniTool
+
+  @Grapes([
+     @Grab(group='net.openhft', module='chronicle'             , version='3.3.5'),
+     @Grab(group='net.opemhft', module='chronicle-logger-tools', version='1.1.0-SNAPSHOT' ),
+  ])
+  class LogSearch {
+      static def main(String[] args) {
+          def processor = { msg ->
+              if(msg =~ '.*n.*') {
+                  printf("%s => %s\n",ts,msg)
+              }
+          }
+
+          try {
+              if(args.length == 1) {
+                  ChroniTool.process(
+                      ChronicleQueueBuilder.vanilla(args[0]),
+                      ChroniTool.binaryReader(processor as ChronicleLogProcessor),
+                      false,
+                      false)
+              }
+          } catch(Exception e) {
+              e.printStackTrace(System.err);
+          }
+      }
+  }
+  ```
+  
