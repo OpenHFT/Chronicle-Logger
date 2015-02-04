@@ -9,12 +9,12 @@ An extremely fast java logger. We feel logging should not slow down your system.
 * [Overview](https://github.com/OpenHFT/Chronicle-Logger#overview)
 * [How it works](https://github.com/OpenHFT/Chronicle-Logger#How it works)
 * [Bindings](https://github.com/OpenHFT/Chronicle-Logger#bindings)
-  * [slf4j](https://github.com/OpenHFT/Chronicle-Logger#slf4j)
-  * [logback](https://github.com/OpenHFT/Chronicle-Logger#logback)
-  * [Apache log4j 1.2](https://github.com/OpenHFT/Chronicle-Logger#log4j-1)
-  * [Apache log4j 2](https://github.com/OpenHFT/Chronicle-Logger#log4j-2)
-  * [Java Util Logging](https://github.com/OpenHFT/Chronicle-Logger#jul)
-  * [Apache Common Logging](https://github.com/OpenHFT/Chronicle-Logger#jcl)
+  * [slf4j](https://github.com/OpenHFT/Chronicle-Logger#logger-slf4j)
+  * [logback](https://github.com/OpenHFT/Chronicle-Logger#logger-logback)
+  * [Apache log4j 1.2](https://github.com/OpenHFT/Chronicle-Logger#logger-log4j-1)
+  * [Apache log4j 2](https://github.com/OpenHFT/Chronicle-Logger#logger-log4j-2)
+  * [Java Util Logging](https://github.com/OpenHFT/Chronicle-Logger#logger-jul)
+  * [Apache Common Logging](https://github.com/OpenHFT/Chronicle-Logger#logger-jcl)
 
 
 ### Overview
@@ -35,8 +35,11 @@ We also have some very helpfull [tools] (https://github.com/OpenHFT/Chronicle-Lo
 ### How it works
 Chronicle logger is built on Chronicle Queue. It provides multiple Chronicle Queue adapters and is a low latency, high throughput synchronous writer. Unlike asynchronous writers, you will always see the last message before the application dies.  As the last message is often the most valuable.
 
-### Bindings
-## slf4j
+###Bindings
+
+#### logger-slf4j
+The logger-slf4j is an implementation of SLF4J API > 1.7.x with (Chronicle-Queue)[https://github.com/OpenHFT/Chronicle-Queue] as persistence engine.
+
 To configure this sl4j binding you need to specify the location of a properties files (file-system or classpath) via system properties:
 ```
 -Dchronicle.logger.properties=${pathOfYourPropertiesFile}
@@ -44,14 +47,14 @@ To configure this sl4j binding you need to specify the location of a properties 
 
 The following properties are supported:
 
- **Property** | **Description**                          | **Values**                       | **Per-Logger**
---------------|------------------------------------------|----------------------------------|----------------
-type          | the type of the underlying Chronicle     | indexed, vanilla                 | no
-path          | the base directory of a Chronicle        |                                  | yes
-level         | the default log level                    | trace, debug, info, warn, error  | yes
-append        |                                          | true, false                      | yes (if a specific path is defined)
-format        | write log as text or binary              | binary, text                     | yes (if a specific path is defined)
-dateFormat    | the date format for text loggers         |                                  | no 
+ **Property** | **Description**                      | **Values**                       | **Per-Logger**
+--------------|--------------------------------------|----------------------------------|----------------
+type          | the type of the underlying Chronicle | indexed, vanilla                 | no
+path          | the base directory of a Chronicle    |                                  | yes
+level         | the default log level                | trace, debug, info, warn, error  | yes
+append        |                                      | true, false                      | yes (if a specific path is defined)
+format        | write log as text or binary          | binary, text                     | yes (if a specific path is defined)
+dateFormat    | the date format for text loggers     |                                  | no 
 
 The default configuration is build using properties with chronicle.logger.root as prefix but you can also set per-logger settings i.e. chronicle.logger.L1, an example:
 
@@ -96,12 +99,106 @@ chronicle.logger.root.cfg.synchronous       = true
 The parameters will change those defined by the default configuration.
 
 
-###Notes
+##Notes
   * Loggers are not hierarchical grouped so my.domain.package.MyClass1 and my.domain are two distinct entities.
   * The _path_ is used to track the underlying Chronicle so two loggers configured with the same _path_ will share the same Chronicle  
 
 
-## logback
+## logger-logback
+The logger-logback module provides appenders for Logback targeting (Chronicle-Queue)[https://github.com/OpenHFT/Chronicle-Queue] as underlying persistence framework:
+
+  * BinaryIndexedChronicleAppender
+  * TextIndexedChronicleAppender
+  * BinaryVanillaChronicleAppender
+  * TextVanillaChronicleAppender
+
+### Configuration
+
+* BinaryIndexedChronicleAppender
+
+  This appender writes log entries to an IndexedChronicle as binary
+  
+  ```xml
+  <appender name  = "BinaryIndexedAppender"
+            class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
+      
+      <!-- Path used by the underlying IndexedChronicle -->
+      <path>${java.io.tmpdir}/BinaryIndexedAppender</path>
+
+      <!--
+      Configure the underlying IndexedChronicle, for a list of the options have
+      a look at net.openhft.chronicle.ChronicleConfig 
+      -->
+      <chronicleConfig>
+          <indexFileCapacity>128</indexFileCapacity>
+      </chronicleConfig>
+  </appender>
+  ```
+
+* TextIndexedChronicleAppender
+
+  This appender writes log entries to an IndexedChronicle as text
+
+  ```xml
+  <appender name  = "TextIndexedAppender"
+            class = "net.openhft.chronicle.logger.logback.TextIndexedChronicleAppender">
+      
+      <!-- Path used by the underlying IndexedChronicle -->
+      <path>${java.io.tmpdir}/TextIndexedAppender</path>
+
+      <!--
+      Configure the underlying IndexedChronicle, for a list of the options have
+      a look at net.openhft.chronicle.ChronicleConfig 
+      -->
+      <chronicleConfig>
+          <indexFileCapacity>128</indexFileCapacity>
+      </chronicleConfig>
+  </appender>
+  ```
+
+* BinaryVanillaChronicleAppender
+
+  This appender writes log entries to a VanillaChronicle as binary
+
+  ```xml
+  <appender name  = "BinaryVanillaAppender"
+            class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
+
+      <!-- Path used by the underlying VanillaChronicle -->
+      <path>${java.io.tmpdir}/BinaryVanillaAppender</path>
+
+      <!--
+      Configure the underlying VanillaChronicle, for a list of the options have
+      a look at net.openhft.chronicle.VanillaChronicleConfig 
+      -->
+      <chronicleConfig>
+          <dataCacheCapacity>128</dataCacheCapacity>
+      </chronicleConfig>
+  </appender>
+  ```
+
+* TextVanillaChronicleAppender
+
+  This appender writes log entries to a VanillaChronicle as text
+
+  ```xml
+  <appender name  = "TextVanillaAppender"
+            class = "net.openhft.chronicle.logger.logback.TextVanillaChronicleAppender">
+      
+      <!-- Path used by the underlying VanillaChronicle -->
+      <path>${java.io.tmpdir}/TextVanillaAppender</path>
+
+      <!--
+      Configure the underlying VanillaChronicle, for a list of the options have
+      a look at net.openhft.chronicle.VanillaChronicleConfig 
+      -->
+      <chronicleConfig>
+          <dataCacheCapacity>128</dataCacheCapacity>
+      </chronicleConfig>
+
+  </appender>
+  ```
+  
 ## log4j-1
 ## log4j-2
 ## jul
