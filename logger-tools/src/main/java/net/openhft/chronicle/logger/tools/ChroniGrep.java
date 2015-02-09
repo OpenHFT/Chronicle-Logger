@@ -19,8 +19,6 @@
 package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.IndexedChronicle;
-import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLogEvent;
 
 import java.util.HashSet;
@@ -104,14 +102,16 @@ public final class ChroniGrep {
 
     private static final class BinaryGrep extends ChroniTool.BinaryProcessor {
         private final Grep grep;
+        private final StringBuilder sb;
 
         public BinaryGrep(final Grep grep) {
             this.grep = grep;
+            this.sb = new StringBuilder();
         }
 
         @Override
         public void process(final ChronicleLogEvent event) {
-            String msg = ChroniTool.asString(event);
+            String msg = ChroniTool.asString(event, sb).toString();
             if (this.grep.matches(msg)) {
                 System.out.println(msg);
             }
@@ -120,14 +120,16 @@ public final class ChroniGrep {
 
     private static final class TextGrep extends ChroniTool.TextProcessor {
         private final Grep grep;
+        private final StringBuilder sb;
 
         public TextGrep(final Grep grep) {
             this.grep = grep;
+            this.sb = new StringBuilder();
         }
 
         @Override
         public void process(final ChronicleLogEvent event) {
-            String msg = ChroniTool.asString(event);
+            String msg = ChroniTool.asString(event, sb).toString();
             if (this.grep.matches(msg)) {
                 System.out.println(msg);
             }
