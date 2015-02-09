@@ -456,17 +456,18 @@ binary-vanilla-cfg.useParentHandlers=false
   ])
   class LogSearch {
       static def main(String[] args) {
-          def processor = { event ->
-              if(event.message =~ '.*n.*') {
-                  printf("%s => %s\n",ts,msg)
-              }
-          }
-
           try {
               if(args.length == 1) {
                   ChroniTool.process(
-                      ChronicleQueueBuilder.vanilla(args[0]),
-                      ChroniTool.binaryReader(processor as ChronicleLogProcessor),
+                      ChronicleQueueBuilder.vanilla(args[0]).build(),
+                      new ChroniTool.BinaryProcessor() {
+                          @Override
+                          public void process(ChronicleLogEvent event) {
+                              if(event.message =~ '.*n.*') {
+                                  printf("%s => %s\n",ts,msg)
+                              }
+                          }
+                      }
                       false,
                       false)
               }
@@ -489,16 +490,18 @@ binary-vanilla-cfg.useParentHandlers=false
   ])
   class LogSearch {
       static def main(String[] args) {
-          def processor = { msg ->
-              if(msg =~ '.*n.*') {
-                  printf("%s => %s\n",ts,msg)
-              }
-          }
-
           try {
               if(args.length == 1) {
                   ChroniTool.process(
-                      ChronicleQueueBuilder.vanilla(args[0]),
+                      ChronicleQueueBuilder.vanilla(args[0]).build(),
+                      new ChroniTool.TextProcessor() {
+                          @Override
+                          public void process(ChronicleLogEvent event) {
+                              if(msg =~ '.*n.*') {
+                                  printf("%s => %s\n",ts,msg)
+                              }
+                          }
+                      }
                       ChroniTool.binaryReader(processor as ChronicleLogProcessor),
                       false,
                       false)
