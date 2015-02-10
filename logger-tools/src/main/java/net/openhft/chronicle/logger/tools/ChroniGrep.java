@@ -21,8 +21,10 @@ package net.openhft.chronicle.logger.tools;
 import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.logger.ChronicleLogEvent;
 
+import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -89,9 +91,9 @@ public final class ChroniGrep {
             return this.regexps.isEmpty();
         }
 
-        boolean matches(String message) {
+        boolean matches(CharSequence message) {
             for (String regexp : this.regexps) {
-                if (message.matches(regexp)) {
+                if (Pattern.matches(regexp, message)) {
                     return true;
                 }
             }
@@ -102,36 +104,38 @@ public final class ChroniGrep {
 
     private static final class BinaryGrep extends ChroniTool.BinaryProcessor {
         private final Grep grep;
-        private final StringBuilder sb;
+        private final StringWriter writer;
 
         public BinaryGrep(final Grep grep) {
             this.grep = grep;
-            this.sb = new StringBuilder();
+            this.writer = new StringWriter();
         }
 
         @Override
         public void process(final ChronicleLogEvent event) {
-            String msg = ChroniTool.asString(event, sb).toString();
-            if (this.grep.matches(msg)) {
-                System.out.println(msg);
+            writer.getBuffer().setLength(0);
+            ChroniTool.asString(event, writer).toString();
+            if (this.grep.matches(writer.getBuffer())) {
+                System.out.println(writer.getBuffer());
             }
         }
     }
 
     private static final class TextGrep extends ChroniTool.TextProcessor {
         private final Grep grep;
-        private final StringBuilder sb;
+        private final StringWriter writer;
 
         public TextGrep(final Grep grep) {
             this.grep = grep;
-            this.sb = new StringBuilder();
+            this.writer = new StringWriter();
         }
 
         @Override
         public void process(final ChronicleLogEvent event) {
-            String msg = ChroniTool.asString(event, sb).toString();
-            if (this.grep.matches(msg)) {
-                System.out.println(msg);
+            writer.getBuffer().setLength(0);
+            ChroniTool.asString(event, writer).toString();
+            if (this.grep.matches(writer.getBuffer())) {
+                System.out.println(writer.getBuffer());
             }
         }
     }

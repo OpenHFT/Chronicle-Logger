@@ -25,6 +25,8 @@ import net.openhft.lang.io.Bytes;
 import net.openhft.lang.model.constraints.NotNull;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
@@ -56,22 +58,22 @@ public final class ChroniTool {
     // *************************************************************************
 
     public static final ChronicleLogReader READER_BINARY = new BinaryProcessor() {
-        private StringBuilder sb = new StringBuilder();
+        private StringWriter writer = new StringWriter();
 
         @Override
         public void process(final ChronicleLogEvent event) {
-            sb.setLength(0);
-            System.out.println(asString(event, sb));
+            writer.getBuffer().setLength(0);
+            System.out.println(asString(event, writer));
         }
     };
 
     public static final ChronicleLogReader READER_TEXT = new TextProcessor() {
-        private StringBuilder sb = new StringBuilder();
+        private StringWriter writer = new StringWriter();
 
         @Override
         public void process(final ChronicleLogEvent event) {
-            sb.setLength(0);
-            System.out.println(asString(event, sb));
+            writer.getBuffer().setLength(0);
+            System.out.println(asString(event, writer));
         }
     };
 
@@ -79,57 +81,40 @@ public final class ChroniTool {
     //
     // *************************************************************************
 
-    public static StringBuilder asString(final ChronicleLogEvent event, final StringBuilder sb) {
-        sb.append(DF.format(event.getTimeStamp()));
-        sb.append("|");
-        sb.append(event.getLevel().toString());
-        sb.append("|");
-        sb.append(event.getThreadName());
-        sb.append("|");
-        sb.append(event.getLoggerName());
-        sb.append("|");
-        sb.append(event.getMessage());
+    public static StringWriter asString(final ChronicleLogEvent event, final StringWriter writer) {
+        writer.append(DF.format(event.getTimeStamp()));
+        writer.append("|");
+        writer.append(event.getLevel().toString());
+        writer.append("|");
+        writer.append(event.getThreadName());
+        writer.append("|");
+        writer.append(event.getLoggerName());
+        writer.append("|");
+        writer.append(event.getMessage());
 
         Object[] args = event.getArgumentArray();
-        if(args != null) {
-            sb.append("|args {");
+        if(args != null && args.length > 0) {
+            writer.append("|args {");
             for(int i=0; i<args.length; i++) {
-                sb.append(Objects.toString(args[i]));
+                writer.append(Objects.toString(args[i]));
                 if(i != args.length - 1){
-                    sb.append(", ");
+                    writer.append(", ");
                 }
             }
 
-            sb.append("}");
+            writer.append("}");
         }
 
         final Throwable th = event.getThrowable();
         if(th != null) {
-            sb.append("|exception: ");
-            sb.append(th.getMessage());
-
-            StackTraceElement[] elements = th.getStackTrace();
-            for(int i=0; i<elements.length; i++) {
-                sb.append("\n\tat ");
-                sb.append(elements[i].toString());
-            }
-
-            final Throwable cause = th.getCause();
-            if(cause != null) {
-                sb.append("\n\tCaused by: ");
-                sb.append(cause.getMessage());
-
-                elements = cause.getStackTrace();
-                for(int i=0; i<elements.length; i++) {
-                    sb.append("\n\t\tat");
-                    sb.append(elements[i].toString());
-                }
-            }
+            writer.append("|exception: ");
+            writer.append(th.toString());
+            writer.append("\n");
+            th.printStackTrace(new PrintWriter(writer));
         }
 
-        return sb;
+        return writer;
     }
-
 
 
     // *************************************************************************
@@ -147,9 +132,9 @@ public final class ChroniTool {
         try {
             tailer = fromEnd
                 ? chronicle.createTailer().toEnd()
-                : chronicle.createTailer();
+                : chronicle.createTailer().toStart();
 
-            while (true) {
+            for (; ;) {
                 if (tailer.nextIndex()) {
                     reader.read(tailer);
                     tailer.finish();
@@ -166,8 +151,9 @@ public final class ChroniTool {
                 }
             }
         } finally {
-            if (tailer != null) tailer.close();
-            chronicle.close();
+            if (tailer != null) {
+                tailer.close();
+            }
         }
     }
 
