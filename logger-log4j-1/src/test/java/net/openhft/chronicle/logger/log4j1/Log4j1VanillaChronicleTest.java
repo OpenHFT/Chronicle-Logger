@@ -20,7 +20,6 @@ package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
-import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLog;
 import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
@@ -32,10 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
 
@@ -122,14 +118,14 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
+        assertNull(evt.getThrowable().getMessage());
 
         assertTrue(tailer.nextIndex());
         evt = ChronicleLogHelper.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
+        assertEquals("Exception message", evt.getThrowable().getMessage());
 
         tailer.close();
         chronicle.close();
