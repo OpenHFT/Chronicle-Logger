@@ -110,19 +110,19 @@ public class Log4j1IndexedChronicleTest extends Log4j1TestBase {
             tailer.finish();
         }
 
-        logger.debug("Throwable test",new UnsupportedOperationException());
-        logger.debug("Throwable test",new UnsupportedOperationException("Exception message"));
+        logger.debug("Throwable test 1",new UnsupportedOperationException());
+        logger.debug("Throwable test 2",new UnsupportedOperationException("Exception message"));
 
         assertTrue(tailer.nextIndex());
         evt = ChronicleLogHelper.decodeBinary(tailer);
-        assertEquals("Throwable test",evt.getMessage());
+        assertEquals("Throwable test 1",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertNull(evt.getThrowable().getMessage());
 
         assertTrue(tailer.nextIndex());
         evt = ChronicleLogHelper.decodeBinary(tailer);
-        assertEquals("Throwable test",evt.getMessage());
+        assertEquals("Throwable test 2",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
         assertEquals("Exception message", evt.getThrowable().getMessage());
