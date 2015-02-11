@@ -40,6 +40,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class JulTestBase {
 
@@ -254,22 +255,22 @@ public class JulTestBase {
             tailer.finish();
         }
 
-        logger.log(Level.FINE, "Throwable test", new UnsupportedOperationException());
-        logger.log(Level.FINE, "Throwable test", new UnsupportedOperationException("Exception message"));
+        logger.log(Level.FINE, "Throwable test 1", new UnsupportedOperationException());
+        logger.log(Level.FINE, "Throwable test 2", new UnsupportedOperationException("Exception message"));
 
         assertTrue(tailer.nextIndex());
         evt = ChronicleLogHelper.decodeBinary(tailer);
-        assertEquals("Throwable test",evt.getMessage());
+        assertEquals("Throwable test 1", evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
+        assertNull(evt.getThrowable().getMessage());
 
         assertTrue(tailer.nextIndex());
         evt = ChronicleLogHelper.decodeBinary(tailer);
-        assertEquals("Throwable test",evt.getMessage());
+        assertEquals("Throwable test 2",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
+        assertEquals("Exception message",evt.getThrowable().getMessage());
 
         tailer.close();
 

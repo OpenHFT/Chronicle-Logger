@@ -177,14 +177,14 @@ public class Slf4jIndexedChronicleLoggerTest extends Slf4jTestBase {
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertEquals(UnsupportedOperationException.class.getName(),evt.getThrowable().getMessage());
+        assertNull(evt.getThrowable().getMessage());
 
         assertTrue(tailer.nextIndex());
         evt = ChronicleLogHelper.decodeBinary(tailer);
         assertEquals("Throwable test",evt.getMessage());
         assertNotNull(evt.getThrowable());
         assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertEquals(UnsupportedOperationException.class.getName() + ": Exception message",evt.getThrowable().getMessage());
+        assertEquals("Exception message",evt.getThrowable().getMessage());
 
         tailer.close();
         chronicle.close();
