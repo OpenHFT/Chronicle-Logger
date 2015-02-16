@@ -95,25 +95,25 @@ public class JclIndexedChronicleLoggerTest extends JclTestBase {
         assertEquals(cl1.level(), ChronicleLogLevel.DEBUG);
         assertEquals(cl1.name(), "jcl-indexed-chronicle");
         assertTrue(cl1.appender().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl1.appender() instanceof ChronicleLogAppenders.SynchronizedWriter);
+        assertTrue(cl1.appender() instanceof ChronicleLogWriters.SynchronizedWriter);
 
         ChronicleLogger cl2 = (ChronicleLogger) l2;
         assertEquals(cl2.level(), ChronicleLogLevel.DEBUG);
         assertEquals(cl2.name(), "jcl-indexed-chronicle");
         assertTrue(cl2.appender().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl2.appender() instanceof ChronicleLogAppenders.SynchronizedWriter);
+        assertTrue(cl2.appender() instanceof ChronicleLogWriters.SynchronizedWriter);
 
         ChronicleLogger cl3 = (ChronicleLogger) l3;
         assertEquals(cl3.level(), ChronicleLogLevel.INFO);
         assertEquals(cl3.name(), "logger_1");
         assertTrue(cl3.appender().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl3.appender() instanceof ChronicleLogAppenders.SynchronizedWriter);
+        assertTrue(cl3.appender() instanceof ChronicleLogWriters.SynchronizedWriter);
 
         ChronicleLogger cl4 = (ChronicleLogger) l4;
         assertEquals(cl4.level(), ChronicleLogLevel.DEBUG);
         assertEquals(cl4.name(), "readwrite");
         assertTrue(cl4.appender().getChronicle() instanceof IndexedChronicle);
-        assertTrue(cl4.appender() instanceof ChronicleLogAppenders.SynchronizedWriter);
+        assertTrue(cl4.appender() instanceof ChronicleLogWriters.SynchronizedWriter);
     }
 
     @Test

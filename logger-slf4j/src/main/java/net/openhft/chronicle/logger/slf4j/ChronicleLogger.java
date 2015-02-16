@@ -18,13 +18,13 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
-import net.openhft.chronicle.logger.ChronicleLogAppender;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.helpers.MarkerIgnoringBase;
 
 class ChronicleLogger extends MarkerIgnoringBase {
 
-    private final ChronicleLogAppender writer;
+    private final ChronicleLogWriter writer;
     private final ChronicleLogLevel level;
 
     /**
@@ -33,7 +33,7 @@ class ChronicleLogger extends MarkerIgnoringBase {
      * @param writer
      * @param name
      */
-    public ChronicleLogger(final ChronicleLogAppender writer, final String name) {
+    public ChronicleLogger(final ChronicleLogWriter writer, final String name) {
         this(writer, name, ChronicleLogLevel.INFO);
     }
 
@@ -44,7 +44,7 @@ class ChronicleLogger extends MarkerIgnoringBase {
      * @param name
      * @param level
      */
-    public ChronicleLogger(final ChronicleLogAppender writer, final String name, final ChronicleLogLevel level) {
+    public ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
         this.writer = writer;
         this.name = name;
         this.level = level;
@@ -64,7 +64,7 @@ class ChronicleLogger extends MarkerIgnoringBase {
     /**
      * @return
      */
-    public ChronicleLogAppender getWriter() {
+    public ChronicleLogWriter getWriter() {
         return this.writer;
     }
 

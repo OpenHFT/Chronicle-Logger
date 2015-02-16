@@ -22,7 +22,7 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.logger.ChronicleLog;
-import net.openhft.chronicle.logger.ChronicleLogAppenders;
+import net.openhft.chronicle.logger.ChronicleLogWriters;
 import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
@@ -30,7 +30,6 @@ import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.lang.io.IOTools;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +86,7 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
 
         assertEquals(cl.getLevel(), ChronicleLogLevel.DEBUG);
         assertEquals(cl.getName(), "slf4j-vanilla-binary-logger");
-        assertTrue(cl.getWriter() instanceof ChronicleLogAppenders.BinaryWriter);
+        assertTrue(cl.getWriter() instanceof ChronicleLogWriters.BinaryWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof VanillaChronicle);
     }
 

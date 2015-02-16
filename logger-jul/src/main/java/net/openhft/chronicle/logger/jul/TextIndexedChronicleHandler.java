@@ -19,7 +19,7 @@ package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.logger.ChronicleLog;
 import net.openhft.chronicle.logger.ChronicleLogAppenderConfig;
-import net.openhft.chronicle.logger.ChronicleLogAppenders;
+import net.openhft.chronicle.logger.ChronicleLogWriters;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -40,7 +40,7 @@ public class TextIndexedChronicleHandler extends AbstractChronicleHandler {
         setLevel(handlerCfg.getLevel("level", Level.ALL));
         setFilter(handlerCfg.getFilter("filter", null));
 
-        setAppender(new ChronicleLogAppenders.TextWriter(
+        setAppender(new ChronicleLogWriters.TextWriter(
             appenderCfg.build(appenderPath),
             Formatter.INSTANCE,
             handlerCfg.getString("dateFormat", ChronicleLog.DEFAULT_DATE_FORMAT),

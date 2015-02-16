@@ -55,7 +55,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ChronicleLoggerFactory implements ILoggerFactory {
     private final Map<String, Logger> loggers;
-    private final Map<String, ChronicleLogAppender> appenders;
+    private final Map<String, ChronicleLogWriter> appenders;
     private ChronicleLogConfig cfg;
 
     /**
@@ -70,7 +70,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      */
     public ChronicleLoggerFactory(final ChronicleLogConfig cfg) {
         this.loggers = new ConcurrentHashMap<String, Logger>();
-        this.appenders = new ConcurrentHashMap<String, ChronicleLogAppender>();
+        this.appenders = new ConcurrentHashMap<String, ChronicleLogWriter>();
         this.cfg = ChronicleLogConfig.load();
     }
 
@@ -114,7 +114,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * close underlying Chronicles
      */
     public synchronized void shutdown() {
-        for (ChronicleLogAppender appender : this.appenders.values()) {
+        for (ChronicleLogWriter appender : this.appenders.values()) {
             try {
                 Chronicle chronicle = appender.getChronicle();
                 if(chronicle != null) {
@@ -182,8 +182,8 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * @return
      * @throws IOException
      */
-    private ChronicleLogAppender newAppender(String path, String name) throws Exception {
-        ChronicleLogAppender appender = appenders.get(path);
+    private ChronicleLogWriter newAppender(String path, String name) throws Exception {
+        ChronicleLogWriter appender = appenders.get(path);
         if(appender == null) {
             final String  type    = cfg.getString(name, ChronicleLogConfig.KEY_TYPE);
             final String  format  = cfg.getString(name, ChronicleLogConfig.KEY_FORMAT);
@@ -191,11 +191,11 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
 
             if(!name.startsWith("net.openhft")) {
                 if (ChronicleLogConfig.FORMAT_BINARY.equalsIgnoreCase(format)) {
-                    appender = new ChronicleLogAppenders.BinaryWriter(
+                    appender = new ChronicleLogWriters.BinaryWriter(
                         newChronicle(type, path, name)
                     );
                 } else if (ChronicleLogConfig.FORMAT_TEXT.equalsIgnoreCase(format)) {
-                    appender = new ChronicleLogAppenders.TextWriter(
+                    appender = new ChronicleLogWriters.TextWriter(
                         newChronicle(type, path, name),
                         Formatter.INSTANCE,
                         ChronicleLogConfig.DEFAULT_DATE_FORMAT,
@@ -203,7 +203,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
                     );
                 }
             } else {
-                appender = new ChronicleLogAppenders.SimpleWriter(
+                appender = new ChronicleLogWriters.SimpleWriter(
                     Formatter.INSTANCE,
                     System.out
                 );
@@ -213,7 +213,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
                 // If the underlying chronicle is an Indexed chronicle, wrap the appender
                 // so it is thread safe (synchronized)
                 if (appender.getChronicle() instanceof IndexedChronicle) {
-                    appender = new ChronicleLogAppenders.SynchronizedWriter(appender);
+                    appender = new ChronicleLogWriters.SynchronizedWriter(appender);
                 }
             }
 

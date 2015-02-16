@@ -17,7 +17,7 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.logger.ChronicleLogAppender;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.ChronicleLogFormatter;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ import java.util.logging.LogRecord;
 abstract class AbstractChronicleHandler extends Handler {
 
     private String path;
-    private ChronicleLogAppender appender;
+    private ChronicleLogWriter appender;
 
     protected AbstractChronicleHandler() {
         this.path = null;
@@ -69,11 +69,11 @@ abstract class AbstractChronicleHandler extends Handler {
     //
     // *************************************************************************
 
-    protected ChronicleLogAppender getAppender() {
+    protected ChronicleLogWriter getAppender() {
         return this.appender;
     }
 
-    protected void setAppender(ChronicleLogAppender appender) {
+    protected void setAppender(ChronicleLogWriter appender) {
         this.appender = appender;
     }
 

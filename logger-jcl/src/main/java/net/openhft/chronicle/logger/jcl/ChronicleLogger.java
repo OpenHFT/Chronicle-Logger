@@ -17,25 +17,15 @@
  */
 package net.openhft.chronicle.logger.jcl;
 
-import net.openhft.chronicle.logger.ChronicleLogAppender;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.apache.commons.logging.Log;
 
 class ChronicleLogger implements Log {
 
     private final String name;
-    private final ChronicleLogAppender appender;
+    private final ChronicleLogWriter appender;
     private final ChronicleLogLevel level;
-
-    /**
-     * c-tor
-     *
-     * @param writer
-     * @param name
-     */
-    ChronicleLogger(final ChronicleLogAppender writer, final String name) {
-        this(writer, name, ChronicleLogLevel.INFO);
-    }
 
     /**
      * c-tor
@@ -44,7 +34,7 @@ class ChronicleLogger implements Log {
      * @param name
      * @param level
      */
-    ChronicleLogger(final ChronicleLogAppender writer, final String name, final ChronicleLogLevel level) {
+    ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
         this.appender = writer;
         this.name = name;
         this.level = level;
@@ -58,7 +48,7 @@ class ChronicleLogger implements Log {
         return this.name;
     }
 
-    ChronicleLogAppender appender() {
+    ChronicleLogWriter appender() {
         return this.appender;
     }
 
@@ -188,27 +178,27 @@ class ChronicleLogger implements Log {
         return level.isHigherOrEqualTo(this.level);
     }
 
-    private void append(ChronicleLogLevel level, String message, Object arg1) {
+    private void append(ChronicleLogLevel level, String message) {
         if(level.isHigherOrEqualTo(this.level)) {
-            this.appender.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, arg1);
-        }
-    }
-
-    private void append(ChronicleLogLevel level, String message, Object arg1, Object arg2) {
-        if(level.isHigherOrEqualTo(this.level)) {
-            this.appender.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, arg1, arg2);
-        }
-    }
-
-    private void append(ChronicleLogLevel level, String message, Object... args) {
-        if(level.isHigherOrEqualTo(this.level)) {
-            this.appender.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, null, args);
+            this.appender.log(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                this.name,
+                message,
+                null);
         }
     }
 
     private void append(ChronicleLogLevel level, String message, Throwable throwable) {
         if(level.isHigherOrEqualTo(this.level)) {
-            this.appender.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, throwable, null);
+            this.appender.log(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                this.name,
+                message,
+                throwable);
         }
     }
 }
