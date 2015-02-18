@@ -41,7 +41,7 @@ public class ChronicleLogManager {
     public void clear() {
         for(final ChronicleLogWriter writer : writers.values()) {
             try {
-                writer.getChronicle().close();
+                writer.close();
             } catch (IOException e) {
             }
         }

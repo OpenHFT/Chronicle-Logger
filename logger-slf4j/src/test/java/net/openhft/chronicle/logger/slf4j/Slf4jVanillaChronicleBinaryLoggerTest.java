@@ -80,7 +80,7 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
         Logger logger = LoggerFactory.getLogger("slf4j-vanilla-binary-logger");
 
         assertNotNull(logger);
-        assertEquals(logger.getClass(), ChronicleLogger.class);
+        assertTrue(logger instanceof ChronicleLogger);
 
         ChronicleLogger cl = (ChronicleLogger) logger;
 
@@ -154,8 +154,8 @@ public class Slf4jVanillaChronicleBinaryLoggerTest extends Slf4jTestBase {
         logger.info("args",1,2);
         logger.info("args",1,2,3);
 
-        Chronicle          chronicle = getVanillaChronicle(loggerName);
-        ExcerptTailer      tailer    = chronicle.createTailer().toStart();
+        Chronicle         chronicle = getVanillaChronicle(loggerName);
+        ExcerptTailer     tailer    = chronicle.createTailer().toStart();
         ChronicleLogEvent evt       = null;
 
         for(int[] vals : new int[][] {  { 1 } , {1, 2} , {1, 2, 3}}) {

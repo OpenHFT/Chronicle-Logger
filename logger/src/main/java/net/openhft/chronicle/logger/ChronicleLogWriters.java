@@ -260,8 +260,10 @@ public class ChronicleLogWriters {
                 if(args != null) {
                     appender.writeStopBit(args.length);
                     for(int i=0;i <args.length; i++) {
-                        appender.writeObject(args[0]);
+                        appender.writeObject(args[i]);
                     }
+                } else {
+                    appender.writeStopBit(0);
                 }
 
                 if(throwable != null) {
@@ -489,6 +491,10 @@ public class ChronicleLogWriters {
         public SynchronizedWriter(final ChronicleLogWriter writer) {
             this.writer = writer;
             this.sync = new Object();
+        }
+
+        public ChronicleLogWriter writer() {
+            return writer;
         }
 
         @Override

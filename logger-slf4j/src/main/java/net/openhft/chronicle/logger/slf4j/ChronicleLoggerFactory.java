@@ -128,21 +128,27 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
         Logger logger = loggers.get(name);
         if (logger == null) {
             final ChronicleLogWriter writer = manager.createWriter(name);
+            ChronicleLogWriter delegate = writer;
+
             final ChronicleLogLevel level = ChronicleLogLevel.fromStringLevel(
                 manager.cfg().getString(name, ChronicleLogConfig.KEY_LEVEL)
             );
 
-            if(writer instanceof ChronicleLogWriters.BinaryWriter) {
+            if(delegate instanceof ChronicleLogWriters.SynchronizedWriter) {
+                delegate = ((ChronicleLogWriters.SynchronizedWriter)delegate).writer();
+            }
+
+            if(delegate instanceof ChronicleLogWriters.BinaryWriter) {
                 loggers.put(
                     name,
                     logger = new ChronicleLogger.Binary(writer, name, level)
                 );
-            } else if(writer instanceof ChronicleLogWriters.TextWriter) {
+            } else if(delegate instanceof ChronicleLogWriters.TextWriter) {
                 loggers.put(
                     name,
                     logger = new ChronicleLogger.Text(writer, name, level)
                 );
-            } else if(writer instanceof ChronicleLogWriters.SimpleWriter) {
+            } else if(delegate instanceof ChronicleLogWriters.SimpleWriter) {
                 loggers.put(
                     name,
                     logger = new ChronicleLogger.Text(writer, name, level)

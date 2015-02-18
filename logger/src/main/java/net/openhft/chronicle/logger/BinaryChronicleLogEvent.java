@@ -28,9 +28,9 @@ final class BinaryChronicleLogEvent implements ChronicleLogEvent {
         if(version == ChronicleLog.VERSION) {
             long timestamp = in.readLong();
             ChronicleLogLevel level = ChronicleLogLevel.readBinary(in);
-            String threadName = in.readUTF();
-            String loggerName = in.readUTF();
-            String message = in.readUTF();
+            String threadName = in.readUTFΔ();
+            String loggerName = in.readUTFΔ();
+            String message = in.readUTFΔ();
 
             // Args
             long argsLen = in.readStopBit();

@@ -96,7 +96,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void trace(String s, Object... objects) {
-        append(ChronicleLogLevel.TRACE, s, null, objects);
+        append(ChronicleLogLevel.TRACE, s, objects);
     }
 
     @Override
@@ -138,7 +138,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void debug(String s, Object... objects) {
-        append(ChronicleLogLevel.DEBUG, s, null, objects);
+        append(ChronicleLogLevel.DEBUG, s, objects);
     }
 
     @Override
@@ -180,7 +180,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void info(String s, Object... objects) {
-        append(ChronicleLogLevel.INFO, s, null, objects);
+        append(ChronicleLogLevel.INFO, s, objects);
     }
 
     @Override
@@ -222,7 +222,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void warn(String s, Object... objects) {
-        append(ChronicleLogLevel.WARN, s, null, objects);
+        append(ChronicleLogLevel.WARN, s, objects);
     }
 
     @Override
@@ -264,7 +264,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void error(String s, Object... objects) {
-        append(ChronicleLogLevel.ERROR, s, null, objects);
+        append(ChronicleLogLevel.ERROR, s, objects);
     }
 
     @Override
