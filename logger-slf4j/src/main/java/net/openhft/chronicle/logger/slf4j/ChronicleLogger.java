@@ -18,24 +18,16 @@
 
 package net.openhft.chronicle.logger.slf4j;
 
-import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MarkerIgnoringBase;
+import org.slf4j.helpers.MessageFormatter;
 
-class ChronicleLogger extends MarkerIgnoringBase {
+abstract class ChronicleLogger extends MarkerIgnoringBase {
 
-    private final ChronicleLogWriter writer;
-    private final ChronicleLogLevel level;
-
-    /**
-     * c-tor
-     *
-     * @param writer
-     * @param name
-     */
-    public ChronicleLogger(final ChronicleLogWriter writer, final String name) {
-        this(writer, name, ChronicleLogLevel.INFO);
-    }
+    protected final ChronicleLogWriter writer;
+    protected final ChronicleLogLevel level;
 
     /**
      * c-tor
@@ -44,7 +36,9 @@ class ChronicleLogger extends MarkerIgnoringBase {
      * @param name
      * @param level
      */
-    public ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
+    protected ChronicleLogger(
+            final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
+
         this.writer = writer;
         this.name = name;
         this.level = level;
@@ -57,14 +51,14 @@ class ChronicleLogger extends MarkerIgnoringBase {
     /**
      * @return
      */
-    public ChronicleLogLevel getLevel() {
+    ChronicleLogLevel getLevel() {
         return this.level;
     }
 
     /**
      * @return
      */
-    public ChronicleLogWriter getWriter() {
+    ChronicleLogWriter getWriter() {
         return this.writer;
     }
 
@@ -79,22 +73,30 @@ class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void trace(String s) {
-        append(ChronicleLogLevel.TRACE,  s);
+        append(ChronicleLogLevel.TRACE, s);
     }
 
     @Override
-    public void trace(String s, Object o) {
-        append(ChronicleLogLevel.TRACE,  s, o);
+    public void trace(String s, Object o1) {
+        if(o1 instanceof Throwable) {
+            append(ChronicleLogLevel.TRACE, s, (Throwable)o1);
+        } else {
+            append(ChronicleLogLevel.TRACE, s, null, o1);
+        }
     }
 
     @Override
     public void trace(String s, Object o1, Object o2) {
-        append(ChronicleLogLevel.TRACE,  s, o1, o2);
+        if(o2 instanceof Throwable) {
+            append(ChronicleLogLevel.TRACE, s, (Throwable)o2, o1);
+        } else {
+            append(ChronicleLogLevel.TRACE, s, null, o1, o2);
+        }
     }
 
     @Override
     public void trace(String s, Object... objects) {
-        append(ChronicleLogLevel.TRACE,  s, objects);
+        append(ChronicleLogLevel.TRACE, s, null, objects);
     }
 
     @Override
@@ -113,22 +115,30 @@ class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void debug(String s) {
-        append(ChronicleLogLevel.DEBUG,  s);
+        append(ChronicleLogLevel.DEBUG, s);
     }
 
     @Override
-    public void debug(String s, Object o) {
-        append(ChronicleLogLevel.DEBUG,  s, o);
+    public void debug(String s, Object o1) {
+        if(o1 instanceof Throwable) {
+            append(ChronicleLogLevel.DEBUG, s, (Throwable)o1);
+        } else {
+            append(ChronicleLogLevel.DEBUG, s, null, o1);
+        }
     }
 
     @Override
     public void debug(String s, Object o1, Object o2) {
-        append(ChronicleLogLevel.DEBUG,  s, o1, o2);
+        if(o2 instanceof Throwable) {
+            append(ChronicleLogLevel.DEBUG, s, (Throwable)o2, o1);
+        } else {
+            append(ChronicleLogLevel.DEBUG, s, null, o1, o2);
+        }
     }
 
     @Override
     public void debug(String s, Object... objects) {
-        append(ChronicleLogLevel.DEBUG,  s, objects);
+        append(ChronicleLogLevel.DEBUG, s, null, objects);
     }
 
     @Override
@@ -147,22 +157,30 @@ class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void info(String s) {
-        append(ChronicleLogLevel.INFO,  s);
+        append(ChronicleLogLevel.INFO, s);
     }
 
     @Override
-    public void info(String s, Object o) {
-        append(ChronicleLogLevel.INFO,  s, o);
+    public void info(String s, Object o1) {
+        if(o1 instanceof Throwable) {
+            append(ChronicleLogLevel.INFO, s, (Throwable)o1);
+        } else {
+            append(ChronicleLogLevel.INFO, s, null, o1);
+        }
     }
 
     @Override
     public void info(String s, Object o1, Object o2) {
-        append(ChronicleLogLevel.INFO,  s, o1, o2);
+        if(o2 instanceof Throwable) {
+            append(ChronicleLogLevel.INFO, s, (Throwable)o2, o1);
+        } else {
+            append(ChronicleLogLevel.INFO, s, null, o1, o2);
+        }
     }
 
     @Override
     public void info(String s, Object... objects) {
-        append(ChronicleLogLevel.INFO,  s, objects);
+        append(ChronicleLogLevel.INFO, s, null, objects);
     }
 
     @Override
@@ -181,22 +199,30 @@ class ChronicleLogger extends MarkerIgnoringBase {
 
     @Override
     public void warn(String s) {
-        append(ChronicleLogLevel.WARN,  s);
+        append(ChronicleLogLevel.WARN, s);
     }
 
     @Override
-    public void warn(String s, Object o) {
-        append(ChronicleLogLevel.WARN,  s, o);
+    public void warn(String s, Object o1) {
+        if(o1 instanceof Throwable) {
+            append(ChronicleLogLevel.WARN, s, (Throwable)o1);
+        } else {
+            append(ChronicleLogLevel.WARN, s, null, o1);
+        }
     }
 
     @Override
     public void warn(String s, Object o1, Object o2) {
-        append(ChronicleLogLevel.WARN,  s, o1, o2);
+        if(o2 instanceof Throwable) {
+            append(ChronicleLogLevel.WARN, s, (Throwable)o2, o1);
+        } else {
+            append(ChronicleLogLevel.WARN, s, null, o1, o2);
+        }
     }
 
     @Override
     public void warn(String s, Object... objects) {
-        append(ChronicleLogLevel.WARN,  s, objects);
+        append(ChronicleLogLevel.WARN, s, null, objects);
     }
 
     @Override
@@ -219,18 +245,26 @@ class ChronicleLogger extends MarkerIgnoringBase {
     }
 
     @Override
-    public void error(String s, Object o) {
-        append(ChronicleLogLevel.ERROR, s, o);
+    public void error(String s, Object o1) {
+        if(o1 instanceof Throwable) {
+            append(ChronicleLogLevel.ERROR, s, (Throwable)o1);
+        } else {
+            append(ChronicleLogLevel.ERROR, s, null, o1);
+        }
     }
 
     @Override
     public void error(String s, Object o1, Object o2) {
-        append(ChronicleLogLevel.ERROR, s, o1, o2);
+        if(o2 instanceof Throwable) {
+            append(ChronicleLogLevel.ERROR, s, (Throwable)o2, o1);
+        } else {
+            append(ChronicleLogLevel.ERROR, s, null, o1, o2);
+        }
     }
 
     @Override
     public void error(String s, Object... objects) {
-        append(ChronicleLogLevel.ERROR, s, objects);
+        append(ChronicleLogLevel.ERROR, s, null, objects);
     }
 
     @Override
@@ -246,27 +280,150 @@ class ChronicleLogger extends MarkerIgnoringBase {
         return level.isHigherOrEqualTo(this.level);
     }
 
-    private void append(ChronicleLogLevel level, String message, Object arg1) {
-        if(level.isHigherOrEqualTo(this.level)) {
-            this.writer.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, arg1);
+    protected abstract void append(
+        ChronicleLogLevel level, String message);
+    protected abstract void append(
+        ChronicleLogLevel level, String message, Throwable throwable, Object arg1);
+    protected abstract void append(
+        ChronicleLogLevel level, String message, Throwable throwable, Object arg1, Object arg2);
+    protected abstract void append(
+        ChronicleLogLevel level, String message, Object[] args);
+    protected abstract void append(
+        ChronicleLogLevel level, String message, Throwable throwable);
+
+    // *************************************************************************
+    // BINARY
+    // *************************************************************************
+
+    public static final class Binary extends ChronicleLogger {
+        public Binary(ChronicleLogWriter writer, String name, ChronicleLogLevel level) {
+            super(writer, name, level);
+        }
+
+        @Override
+        protected void append(ChronicleLogLevel level, String message) {
+            writer.write(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                name,
+                message,
+                null);
+        }
+
+        @Override
+        protected void append(ChronicleLogLevel level, String message, Throwable throwable) {
+            writer.write(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                name,
+                message,
+                throwable);
+        }
+
+        @Override
+        protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object arg1) {
+            writer.write(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                name,
+                message,
+                throwable,
+                arg1);
+        }
+
+        @Override
+        protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object arg1, Object arg2) {
+            writer.write(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                name,
+                message,
+                throwable,
+                arg1,
+                arg2);
+        }
+
+        @Override
+        protected void append(ChronicleLogLevel level, String message, Object[] args) {
+            writer.write(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                name,
+                message,
+                null,
+                args);
         }
     }
 
-    private void append(ChronicleLogLevel level, String message, Object arg1, Object arg2) {
-        if(level.isHigherOrEqualTo(this.level)) {
-            this.writer.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, arg1, arg2);
-        }
-    }
+    // *************************************************************************
+    // TEXT
+    // *************************************************************************
 
-    private void append(ChronicleLogLevel level, String message, Object... args) {
-        if(level.isHigherOrEqualTo(this.level)) {
-            this.writer.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, null, args);
+    public static final class Text extends ChronicleLogger {
+        public Text(ChronicleLogWriter writer, String name, ChronicleLogLevel level) {
+            super(writer, name, level);
         }
-    }
 
-    private void append(ChronicleLogLevel level, String message, Throwable throwable) {
-        if(level.isHigherOrEqualTo(this.level)) {
-            this.writer.log(level, System.currentTimeMillis(), Thread.currentThread(), this.name, message, throwable, null);
+        @Override
+        protected void append(ChronicleLogLevel level, String message) {
+            writer.write(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                name,
+                message,
+                null);
+        }
+
+        @Override
+        protected void append(ChronicleLogLevel level, String message, Throwable throwable) {
+            writer.write(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                name,
+                message,
+                throwable);
+        }
+
+        @Override
+        protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object arg1) {
+            writer.write(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                name,
+                MessageFormatter.format(message, arg1).getMessage(),
+                throwable);
+        }
+
+        @Override
+        protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object arg1, Object arg2) {
+            writer.write(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                name,
+                MessageFormatter.format(message, arg1, arg2).getMessage(),
+                throwable);
+        }
+
+        @Override
+        protected void append(ChronicleLogLevel level, String message, Object[] args) {
+            FormattingTuple tuple = MessageFormatter.arrayFormat(message, args);
+
+            writer.write(
+                level,
+                System.currentTimeMillis(),
+                Thread.currentThread().getName(),
+                name,
+                tuple.getMessage(),
+                tuple.getThrowable());
         }
     }
 }

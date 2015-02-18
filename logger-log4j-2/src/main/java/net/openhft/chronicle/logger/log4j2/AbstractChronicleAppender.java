@@ -18,13 +18,14 @@
 
 package net.openhft.chronicle.logger.log4j2;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
+import net.openhft.lang.model.constraints.NotNull;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -35,13 +36,13 @@ import java.io.IOException;
 public abstract class AbstractChronicleAppender extends AbstractAppender {
     private String path;
 
-    protected Chronicle chronicle;
+    protected ChronicleLogWriter writer;
 
     protected AbstractChronicleAppender(String name, Filter filter, String path) {
         super(name, filter, null, true);
 
         this.path = path;
-        this.chronicle = null;
+        this.writer = null;
     }
 
     // *************************************************************************
@@ -60,9 +61,8 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
     // Chronicle implementation
     // *************************************************************************
 
-    protected abstract Chronicle createChronicle() throws IOException;
-
-    protected abstract ExcerptAppender getAppender();
+    protected abstract ChronicleLogWriter createWriter() throws IOException;
+    protected abstract void doAppend(final @NotNull LogEvent event, final @NotNull ChronicleLogWriter writer);
 
     // *************************************************************************
     //
@@ -74,9 +74,9 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
             LOGGER.error("Appender " + getName() + " has configuration errors and is not started!");
         } else {
             try {
-                this.chronicle = createChronicle();
+                this.writer = createWriter();
             } catch(IOException e) {
-                this.chronicle = null;
+                this.writer = null;
                 LOGGER.error("Appender " + getName() + " " + e.getMessage());
             }
 
@@ -86,15 +86,22 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
 
     @Override
     public void stop() {
-        if(this.chronicle != null) {
+        if(this.writer != null) {
             try {
-                this.chronicle.close();
+                this.writer.close();
             } catch(IOException e) {
                 LOGGER.error("Appender " + getName() + " " + e.getMessage());
             }
         }
 
         super.stop();
+    }
+
+    @Override
+    public void append(final LogEvent event) {
+        if (this.writer != null) {
+            doAppend(event, writer);
+        }
     }
 
     // *************************************************************************

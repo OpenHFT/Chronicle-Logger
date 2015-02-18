@@ -16,19 +16,21 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.logger.log4j1;
+package net.openhft.chronicle.logger.log4j2;
 
-import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.logger.ChronicleLog;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ThrowableInformation;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.lang.model.constraints.NotNull;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
 
-public abstract class BinaryChronicleAppender extends AbstractChronicleAppender {
+abstract class AbstractBinaryChronicleAppender extends AbstractChronicleAppender {
 
     private boolean includeCallerData;
     private boolean includeMDC;
 
-    protected BinaryChronicleAppender() {
+    protected AbstractBinaryChronicleAppender(final String name, final Filter filter, final String path) {
+        super(name, filter, path);
+
         this.includeCallerData = true;
         this.includeMDC = true;
     }
@@ -58,27 +60,15 @@ public abstract class BinaryChronicleAppender extends AbstractChronicleAppender 
     // *************************************************************************
 
     @Override
-    protected void append(final LoggingEvent event) {
-        final ExcerptAppender appender = getAppender();
-        if(appender != null) {
-            appender.startExcerpt();
-            appender.writeByte(ChronicleLog.VERSION);
-            appender.writeLong(event.getTimeStamp());
-            toChronicleLogLevel(event.getLevel()).writeTo(appender);
-            appender.writeUTF(event.getThreadName());
-            appender.writeUTF(event.getLoggerName());
-            appender.writeUTF(event.getMessage().toString());
-            appender.writeStopBit(0);
-
-            ThrowableInformation ti = event.getThrowableInformation();
-            if(ti != null) {
-                appender.writeBoolean(true);
-                appender.writeObject(ti.getThrowable());
-            } else {
-                appender.writeBoolean(false);
-            }
-
-            appender.finish();
-        }
+    public void doAppend(final @NotNull LogEvent event, final @NotNull ChronicleLogWriter writer) {
+        writer.write(
+            toChronicleLogLevel(event.getLevel()),
+            event.getTimeMillis(),
+            event.getThreadName(),
+            event.getLoggerName(),
+            event.getMessage().getFormat(),
+            event.getThrown(),
+            event.getMessage().getParameters()
+        );
     }
 }

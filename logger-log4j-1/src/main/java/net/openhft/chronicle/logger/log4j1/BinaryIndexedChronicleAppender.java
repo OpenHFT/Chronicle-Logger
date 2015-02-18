@@ -18,43 +18,23 @@
 
 package net.openhft.chronicle.logger.log4j1;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ExcerptAppender;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.ChronicleLogWriters;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
-import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;
 
-public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
+public class BinaryIndexedChronicleAppender extends AbstractBinaryChronicleAppender {
 
     private final IndexedLogAppenderConfig config;
-    private final Object lock;
-    private ExcerptAppender appender;
 
     public BinaryIndexedChronicleAppender() {
         this.config = new IndexedLogAppenderConfig();
-        this.lock = new Object();
-        this.appender = null;
     }
 
     @Override
-    protected Chronicle createChronicle() throws IOException {
-        Chronicle chronicle = this.config.build(this.getPath());
-        this.appender = chronicle.createAppender();
-
-        return chronicle;
-    }
-
-    @Override
-    protected ExcerptAppender getAppender() {
-        return this.appender;
-    }
-
-    @Override
-    protected void append(LoggingEvent event) {
-        synchronized (this.lock) {
-            super.append(event);
-        }
+    protected ChronicleLogWriter createWriter() throws IOException {
+        return ChronicleLogWriters.binary(this.config, this.getPath());
     }
 
     // *************************************************************************

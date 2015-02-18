@@ -180,7 +180,7 @@ class ChronicleLogger implements Log {
 
     private void append(ChronicleLogLevel level, String message) {
         if(level.isHigherOrEqualTo(this.level)) {
-            this.appender.log(
+            this.appender.write(
                 level,
                 System.currentTimeMillis(),
                 Thread.currentThread().getName(),
@@ -192,7 +192,7 @@ class ChronicleLogger implements Log {
 
     private void append(ChronicleLogLevel level, String message, Throwable throwable) {
         if(level.isHigherOrEqualTo(this.level)) {
-            this.appender.log(
+            this.appender.write(
                 level,
                 System.currentTimeMillis(),
                 Thread.currentThread().getName(),

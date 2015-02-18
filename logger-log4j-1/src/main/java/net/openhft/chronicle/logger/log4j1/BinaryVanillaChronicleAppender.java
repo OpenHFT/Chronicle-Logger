@@ -18,13 +18,13 @@
 
 package net.openhft.chronicle.logger.log4j1;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ExcerptAppender;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.ChronicleLogWriters;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 
 import java.io.IOException;
 
-public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
+public class BinaryVanillaChronicleAppender extends AbstractBinaryChronicleAppender {
     private VanillaLogAppenderConfig config;
 
     public BinaryVanillaChronicleAppender() {
@@ -32,19 +32,8 @@ public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
     }
 
     @Override
-    protected Chronicle createChronicle() throws IOException {
-        return this.config.build(this.getPath());
-    }
-
-    @Override
-    protected ExcerptAppender getAppender() {
-        try {
-            return this.chronicle.createAppender();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    protected ChronicleLogWriter createWriter() throws IOException {
+        return ChronicleLogWriters.binary(this.config, this.getPath());
     }
 
     // *************************************************************************

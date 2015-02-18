@@ -18,24 +18,21 @@
 
 package net.openhft.chronicle.logger.log4j2;
 
-import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLog;
-import net.openhft.chronicle.logger.ChronicleLogHelper;
-import net.openhft.chronicle.logger.TimeStampFormatter;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.lang.model.constraints.NotNull;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 
-public abstract class TextChronicleAppender extends AbstractChronicleAppender {
+abstract class AbstractTextChronicleAppender extends AbstractChronicleAppender {
 
     private String dateFormat;
-    private TimeStampFormatter timeStampFormatter;
     private int stackTraceDepth;
 
-    protected TextChronicleAppender(final String name, final Filter filter, final String path) {
+    protected AbstractTextChronicleAppender(final String name, final Filter filter, final String path) {
         super(name, filter, path);
 
         this.dateFormat = ChronicleLog.DEFAULT_DATE_FORMAT;
-        this.timeStampFormatter = TimeStampFormatter.fromDateFormat(dateFormat);
         this.stackTraceDepth = -1;
     }
 
@@ -45,7 +42,6 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
 
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
-        this.timeStampFormatter = TimeStampFormatter.fromDateFormat(dateFormat);
     }
 
     public String getDateFormat() {
@@ -65,33 +61,14 @@ public abstract class TextChronicleAppender extends AbstractChronicleAppender {
     // *************************************************************************
 
     @Override
-    public void append(final LogEvent event) {
-        final ExcerptAppender appender = getAppender();
-        if (appender != null) {
-            appender.startExcerpt();
-            timeStampFormatter.format(event.getTimeMillis(), appender);
-            appender.append('|');
-            toChronicleLogLevel(event.getLevel()).printTo(appender);
-            appender.append('|');
-            appender.append(event.getThreadName());
-            appender.append('|');
-            appender.append(event.getLoggerName());
-            appender.append('|');
-            appender.append(event.getMessage().getFormattedMessage());
-
-            Throwable th = event.getThrown();
-            if (th != null) {
-                appender.append(" - ");
-                ChronicleLogHelper.appendStackTraceAsString(
-                    appender,
-                    th,
-                    ChronicleLog.COMMA,
-                    this.stackTraceDepth
-                );
-            }
-
-            appender.append('\n');
-            appender.finish();
-        }
+    public void doAppend(final @NotNull LogEvent event, final @NotNull ChronicleLogWriter writer) {
+        writer.write(
+            toChronicleLogLevel(event.getLevel()),
+            event.getTimeMillis(),
+            event.getThreadName(),
+            event.getLoggerName(),
+            event.getMessage().getFormattedMessage(),
+            event.getThrown()
+        );
     }
 }

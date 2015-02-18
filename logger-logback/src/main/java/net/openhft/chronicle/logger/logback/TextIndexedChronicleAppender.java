@@ -18,26 +18,18 @@
 
 package net.openhft.chronicle.logger.logback;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.joran.spi.DefaultClass;
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.IndexedChronicle;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.ChronicleLogWriters;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 
 import java.io.IOException;
 
-public class TextIndexedChronicleAppender extends TextChronicleAppender {
-
-    private ExcerptAppender appender;
-    private Object lock;
+public class TextIndexedChronicleAppender extends AbstractTextChronicleAppender {
     private IndexedLogAppenderConfig config;
 
     public TextIndexedChronicleAppender() {
-        this.appender = null;
-        this.lock = new Object();
-        this.config = null;
+        this.config = new IndexedLogAppenderConfig();
     }
 
     @DefaultClass(value = IndexedLogAppenderConfig.class)
@@ -50,25 +42,12 @@ public class TextIndexedChronicleAppender extends TextChronicleAppender {
     }
 
     @Override
-    protected Chronicle createChronicle() throws IOException {
-        Chronicle chronicle = (this.config != null)
-            ? this.config.build(this.getPath())
-            : ChronicleQueueBuilder.indexed(this.getPath()).build();
-
-        this.appender = chronicle.createAppender();
-
-        return chronicle;
-    }
-
-    @Override
-    protected ExcerptAppender getAppender() {
-        return this.appender;
-    }
-
-    @Override
-    public void doAppend(final ILoggingEvent event) {
-        synchronized (this.lock) {
-            super.doAppend(event);
-        }
+    protected ChronicleLogWriter createWriter() throws IOException {
+        return ChronicleLogWriters.text(
+            this.config,
+            super.getPath(),
+            super.getDateFormat(),
+            super.getStackTradeDepth()
+        );
     }
 }

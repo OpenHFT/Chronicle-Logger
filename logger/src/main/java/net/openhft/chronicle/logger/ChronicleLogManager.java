@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChronicleLogManager {
-    private final ChronicleLogConfig cfg;
-    private final Map<String, ChronicleLogWriter> writers;
+    private ChronicleLogConfig cfg;
+    private Map<String, ChronicleLogWriter> writers;
 
     public ChronicleLogManager() {
         this.cfg = ChronicleLogConfig.load();
@@ -47,6 +47,13 @@ public class ChronicleLogManager {
         }
 
         writers.clear();
+    }
+
+    public void reload() {
+        clear();
+
+        this.cfg = ChronicleLogConfig.load();
+        this.writers = new ConcurrentHashMap<>();
     }
 
     /**

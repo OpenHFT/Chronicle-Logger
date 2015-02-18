@@ -18,25 +18,18 @@
 
 package net.openhft.chronicle.logger.logback;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.joran.spi.DefaultClass;
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.ExcerptAppender;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.ChronicleLogWriters;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 
 import java.io.IOException;
 
-public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
-
-    private ExcerptAppender appender;
-    private Object lock;
+public class BinaryIndexedChronicleAppender extends AbstractBinaryChronicleAppender {
     private IndexedLogAppenderConfig config;
 
     public BinaryIndexedChronicleAppender() {
-        this.appender = null;
-        this.lock = new Object();
-        this.config = null;
+        this.config = new IndexedLogAppenderConfig();
     }
 
     @DefaultClass(value = IndexedLogAppenderConfig.class)
@@ -49,25 +42,10 @@ public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
     }
 
     @Override
-    protected Chronicle createChronicle() throws IOException {
-        Chronicle chronicle = (this.config != null)
-            ? this.config.build(this.getPath())
-            : ChronicleQueueBuilder.indexed(this.getPath()).build();
-
-        this.appender = chronicle.createAppender();
-
-        return chronicle;
-    }
-
-    @Override
-    protected ExcerptAppender getAppender() {
-        return this.appender;
-    }
-
-    @Override
-    public void doAppend(final ILoggingEvent event) {
-        synchronized (this.lock) {
-            super.doAppend(event);
-        }
+    protected ChronicleLogWriter createWriter() throws IOException {
+        return ChronicleLogWriters.binary(
+            this.config,
+            this.getPath()
+        );
     }
 }

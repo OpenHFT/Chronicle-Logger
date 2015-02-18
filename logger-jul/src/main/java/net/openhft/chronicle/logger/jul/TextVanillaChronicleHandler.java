@@ -24,14 +24,12 @@ import net.openhft.chronicle.logger.ChronicleLogWriters;
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class TextVanillaChronicleHandler extends AbstractChronicleHandler {
+public class TextVanillaChronicleHandler extends AbstractTextChronicleHandler {
     private final ChronicleHandlerConfig handlerCfg;
     private final ChronicleLogAppenderConfig appenderCfg;
     private final String appenderPath;
 
     public TextVanillaChronicleHandler() throws IOException {
-        super();
-
         this.handlerCfg = new ChronicleHandlerConfig(getClass());
         this.appenderCfg = handlerCfg.getVanillaAppenderConfig();
         this.appenderPath = handlerCfg.getString("path", null);
@@ -39,11 +37,12 @@ public class TextVanillaChronicleHandler extends AbstractChronicleHandler {
         setLevel(handlerCfg.getLevel("level", Level.ALL));
         setFilter(handlerCfg.getFilter("filter", null));
 
-        setAppender(new ChronicleLogWriters.TextWriter(
-            appenderCfg.build(appenderPath),
-            Formatter.INSTANCE,
-            handlerCfg.getString("dateFormat", ChronicleLog.DEFAULT_DATE_FORMAT),
-            handlerCfg.getInt("stackTradeDepth", -1))
+        setWriter(ChronicleLogWriters.text(
+                appenderCfg,
+                appenderPath,
+                handlerCfg.getString("dateFormat", ChronicleLog.DEFAULT_DATE_FORMAT),
+                handlerCfg.getInt("stackTradeDepth", -1)
+            )
         );
     }
 }

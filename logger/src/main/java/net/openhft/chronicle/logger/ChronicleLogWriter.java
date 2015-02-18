@@ -26,14 +26,14 @@ public interface ChronicleLogWriter extends Closeable {
 
     public Chronicle getChronicle();
 
-    public void log(
+    public void write(
         ChronicleLogLevel level,
         long timestamp,
         String threadName,
         String loggerName,
         String message);
 
-    public void log(
+    public void write(
         ChronicleLogLevel level,
         long timestamp,
         String threadName,
@@ -41,7 +41,7 @@ public interface ChronicleLogWriter extends Closeable {
         String message,
         Throwable throwable);
 
-    public void log(
+    public void write(
         ChronicleLogLevel level,
         long timestamp,
         String threadName,
@@ -50,7 +50,7 @@ public interface ChronicleLogWriter extends Closeable {
         Throwable throwable,
         Object arg1);
 
-    public void log(
+    public void write(
         ChronicleLogLevel level,
         long timestamp,
         String threadName,
@@ -60,7 +60,7 @@ public interface ChronicleLogWriter extends Closeable {
         Object arg1,
         Object arg2);
 
-    public void log(
+    public void write(
         ChronicleLogLevel level,
         long timestamp,
         String threadName,

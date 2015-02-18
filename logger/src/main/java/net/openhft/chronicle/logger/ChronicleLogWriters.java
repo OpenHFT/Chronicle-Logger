@@ -136,12 +136,12 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
-                final ChronicleLogLevel level,
-                final long timestamp,
-                final String threadName,
-                final String loggerName,
-                final String message) {
+        public void write(
+            final ChronicleLogLevel level,
+            final long timestamp,
+            final String threadName,
+            final String loggerName,
+            final String message) {
 
             final ExcerptAppender appender = getAppender();
             if (appender != null) {
@@ -152,7 +152,7 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
+        public void write(
             final ChronicleLogLevel level,
             final long timestamp,
             final String threadName,
@@ -180,14 +180,14 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
-                final ChronicleLogLevel level,
-                final long timestamp,
-                final String threadName,
-                final String loggerName,
-                final String message,
-                final Throwable throwable,
-                final Object arg1) {
+        public void write(
+            final ChronicleLogLevel level,
+            final long timestamp,
+            final String threadName,
+            final String loggerName,
+            final String message,
+            final Throwable throwable,
+            final Object arg1) {
 
             final ExcerptAppender appender = getAppender();
             if (appender != null) {
@@ -210,7 +210,7 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
+        public void write(
             final ChronicleLogLevel level,
             final long timestamp,
             final String threadName,
@@ -242,7 +242,7 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
+        public void write(
             final ChronicleLogLevel level,
             final long timestamp,
             final String threadName,
@@ -296,23 +296,23 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
-                final ChronicleLogLevel level,
-                long timestamp,
-                final String threadName,
-                final String loggerName,
-                final String message) {
-            log(level, timestamp, threadName, loggerName, message, null);
+        public void write(
+            final ChronicleLogLevel level,
+            long timestamp,
+            final String threadName,
+            final String loggerName,
+            final String message) {
+            write(level, timestamp, threadName, loggerName, message, null);
         }
 
         @Override
-        public void log(
-                final ChronicleLogLevel level,
-                long timestamp,
-                final String threadName,
-                final String loggerName,
-                final String message,
-                final Throwable throwable) {
+        public void write(
+            final ChronicleLogLevel level,
+            long timestamp,
+            final String threadName,
+            final String loggerName,
+            final String message,
+            final Throwable throwable) {
 
             final ExcerptAppender appender = getAppender();
             if (appender != null) {
@@ -342,7 +342,7 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
+        public void write(
             ChronicleLogLevel level,
             long timestamp,
             String threadName,
@@ -354,7 +354,7 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
+        public void write(
             ChronicleLogLevel level,
             long timestamp,
             String threadName,
@@ -367,7 +367,7 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
+        public void write(
             ChronicleLogLevel level,
             long timestamp,
             String threadName,
@@ -400,7 +400,7 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
+        public void write(
             final ChronicleLogLevel level,
             long timestamp,
             final String threadName,
@@ -427,18 +427,18 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
+        public void write(
             final ChronicleLogLevel level,
             final long timestamp,
             final String threadName,
             final String loggerName,
             final String message) {
 
-            log(level, timestamp, threadName, loggerName, message, null);
+            write(level, timestamp, threadName, loggerName, message, null);
         }
 
         @Override
-        public void log(
+        public void write(
             final ChronicleLogLevel level,
             final long timestamp,
             final String threadName,
@@ -447,11 +447,11 @@ public class ChronicleLogWriters {
             final Throwable throwable,
             final Object arg1) {
 
-            log(level, timestamp, threadName, loggerName, message, throwable);
+            write(level, timestamp, threadName, loggerName, message, throwable);
         }
 
         @Override
-        public void log(
+        public void write(
             final ChronicleLogLevel level,
             final long timestamp,
             final String threadName,
@@ -461,11 +461,11 @@ public class ChronicleLogWriters {
             final Object arg1,
             final Object arg2) {
 
-            log(level, timestamp, threadName, loggerName, message, throwable);
+            write(level, timestamp, threadName, loggerName, message, throwable);
         }
 
         @Override
-        public void log(
+        public void write(
             final ChronicleLogLevel level,
             final long timestamp,
             final String threadName,
@@ -474,7 +474,7 @@ public class ChronicleLogWriters {
             final Throwable throwable,
             final Object[] args) {
 
-            log(level, timestamp, threadName, loggerName, message, throwable);
+            write(level, timestamp, threadName, loggerName, message, throwable);
         }
     }
 
@@ -504,19 +504,19 @@ public class ChronicleLogWriters {
         }
 
         @Override
-        public void log(
-                ChronicleLogLevel level,
-                long timestamp,
-                String threadName,
-                String loggerName,
-                String message) {
+        public void write(
+            ChronicleLogLevel level,
+            long timestamp,
+            String threadName,
+            String loggerName,
+            String message) {
             synchronized (this.sync) {
-                this.writer.log(level, timestamp, threadName, loggerName, message);
+                this.writer.write(level, timestamp, threadName, loggerName, message);
             }
         }
 
         @Override
-        public void log(
+        public void write(
             ChronicleLogLevel level,
             long timestamp,
             String threadName,
@@ -524,12 +524,12 @@ public class ChronicleLogWriters {
             String message,
             Throwable throwable) {
             synchronized (this.sync) {
-                this.writer.log(level, timestamp, threadName, loggerName, message, throwable);
+                this.writer.write(level, timestamp, threadName, loggerName, message, throwable);
             }
         }
 
         @Override
-        public void log(
+        public void write(
             ChronicleLogLevel level,
             long timestamp,
             String threadName,
@@ -538,12 +538,12 @@ public class ChronicleLogWriters {
             Throwable throwable,
             Object arg1) {
             synchronized (this.sync) {
-                this.writer.log(level, timestamp, threadName, loggerName, message, throwable, arg1);
+                this.writer.write(level, timestamp, threadName, loggerName, message, throwable, arg1);
             }
         }
 
         @Override
-        public void log(
+        public void write(
             ChronicleLogLevel level,
             long timestamp,
             String threadName,
@@ -553,12 +553,12 @@ public class ChronicleLogWriters {
             Object arg1,
             Object arg2) {
             synchronized (this.sync) {
-                this.writer.log(level, timestamp, threadName, loggerName, message, throwable, arg1, arg2);
+                this.writer.write(level, timestamp, threadName, loggerName, message, throwable, arg1, arg2);
             }
         }
 
         @Override
-        public void log(
+        public void write(
             ChronicleLogLevel level,
             long timestamp,
             String threadName,
@@ -567,8 +567,44 @@ public class ChronicleLogWriters {
             Throwable throwable,
             Object[] args) {
             synchronized (this.sync) {
-                this.writer.log(level, timestamp, threadName, loggerName, message, throwable, args);
+                this.writer.write(level, timestamp, threadName, loggerName, message, throwable, args);
             }
         }
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public static ChronicleLogWriter binary(
+        @NotNull Chronicle chronicle) throws IOException {
+
+        return chronicle instanceof VanillaChronicle
+            ? new BinaryWriter(chronicle)
+            : new SynchronizedWriter(new BinaryWriter(chronicle));
+    }
+
+    public static ChronicleLogWriter binary(
+            @NotNull ChronicleLogAppenderConfig cfg, String path) throws IOException {
+
+        return binary(cfg.build(path));
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public static ChronicleLogWriter text(
+            @NotNull Chronicle chronicle, String dateFormat, Integer stackTraceDepth) throws IOException {
+
+        return chronicle instanceof VanillaChronicle
+            ? new TextWriter(chronicle, dateFormat, stackTraceDepth)
+            : new SynchronizedWriter(new TextWriter(chronicle, dateFormat, stackTraceDepth));
+    }
+
+    public static ChronicleLogWriter text(
+            @NotNull ChronicleLogAppenderConfig cfg, String path, String dateFormat, Integer stackTraceDepth)
+            throws IOException {
+        return text(cfg.build(path), dateFormat, stackTraceDepth);
     }
 }

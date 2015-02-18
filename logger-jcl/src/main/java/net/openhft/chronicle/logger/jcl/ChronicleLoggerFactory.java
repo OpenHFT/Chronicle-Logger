@@ -97,17 +97,18 @@ public class ChronicleLoggerFactory extends LogFactory {
     // *************************************************************************
 
     private synchronized Log getLogger(String name) throws Exception {
-
         ChronicleLogger logger = loggers.get(name);
         if (logger == null) {
-            String level = manager.cfg().getString(name, ChronicleLogConfig.KEY_LEVEL);
-
-            logger = new ChronicleLogger(
-                manager.createWriter(name),
+            loggers.put(
                 name,
-                ChronicleLogLevel.fromStringLevel(level));
-
-            loggers.put(name, logger);
+                logger = new ChronicleLogger(
+                    manager.createWriter(name),
+                    name,
+                    ChronicleLogLevel.fromStringLevel(
+                        manager.cfg().getString(name, ChronicleLogConfig.KEY_LEVEL)
+                    )
+                )
+            );
         }
 
         return logger;

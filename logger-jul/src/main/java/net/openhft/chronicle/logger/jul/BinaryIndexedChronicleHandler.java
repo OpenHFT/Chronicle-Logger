@@ -23,15 +23,12 @@ import net.openhft.chronicle.logger.ChronicleLogWriters;
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class BinaryIndexedChronicleHandler extends AbstractChronicleHandler {
-
+public class BinaryIndexedChronicleHandler extends AbstractBinaryChronicleHandler {
     private final ChronicleHandlerConfig handlerCfg;
     private final ChronicleLogAppenderConfig appenderCfg;
     private final String appenderPath;
 
     public BinaryIndexedChronicleHandler() throws IOException {
-        super();
-
         this.handlerCfg = new ChronicleHandlerConfig(getClass());
         this.appenderCfg = handlerCfg.getIndexedAppenderConfig();
         this.appenderPath = handlerCfg.getString("path", null);
@@ -39,8 +36,6 @@ public class BinaryIndexedChronicleHandler extends AbstractChronicleHandler {
         setLevel(handlerCfg.getLevel("level", Level.ALL));
         setFilter(handlerCfg.getFilter("filter", null));
 
-        setAppender(new ChronicleLogWriters.BinaryWriter(
-            appenderCfg.build(appenderPath))
-        );
+        setWriter(ChronicleLogWriters.binary(appenderCfg, appenderPath));
     }
 }
