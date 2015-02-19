@@ -15,8 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.openhft.chronicle.logger;
+package net.openhft.chronicle.logger.jul;
 
-public interface ChronicleLogFormatter {
-    public String format(String message, Throwable throwable, Object... args);
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+
+import java.util.logging.LogRecord;
+
+abstract class AbstractBinaryChronicleHandler extends AbstractChronicleHandler {
+    @Override
+    protected void doPublish(final LogRecord record, final ChronicleLogWriter writer) {
+        writer.write(
+            ChronicleHandlerHelper.getLogLevel(record),
+            record.getMillis(),
+            "thread-" + record.getThreadID(),
+            record.getLoggerName(),
+            record.getMessage(),
+            record.getThrown(),
+            record.getParameters());
+    }
 }

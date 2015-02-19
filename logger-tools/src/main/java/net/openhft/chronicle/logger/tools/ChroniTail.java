@@ -19,8 +19,6 @@
 package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.IndexedChronicle;
-import net.openhft.chronicle.VanillaChronicle;
 
 /**
  *

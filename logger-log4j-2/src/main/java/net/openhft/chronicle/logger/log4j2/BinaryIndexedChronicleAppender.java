@@ -18,13 +18,10 @@
 
 package net.openhft.chronicle.logger.log4j2;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.IndexedChronicle;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.ChronicleLogWriters;
 import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -37,41 +34,19 @@ import java.io.IOException;
     category    = "Core",
     elementType = "appender",
     printObject = true)
-public class BinaryIndexedChronicleAppender extends BinaryChronicleAppender {
+public class BinaryIndexedChronicleAppender extends AbstractBinaryChronicleAppender {
 
     private final IndexedLogAppenderConfig config;
-    private final Object lock;
-    private ExcerptAppender appender;
 
     public BinaryIndexedChronicleAppender(
         final String name, final Filter filter, final String path, final IndexedLogAppenderConfig config) {
         super(name, filter, path);
-        this.config = config;
-        this.appender = null;
-        this.lock = new Object();
+        this.config = config != null ? config : new IndexedLogAppenderConfig();
     }
 
     @Override
-    protected Chronicle createChronicle() throws IOException {
-        Chronicle chronicle = (this.config != null)
-            ? this.config.build(this.getPath())
-            : ChronicleQueueBuilder.indexed(this.getPath()).build();
-
-        this.appender = chronicle.createAppender();
-
-        return chronicle;
-    }
-
-    @Override
-    protected ExcerptAppender getAppender() {
-        return this.appender;
-    }
-
-    @Override
-    public void append(final LogEvent event) {
-        synchronized (this.lock) {
-            super.append(event);
-        }
+    protected ChronicleLogWriter createWriter() throws IOException {
+        return ChronicleLogWriters.binary(config, super.getPath());
     }
 
     protected IndexedLogAppenderConfig getChronicleConfig() {

@@ -17,23 +17,20 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.logger.ChronicleLogAppender;
-import net.openhft.chronicle.logger.ChronicleLogFormatter;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 abstract class AbstractChronicleHandler extends Handler {
 
     private String path;
-    private ChronicleLogAppender appender;
+    private ChronicleLogWriter writer;
 
     protected AbstractChronicleHandler() {
         this.path = null;
-        this.appender = null;
+        this.writer = null;
     }
 
     @Override
@@ -42,9 +39,9 @@ abstract class AbstractChronicleHandler extends Handler {
 
     @Override
     public void close() throws SecurityException {
-        if(this.appender != null && this.appender.getChronicle() != null) {
+        if(this.writer != null && this.writer.getChronicle() != null) {
             try {
-                this.appender.getChronicle().close();
+                this.writer.getChronicle().close();
             } catch (IOException e) {
                 // Ignore
             }
@@ -53,15 +50,8 @@ abstract class AbstractChronicleHandler extends Handler {
 
     @Override
     public void publish(final LogRecord record) {
-        if((appender != null) && isLoggable(record)) {
-            this.appender.log(
-                ChronicleHandlerHelper.getLogLevel(record),
-                record.getMillis(),
-                "thread-" + record.getThreadID(),
-                record.getLoggerName(),
-                record.getMessage(),
-                record.getThrown(),
-                record.getParameters());
+        if((writer != null) && isLoggable(record)) {
+            doPublish(record, this.writer);
         }
     }
 
@@ -69,29 +59,9 @@ abstract class AbstractChronicleHandler extends Handler {
     //
     // *************************************************************************
 
-    protected ChronicleLogAppender getAppender() {
-        return this.appender;
-    }
+    protected abstract void doPublish(final LogRecord record, final ChronicleLogWriter writer);
 
-    protected void setAppender(ChronicleLogAppender appender) {
-        this.appender = appender;
-    }
-
-    protected void configure(ChronicleHandlerConfig cfg) throws IOException {
-        setLevel(cfg.getLevel("level", Level.ALL));
-        setFilter(cfg.getFilter("filter", null));
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    static class Formatter implements ChronicleLogFormatter {
-        static final Formatter INSTANCE = new Formatter();
-
-        @Override
-        public String format(String message, Throwable throwable, Object... args) {
-            return MessageFormat.format(message, args);
-        }
+    protected void setWriter(ChronicleLogWriter appender) {
+        this.writer = appender;
     }
 }

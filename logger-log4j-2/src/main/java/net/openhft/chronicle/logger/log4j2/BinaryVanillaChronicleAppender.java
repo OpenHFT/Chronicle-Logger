@@ -18,10 +18,8 @@
 
 package net.openhft.chronicle.logger.log4j2;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.VanillaChronicle;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.ChronicleLogWriters;
 import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -36,32 +34,19 @@ import java.io.IOException;
     category    = "Core",
     elementType = "appender",
     printObject = true)
-public class BinaryVanillaChronicleAppender extends BinaryChronicleAppender {
+public class BinaryVanillaChronicleAppender extends AbstractBinaryChronicleAppender {
 
     private final VanillaLogAppenderConfig config;
 
     public BinaryVanillaChronicleAppender(
         final String name, final Filter filter, final String path, final VanillaLogAppenderConfig config) {
         super(name, filter, path);
-        this.config = config;
+        this.config = config != null ? config : new VanillaLogAppenderConfig();
     }
 
     @Override
-    protected Chronicle createChronicle() throws IOException {
-        return (this.config != null)
-            ? this.config.build(this.getPath())
-            : ChronicleQueueBuilder.vanilla(this.getPath()).build();
-    }
-
-    @Override
-    protected ExcerptAppender getAppender() {
-        try {
-            return this.chronicle.createAppender();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    protected ChronicleLogWriter createWriter() throws IOException {
+        return ChronicleLogWriters.binary(config, super.getPath());
     }
 
     protected VanillaLogAppenderConfig getChronicleConfig() {

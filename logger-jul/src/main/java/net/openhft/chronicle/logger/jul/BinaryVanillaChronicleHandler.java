@@ -18,12 +18,12 @@
 package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.logger.ChronicleLogAppenderConfig;
-import net.openhft.chronicle.logger.ChronicleLogAppenders;
+import net.openhft.chronicle.logger.ChronicleLogWriters;
 
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class BinaryVanillaChronicleHandler extends AbstractChronicleHandler {
+public class BinaryVanillaChronicleHandler extends AbstractBinaryChronicleHandler {
 
     private final ChronicleHandlerConfig handlerCfg;
     private final ChronicleLogAppenderConfig appenderCfg;
@@ -39,8 +39,6 @@ public class BinaryVanillaChronicleHandler extends AbstractChronicleHandler {
         setLevel(handlerCfg.getLevel("level", Level.ALL));
         setFilter(handlerCfg.getFilter("filter", null));
 
-        setAppender(new ChronicleLogAppenders.BinaryWriter(
-            appenderCfg.build(appenderPath))
-        );
+        setWriter(ChronicleLogWriters.binary(appenderCfg, appenderPath));
     }
 }

@@ -17,47 +17,36 @@
  */
 package net.openhft.chronicle.logger.jcl;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.IndexedChronicle;
-import net.openhft.chronicle.logger.*;
+import net.openhft.chronicle.logger.ChronicleLogConfig;
+import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.ChronicleLogManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogConfigurationException;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.impl.NoOpLog;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChronicleLoggerFactory extends LogFactory {
     private static final Log NOP_LOGGER = new NoOpLog();
 
-    private final Map<String, Log> loggers;
-    private final Map<String, ChronicleLogAppender> appenders;
-    private ChronicleLogConfig cfg;
+    private final Map<String, ChronicleLogger> loggers;
+    private ChronicleLogManager manager;
 
     public ChronicleLoggerFactory() {
         logRawDiagnostic("[CHRONICLE] Initialize ChronicleLoggerFactory");
 
         this.loggers = new ConcurrentHashMap<>();
-        this.appenders = new ConcurrentHashMap<>();
-        this.cfg = ChronicleLogConfig.load();
+        this.manager = new ChronicleLogManager();
 
         logRawDiagnostic("[CHRONICLE] ChronicleLoggerFactory initialized");
     }
 
     @Override
     public void release() {
-        for(ChronicleLogAppender appender : appenders.values()) {
-            try {
-                appender.getChronicle().close();
-            } catch (IOException e) {
-            }
-        }
-
         this.loggers.clear();
-        this.appenders.clear();
+        this.manager.clear();
     }
 
     @Override
@@ -86,7 +75,7 @@ public class ChronicleLoggerFactory extends LogFactory {
     @Override
     public Log getInstance(String name) throws LogConfigurationException {
         try {
-            return doGetLogger(name);
+            return getLogger(name);
         } catch(Exception e) {
             System.err.println(
                 new StringBuilder("Unable to inzialize chronicle-jcl ")
@@ -107,147 +96,21 @@ public class ChronicleLoggerFactory extends LogFactory {
     //
     // *************************************************************************
 
-    private synchronized Log doGetLogger(String name) throws Exception {
-        if (this.cfg == null) {
-            throw new IllegalArgumentException("chronicle-jcl is not configured");
-        }
-
-        Log logger = loggers.get(name);
+    private synchronized Log getLogger(String name) throws Exception {
+        ChronicleLogger logger = loggers.get(name);
         if (logger == null) {
-            String path  = cfg.getString(name, ChronicleLogConfig.KEY_PATH);
-            String level = cfg.getString(name, ChronicleLogConfig.KEY_LEVEL);
-
-            if (path != null) {
+            loggers.put(
+                name,
                 logger = new ChronicleLogger(
-                    newAppender(path, name),
+                    manager.createWriter(name),
                     name,
-                    ChronicleLogLevel.fromStringLevel(level));
-
-                loggers.put(name, logger);
-            } else {
-                if (path == null) {
-                    throw new IllegalArgumentException(new StringBuilder()
-                        .append("chronicle.logger.path is not defined")
-                        .append(",")
-                        .append("chronicle.logger.logger.")
-                        .append(name)
-                        .append(".path is not defined")
-                        .toString()
-                    );
-                }
-            }
+                    ChronicleLogLevel.fromStringLevel(
+                        manager.cfg().getString(name, ChronicleLogConfig.KEY_LEVEL)
+                    )
+                )
+            );
         }
 
         return logger;
-    }
-
-    /**
-     * @param path
-     * @param name
-     * @return
-     * @throws java.io.IOException
-     */
-    private ChronicleLogAppender newAppender(String path, String name) throws Exception {
-        ChronicleLogAppender appender = appenders.get(path);
-        if(appender == null) {
-            final String  type    = cfg.getString(name, ChronicleLogConfig.KEY_TYPE);
-            final String  format  = cfg.getString(name, ChronicleLogConfig.KEY_FORMAT);
-            final Integer stDepth = cfg.getInteger(ChronicleLogConfig.KEY_STACK_TRACE_DEPTH);
-
-            if(!name.startsWith("net.openhft")) {
-                if (ChronicleLogConfig.FORMAT_BINARY.equalsIgnoreCase(format)) {
-                    appender = new ChronicleLogAppenders.BinaryWriter(
-                        newChronicle(type, path, name)
-                    );
-                } else if (ChronicleLogConfig.FORMAT_TEXT.equalsIgnoreCase(format)) {
-                    appender = new ChronicleLogAppenders.TextWriter(
-                        newChronicle(type, path, name),
-                        Formatter.INSTANCE,
-                        ChronicleLogConfig.DEFAULT_DATE_FORMAT,
-                        stDepth
-                    );
-                }
-            } else {
-                appender = new ChronicleLogAppenders.SimpleWriter(
-                    Formatter.INSTANCE,
-                    System.out
-                );
-            }
-
-            if (appender != null) {
-                // If the underlying chronicle is an Indexed chronicle, wrap the appender
-                // so it is thread safe (synchronized)
-                if (appender.getChronicle() instanceof IndexedChronicle) {
-                    appender = new ChronicleLogAppenders.SynchronizedWriter(appender);
-                }
-            }
-
-            this.appenders.put(path, appender);
-        }
-
-        return appender;
-    }
-
-    /**
-     * @param type
-     * @param path
-     * @param name
-     * @return
-     * @throws java.io.IOException
-     */
-    private Chronicle newChronicle(String type, String path, String name) throws Exception {
-        if (ChronicleLogConfig.TYPE_INDEXED.equalsIgnoreCase(type)) {
-            return newIndexedChronicle(path, name);
-        } else if (ChronicleLogConfig.TYPE_VANILLA.equalsIgnoreCase(type)) {
-            return newVanillaChronicle(path, name);
-        }
-
-        throw new IllegalArgumentException("type should be indexed or vanilla");
-    }
-
-    /**
-     * Make a VanillaChronicle with default configuration;
-     *
-     * @param path
-     * @param name #param synchronous
-     * @return
-     */
-    private Chronicle newVanillaChronicle(String path, String name) throws IOException {
-        final Chronicle chronicle = this.cfg.getVanillaChronicleConfig().build(path);
-
-        if (!cfg.getBoolean(name, ChronicleLogConfig.KEY_APPEND, true)) {
-            chronicle.clear();
-        }
-
-        return chronicle;
-    }
-
-    /**
-     * Make an IndexedChronicle with default configuration;
-     *
-     * @param path
-     * @param name
-     * @return
-     */
-    private Chronicle newIndexedChronicle(String path, String name) throws IOException {
-        if (!cfg.getBoolean(name, ChronicleLogConfig.KEY_APPEND, true)) {
-            new File(path + ".data").delete();
-            new File(path + ".index").delete();
-        }
-
-        return this.cfg.getIndexedChronicleConfig().build(path);
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    static class Formatter implements ChronicleLogFormatter {
-        static final Formatter INSTANCE = new Formatter();
-
-        @Override
-        public String format(String message, Throwable throwable, Object... args) {
-            return message;
-        }
     }
 }

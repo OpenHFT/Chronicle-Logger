@@ -25,9 +25,7 @@ import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author lburgazzoli
@@ -76,6 +74,7 @@ public class ChronicleLogConfig {
     public static final String PLACEHOLDER_TODAY_FORMAT = "yyyyMMdd";
     public static final String PLACEHOLDER_PID = "${pid}";
     public static final String DEFAULT_DATE_FORMAT = "yyyy.MM.dd-HH:mm:ss.SSS";
+    public static final List<String> PACKAGE_MASK = Arrays.asList("net.openhft");
 
     private static final DateFormat DATEFORMAT = new SimpleDateFormat(PLACEHOLDER_TODAY_FORMAT);
     private static final String PID = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
@@ -264,11 +263,11 @@ public class ChronicleLogConfig {
     }
 
     /**
-     * @param shortName
+     * @param loggerName
      * @return
      */
-    public String getString(final String shortName) {
-        String name = KEY_PREFIX_ROOT + shortName;
+    public String getString(final String loggerName) {
+        String name = KEY_PREFIX_ROOT + loggerName;
         return this.properties.getProperty(name);
     }
 
@@ -335,6 +334,7 @@ public class ChronicleLogConfig {
     }
 
     /**
+     * @param loggerName
      * @param shortName
      * @return
      */
@@ -353,6 +353,7 @@ public class ChronicleLogConfig {
     }
 
     /**
+     * @param loggerName
      * @param shortName
      * @return
      */
@@ -371,6 +372,7 @@ public class ChronicleLogConfig {
     }
 
     /**
+     * @param loggerName
      * @param shortName
      * @return
      */
@@ -388,16 +390,30 @@ public class ChronicleLogConfig {
         return (prop != null) ? Short.parseShort(prop) : null;
     }
 
-    // *************************************************************************
-    //
-    // *************************************************************************
-
     /**
+     * @param loggerName
      * @param shortName
      * @return
      */
     public Short getShort(final String loggerName, final String shortName) {
         String prop = getString(loggerName, shortName);
         return (prop != null) ? Short.parseShort(prop) : null;
+    }
+
+    /**
+     * @param loggerName
+     * @return
+     */
+    public ChronicleLogLevel getLevel(final String loggerName) {
+        return getLevel(loggerName, null);
+    }
+
+    /**
+     * @param loggerName
+     * @return
+     */
+    public ChronicleLogLevel getLevel(final String loggerName, ChronicleLogLevel defVal) {
+        String prop = getString(loggerName, KEY_LEVEL);
+        return (prop != null) ? ChronicleLogLevel.fromStringLevel(prop) : defVal;
     }
 }

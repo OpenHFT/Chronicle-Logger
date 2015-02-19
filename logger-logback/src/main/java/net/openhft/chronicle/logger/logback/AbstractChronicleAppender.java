@@ -25,9 +25,8 @@ import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,14 +42,14 @@ public abstract class AbstractChronicleAppender
 
     private String path;
 
-    protected Chronicle chronicle;
+    protected ChronicleLogWriter writer;
 
     protected AbstractChronicleAppender() {
-        this.filterAttachable = new FilterAttachableImpl<ILoggingEvent>();
+        this.filterAttachable = new FilterAttachableImpl<>();
         this.name = null;
         this.started = false;
         this.path = null;
-        this.chronicle = null;
+        this.writer = null;
     }
 
     // *************************************************************************
@@ -69,9 +68,8 @@ public abstract class AbstractChronicleAppender
     // Chronicle implementation
     // *************************************************************************
 
-    protected abstract Chronicle createChronicle() throws IOException;
-
-    protected abstract ExcerptAppender getAppender();
+    protected abstract ChronicleLogWriter createWriter() throws IOException;
+    protected abstract void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer);
 
     // *************************************************************************
     //
@@ -114,10 +112,10 @@ public abstract class AbstractChronicleAppender
             addError("Appender " + getName() + " has configuration errors and is not started!");
         } else {
             try {
-                this.chronicle = createChronicle();
+                this.writer = createWriter();
                 this.started = true;
             } catch(IOException e) {
-                this.chronicle = null;
+                this.writer = null;
                 addError("Appender " + getName() + " " + e.getMessage());
             }
         }
@@ -125,15 +123,22 @@ public abstract class AbstractChronicleAppender
 
     @Override
     public void stop() {
-        if(this.chronicle != null) {
+        if(this.writer != null) {
             try {
-                this.chronicle.close();
+                this.writer.close();
             } catch(IOException e) {
                 addError("Appender " + getName() + " " + e.getMessage());
             }
         }
 
         this.started = false;
+    }
+
+    @Override
+    public void doAppend(final ILoggingEvent event) {
+        if (getFilterChainDecision(event) != FilterReply.DENY) {
+            doAppend(event, writer);
+        }
     }
 
     // *************************************************************************

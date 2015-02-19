@@ -18,18 +18,14 @@
 
 package net.openhft.chronicle.logger.log4j1;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OnlyOnceErrorHandler;
-import org.apache.log4j.spi.ErrorHandler;
-import org.apache.log4j.spi.Filter;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.*;
 
 import java.io.IOException;
 
@@ -39,13 +35,13 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     private String name;
     private ErrorHandler errorHandler;
 
-    protected Chronicle chronicle;
+    protected ChronicleLogWriter writer;
 
     private String path;
 
     protected AbstractChronicleAppender() {
         this.path = null;
-        this.chronicle = null;
+        this.writer = null;
         this.name = null;
         this.errorHandler = new OnlyOnceErrorHandler();
     }
@@ -58,7 +54,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     public void activateOptions() {
         if(path != null) {
             try {
-                this.chronicle = createChronicle();
+                this.writer = createWriter();
             } catch (IOException e) {
                 LogLog.warn("Exception ["+name+"].",e);
             }
@@ -97,7 +93,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     public void finalize() {
         // An appender might be closed then garbage collected. There is no
         // point in closing twice.
-        if(this.chronicle == null) {
+        if(this.writer == null) {
             LogLog.debug("Finalizing appender named [" + name + "].");
             close();
         }
@@ -144,7 +140,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     }
 
     public void doAppend(LoggingEvent event) {
-        if(this.chronicle != null) {
+        if(this.writer != null) {
             for(Filter f = this.filter; f != null;f = f.getNext()) {
                 switch(f.decide(event)) {
                     case Filter.DENY:
@@ -155,7 +151,20 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
                 }
             }
 
-            append(event);
+            Throwable throwable = null;
+            ThrowableInformation ti = event.getThrowableInformation();
+            if(ti != null) {
+                throwable = ti.getThrowable();
+            }
+
+            writer.write(
+                toChronicleLogLevel(event.getLevel()),
+                event.getTimeStamp(),
+                event.getThreadName(),
+                event.getLoggerName(),
+                event.getMessage().toString(),
+                throwable
+            );
         } else {
             LogLog.error("Attempted to append to closed appender named ["+name+"].");
             return;
@@ -166,11 +175,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     // Chronicle implementation
     // *************************************************************************
 
-    protected abstract void append(LoggingEvent event);
-
-    protected abstract Chronicle createChronicle() throws IOException;
-
-    protected abstract ExcerptAppender getAppender();
+    protected abstract ChronicleLogWriter createWriter() throws IOException;
 
     // *************************************************************************
     //
@@ -178,13 +183,11 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
 
     @Override
     public void close() {
-        if(this.chronicle != null) {
+        if(this.writer != null) {
             try {
-                if(this.chronicle != null) {
-                    this.chronicle.close();
-                }
+                this.writer.close();
             } catch(IOException e) {
-                //TODO: manage exception
+                LogLog.warn("Failed to close the writer", e);
             }
         }
     }
