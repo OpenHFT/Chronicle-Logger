@@ -276,7 +276,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     // HELPERS
     // *************************************************************************
 
-    private boolean isLevelEnabled(ChronicleLogLevel level) {
+    protected boolean isLevelEnabled(ChronicleLogLevel level) {
         return level.isHigherOrEqualTo(this.level);
     }
 
@@ -302,61 +302,71 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
 
         @Override
         protected void append(ChronicleLogLevel level, String message) {
-            writer.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                name,
-                message,
-                null);
+            if(isLevelEnabled(level)) {
+                writer.write(
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    name,
+                    message,
+                    null);
+            }
         }
 
         @Override
         protected void append(ChronicleLogLevel level, String message, Throwable throwable) {
-            writer.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                name,
-                message,
-                throwable);
+            if(isLevelEnabled(level)) {
+                writer.write(
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    name,
+                    message,
+                    throwable);
+            }
         }
 
         @Override
         protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object arg1) {
-            writer.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                name,
-                message,
-                throwable,
-                arg1);
+            if(isLevelEnabled(level)) {
+                writer.write(
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    name,
+                    message,
+                    throwable,
+                    arg1);
+            }
         }
 
         @Override
         protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object arg1, Object arg2) {
-            writer.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                name,
-                message,
-                throwable,
-                arg1,
-                arg2);
+            if(isLevelEnabled(level)) {
+                writer.write(
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    name,
+                    message,
+                    throwable,
+                    arg1,
+                    arg2);
+            }
         }
 
         @Override
         protected void append(ChronicleLogLevel level, String message, Object[] args) {
-            writer.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                name,
-                message,
-                null,
-                args);
+            if(isLevelEnabled(level)) {
+                writer.write(
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    name,
+                    message,
+                    null,
+                    args);
+            }
         }
     }
 
@@ -371,59 +381,68 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
 
         @Override
         protected void append(ChronicleLogLevel level, String message) {
-            writer.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                name,
-                message,
-                null);
+            if(isLevelEnabled(level)) {
+                writer.write(
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    name,
+                    message,
+                    null);
+            }
         }
 
         @Override
         protected void append(ChronicleLogLevel level, String message, Throwable throwable) {
-            writer.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                name,
-                message,
-                throwable);
+            if(isLevelEnabled(level)) {
+                writer.write(
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    name,
+                    message,
+                    throwable);
+            }
         }
 
         @Override
         protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object arg1) {
-            writer.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                name,
-                MessageFormatter.format(message, arg1).getMessage(),
-                throwable);
+            if(isLevelEnabled(level)) {
+                writer.write(
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    name,
+                    MessageFormatter.format(message, arg1).getMessage(),
+                    throwable);
+            }
         }
 
         @Override
         protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object arg1, Object arg2) {
-            writer.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                name,
-                MessageFormatter.format(message, arg1, arg2).getMessage(),
-                throwable);
+            if(isLevelEnabled(level)) {
+                writer.write(
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    name,
+                    MessageFormatter.format(message, arg1, arg2).getMessage(),
+                    throwable);
+            }
         }
 
         @Override
         protected void append(ChronicleLogLevel level, String message, Object[] args) {
-            FormattingTuple tuple = MessageFormatter.arrayFormat(message, args);
-
-            writer.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                name,
-                tuple.getMessage(),
-                tuple.getThrowable());
+            if(isLevelEnabled(level)) {
+                FormattingTuple tuple = MessageFormatter.arrayFormat(message, args);
+                writer.write(
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    name,
+                    tuple.getMessage(),
+                    tuple.getThrowable());
+            }
         }
     }
 }

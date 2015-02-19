@@ -80,7 +80,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             return doGetLogger(name);
         } catch(Exception e) {
             System.err.println(
-                new StringBuilder("Unable to inzialize chronicle-slf4j ")
+                new StringBuilder("Unable to inzialize chronicle-logger-slf4j ")
                     .append("(")
                     .append(name)
                     .append(")")
@@ -128,30 +128,32 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
         Logger logger = loggers.get(name);
         if (logger == null) {
             final ChronicleLogWriter writer = manager.createWriter(name);
-            ChronicleLogWriter delegate = writer;
-
-            final ChronicleLogLevel level = ChronicleLogLevel.fromStringLevel(
-                manager.cfg().getString(name, ChronicleLogConfig.KEY_LEVEL)
-            );
-
-            if(delegate instanceof ChronicleLogWriters.SynchronizedWriter) {
-                delegate = ((ChronicleLogWriters.SynchronizedWriter)delegate).writer();
+            if(manager.isSimple(name)) {
+                logger = new ChronicleLogger.Text(
+                    writer,
+                    name,
+                    ChronicleLogLevel.WARN);
+            } else if(manager.isBinary(name)) {
+                logger = new ChronicleLogger.Binary(
+                    writer,
+                    name,
+                    manager.cfg().getLevel(name));
+            } else if(manager.isText(name)) {
+                logger = new ChronicleLogger.Text(
+                    writer,
+                    name,
+                    manager.cfg().getLevel(name));
             }
 
-            if(delegate instanceof ChronicleLogWriters.BinaryWriter) {
-                loggers.put(
-                    name,
-                    logger = new ChronicleLogger.Binary(writer, name, level)
-                );
-            } else if(delegate instanceof ChronicleLogWriters.TextWriter) {
-                loggers.put(
-                    name,
-                    logger = new ChronicleLogger.Text(writer, name, level)
-                );
-            } else if(delegate instanceof ChronicleLogWriters.SimpleWriter) {
-                loggers.put(
-                    name,
-                    logger = new ChronicleLogger.Text(writer, name, level)
+            if(logger != null) {
+                loggers.put(name, logger);
+            } else {
+                System.err.println(
+                    new StringBuilder("Unable to get a logger for ")
+                        .append("(")
+                        .append(name)
+                        .append(")")
+                        .toString()
                 );
             }
         }

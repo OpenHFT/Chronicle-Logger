@@ -19,20 +19,12 @@
 package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.logger.ChronicleLogConfig;
-
-import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ChronicleLoggingConfigTest {
-    @Ignore
-    @Test
-    public void testLoadFileVanilla() throws Exception {
-        System.setProperty("chronicle.logger.properties", System.getProperty("chronicle.logger.vanilla.properties"));
-        assertLoadsValidVanillaConfig();
-    }
-
     @Test
     public void testLoadClasspathVanilla() throws Exception {
         System.setProperty("chronicle.logger.properties", "chronicle.logger.vanilla.properties");
@@ -44,13 +36,6 @@ public class ChronicleLoggingConfigTest {
         assertNotNull("unable to load config", config);
         assertNotNull("is not a vanilla config", config.getVanillaChronicleConfig());
         assertEquals(ChronicleLogConfig.FORMAT_BINARY, config.getString(ChronicleLogConfig.KEY_FORMAT));
-    }
-
-    @Ignore
-    @Test
-    public void testLoadFileIndexed() throws Exception {
-        System.setProperty("chronicle.logger.properties", System.getProperty("chronicle.logger.indexed.properties"));
-        assertLoadsValidIndexedConfig();
     }
 
     @Test

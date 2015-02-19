@@ -137,7 +137,7 @@ public abstract class AbstractChronicleAppender
     @Override
     public void doAppend(final ILoggingEvent event) {
         if (getFilterChainDecision(event) != FilterReply.DENY) {
-
+            doAppend(event, writer);
         }
     }
 

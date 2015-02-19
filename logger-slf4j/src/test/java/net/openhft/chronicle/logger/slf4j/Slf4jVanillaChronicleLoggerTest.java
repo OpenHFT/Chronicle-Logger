@@ -82,16 +82,16 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         Logger l4 = LoggerFactory.getLogger("readwrite");
 
         assertNotNull(l1);
-        assertEquals(l1.getClass(), ChronicleLogger.class);
+        assertTrue(l1 instanceof ChronicleLogger);
 
         assertNotNull(l2);
-        assertEquals(l2.getClass(), ChronicleLogger.class);
+        assertTrue(l2 instanceof ChronicleLogger);
 
         assertNotNull(l3);
-        assertEquals(l3.getClass(), ChronicleLogger.class);
+        assertTrue(l3 instanceof ChronicleLogger);
 
         assertNotNull(l4);
-        assertEquals(l4.getClass(), ChronicleLogger.class);
+        assertTrue(l4 instanceof  ChronicleLogger);
 
         assertEquals(l1, l2);
         assertNotEquals(l1, l3);
@@ -135,7 +135,7 @@ public class Slf4jVanillaChronicleLoggerTest extends Slf4jTestBase {
         Thread.currentThread().setName(threadId);
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {}",level);
+            log(logger, level, "level is {}", level);
         }
 
         Chronicle         chronicle = getVanillaChronicle(ChronicleLogConfig.TYPE_VANILLA,testId);

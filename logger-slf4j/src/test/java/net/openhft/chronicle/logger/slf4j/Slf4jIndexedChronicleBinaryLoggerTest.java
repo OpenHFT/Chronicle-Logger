@@ -80,12 +80,12 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
         Logger logger = LoggerFactory.getLogger("slf4j-indexed-binary-logger");
 
         assertNotNull(logger);
-        assertEquals(logger.getClass(), ChronicleLogger.class);
+        assertTrue(logger instanceof ChronicleLogger);
 
         ChronicleLogger cl = (ChronicleLogger) logger;
 
-        assertEquals(cl.getLevel(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl.getName(), "slf4j-indexed-binary-logger");
+        assertEquals(ChronicleLogLevel.DEBUG, cl.getLevel());
+        assertEquals("slf4j-indexed-binary-logger", cl.getName());
         assertTrue(cl.getWriter() instanceof ChronicleLogWriters.SynchronizedWriter);
         assertTrue(cl.getWriter().getChronicle() instanceof IndexedChronicle);
     }

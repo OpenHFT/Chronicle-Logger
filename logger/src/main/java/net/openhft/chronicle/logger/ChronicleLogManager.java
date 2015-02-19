@@ -56,6 +56,28 @@ public class ChronicleLogManager {
         this.writers = new ConcurrentHashMap<>();
     }
 
+    public boolean isBinary(String name) {
+        return ChronicleLogConfig.FORMAT_BINARY.equalsIgnoreCase(
+            cfg.getString(name, ChronicleLogConfig.KEY_FORMAT)
+        );
+    }
+
+    public boolean isText(String name) {
+        return ChronicleLogConfig.FORMAT_TEXT.equalsIgnoreCase(
+            cfg.getString(name, ChronicleLogConfig.KEY_FORMAT)
+        );
+    }
+
+    public boolean isSimple(String name) {
+        for(String pkg : ChronicleLogConfig.PACKAGE_MASK) {
+            if(name.startsWith(pkg)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @param name
      * @param name
@@ -73,14 +95,13 @@ public class ChronicleLogManager {
             if (appender == null) {
                 final Integer stDepth = cfg.getInteger(ChronicleLogConfig.KEY_STACK_TRACE_DEPTH);
                 final String type = cfg.getString(name, ChronicleLogConfig.KEY_TYPE);
-                final String format = cfg.getString(name, ChronicleLogConfig.KEY_FORMAT);
 
-                if (!name.startsWith("net.openhft")) {
-                    if (ChronicleLogConfig.FORMAT_BINARY.equalsIgnoreCase(format)) {
+                if (!isSimple(name)) {
+                    if (isBinary(name)) {
                         appender = new ChronicleLogWriters.BinaryWriter(
                             newChronicle(type, path, name)
                         );
-                    } else if (ChronicleLogConfig.FORMAT_TEXT.equalsIgnoreCase(format)) {
+                    } else if (isText(name)) {
                         appender = new ChronicleLogWriters.TextWriter(
                             newChronicle(type, path, name),
                             ChronicleLogConfig.DEFAULT_DATE_FORMAT,
