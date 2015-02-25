@@ -123,8 +123,7 @@ public class VanillaLogAppenderConfig extends ChronicleLogAppenderConfig {
         return this.builder.dataBlockSize();
     }
 
-    //TODO: long vs int
-    public void setDataBlockSize(int dataBlockSize) {
+    public void setDataBlockSize(long dataBlockSize) {
         this.builder.dataBlockSize(dataBlockSize);
     }
 

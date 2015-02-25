@@ -61,40 +61,6 @@
     </logger>
 
     <!-- ******************************************************************* -->
-    <!-- CONFIG - VANILLA                                                    -->
-    <!-- ******************************************************************* -->
-
-    <appender name  = "CONFIG-BINARY-VANILLA-CHRONICLE"
-              class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronicle-logback/config-binary-vanilla-chronicle</path>
-        <includeCallerData>false</includeCallerData>
-        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-
-        <chronicleConfig>
-            <dataCacheCapacity>128</dataCacheCapacity>
-        </chronicleConfig>
-
-    </appender>
-
-    <logger name="config-binary-vanilla-chronicle" level="TRACE" additivity="false">
-        <appender-ref ref="CONFIG-BINARY-VANILLA-CHRONICLE"/>
-    </logger>
-
-    <appender name  = "CONFIG-TEXT-VANILLA-CHRONICLE"
-              class = "net.openhft.chronicle.logger.logback.TextVanillaChronicleAppender">
-        <path>${java.io.tmpdir}/chronicle-logback/config-text-vanilla-chronicle</path>
-
-        <chronicleConfig>
-            <dataCacheCapacity>128</dataCacheCapacity>
-        </chronicleConfig>
-
-    </appender>
-
-    <logger name="config-text-vanilla-chronicle" level="TRACE" additivity="false">
-        <appender-ref ref="CONFIG-TEXT-VANILLA-CHRONICLE"/>
-    </logger>
-
-    <!-- ******************************************************************* -->
     <!--                                                                     -->
     <!-- ******************************************************************* -->
 

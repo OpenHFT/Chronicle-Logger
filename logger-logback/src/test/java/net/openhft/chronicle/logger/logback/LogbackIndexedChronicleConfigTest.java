@@ -56,7 +56,6 @@ public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
             BinaryIndexedChronicleAppender ba = (BinaryIndexedChronicleAppender) appender;
             assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
         } finally {
-            //ChronicleTools.deleteOnExit(basePath(loggerName));
         }
     }
 
