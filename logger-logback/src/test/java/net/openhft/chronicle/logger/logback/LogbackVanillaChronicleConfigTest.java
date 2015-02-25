@@ -26,6 +26,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LogbackVanillaChronicleConfigTest extends LogbackTestBase {
 
@@ -56,8 +57,8 @@ public class LogbackVanillaChronicleConfigTest extends LogbackTestBase {
 
             BinaryVanillaChronicleAppender ba = (BinaryVanillaChronicleAppender)appender;
             assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
+            assertEquals(256, ba.getChronicleConfig().getDataBlockSize());
         } finally {
-            //IOTools.deleteDir(basePath(loggerName));
         }
     }
 
@@ -76,9 +77,9 @@ public class LogbackVanillaChronicleConfigTest extends LogbackTestBase {
 
             TextVanillaChronicleAppender ba = (TextVanillaChronicleAppender)appender;
             assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
+            assertEquals(256, ba.getChronicleConfig().getDataBlockSize());
             assertNotNull(ba.getDateFormat());
         } finally {
-            //IOTools.deleteDir(basePath(loggerName));
         }
     }
 }
