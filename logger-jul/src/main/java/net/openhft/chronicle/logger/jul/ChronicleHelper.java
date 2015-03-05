@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-public class ChronicleHandlerHelper {
+public class ChronicleHelper {
 
     private static final Map<Level, ChronicleLogLevel> julToCHronicleLevelMap;
     private static final Map<ChronicleLogLevel, Level> chronicleToJulLevelMap;

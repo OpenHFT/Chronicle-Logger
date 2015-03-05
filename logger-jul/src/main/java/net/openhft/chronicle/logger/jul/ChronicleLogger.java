@@ -45,7 +45,7 @@ abstract class ChronicleLogger extends Logger {
         this.name = name;
         this.level = level;
 
-        super.setLevel(ChronicleHandlerHelper.getLogLevel(level));
+        super.setLevel(ChronicleHelper.getLogLevel(level));
     }
 
     // *************************************************************************
@@ -80,73 +80,85 @@ abstract class ChronicleLogger extends Logger {
 
     @Override
     public void log(final LogRecord record) {
+        append(record);
     }
 
     @Override
     public void log(final Level level, final String msg) {
+        append(level, msg);
     }
 
     @Override
     public void log(final Level level, final String msg, final Object param1) {
+        append(level, msg, param1);
     }
 
     @Override
     public void log(final Level level, final String msg, final Object[] params) {
+        append(level, msg, params);
     }
 
     @Override
     public void log(final Level level, final String msg, final Throwable thrown) {
+        append(level, msg, thrown);
     }
 
     @Override
     public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg) {
-        log(level, msg);
+        append(level, msg);
     }
 
     @Override
     public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg,
                      final Object param1) {
-        log(level, msg, param1);
+        append(level, msg, param1);
     }
 
     @Override
     public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg,
                      final Object[] params) {
-        log(level, msg, params);
+        append(level, msg, params);
     }
 
     @Override
     public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg,
                      final Throwable thrown) {
-        log(level, msg, thrown);
+        append(level, msg, thrown);
     }
 
     @Override
     public void severe(final String msg) {
+        append(Level.SEVERE, msg);
     }
 
     @Override
     public void warning(final String msg) {
+        append(Level.WARNING, msg);
     }
 
     @Override
     public void info(final String msg) {
+        append(Level.INFO, msg);
     }
 
     @Override
     public void config(final String msg) {
+        append(Level.CONFIG, msg);
     }
 
     @Override
     public void fine(final String msg) {
+        append(Level.FINE, msg);
     }
 
     @Override
     public void finer(final String msg) {
+        append(Level.FINER, msg);
     }
 
     @Override
     public void finest(final String msg) {
+        append(Level.FINEST, msg);
     }
 
     @Override
@@ -183,6 +195,7 @@ abstract class ChronicleLogger extends Logger {
     // HELPERS
     // *************************************************************************
 
+    protected abstract void append(final LogRecord record);
     protected abstract void append(final Level level, final String msg);
     protected abstract void append(final Level level, final String msg, final Object param1);
     protected abstract void append(final Level level, final String msg, final Object[] params);
@@ -195,6 +208,20 @@ abstract class ChronicleLogger extends Logger {
     public static class Binary extends ChronicleLogger {
         public Binary(ChronicleLogWriter writer, String name, ChronicleLogLevel level) {
             super(writer, name, level);
+        }
+
+        @Override
+        protected void append(final LogRecord record) {
+            if(isLoggable(record.getLevel())) {
+                writer.write(
+                    ChronicleHelper.getLogLevel(record),
+                    record.getMillis(),
+                    "thread-" + record.getThreadID(),
+                    record.getLoggerName(),
+                    record.getMessage(),
+                    record.getThrown(),
+                    record.getParameters());
+            }
         }
 
         @Override
@@ -254,6 +281,20 @@ abstract class ChronicleLogger extends Logger {
     public static class Text extends ChronicleLogger {
         public Text(ChronicleLogWriter writer, String name, ChronicleLogLevel level) {
             super(writer, name, level);
+        }
+
+        @Override
+        protected void append(final LogRecord record) {
+            if(isLoggable(record.getLevel())) {
+                writer.write(
+                    ChronicleHelper.getLogLevel(record),
+                    record.getMillis(),
+                    "thread-" + record.getThreadID(),
+                    record.getLoggerName(),
+                    record.getMessage(),
+                    record.getThrown(),
+                    record.getParameters());
+            }
         }
 
         @Override
