@@ -92,22 +92,22 @@ public class JclVanillaChronicleLoggerTest extends JclTestBase {
         ChronicleLogger cl1 = (ChronicleLogger) l1;
         assertEquals(cl1.level(), ChronicleLogLevel.DEBUG);
         assertEquals(cl1.name(), "jcl-vanilla-chronicle");
-        assertTrue(cl1.appender().getChronicle() instanceof VanillaChronicle);
+        assertTrue(cl1.writer().getChronicle() instanceof VanillaChronicle);
 
         ChronicleLogger cl2 = (ChronicleLogger) l2;
         assertEquals(cl2.level(), ChronicleLogLevel.DEBUG);
         assertEquals(cl2.name(), "jcl-vanilla-chronicle");
-        assertTrue(cl2.appender().getChronicle() instanceof VanillaChronicle);
+        assertTrue(cl2.writer().getChronicle() instanceof VanillaChronicle);
 
         ChronicleLogger cl3 = (ChronicleLogger) l3;
         assertEquals(cl3.level(), ChronicleLogLevel.INFO);
         assertEquals(cl3.name(), "logger_1");
-        assertTrue(cl3.appender().getChronicle() instanceof VanillaChronicle);
+        assertTrue(cl3.writer().getChronicle() instanceof VanillaChronicle);
 
         ChronicleLogger cl4 = (ChronicleLogger) l4;
         assertEquals(cl4.level(), ChronicleLogLevel.DEBUG);
         assertEquals(cl4.name(), "readwrite");
-        assertTrue(cl4.appender().getChronicle() instanceof VanillaChronicle);
+        assertTrue(cl4.writer().getChronicle() instanceof VanillaChronicle);
     }
 
     @Test

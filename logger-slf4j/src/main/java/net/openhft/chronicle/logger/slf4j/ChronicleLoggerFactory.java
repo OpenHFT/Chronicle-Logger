@@ -56,15 +56,8 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * c-tor
      */
     public ChronicleLoggerFactory() {
-        this(new ChronicleLogManager());
-    }
-
-    /**
-     * c-tor
-     */
-    public ChronicleLoggerFactory(final ChronicleLogManager manager) {
         this.loggers = new ConcurrentHashMap<>();
-        this.manager = manager;
+        this.manager = ChronicleLogManager.getInstance();
     }
 
     // *************************************************************************

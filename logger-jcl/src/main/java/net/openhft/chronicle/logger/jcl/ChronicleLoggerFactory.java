@@ -32,13 +32,13 @@ public class ChronicleLoggerFactory extends LogFactory {
     private static final Log NOP_LOGGER = new NoOpLog();
 
     private final Map<String, ChronicleLogger> loggers;
-    private ChronicleLogManager manager;
+    private final ChronicleLogManager manager;
 
     public ChronicleLoggerFactory() {
         logRawDiagnostic("[CHRONICLE] Initialize ChronicleLoggerFactory");
 
         this.loggers = new ConcurrentHashMap<>();
-        this.manager = new ChronicleLogManager();
+        this.manager = ChronicleLogManager.getInstance();
 
         logRawDiagnostic("[CHRONICLE] ChronicleLoggerFactory initialized");
     }

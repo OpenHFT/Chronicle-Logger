@@ -40,8 +40,12 @@ public class ChronicleHandlerHelper {
         julToCHronicleLevelMap.put(Level.SEVERE  , ChronicleLogLevel.ERROR);
     }
 
-    public static ChronicleLogLevel getLogLevel(final LogRecord record) {
-        ChronicleLogLevel level = julToCHronicleLevelMap.get(record.getLevel());
+    public static ChronicleLogLevel getLogLevel(final LogRecord julRecord) {
+        return getLogLevel(julRecord.getLevel());
+    }
+
+    public static ChronicleLogLevel getLogLevel(final Level julLevel) {
+        ChronicleLogLevel level = julToCHronicleLevelMap.get(julLevel);
         return level != null ? level : ChronicleLogLevel.DEBUG;
     }
 }

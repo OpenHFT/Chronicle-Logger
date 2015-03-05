@@ -48,7 +48,7 @@ class ChronicleLogger implements Log {
         return this.name;
     }
 
-    ChronicleLogWriter appender() {
+    ChronicleLogWriter writer() {
         return this.appender;
     }
 
