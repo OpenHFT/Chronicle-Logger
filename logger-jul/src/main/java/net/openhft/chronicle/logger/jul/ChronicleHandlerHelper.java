@@ -27,6 +27,7 @@ import java.util.logging.LogRecord;
 public class ChronicleHandlerHelper {
 
     private static final Map<Level, ChronicleLogLevel> julToCHronicleLevelMap;
+    private static final Map<ChronicleLogLevel, Level> chronicleToJulLevelMap;
 
     static {
         julToCHronicleLevelMap = new HashMap<>();
@@ -38,6 +39,13 @@ public class ChronicleHandlerHelper {
         julToCHronicleLevelMap.put(Level.INFO    , ChronicleLogLevel.INFO);
         julToCHronicleLevelMap.put(Level.WARNING , ChronicleLogLevel.WARN);
         julToCHronicleLevelMap.put(Level.SEVERE  , ChronicleLogLevel.ERROR);
+
+        chronicleToJulLevelMap = new HashMap<>();
+        chronicleToJulLevelMap.put(ChronicleLogLevel.TRACE, Level.FINER);
+        chronicleToJulLevelMap.put(ChronicleLogLevel.DEBUG, Level.FINE);
+        chronicleToJulLevelMap.put(ChronicleLogLevel.INFO , Level.INFO);
+        chronicleToJulLevelMap.put(ChronicleLogLevel.WARN , Level.WARNING);
+        chronicleToJulLevelMap.put(ChronicleLogLevel.ERROR, Level.SEVERE);
     }
 
     public static ChronicleLogLevel getLogLevel(final LogRecord julRecord) {
@@ -47,5 +55,10 @@ public class ChronicleHandlerHelper {
     public static ChronicleLogLevel getLogLevel(final Level julLevel) {
         ChronicleLogLevel level = julToCHronicleLevelMap.get(julLevel);
         return level != null ? level : ChronicleLogLevel.DEBUG;
+    }
+
+    public static Level getLogLevel(final ChronicleLogLevel chronicleLevel) {
+        Level level = chronicleToJulLevelMap.get(chronicleLevel);
+        return level != null ? level : Level.FINE;
     }
 }

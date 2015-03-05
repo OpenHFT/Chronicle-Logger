@@ -20,15 +20,16 @@ package net.openhft.chronicle.logger.jul;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 
+import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-class ChronicleLogger extends Logger {
+abstract class ChronicleLogger extends Logger {
 
-    private final String name;
-    private final ChronicleLogWriter appender;
-    private final ChronicleLogLevel level;
+    protected final String name;
+    protected final ChronicleLogWriter writer;
+    protected final ChronicleLogLevel level;
 
     /**
      * c-tor
@@ -40,9 +41,11 @@ class ChronicleLogger extends Logger {
     ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
         super(name, null);
 
-        this.appender = writer;
+        this.writer = writer;
         this.name = name;
         this.level = level;
+
+        super.setLevel(ChronicleHandlerHelper.getLogLevel(level));
     }
 
     // *************************************************************************
@@ -54,7 +57,7 @@ class ChronicleLogger extends Logger {
     }
 
     ChronicleLogWriter writer() {
-        return this.appender;
+        return this.writer;
     }
 
     ChronicleLogLevel level() {
@@ -71,18 +74,8 @@ class ChronicleLogger extends Logger {
     }
 
     @Override
-    public void setLevel(final Level newLevel) throws SecurityException {
-        throw new UnsupportedOperationException("Cannot set level through log4j-api");
-    }
-
-    @Override
     public void setParent(final Logger parent) {
         throw new UnsupportedOperationException("Cannot set parent logger");
-    }
-
-    @Override
-    public boolean isLoggable(final Level level) {
-        return isLevelEnabled(ChronicleHandlerHelper.getLogLevel(level));
     }
 
     @Override
@@ -190,31 +183,129 @@ class ChronicleLogger extends Logger {
     // HELPERS
     // *************************************************************************
 
-    private boolean isLevelEnabled(ChronicleLogLevel level) {
-        return level.isHigherOrEqualTo(this.level);
-    }
+    protected abstract void append(final Level level, final String msg);
+    protected abstract void append(final Level level, final String msg, final Object param1);
+    protected abstract void append(final Level level, final String msg, final Object[] params);
+    protected abstract void append(final Level level, final String msg, final Throwable thrown);
 
-    private void append(ChronicleLogLevel level, String message) {
-        if(level.isHigherOrEqualTo(this.level)) {
-            this.appender.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                this.name,
-                message,
-                null);
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public static class Binary extends ChronicleLogger {
+        public Binary(ChronicleLogWriter writer, String name, ChronicleLogLevel level) {
+            super(writer, name, level);
+        }
+
+        @Override
+        protected void append(final Level level, String msg) {
+            if(isLoggable(level)) {
+                writer.write(
+                    this.level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    this.name,
+                    msg);
+            }
+        }
+
+        @Override
+        protected void append(final Level level, String msg, Object param1) {
+            if(isLoggable(level)) {
+                writer.write(
+                    this.level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    this.name,
+                    msg,
+                    null,
+                    param1);
+            }
+        }
+
+        @Override
+        protected void append(final Level level, String msg, Object[] params) {
+            if(isLoggable(level)) {
+                writer.write(
+                    this.level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    this.name,
+                    msg,
+                    null,
+                    params);
+            }
+        }
+
+        @Override
+        protected void append(final Level level, String msg, Throwable thrown) {
+            if(isLoggable(level)) {
+                writer.write(
+                    this.level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    this.name,
+                    msg,
+                    thrown);
+            }
         }
     }
 
-    private void append(ChronicleLogLevel level, String message, Throwable throwable) {
-        if(level.isHigherOrEqualTo(this.level)) {
-            this.appender.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                this.name,
-                message,
-                throwable);
+    public static class Text extends ChronicleLogger {
+        public Text(ChronicleLogWriter writer, String name, ChronicleLogLevel level) {
+            super(writer, name, level);
+        }
+
+        @Override
+        protected void append(final Level level, String msg) {
+            if(isLoggable(level)) {
+                writer.write(
+                    this.level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    this.name,
+                    msg,
+                    null);
+            }
+        }
+
+        @Override
+        protected void append(final Level level, String msg, Object param1) {
+            if(isLoggable(level)) {
+                writer.write(
+                    this.level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    this.name,
+                    MessageFormat.format(msg, param1),
+                    null);
+            }
+        }
+
+        @Override
+        protected void append(final Level level, String msg, Object[] params) {
+            if(isLoggable(level)) {
+                writer.write(
+                    this.level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    this.name,
+                    MessageFormat.format(msg, params),
+                    null);
+            }
+        }
+
+        @Override
+        protected void append(final Level level, String msg, Throwable thrown) {
+            if(isLoggable(level)) {
+                writer.write(
+                    this.level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    this.name,
+                    msg,
+                    thrown);
+            }
         }
     }
 }
