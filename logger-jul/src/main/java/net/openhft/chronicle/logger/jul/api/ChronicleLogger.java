@@ -15,10 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.openhft.chronicle.logger.jul;
+package net.openhft.chronicle.logger.jul.api;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.jul.ChronicleHelper;
 
 import java.text.MessageFormat;
 import java.util.logging.Level;
@@ -123,6 +124,30 @@ abstract class ChronicleLogger extends Logger {
     @Override
     public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg,
                      final Throwable thrown) {
+        append(level, msg, thrown);
+    }
+
+    @Override
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
+                      final String msg) {
+        append(level, msg);
+    }
+
+    @Override
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
+                      final String msg, final Object param1) {
+        append(level, msg, param1);
+    }
+
+    @Override
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
+                      final String msg, final Object[] params) {
+        append(level, msg, params);
+    }
+
+    @Override
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
+                      final String msg, final Throwable thrown) {
         append(level, msg, thrown);
     }
 
@@ -347,6 +372,35 @@ abstract class ChronicleLogger extends Logger {
                     msg,
                     thrown);
             }
+        }
+    }
+
+
+    public static class Null extends ChronicleLogger {
+        public static final ChronicleLogger INSTANCE = new Null();
+
+        private Null() {
+            super(null, null, null);
+        }
+
+        @Override
+        protected void append(final LogRecord record) {
+        }
+
+        @Override
+        protected void append(final Level level, String msg) {
+        }
+
+        @Override
+        protected void append(final Level level, String msg, Object param1) {
+        }
+
+        @Override
+        protected void append(final Level level, String msg, Object[] params) {
+        }
+
+        @Override
+        protected void append(final Level level, String msg, Throwable thrown) {
         }
     }
 }
