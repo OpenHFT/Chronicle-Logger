@@ -21,7 +21,6 @@ package net.openhft.chronicle.logger;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.chronicle.tools.ChronicleTools;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
@@ -34,7 +33,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by peter on 10/10/14.
+ * Created by peter.lawrey on 10/10/14.
  */
 public class VanillChronicleQueuePerfTest {
     Chronicle chronicle;
