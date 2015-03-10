@@ -67,6 +67,12 @@ public class ChronicleLoggerManager extends LogManager {
         return Collections.enumeration(this.loggers.keySet());
     }
 
+    @Override
+    public void reset() throws SecurityException {
+        this.loggers.clear();
+        this.manager.clear();
+    }
+
     // *************************************************************************
     //
     // *************************************************************************
