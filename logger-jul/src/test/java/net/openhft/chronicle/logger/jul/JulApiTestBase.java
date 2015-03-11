@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.logger.jul.api;
+package net.openhft.chronicle.logger.jul;
 
 import java.util.logging.LogManager;
 
@@ -53,8 +53,11 @@ public class JulApiTestBase {
             "java.util.logging.manager",
             ChronicleLoggerManager.class.getName());
         System.setProperty(
+            "sun.util.logging.disableCallerCheck",
+            "false");
+        System.setProperty(
             "chronicle.logger.properties",
-            "api/" + id + ".properties");
+            id.endsWith(".properties") ? id : id + ".properties");
 
         LogManager.getLogManager().reset();
     }

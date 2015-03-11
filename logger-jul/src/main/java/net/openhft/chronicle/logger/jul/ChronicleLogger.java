@@ -15,11 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.openhft.chronicle.logger.jul.api;
+package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
-import net.openhft.chronicle.logger.jul.ChronicleHelper;
 
 import java.text.MessageFormat;
 import java.util.logging.Level;

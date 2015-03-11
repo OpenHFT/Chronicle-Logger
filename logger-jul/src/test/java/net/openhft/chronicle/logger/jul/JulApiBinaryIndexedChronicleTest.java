@@ -14,13 +14,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  */
-package net.openhft.chronicle.logger.jul.api;
+package net.openhft.chronicle.logger.jul;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.logging.Logger;
 
+@Ignore
 public class JulApiBinaryIndexedChronicleTest extends JulApiTestBase {
     @Before
     public void setUp() {
@@ -30,7 +32,7 @@ public class JulApiBinaryIndexedChronicleTest extends JulApiTestBase {
     @Test
     public void test() {
         Logger l  = Logger.getLogger("logger");
-        Logger l1 = Logger.getLogger("logger_1");
-        Logger l2 = Logger.getLogger("logger_2");
+        //Logger l1 = Logger.getLogger("logger_1");
+        //Logger l2 = Logger.getLogger("logger_2");
     }
 }
