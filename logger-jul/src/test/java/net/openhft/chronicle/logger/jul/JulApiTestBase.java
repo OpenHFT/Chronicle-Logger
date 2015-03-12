@@ -18,7 +18,14 @@
 
 package net.openhft.chronicle.logger.jul;
 
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+
+import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.*;
 
 public class JulApiTestBase {
 
@@ -60,5 +67,28 @@ public class JulApiTestBase {
             id.endsWith(".properties") ? id : id + ".properties");
 
         LogManager.getLogManager().reset();
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    protected void testChronicleConfiguration(
+        final Class<?> testType,
+        final String loggerId,
+        final Class<? extends ChronicleLogger> expectedLoggerType,
+        final Class<? extends ChronicleLogWriter> expectedWriterType,
+        final Level level) throws IOException {
+
+        setupLogger(testType);
+        Logger logger = Logger.getLogger(loggerId);
+
+        assertNotNull(logger);
+        assertTrue(logger instanceof ChronicleLogger);
+        assertEquals(expectedLoggerType, logger.getClass());
+        assertEquals(loggerId, logger.getName());
+        assertNotNull(((ChronicleLogger) logger).writer());
+        assertEquals(expectedWriterType, ((ChronicleLogger)logger).writer().getClass());
+        assertEquals(level, logger.getLevel());
     }
 }
