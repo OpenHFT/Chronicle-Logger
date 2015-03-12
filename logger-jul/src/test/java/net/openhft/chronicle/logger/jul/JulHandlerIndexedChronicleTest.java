@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class JulIndexedChronicleTest extends JulTestBase {
+public class JulHandlerIndexedChronicleTest extends JulHandlerTestBase {
 
     @Test
     public void testIndexedChronicleConfiguration() throws IOException {

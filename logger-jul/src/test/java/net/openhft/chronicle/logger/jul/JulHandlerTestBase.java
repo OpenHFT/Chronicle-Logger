@@ -22,35 +22,31 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.logger.ChronicleLog;
-import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogEvent;
 import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
-import net.openhft.chronicle.logger.ChronicleLogWriter;
-import net.openhft.lang.io.Bytes;
-import net.openhft.lang.io.serialization.BytesMarshallable;
-import net.openhft.lang.model.constraints.NotNull;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class JulApiTestBase extends JulTestBase {
+public class JulHandlerTestBase extends JulTestBase {
 
     // *************************************************************************
     //
     // *************************************************************************
 
-    protected static String basePath(String type) {
+    protected static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");
         String sep  = System.getProperty("file.separator");
 
@@ -58,68 +54,50 @@ public class JulApiTestBase extends JulTestBase {
             path += sep;
         }
 
-        return path
-             + "chronicle-jul-api"
-             + System.getProperty("file.separator")
-             + type
-             + System.getProperty("file.separator")
-             + new SimpleDateFormat("yyyyMMdd").format(new Date());
+        return path + "chronicle-jul";
     }
 
-    protected static String basePath(String type, String loggerName) {
-        return basePath(type)
-             + System.getProperty("file.separator")
-             + loggerName;
-    }
-
-    protected static String indexedBasePath(String loggerName) {
-        return basePath(ChronicleLogConfig.TYPE_INDEXED)
-             + System.getProperty("file.separator")
-             + loggerName;
-    }
-
-    protected static String vanillaBasePath(String loggerName) {
-        return basePath(ChronicleLogConfig.TYPE_VANILLA)
-             + System.getProperty("file.separator")
-             + loggerName;
-    }
-
-    protected Chronicle getIndexedChronicle(String id) throws IOException {
-        return ChronicleQueueBuilder.indexed(basePath(ChronicleLogConfig.TYPE_INDEXED, id)).build();
-    }
-
-    protected Chronicle getIndexedChronicle(String type, String id) throws IOException {
-        return ChronicleQueueBuilder.indexed(basePath(type, id)).build();
-    }
-
-    protected Chronicle getVanillaChronicle(String id) throws IOException {
-        return ChronicleQueueBuilder.vanilla(basePath(ChronicleLogConfig.TYPE_VANILLA, id)).build();
-    }
-
-    protected Chronicle getVanillaChronicle(String type, String id) throws IOException {
-        return ChronicleQueueBuilder.vanilla(basePath(type, id)).build();
+    protected static String basePath(String type) {
+        return rootPath()
+                + System.getProperty("file.separator")
+                + type;
     }
 
     // *************************************************************************
     //
     // *************************************************************************
 
-    protected static void setupLogger(Class<?> testName) {
-        setupLogger(testName.getSimpleName());
+    /**
+     * @param type
+     * @return
+     */
+    protected Chronicle getIndexedChronicle(String type) throws IOException {
+        return ChronicleQueueBuilder.indexed(basePath(type)).build();
     }
 
-    protected static void setupLogger(String id) {
-        System.setProperty(
-            "java.util.logging.manager",
-            ChronicleLoggerManager.class.getName());
-        System.setProperty(
-            "sun.util.logging.disableCallerCheck",
-            "false");
-        System.setProperty(
-            "chronicle.logger.properties",
-            id.endsWith(".properties") ? id : id + ".properties");
+    /**
+     * @param type
+     * @return
+     */
+    protected Chronicle getVanillaChronicle(String type) throws IOException {
+        return ChronicleQueueBuilder.vanilla(basePath(type)).build();
+    }
 
-        LogManager.getLogManager().reset();
+    /**
+     *
+     * @param id
+     * @throws IOException
+     */
+    protected void setupLogManager(String id) throws IOException {
+        String cfgPath = System.getProperty("resources.path");
+        File cfgFile = new File(cfgPath, id + ".properties");
+
+        assertNotNull(cfgPath);
+        assertTrue(cfgFile.exists());
+
+        LogManager manager = LogManager.getLogManager();
+        manager.reset();
+        manager.readConfiguration(new FileInputStream(cfgFile));
     }
 
     // *************************************************************************
@@ -127,29 +105,28 @@ public class JulApiTestBase extends JulTestBase {
     // *************************************************************************
 
     protected void testChronicleConfiguration(
-        final String loggerId,
-        final Class<? extends ChronicleLogger> expectedLoggerType,
-        final Class<? extends ChronicleLogWriter> expectedWriterType,
-        final Level level) throws IOException {
+            String testId, Class<? extends Handler> expectedHandlerType) throws IOException {
 
-        Logger logger = Logger.getLogger(loggerId);
+        setupLogManager(testId);
+        Logger logger = Logger.getLogger(testId);
 
-        assertNotNull(logger);
-        assertTrue(logger instanceof ChronicleLogger);
-        assertEquals(expectedLoggerType, logger.getClass());
-        assertEquals(loggerId, logger.getName());
-        assertNotNull(((ChronicleLogger) logger).writer());
-        assertEquals(expectedWriterType, ((ChronicleLogger)logger).writer().getClass());
-        assertEquals(level, logger.getLevel());
+        assertEquals(Level.INFO, logger.getLevel());
+        assertFalse(logger.getUseParentHandlers());
+        assertNull(logger.getFilter());
+        assertNotNull(logger.getHandlers());
+        assertEquals(1, logger.getHandlers().length);
+
+        assertTrue(logger.getHandlers()[0].getClass() == expectedHandlerType);
     }
 
     protected void testBinaryAppender(
-            final String testId, final Logger logger, final Chronicle chronicle) throws IOException {
+            String testId, Chronicle chronicle) throws IOException {
 
         final String threadId = "thread-" + Thread.currentThread().getId();
         final long timestamp = System.currentTimeMillis();
 
-        Thread.currentThread().setName(threadId);
+        setupLogManager(testId);
+        final Logger logger = Logger.getLogger(testId);
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
             log(logger,level,"level is {0}",level);
@@ -201,10 +178,12 @@ public class JulApiTestBase extends JulTestBase {
     }
 
     protected void testTextAppender(
-            final String testId, final Logger logger, final Chronicle chronicle) throws IOException {
+            String testId, Chronicle chronicle) throws IOException {
 
         final String threadId = "thread-" + Thread.currentThread().getId();
-        Thread.currentThread().setName(threadId);
+
+        setupLogManager(testId);
+        final Logger logger = Logger.getLogger(testId);
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
             log(logger,level,"level is {0}",level);

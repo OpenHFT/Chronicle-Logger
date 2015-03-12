@@ -30,6 +30,7 @@ public class IndexedLogAppenderConfig extends ChronicleLogAppenderConfig {
     private static final String[] KEYS = new String[] {
         "synchronous",
         "useCheckedExcerpt",
+        "useCompressedObjectSerializer",
         "cacheLineSize",
         "cacheLineSize",
         "dataBlockSize",
@@ -61,6 +62,14 @@ public class IndexedLogAppenderConfig extends ChronicleLogAppenderConfig {
 
     public void setUseCheckedExcerpt(boolean useCheckedExcerpt) {
         this.builder.useCheckedExcerpt(useCheckedExcerpt);
+    }
+
+    public boolean isUseCompressedObjectSerializer() {
+        return this.builder.useCompressedObjectSerializer();
+    }
+
+    public void setUseCompressedObjectSerializer(boolean useCompressedObjectSerializer) {
+        this.builder.useCompressedObjectSerializer(useCompressedObjectSerializer);
     }
 
     public int getCacheLineSize() {
@@ -109,6 +118,7 @@ public class IndexedLogAppenderConfig extends ChronicleLogAppenderConfig {
         return ChronicleQueueBuilder.indexed(path)
             .synchronous(this.builder.synchronous())
             .useCheckedExcerpt(this.builder.useCheckedExcerpt())
+            .useCompressedObjectSerializer(this.builder.useCompressedObjectSerializer())
             .cacheLineSize(this.builder.cacheLineSize())
             .dataBlockSize(this.builder.dataBlockSize())
             .messageCapacity(this.builder.messageCapacity())
