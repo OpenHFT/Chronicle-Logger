@@ -28,7 +28,7 @@ Chronicle logger supports most of the standard logging API’s including:
   * [Java Util Logging](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-jul)
   * [Apache Common Logging](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-jcl)
 
-Chronicle logger is able to aggregate all your logs to a central store. It has built in resilience, so you will never loose messages.
+Chronicle logger is able to aggregate all your logs to a central store. It has built in resilience, so you will never lose messages.
 
 We also have some very helpfull [tools] (https://github.com/OpenHFT/Chronicle-Logger#tools)
 
