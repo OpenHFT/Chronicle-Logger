@@ -39,6 +39,8 @@ public final class ChroniGrep {
         try {
             boolean indexed = false;
             boolean binary = true;
+            boolean compressed = true;
+
             Grep grep = new Grep();
 
             for (int i = 0; i < args.length - 1; i++) {
@@ -46,6 +48,8 @@ public final class ChroniGrep {
                     binary = false;
                 } else if ("-i".equals(args[i])) {
                     indexed = true;
+                } else if ("-u".equals(args[i])) {
+                    compressed = false;
                 } else if (i != args.length - 1) {
                     grep.add(args[i]);
                 }
@@ -54,8 +58,12 @@ public final class ChroniGrep {
             if (args.length >= 1 && !grep.isEmpty()) {
                 ChroniTool.process(
                     indexed
-                        ? ChronicleQueueBuilder.indexed(args[args.length - 1]).build()
-                        : ChronicleQueueBuilder.vanilla(args[args.length - 1]).build(),
+                        ? ChronicleQueueBuilder.indexed(args[args.length - 1])
+                            .useCompressedObjectSerializer(compressed)
+                            .build()
+                        : ChronicleQueueBuilder.vanilla(args[args.length - 1])
+                            .useCompressedObjectSerializer(compressed)
+                            .build(),
                     binary
                         ? new BinaryGrep(grep)
                         : new TextGrep(grep),
@@ -63,9 +71,10 @@ public final class ChroniGrep {
                     false
                 );
             } else {
-                System.err.format("\nUsage: ChroniGrep [-t|-i] regexp1 ... regexpN path");
+                System.err.format("\nUsage: ChroniGrep [-t|-i|-u] regexp1 ... regexpN path");
+                System.err.format("\n  -u = use uncompressed object serialization, default compressed");
                 System.err.format("\n  -t = text chronicle, default binary");
-                System.err.format("\n  -i = IndexedCronicle, default VanillaChronicle");
+                System.err.format("\n  -i = IndexedChronicle, default VanillaChronicle");
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);

@@ -39,6 +39,7 @@
         <chronicleConfig>
             <dataCacheCapacity>128</dataCacheCapacity>
             <dataBlockSize>256</dataBlockSize>
+            <useCompressedObjectSerializer>false</useCompressedObjectSerializer>
         </chronicleConfig>
 
     </appender>
@@ -54,6 +55,7 @@
         <chronicleConfig>
             <dataCacheCapacity>128</dataCacheCapacity>
             <dataBlockSize>256</dataBlockSize>
+            <useCompressedObjectSerializer>false</useCompressedObjectSerializer>
         </chronicleConfig>
 
     </appender>

@@ -58,6 +58,7 @@ public class LogbackVanillaChronicleConfigTest extends LogbackTestBase {
             BinaryVanillaChronicleAppender ba = (BinaryVanillaChronicleAppender)appender;
             assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
             assertEquals(256, ba.getChronicleConfig().getDataBlockSize());
+            assertFalse(ba.getChronicleConfig().isUseCompressedObjectSerializer());
         } finally {
         }
     }
@@ -78,6 +79,8 @@ public class LogbackVanillaChronicleConfigTest extends LogbackTestBase {
             TextVanillaChronicleAppender ba = (TextVanillaChronicleAppender)appender;
             assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
             assertEquals(256, ba.getChronicleConfig().getDataBlockSize());
+            assertFalse(ba.getChronicleConfig().isUseCompressedObjectSerializer());
+
             assertNotNull(ba.getDateFormat());
         } finally {
         }
