@@ -22,13 +22,23 @@ import net.openhft.chronicle.tools.ChronicleTools;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class JulHandlerIndexedChronicleTest extends JulHandlerTestBase {
 
     @Test
     public void testIndexedChronicleConfiguration() throws IOException {
-        testChronicleConfiguration("binary-indexed-cfg", BinaryIndexedChronicleHandler.class);
-        testChronicleConfiguration("text-indexed-cfg", TextIndexedChronicleHandler.class);
+        setupLogManager("binary-indexed-cfg");
+        testChronicleConfiguration(
+            "binary-indexed-cfg",
+            Logger.getLogger("binary-indexed-cfg"),
+            BinaryIndexedChronicleHandler.class);
+
+        setupLogManager("text-indexed-cfg");
+        testChronicleConfiguration(
+            "text-indexed-cfg",
+            Logger.getLogger("text-indexed-cfg"),
+            TextIndexedChronicleHandler.class);
     }
 
     @Test
@@ -36,7 +46,11 @@ public class JulHandlerIndexedChronicleTest extends JulHandlerTestBase {
         final String testId = "binary-indexed-chronicle";
         ChronicleTools.deleteOnExit(basePath(testId));
 
-        testBinaryAppender(testId, getIndexedChronicle(testId));
+        setupLogManager(testId);
+        testBinaryAppender(
+            testId,
+            Logger.getLogger(testId),
+            getIndexedChronicle(testId));
     }
 
     @Test
@@ -44,6 +58,10 @@ public class JulHandlerIndexedChronicleTest extends JulHandlerTestBase {
         final String testId = "text-indexed-chronicle";
         ChronicleTools.deleteOnExit(basePath(testId));
 
-        testTextAppender(testId, getIndexedChronicle(testId));
+        setupLogManager(testId);
+        testTextAppender(
+            testId,
+            Logger.getLogger(testId),
+            getIndexedChronicle(testId));
     }
 }

@@ -219,6 +219,15 @@ abstract class ChronicleLogger extends Logger {
     // HELPERS
     // *************************************************************************
 
+    @Override
+    public boolean isLoggable(Level level) {
+        return isLoggable(ChronicleHelper.getLogLevel(level));
+    }
+
+    public boolean isLoggable(ChronicleLogLevel level) {
+        return level.isHigherOrEqualTo(this.level);
+    }
+
     protected abstract void append(final LogRecord record);
     protected abstract void append(final Level level, final String msg);
     protected abstract void append(final Level level, final String msg, final Object param1);
@@ -236,9 +245,10 @@ abstract class ChronicleLogger extends Logger {
 
         @Override
         protected void append(final LogRecord record) {
-            if(isLoggable(record.getLevel())) {
+            final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(record);
+            if(isLoggable(clevel)) {
                 writer.write(
-                    ChronicleHelper.getLogLevel(record),
+                    clevel,
                     record.getMillis(),
                     "thread-" + record.getThreadID(),
                     record.getLoggerName(),
@@ -250,9 +260,10 @@ abstract class ChronicleLogger extends Logger {
 
         @Override
         protected void append(final Level level, String msg) {
-            if(isLoggable(level)) {
+            final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(level);
+            if(isLoggable(clevel)) {
                 writer.write(
-                    ChronicleHelper.getLogLevel(level),
+                    clevel,
                     System.currentTimeMillis(),
                     Thread.currentThread().getName(),
                     this.name,
@@ -262,9 +273,10 @@ abstract class ChronicleLogger extends Logger {
 
         @Override
         protected void append(final Level level, String msg, Object param1) {
-            if(isLoggable(level)) {
+            final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(level);
+            if(isLoggable(clevel)) {
                 writer.write(
-                    ChronicleHelper.getLogLevel(level),
+                    clevel,
                     System.currentTimeMillis(),
                     Thread.currentThread().getName(),
                     this.name,
@@ -276,9 +288,10 @@ abstract class ChronicleLogger extends Logger {
 
         @Override
         protected void append(final Level level, String msg, Object[] params) {
-            if(isLoggable(level)) {
+            final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(level);
+            if(isLoggable(clevel)) {
                 writer.write(
-                    ChronicleHelper.getLogLevel(level),
+                    clevel,
                     System.currentTimeMillis(),
                     Thread.currentThread().getName(),
                     this.name,
@@ -290,9 +303,10 @@ abstract class ChronicleLogger extends Logger {
 
         @Override
         protected void append(final Level level, String msg, Throwable thrown) {
-            if(isLoggable(level)) {
+            final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(level);
+            if(isLoggable(clevel)) {
                 writer.write(
-                    ChronicleHelper.getLogLevel(level),
+                    clevel,
                     System.currentTimeMillis(),
                     Thread.currentThread().getName(),
                     this.name,
@@ -309,9 +323,10 @@ abstract class ChronicleLogger extends Logger {
 
         @Override
         protected void append(final LogRecord record) {
-            if(isLoggable(record.getLevel())) {
+            final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(record);
+            if(isLoggable(clevel)) {
                 writer.write(
-                    ChronicleHelper.getLogLevel(record),
+                    clevel,
                     record.getMillis(),
                     "thread-" + record.getThreadID(),
                     record.getLoggerName(),
@@ -323,9 +338,10 @@ abstract class ChronicleLogger extends Logger {
 
         @Override
         protected void append(final Level level, String msg) {
-            if(isLoggable(level)) {
+            final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(level);
+            if(isLoggable(clevel)) {
                 writer.write(
-                    ChronicleHelper.getLogLevel(level),
+                    clevel,
                     System.currentTimeMillis(),
                     Thread.currentThread().getName(),
                     this.name,
@@ -336,9 +352,10 @@ abstract class ChronicleLogger extends Logger {
 
         @Override
         protected void append(final Level level, String msg, Object param1) {
-            if(isLoggable(level)) {
+            final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(level);
+            if(isLoggable(clevel)) {
                 writer.write(
-                    ChronicleHelper.getLogLevel(level),
+                    clevel,
                     System.currentTimeMillis(),
                     Thread.currentThread().getName(),
                     this.name,
@@ -349,9 +366,10 @@ abstract class ChronicleLogger extends Logger {
 
         @Override
         protected void append(final Level level, String msg, Object[] params) {
-            if(isLoggable(level)) {
+            final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(level);
+            if(isLoggable(clevel)) {
                 writer.write(
-                    ChronicleHelper.getLogLevel(level),
+                    clevel,
                     System.currentTimeMillis(),
                     Thread.currentThread().getName(),
                     this.name,
@@ -362,9 +380,10 @@ abstract class ChronicleLogger extends Logger {
 
         @Override
         protected void append(final Level level, String msg, Throwable thrown) {
-            if(isLoggable(level)) {
+            final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(level);
+            if(isLoggable(clevel)) {
                 writer.write(
-                    ChronicleHelper.getLogLevel(level),
+                    clevel,
                     System.currentTimeMillis(),
                     Thread.currentThread().getName(),
                     this.name,

@@ -105,10 +105,7 @@ public class JulHandlerTestBase extends JulTestBase {
     // *************************************************************************
 
     protected void testChronicleConfiguration(
-            String testId, Class<? extends Handler> expectedHandlerType) throws IOException {
-
-        setupLogManager(testId);
-        Logger logger = Logger.getLogger(testId);
+            String testId, Logger logger, Class<? extends Handler> expectedHandlerType) throws IOException {
 
         assertEquals(Level.INFO, logger.getLevel());
         assertFalse(logger.getUseParentHandlers());
@@ -120,13 +117,10 @@ public class JulHandlerTestBase extends JulTestBase {
     }
 
     protected void testBinaryAppender(
-            String testId, Chronicle chronicle) throws IOException {
+            String testId, Logger logger, Chronicle chronicle) throws IOException {
 
         final String threadId = "thread-" + Thread.currentThread().getId();
         final long timestamp = System.currentTimeMillis();
-
-        setupLogManager(testId);
-        final Logger logger = Logger.getLogger(testId);
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
             log(logger,level,"level is {0}",level);
@@ -178,12 +172,9 @@ public class JulHandlerTestBase extends JulTestBase {
     }
 
     protected void testTextAppender(
-            String testId, Chronicle chronicle) throws IOException {
+            String testId, Logger logger, Chronicle chronicle) throws IOException {
 
         final String threadId = "thread-" + Thread.currentThread().getId();
-
-        setupLogManager(testId);
-        final Logger logger = Logger.getLogger(testId);
 
         for(ChronicleLogLevel level : LOG_LEVELS) {
             log(logger,level,"level is {0}",level);

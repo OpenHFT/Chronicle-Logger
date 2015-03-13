@@ -17,19 +17,17 @@
 package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.logger.ChronicleLogConfig;
-import net.openhft.chronicle.logger.ChronicleLogHelper;
 import net.openhft.chronicle.logger.ChronicleLogWriters;
-import net.openhft.chronicle.tools.ChronicleTools;
+import net.openhft.lang.io.IOTools;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class JulApiIndexedChronicleTest extends JulApiTestBase {
+public class JulLoggerVanillaChronicleTest extends JulLoggerTestBase {
 
     @Before
     public void setUp() {
@@ -45,31 +43,31 @@ public class JulApiIndexedChronicleTest extends JulApiTestBase {
     // *************************************************************************
 
     @Test
-    public void testIndexedChronicleConfiguration() throws IOException {
+    public void testVanillaChronicleConfiguration() throws IOException {
         testChronicleConfiguration(
             "logger",
             ChronicleLogger.Binary.class,
-            ChronicleLogWriters.SynchronizedWriter.class,
+            ChronicleLogWriters.BinaryWriter.class,
             Level.FINE);
         testChronicleConfiguration(
             "logger_1",
             ChronicleLogger.Binary.class,
-            ChronicleLogWriters.SynchronizedWriter.class,
+            ChronicleLogWriters.BinaryWriter.class,
             Level.INFO);
         testChronicleConfiguration(
             "logger_2",
             ChronicleLogger.Text.class,
-            ChronicleLogWriters.SynchronizedWriter.class,
+            ChronicleLogWriters.TextWriter.class,
             Level.FINER);
         testChronicleConfiguration(
             "logger_bin",
             ChronicleLogger.Binary.class,
-            ChronicleLogWriters.SynchronizedWriter.class,
+            ChronicleLogWriters.BinaryWriter.class,
             Level.FINER);
         testChronicleConfiguration(
             "logger_txt",
             ChronicleLogger.Text.class,
-            ChronicleLogWriters.SynchronizedWriter.class,
+            ChronicleLogWriters.TextWriter.class,
             Level.FINER);
     }
 
@@ -78,30 +76,30 @@ public class JulApiIndexedChronicleTest extends JulApiTestBase {
     // *************************************************************************
 
     @Test
-    public void testIndexedBinaryAppender() throws IOException {
+    public void testVanillaBinaryAppender() throws IOException {
         final String testId = "logger_bin";
-        final String basePath = basePath(ChronicleLogConfig.TYPE_INDEXED, testId);
+        final String basePath = basePath(ChronicleLogConfig.TYPE_VANILLA, testId);
 
-        ChronicleTools.deleteOnExit(basePath);
+        IOTools.deleteDir(basePath);
 
         testBinaryAppender(
                 testId,
                 Logger.getLogger(testId),
-                getIndexedChronicle(testId)
+                getVanillaChronicle(testId)
         );
     }
 
     @Test
-    public void testIndexedTextAppender() throws IOException {
+    public void testVanillaTextAppender() throws IOException {
         final String testId = "logger_txt";
-        final String basePath = basePath(ChronicleLogConfig.TYPE_INDEXED, testId);
+        final String basePath = basePath(ChronicleLogConfig.TYPE_VANILLA, testId);
 
-        ChronicleTools.deleteOnExit(basePath);
+        IOTools.deleteDir(basePath);
 
         testTextAppender(
                 testId,
                 Logger.getLogger(testId),
-                getIndexedChronicle(testId)
+                getVanillaChronicle(testId)
         );
     }
 }

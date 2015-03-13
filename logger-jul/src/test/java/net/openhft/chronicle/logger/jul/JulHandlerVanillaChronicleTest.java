@@ -22,13 +22,23 @@ import net.openhft.lang.io.IOTools;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class JulHandlerVanillaChronicleTest extends JulHandlerTestBase {
 
     @Test
     public void testVanillaChronicleConfiguration() throws IOException {
-        testChronicleConfiguration("binary-vanilla-cfg", BinaryVanillaChronicleHandler.class);
-        testChronicleConfiguration("text-vanilla-cfg", TextVanillaChronicleHandler.class);
+        setupLogManager("binary-vanilla-cfg");
+        testChronicleConfiguration(
+            "binary-vanilla-cfg",
+            Logger.getLogger("binary-vanilla-cfg"),
+            BinaryVanillaChronicleHandler.class);
+
+        setupLogManager("text-vanilla-cfg");
+        testChronicleConfiguration(
+            "text-vanilla-cfg",
+            Logger.getLogger("text-vanilla-cfg"),
+            TextVanillaChronicleHandler.class);
     }
 
     @Test
@@ -36,7 +46,11 @@ public class JulHandlerVanillaChronicleTest extends JulHandlerTestBase {
         final String testId = "binary-vanilla-chronicle";
         IOTools.deleteDir(basePath(testId));
 
-        testBinaryAppender(testId, getVanillaChronicle(testId));
+        setupLogManager(testId);
+        testBinaryAppender(
+            testId,
+            Logger.getLogger(testId),
+            getVanillaChronicle(testId));
     }
 
     @Test
@@ -44,6 +58,10 @@ public class JulHandlerVanillaChronicleTest extends JulHandlerTestBase {
         final String testId = "text-vanilla-chronicle";
         IOTools.deleteDir(basePath(testId));
 
-        testTextAppender(testId, getVanillaChronicle(testId));
+        setupLogManager(testId);
+        testTextAppender(
+            testId,
+            Logger.getLogger(testId),
+            getVanillaChronicle(testId));
     }
 }

@@ -32,10 +32,10 @@ public class ChronicleHelper {
     static {
         julToCHronicleLevelMap = new HashMap<>();
         julToCHronicleLevelMap.put(Level.ALL     , ChronicleLogLevel.TRACE);
-        julToCHronicleLevelMap.put(Level.CONFIG  , ChronicleLogLevel.TRACE);
         julToCHronicleLevelMap.put(Level.FINEST  , ChronicleLogLevel.TRACE);
         julToCHronicleLevelMap.put(Level.FINER   , ChronicleLogLevel.TRACE);
         julToCHronicleLevelMap.put(Level.FINE    , ChronicleLogLevel.DEBUG);
+        julToCHronicleLevelMap.put(Level.CONFIG  , ChronicleLogLevel.DEBUG);
         julToCHronicleLevelMap.put(Level.INFO    , ChronicleLogLevel.INFO);
         julToCHronicleLevelMap.put(Level.WARNING , ChronicleLogLevel.WARN);
         julToCHronicleLevelMap.put(Level.SEVERE  , ChronicleLogLevel.ERROR);

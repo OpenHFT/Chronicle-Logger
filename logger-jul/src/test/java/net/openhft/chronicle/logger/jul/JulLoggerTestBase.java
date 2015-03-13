@@ -21,30 +21,18 @@ package net.openhft.chronicle.logger.jul;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptTailer;
-import net.openhft.chronicle.logger.ChronicleLog;
-import net.openhft.chronicle.logger.ChronicleLogConfig;
-import net.openhft.chronicle.logger.ChronicleLogEvent;
-import net.openhft.chronicle.logger.ChronicleLogHelper;
-import net.openhft.chronicle.logger.ChronicleLogLevel;
-import net.openhft.chronicle.logger.ChronicleLogWriter;
-import net.openhft.lang.io.Bytes;
-import net.openhft.lang.io.serialization.BytesMarshallable;
-import net.openhft.lang.model.constraints.NotNull;
+import net.openhft.chronicle.logger.*;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-public class JulApiTestBase extends JulTestBase {
+public class JulLoggerTestBase extends JulTestBase {
 
     // *************************************************************************
     //
