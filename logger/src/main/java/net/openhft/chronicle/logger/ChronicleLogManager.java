@@ -29,7 +29,7 @@ public class ChronicleLogManager {
     private ChronicleLogConfig cfg;
     private Map<String, ChronicleLogWriter> writers;
 
-    public ChronicleLogManager() {
+    private ChronicleLogManager() {
         this.cfg = ChronicleLogConfig.load();
         this.writers = new ConcurrentHashMap<>();
     }
@@ -182,5 +182,21 @@ public class ChronicleLogManager {
         }
 
         return this.cfg.getIndexedChronicleConfig().build(path);
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public static ChronicleLogManager getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    private static class Holder {
+        private static final ChronicleLogManager INSTANCE = new ChronicleLogManager();
     }
 }

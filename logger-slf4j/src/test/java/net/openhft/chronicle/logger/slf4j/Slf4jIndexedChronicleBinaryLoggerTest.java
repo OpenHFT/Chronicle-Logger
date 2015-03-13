@@ -96,12 +96,12 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
 
     @Test
     public void testLogging1() throws IOException {
-        final String theradName = "th-test-binary-logging-1";
+        final String threadName = "th-test-binary-logging-1";
         final String loggerName = "logging_1";
         final long   timestamp  = System.currentTimeMillis();
 
         IOTools.deleteDir(indexedBasePath(loggerName));
-        Thread.currentThread().setName(theradName);
+        Thread.currentThread().setName(threadName);
 
         final Logger l = LoggerFactory.getLogger(loggerName);
         l.debug("data {}, {}",
@@ -120,7 +120,7 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
         assertTrue(timestamp <= evt.getTimeStamp());
         assertEquals(ChronicleLogLevel.DEBUG,evt.getLevel());
         assertEquals("data {}, {}",evt.getMessage());
-        assertEquals(theradName, evt.getThreadName());
+        assertEquals(threadName, evt.getThreadName());
         assertNotNull(evt.getArgumentArray());
         assertEquals(2, evt.getArgumentArray().length);
 
@@ -142,12 +142,12 @@ public class Slf4jIndexedChronicleBinaryLoggerTest extends Slf4jTestBase {
 
     @Test
     public void testLogging2() throws IOException {
-        final String theradName = "th-test-binary-logging-2";
+        final String threadName = "th-test-binary-logging-2";
         final String loggerName = "logging_2";
         final long   timestamp  = System.currentTimeMillis();
 
         IOTools.deleteDir(indexedBasePath(loggerName));
-        Thread.currentThread().setName(theradName);
+        Thread.currentThread().setName(threadName);
 
         final Logger logger = LoggerFactory.getLogger(loggerName);
         logger.info("args",1);

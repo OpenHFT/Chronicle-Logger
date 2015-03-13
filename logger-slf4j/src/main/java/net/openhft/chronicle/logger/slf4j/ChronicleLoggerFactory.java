@@ -56,15 +56,8 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * c-tor
      */
     public ChronicleLoggerFactory() {
-        this(new ChronicleLogManager());
-    }
-
-    /**
-     * c-tor
-     */
-    public ChronicleLoggerFactory(final ChronicleLogManager manager) {
         this.loggers = new ConcurrentHashMap<>();
-        this.manager = manager;
+        this.manager = ChronicleLogManager.getInstance();
     }
 
     // *************************************************************************
@@ -80,7 +73,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             return doGetLogger(name);
         } catch(Exception e) {
             System.err.println(
-                new StringBuilder("Unable to inzialize chronicle-logger-slf4j ")
+                new StringBuilder("Unable to initialize chronicle-logger-slf4j ")
                     .append("(")
                     .append(name)
                     .append(")")

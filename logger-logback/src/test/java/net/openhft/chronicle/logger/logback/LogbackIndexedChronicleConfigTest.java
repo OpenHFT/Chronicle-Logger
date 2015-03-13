@@ -55,6 +55,7 @@ public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
 
             BinaryIndexedChronicleAppender ba = (BinaryIndexedChronicleAppender) appender;
             assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
+            assertFalse(ba.getChronicleConfig().isUseCompressedObjectSerializer());
         } finally {
         }
     }
@@ -74,6 +75,7 @@ public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
 
             TextIndexedChronicleAppender ba = (TextIndexedChronicleAppender)appender;
             assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
+            assertFalse(ba.getChronicleConfig().isUseCompressedObjectSerializer());
             assertNotNull(ba.getDateFormat());
         } finally {
             //ChronicleTools.deleteOnExit(basePath(loggerName));

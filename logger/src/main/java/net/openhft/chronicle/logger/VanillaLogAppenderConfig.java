@@ -24,21 +24,20 @@ import java.io.File;
 import java.io.IOException;
 
 public class VanillaLogAppenderConfig extends ChronicleLogAppenderConfig {
+
     private static final String[] KEYS = new String[] {
-        //TODO
-        /*
-        private boolean synchronous;
-        private boolean useCheckedExcerpt;
-        private String cycleFormat;
-        private int cycleLength;
-        private int defaultMessageSize;
-        private int dataCacheCapacity;
-        private int indexCacheCapacity;
-        private long indexBlockSize;
-        private long dataBlockSize;
-        private long entriesPerCycle;
-        private boolean cleanupOnClose;
-        */
+        "synchronous",
+        "useCheckedExcerpt",
+        "useCompressedObjectSerializer",
+        "cycleFormat",
+        "cycleLength",
+        "defaultMessageSize",
+        "dataCacheCapacity",
+        "indexCacheCapacity",
+        "indexBlockSize",
+        "dataBlockSize",
+        "entriesPerCycle",
+        "cleanupOnClose"
     };
 
     private final ChronicleQueueBuilder.VanillaChronicleQueueBuilder builder;
@@ -65,6 +64,14 @@ public class VanillaLogAppenderConfig extends ChronicleLogAppenderConfig {
 
     public void setUseCheckedExcerpt(boolean useCheckedExcerpt) {
         this.builder.useCheckedExcerpt(useCheckedExcerpt);
+    }
+
+    public boolean isUseCompressedObjectSerializer() {
+        return this.builder.useCompressedObjectSerializer();
+    }
+
+    public void setUseCompressedObjectSerializer(boolean useCompressedObjectSerializer) {
+        this.builder.useCompressedObjectSerializer(useCompressedObjectSerializer);
     }
 
     public String getCycleFormat() {
@@ -157,12 +164,13 @@ public class VanillaLogAppenderConfig extends ChronicleLogAppenderConfig {
         return ChronicleQueueBuilder.vanilla(path)
             .synchronous(this.builder.synchronous())
             .useCheckedExcerpt(this.builder.useCheckedExcerpt())
+            .useCompressedObjectSerializer(this.builder.useCompressedObjectSerializer())
             .cycleFormat(this.builder.cycleFormat())
             .cycleLength(this.builder.cycleLength())
             .defaultMessageSize(this.builder.defaultMessageSize())
             .dataCacheCapacity(this.builder.dataCacheCapacity())
             .indexCacheCapacity(this.builder.indexCacheCapacity())
-            .indexBlockSize(this.builder.indexBlockSize())
+        .indexBlockSize(this.builder.indexBlockSize())
             .dataBlockSize((int) this.builder.dataBlockSize())
             .entriesPerCycle(this.builder.entriesPerCycle())
             .cleanupOnClose(this.builder.cleanupOnClose())

@@ -33,21 +33,27 @@ public final class ChroniTail {
         try {
             boolean indexed = false;
             boolean binary = true;
+            boolean compressed = true;
 
             for (int i = 0; i < args.length - 1; i++) {
                 if ("-t".equals(args[i])) {
                     binary = false;
-                }
-                if ("-i".equals(args[i])) {
+                } else if ("-i".equals(args[i])) {
                     indexed = true;
+                } else if ("-u".equals(args[i])) {
+                    compressed = false;
                 }
             }
 
             if (args.length >= 1) {
                 ChroniTool.process(
                     indexed
-                        ? ChronicleQueueBuilder.indexed(args[args.length - 1]).build()
-                        : ChronicleQueueBuilder.vanilla(args[args.length - 1]).build(),
+                        ? ChronicleQueueBuilder.indexed(args[args.length - 1])
+                            .useCompressedObjectSerializer(compressed)
+                            .build()
+                        : ChronicleQueueBuilder.vanilla(args[args.length - 1])
+                            .useCompressedObjectSerializer(compressed)
+                            .build(),
                     binary
                         ? ChroniTool.READER_BINARY
                         : ChroniTool.READER_TEXT,
@@ -55,9 +61,10 @@ public final class ChroniTail {
                     true
                 );
             } else {
-                System.err.format("\nUsage: ChroniTail [-t|-i] path");
+                System.err.format("\nUsage: ChroniTail [-t|-i|-u] path");
                 System.err.format("\n  -t = text chronicle, default binary");
-                System.err.format("\n  -i = IndexedCronicle, default VanillaChronicle");
+                System.err.format("\n  -u = use uncompressed object serialization, default compressed");
+                System.err.format("\n  -i = IndexedChronicle, default VanillaChronicle");
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);

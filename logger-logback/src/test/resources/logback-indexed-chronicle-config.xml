@@ -38,6 +38,7 @@
 
         <chronicleConfig>
             <indexBlockSize>128</indexBlockSize>
+            <useCompressedObjectSerializer>false</useCompressedObjectSerializer>
         </chronicleConfig>
 
     </appender>
@@ -52,6 +53,7 @@
 
         <chronicleConfig>
             <indexBlockSize>128</indexBlockSize>
+            <useCompressedObjectSerializer>false</useCompressedObjectSerializer>
         </chronicleConfig>
 
     </appender>

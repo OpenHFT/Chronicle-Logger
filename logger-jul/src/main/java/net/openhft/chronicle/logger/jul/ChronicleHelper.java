@@ -24,24 +24,41 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-public class ChronicleHandlerHelper {
+public class ChronicleHelper {
 
     private static final Map<Level, ChronicleLogLevel> julToCHronicleLevelMap;
+    private static final Map<ChronicleLogLevel, Level> chronicleToJulLevelMap;
 
     static {
         julToCHronicleLevelMap = new HashMap<>();
         julToCHronicleLevelMap.put(Level.ALL     , ChronicleLogLevel.TRACE);
-        julToCHronicleLevelMap.put(Level.CONFIG  , ChronicleLogLevel.TRACE);
         julToCHronicleLevelMap.put(Level.FINEST  , ChronicleLogLevel.TRACE);
         julToCHronicleLevelMap.put(Level.FINER   , ChronicleLogLevel.TRACE);
         julToCHronicleLevelMap.put(Level.FINE    , ChronicleLogLevel.DEBUG);
+        julToCHronicleLevelMap.put(Level.CONFIG  , ChronicleLogLevel.DEBUG);
         julToCHronicleLevelMap.put(Level.INFO    , ChronicleLogLevel.INFO);
         julToCHronicleLevelMap.put(Level.WARNING , ChronicleLogLevel.WARN);
         julToCHronicleLevelMap.put(Level.SEVERE  , ChronicleLogLevel.ERROR);
+
+        chronicleToJulLevelMap = new HashMap<>();
+        chronicleToJulLevelMap.put(ChronicleLogLevel.TRACE, Level.FINER);
+        chronicleToJulLevelMap.put(ChronicleLogLevel.DEBUG, Level.FINE);
+        chronicleToJulLevelMap.put(ChronicleLogLevel.INFO , Level.INFO);
+        chronicleToJulLevelMap.put(ChronicleLogLevel.WARN , Level.WARNING);
+        chronicleToJulLevelMap.put(ChronicleLogLevel.ERROR, Level.SEVERE);
     }
 
-    public static ChronicleLogLevel getLogLevel(final LogRecord record) {
-        ChronicleLogLevel level = julToCHronicleLevelMap.get(record.getLevel());
+    public static ChronicleLogLevel getLogLevel(final LogRecord julRecord) {
+        return getLogLevel(julRecord.getLevel());
+    }
+
+    public static ChronicleLogLevel getLogLevel(final Level julLevel) {
+        ChronicleLogLevel level = julToCHronicleLevelMap.get(julLevel);
         return level != null ? level : ChronicleLogLevel.DEBUG;
+    }
+
+    public static Level getLogLevel(final ChronicleLogLevel chronicleLevel) {
+        Level level = chronicleToJulLevelMap.get(chronicleLevel);
+        return level != null ? level : Level.FINE;
     }
 }

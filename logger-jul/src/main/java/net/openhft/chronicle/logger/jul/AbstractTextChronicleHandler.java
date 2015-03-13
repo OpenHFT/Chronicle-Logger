@@ -26,7 +26,7 @@ abstract class AbstractTextChronicleHandler extends AbstractChronicleHandler {
     @Override
     protected void doPublish(final LogRecord record, final ChronicleLogWriter writer) {
         writer.write(
-            ChronicleHandlerHelper.getLogLevel(record),
+            ChronicleHelper.getLogLevel(record),
             record.getMillis(),
             "thread-" + record.getThreadID(),
             record.getLoggerName(),
