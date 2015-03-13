@@ -74,7 +74,15 @@ public class ChronicleLogConfig {
     public static final String PLACEHOLDER_TODAY_FORMAT = "yyyyMMdd";
     public static final String PLACEHOLDER_PID = "${pid}";
     public static final String DEFAULT_DATE_FORMAT = "yyyy.MM.dd-HH:mm:ss.SSS";
-    public static final List<String> PACKAGE_MASK = Arrays.asList("net.openhft");
+
+    public static final List<String> DEFAULT_CFG_LOCATIONS = Arrays.asList(
+        "chronicle-logger.properties",
+        "config/chronicle-logger.properties"
+    );
+
+    public static final List<String> PACKAGE_MASK = Arrays.asList(
+        "net.openhft"
+    );
 
     private static final DateFormat DATEFORMAT = new SimpleDateFormat(PLACEHOLDER_TODAY_FORMAT);
     private static final String PID = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
@@ -109,54 +117,79 @@ public class ChronicleLogConfig {
      * @return          the configuration object
      */
     public static ChronicleLogConfig load(String cfgPath) {
-        Properties properties = new Properties();
-
         try {
-            InputStream in = null;
-            File cfgFile = new File(cfgPath);
-            if (!cfgFile.exists()) {
-                in = Thread.currentThread().getContextClassLoader().getResourceAsStream(cfgPath);
-                if (in == null) {
-                    String msg = "unable to load " + KEY_PROPERTIES_FILE + ": " + cfgPath;
-                    throw new IllegalStateException(msg);
-                }
-            } else if (!cfgFile.canRead()) {
-                String msg = "unable to read " + KEY_PROPERTIES_FILE + ": " + cfgPath;
-                throw new IllegalStateException(msg);
-            } else {
-                in = new FileInputStream(cfgFile);
-            }
+            return load(getConfigurationStream(cfgPath));
+        } catch (Exception e) {
+            // is printing stack trace and falling through really the right thing
+            // to do here, or should it throw out?
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static ChronicleLogConfig load(InputStream in) {
+        if (in != null) {
+            Properties properties = new Properties();
 
             try {
                 properties.load(in);
                 in.close();
-            } catch (IOException e) {
-                // ignored
+            } catch (IOException ignored) {
             }
 
             interpolate(properties);
-        } catch (Exception e) {
-            // is printing stack trace and falling through really the right thing to do here, or should it throw out?
-            e.printStackTrace();
+            return load(properties);
+        } else {
+            System.err.printf(
+                "Unable to configure chronicle-logger:"
+                + " configuration file not found in default locations (%s)"
+                + " or System property (%s) is not defined \n",
+                DEFAULT_CFG_LOCATIONS.toString(),
+                KEY_PROPERTIES_FILE);
         }
 
-        return load(properties);
+        return null;
     }
 
     /**
      * @return  the configuration object
      */
     public static ChronicleLogConfig load() {
-        String cfgPath = System.getProperty(KEY_PROPERTIES_FILE);
-        if (cfgPath == null) {
-            System.err.printf(
-                "Unable to configure chronicle-logger, property %s is not defined\n",
-                KEY_PROPERTIES_FILE);
+        try {
+            InputStream is = getConfigurationStream(System.getProperty(KEY_PROPERTIES_FILE));
+            if(is == null) {
+                for(String location : DEFAULT_CFG_LOCATIONS) {
+                    is = getConfigurationStream(location);
+                    if(is != null) {
+                        break;
+                    }
+                }
+            }
 
-            return null;
+            if(is != null) {
+                return load(is);
+            }
+        } catch (Exception e) {
+            // is printing stack trace and falling through really the right thing
+            // to do here, or should it throw out?
+            e.printStackTrace();
         }
 
-        return load(cfgPath);
+        return null;
+    }
+
+    protected static InputStream getConfigurationStream(String cfgPath) throws IOException {
+        if(cfgPath != null) {
+            final File cfgFile = new File(cfgPath);
+            if (!cfgFile.exists()) {
+                return Thread.currentThread().getContextClassLoader().getResourceAsStream(cfgPath);
+            } else if (cfgFile.canRead()) {
+                return new FileInputStream(cfgFile);
+            }
+        }
+
+        return null;
     }
 
     // *************************************************************************
@@ -170,7 +203,6 @@ public class ChronicleLogConfig {
         int amended = 0;
         do {
             amended = 0;
-            //TODO: re-engine
             for (Map.Entry<Object, Object> entries : tmpProperties.entrySet()) {
                 String val = tmpProperties.getProperty((String) entries.getKey());
                 val = val.replace(PLACEHOLDER_TODAY, DATEFORMAT.format(new Date()));
