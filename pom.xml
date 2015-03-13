@@ -21,12 +21,12 @@
         <groupId>net.openhft</groupId>
         <artifactId>java-parent-pom</artifactId>
         <version>1.1.4</version>
-        <relativePath/>
+        <relativePath />
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>chronicle-logger-parent</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
     <packaging>pom</packaging>
 
     <name>OpenHFT/Chronicle-Logger</name>
@@ -151,7 +151,7 @@
         <url>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</url>
         <connection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</connection>
         <developerConnection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</developerConnection>
-        <tag>master</tag>
+        <tag>chronicle-logger-parent-1.1.0</tag>
     </scm>
 
     <profiles>
