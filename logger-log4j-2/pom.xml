@@ -138,7 +138,7 @@
                         <Bundle-Name>OpenHFT :: ${project.artifactId}</Bundle-Name>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Export-Package>net.openhft.chronicle.logger.log4j2.*</Export-Package>
-                        <Include-Resource>META-INF=target/classes/META-INF</Include-Resource>
+                        <Include-Resource>META-INF=${project.basedir}/target/classes/META-INF</Include-Resource>
                     </instructions>
                 </configuration>
                 <executions>
