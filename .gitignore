@@ -4,16 +4,20 @@
 *.jar
 *.war
 *.ear
-*.releaseBackup
-release.properties
 
 # IntelliJ
 *.iml
+*.ipr
+*.iws
 .idea
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# Eclipse
+.classpath
+.project
+.settings/
 
 # maven
 target
-log
-logs
-
-atlassian-ide-plugin.xml
