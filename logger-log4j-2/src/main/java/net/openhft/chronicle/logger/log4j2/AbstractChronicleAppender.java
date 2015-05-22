@@ -72,6 +72,7 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
     public void start() {
         if(getPath() == null) {
             LOGGER.error("Appender " + getName() + " has configuration errors and is not started!");
+
         } else {
             try {
                 this.writer = createWriter();
@@ -111,12 +112,16 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
     public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
         if(level.intLevel() == Level.DEBUG.intLevel()) {
             return ChronicleLogLevel.DEBUG;
+
         } else if(level.intLevel() == Level.TRACE.intLevel()) {
             return ChronicleLogLevel.TRACE;
+
         } else if(level.intLevel() == Level.INFO.intLevel()) {
             return ChronicleLogLevel.INFO;
+
         } else if(level.intLevel() == Level.WARN.intLevel()) {
             return ChronicleLogLevel.WARN;
+
         } else if(level.intLevel() == Level.ERROR.intLevel()) {
             return ChronicleLogLevel.ERROR;
         }

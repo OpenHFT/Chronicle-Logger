@@ -116,7 +116,6 @@ public final class ChroniTool {
         return writer;
     }
 
-
     // *************************************************************************
     //
     // *************************************************************************
@@ -138,6 +137,7 @@ public final class ChroniTool {
                 if (tailer.nextIndex()) {
                     reader.read(tailer);
                     tailer.finish();
+
                 } else {
                     if (waitForData) {
                         try {

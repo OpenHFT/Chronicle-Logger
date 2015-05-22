@@ -82,15 +82,19 @@ public class Slf4jTestBase {
             case TRACE:
                 logger.trace(fmt, args);
                 break;
+
             case DEBUG:
                 logger.debug(fmt, args);
                 break;
+
             case INFO:
                 logger.info(fmt, args);
                 break;
+
             case WARN:
                 logger.warn(fmt, args);
                 break;
+
             case ERROR:
                 logger.error(fmt, args);
                 break;

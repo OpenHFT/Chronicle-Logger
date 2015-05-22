@@ -119,6 +119,7 @@ public class ChronicleHandlerConfig {
         val = val.toLowerCase();
         if (val.equals("true") || val.equals("1")) {
             return true;
+
         } else if (val.equals("false") || val.equals("0")) {
             return false;
         }

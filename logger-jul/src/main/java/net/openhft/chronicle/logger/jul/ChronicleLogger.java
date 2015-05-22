@@ -393,7 +393,6 @@ abstract class ChronicleLogger extends Logger {
         }
     }
 
-
     public static class Null extends ChronicleLogger {
         public static final ChronicleLogger INSTANCE = new Null();
 

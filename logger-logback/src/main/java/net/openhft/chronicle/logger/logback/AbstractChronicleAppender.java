@@ -110,6 +110,7 @@ public abstract class AbstractChronicleAppender
     public void start() {
         if(getPath() == null) {
             addError("Appender " + getName() + " has configuration errors and is not started!");
+
         } else {
             try {
                 this.writer = createWriter();

@@ -38,7 +38,6 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
      */
     protected ChronicleLogger(
             final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
-
         this.writer = writer;
         this.name = name;
         this.level = level;
@@ -80,6 +79,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     public void trace(String s, Object o1) {
         if(o1 instanceof Throwable) {
             append(ChronicleLogLevel.TRACE, s, (Throwable)o1);
+
         } else {
             append(ChronicleLogLevel.TRACE, s, null, o1);
         }
@@ -89,6 +89,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     public void trace(String s, Object o1, Object o2) {
         if(o2 instanceof Throwable) {
             append(ChronicleLogLevel.TRACE, s, (Throwable)o2, o1);
+
         } else {
             append(ChronicleLogLevel.TRACE, s, null, o1, o2);
         }
@@ -122,6 +123,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     public void debug(String s, Object o1) {
         if(o1 instanceof Throwable) {
             append(ChronicleLogLevel.DEBUG, s, (Throwable)o1);
+
         } else {
             append(ChronicleLogLevel.DEBUG, s, null, o1);
         }
@@ -131,6 +133,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     public void debug(String s, Object o1, Object o2) {
         if(o2 instanceof Throwable) {
             append(ChronicleLogLevel.DEBUG, s, (Throwable)o2, o1);
+
         } else {
             append(ChronicleLogLevel.DEBUG, s, null, o1, o2);
         }
@@ -164,6 +167,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     public void info(String s, Object o1) {
         if(o1 instanceof Throwable) {
             append(ChronicleLogLevel.INFO, s, (Throwable)o1);
+
         } else {
             append(ChronicleLogLevel.INFO, s, null, o1);
         }
@@ -173,6 +177,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     public void info(String s, Object o1, Object o2) {
         if(o2 instanceof Throwable) {
             append(ChronicleLogLevel.INFO, s, (Throwable)o2, o1);
+
         } else {
             append(ChronicleLogLevel.INFO, s, null, o1, o2);
         }
@@ -206,6 +211,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     public void warn(String s, Object o1) {
         if(o1 instanceof Throwable) {
             append(ChronicleLogLevel.WARN, s, (Throwable)o1);
+
         } else {
             append(ChronicleLogLevel.WARN, s, null, o1);
         }
@@ -215,6 +221,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     public void warn(String s, Object o1, Object o2) {
         if(o2 instanceof Throwable) {
             append(ChronicleLogLevel.WARN, s, (Throwable)o2, o1);
+
         } else {
             append(ChronicleLogLevel.WARN, s, null, o1, o2);
         }
@@ -248,6 +255,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     public void error(String s, Object o1) {
         if(o1 instanceof Throwable) {
             append(ChronicleLogLevel.ERROR, s, (Throwable)o1);
+
         } else {
             append(ChronicleLogLevel.ERROR, s, null, o1);
         }
@@ -257,6 +265,7 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     public void error(String s, Object o1, Object o2) {
         if(o2 instanceof Throwable) {
             append(ChronicleLogLevel.ERROR, s, (Throwable)o2, o1);
+
         } else {
             append(ChronicleLogLevel.ERROR, s, null, o1, o2);
         }

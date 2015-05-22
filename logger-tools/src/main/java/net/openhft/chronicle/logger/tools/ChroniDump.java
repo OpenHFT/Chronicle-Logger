@@ -86,6 +86,7 @@ public final class ChroniDump {
             for (int i = 0; i < args.length - 1; i++) {
                 if ("-i".equals(args[i])) {
                     indexed = true;
+
                 } else if ("-u".equals(args[i])) {
                     compressed = false;
                 }
@@ -104,6 +105,7 @@ public final class ChroniDump {
                     false,
                     false
                 );
+
             } else {
                 System.err.format("\nUsage: ChroniDump [-i|-u] path");
                 System.err.format("\n  -u = use uncompressed object serialization, default compressed");

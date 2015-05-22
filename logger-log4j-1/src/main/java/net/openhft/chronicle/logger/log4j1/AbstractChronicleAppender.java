@@ -67,6 +67,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     public void addFilter(Filter newFilter) {
         if(filter == null) {
             filter = newFilter;
+
         } else {
             filter.setNext(newFilter);
         }
@@ -125,6 +126,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
             // We do not throw exception here since the cause is probably a
             // bad cfg file.
             LogLog.warn("You have tried to set a null error-handler.");
+
         } else {
             this.errorHandler = eh;
         }
@@ -165,6 +167,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
                 event.getMessage().toString(),
                 throwable
             );
+
         } else {
             LogLog.error("Attempted to append to closed appender named ["+name+"].");
             return;

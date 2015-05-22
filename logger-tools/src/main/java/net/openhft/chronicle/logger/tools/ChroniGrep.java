@@ -46,10 +46,13 @@ public final class ChroniGrep {
             for (int i = 0; i < args.length - 1; i++) {
                 if ("-t".equals(args[i])) {
                     binary = false;
+
                 } else if ("-i".equals(args[i])) {
                     indexed = true;
+
                 } else if ("-u".equals(args[i])) {
                     compressed = false;
+
                 } else if (i != args.length - 1) {
                     grep.add(args[i]);
                 }
@@ -70,6 +73,7 @@ public final class ChroniGrep {
                     false,
                     false
                 );
+
             } else {
                 System.err.format("\nUsage: ChroniGrep [-t|-i|-u] regexp1 ... regexpN path");
                 System.err.format("\n  -u = use uncompressed object serialization, default compressed");

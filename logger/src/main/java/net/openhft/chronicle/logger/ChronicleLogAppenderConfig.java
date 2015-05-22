@@ -59,10 +59,13 @@ public abstract class ChronicleLogAppenderConfig {
             if(type != null && propValue != null && !propValue.isEmpty()) {
                 if (type == int.class) {
                     method.invoke(this, Integer.parseInt(propValue));
+
                 } else if (type == long.class) {
                     method.invoke(this, Long.parseLong(propValue));
+
                 } else if (type == boolean.class) {
                     method.invoke(this, Boolean.parseBoolean(propValue));
+
                 } else if (type == String.class) {
                     method.invoke(this, propValue);
                 }

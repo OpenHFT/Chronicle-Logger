@@ -56,6 +56,7 @@ final class BinaryChronicleLogEvent implements ChronicleLogEvent {
                 message,
                 args,
                 throwable);
+
         } else {
             throw new IllegalStateException("message version= " + version);
         }

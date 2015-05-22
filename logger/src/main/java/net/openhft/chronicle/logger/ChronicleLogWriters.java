@@ -23,7 +23,6 @@ import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.VanillaChronicle;
 import net.openhft.lang.model.constraints.NotNull;
 
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -126,7 +125,6 @@ public class ChronicleLogWriters {
                 final String threadName,
                 final String loggerName,
                 final String message) {
-
             appender.writeByte(ChronicleLog.VERSION);
             appender.writeLong(timestamp);
             level.writeTo(appender);
@@ -142,7 +140,6 @@ public class ChronicleLogWriters {
             final String threadName,
             final String loggerName,
             final String message) {
-
             final ExcerptAppender appender = getAppender();
             if (appender != null) {
                 appender.startExcerpt();
@@ -159,7 +156,6 @@ public class ChronicleLogWriters {
             final String loggerName,
             final String message,
             final Throwable throwable) {
-
             final ExcerptAppender appender = getAppender();
             if (appender != null) {
                 appender.startExcerpt();
@@ -171,6 +167,7 @@ public class ChronicleLogWriters {
                 if(throwable != null) {
                     appender.writeBoolean(true);
                     appender.writeObject(throwable);
+
                 } else {
                     appender.writeBoolean(false);
                 }
@@ -188,7 +185,6 @@ public class ChronicleLogWriters {
             final String message,
             final Throwable throwable,
             final Object arg1) {
-
             final ExcerptAppender appender = getAppender();
             if (appender != null) {
                 appender.startExcerpt();
@@ -201,6 +197,7 @@ public class ChronicleLogWriters {
                 if(throwable != null) {
                     appender.writeBoolean(true);
                     appender.writeObject(throwable);
+
                 } else {
                     appender.writeBoolean(false);
                 }
@@ -219,7 +216,6 @@ public class ChronicleLogWriters {
             final Throwable throwable,
             final Object arg1,
             final Object arg2) {
-
             final ExcerptAppender appender = getAppender();
             if (appender != null) {
                 appender.startExcerpt();
@@ -233,6 +229,7 @@ public class ChronicleLogWriters {
                 if(throwable != null) {
                     appender.writeBoolean(true);
                     appender.writeObject(throwable);
+
                 } else {
                     appender.writeBoolean(false);
                 }
@@ -250,7 +247,6 @@ public class ChronicleLogWriters {
             final String message,
             final Throwable throwable,
             final Object[] args) {
-
             final ExcerptAppender appender = getAppender();
             if (appender != null) {
                 appender.startExcerpt();
@@ -269,6 +265,7 @@ public class ChronicleLogWriters {
                 if(throwable != null) {
                     appender.writeBoolean(true);
                     appender.writeObject(throwable);
+
                 } else {
                     appender.writeBoolean(false);
                 }
@@ -315,7 +312,6 @@ public class ChronicleLogWriters {
             final String loggerName,
             final String message,
             final Throwable throwable) {
-
             final ExcerptAppender appender = getAppender();
             if (appender != null) {
                 appender.startExcerpt();
@@ -409,7 +405,6 @@ public class ChronicleLogWriters {
             final String loggerName,
             final String message,
             final Throwable throwable) {
-
             if (throwable == null) {
                 stream.printf("%s|%s|%s|%s|%s\n",
                     timeStampFormatter.format(timestamp),
@@ -417,6 +412,7 @@ public class ChronicleLogWriters {
                     threadName,
                     loggerName,
                     message);
+
             } else {
                 stream.printf("%s|%s|%s|%s|%s|%s\n",
                     timeStampFormatter.format(timestamp),
@@ -435,7 +431,6 @@ public class ChronicleLogWriters {
             final String threadName,
             final String loggerName,
             final String message) {
-
             write(level, timestamp, threadName, loggerName, message, null);
         }
 
@@ -448,7 +443,6 @@ public class ChronicleLogWriters {
             final String message,
             final Throwable throwable,
             final Object arg1) {
-
             write(level, timestamp, threadName, loggerName, message, throwable);
         }
 
@@ -462,7 +456,6 @@ public class ChronicleLogWriters {
             final Throwable throwable,
             final Object arg1,
             final Object arg2) {
-
             write(level, timestamp, threadName, loggerName, message, throwable);
         }
 
@@ -475,7 +468,6 @@ public class ChronicleLogWriters {
             final String message,
             final Throwable throwable,
             final Object[] args) {
-
             write(level, timestamp, threadName, loggerName, message, throwable);
         }
     }

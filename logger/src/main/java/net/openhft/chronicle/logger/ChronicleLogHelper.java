@@ -69,6 +69,7 @@ public final class ChronicleLogHelper {
             if(appender.remaining() > (tmp.length() + sepLen)) {
                 appender.append(tmp);
                 appender.append(separator);
+
             } else {
                 for(int fill=0;fill<3 && appender.remaining() > 0;fill++){
                     appender.append('.');

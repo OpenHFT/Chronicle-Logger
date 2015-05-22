@@ -38,8 +38,10 @@ public final class ChroniCat {
             for (int i = 0; i < args.length - 1; i++) {
                 if ("-t".equals(args[i])) {
                     binary = false;
+
                 } else if ("-i".equals(args[i])) {
                     indexed = true;
+
                 } else if ("-u".equals(args[i])) {
                     compressed = false;
                 }
@@ -60,6 +62,7 @@ public final class ChroniCat {
                     false,
                     false
                 );
+
             } else {
                 System.err.format("\nUsage: ChroniCat [-t|-i|-u] path");
                 System.err.format("\n  -t = text chronicle, default binary");

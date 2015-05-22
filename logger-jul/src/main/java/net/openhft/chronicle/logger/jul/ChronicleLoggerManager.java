@@ -86,11 +86,13 @@ public class ChronicleLoggerManager extends LogManager {
                         writer,
                         name,
                         ChronicleLogLevel.WARN);
+
             } else if(manager.isBinary(name)) {
                 logger = new ChronicleLogger.Binary(
                         writer,
                         name,
                         manager.cfg().getLevel(name));
+
             } else if(manager.isText(name)) {
                 logger = new ChronicleLogger.Text(
                         writer,
@@ -100,6 +102,7 @@ public class ChronicleLoggerManager extends LogManager {
 
             if(logger != null) {
                 loggers.put(name, logger);
+
             } else {
                 System.err.println(
                     new StringBuilder("Unable to get a logger for ")

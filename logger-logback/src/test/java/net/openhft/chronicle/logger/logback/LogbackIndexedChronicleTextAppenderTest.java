@@ -43,7 +43,6 @@ public class LogbackIndexedChronicleTextAppenderTest extends LogbackTestBase {
         );
     }
 
-
     @Test
     public void testIndexedTextAppender() throws IOException {
         final String testId    = "text-indexed-chronicle";

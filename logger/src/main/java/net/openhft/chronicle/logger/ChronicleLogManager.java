@@ -101,6 +101,7 @@ public class ChronicleLogManager {
                         appender = new ChronicleLogWriters.BinaryWriter(
                             newChronicle(type, path, name)
                         );
+
                     } else if (isText(name)) {
                         appender = new ChronicleLogWriters.TextWriter(
                             newChronicle(type, path, name),
@@ -122,6 +123,7 @@ public class ChronicleLogManager {
             }
 
             return appender;
+
         } else {
             throw new IllegalArgumentException(new StringBuilder()
                 .append("chronicle.logger.root.path is not defined")
@@ -144,6 +146,7 @@ public class ChronicleLogManager {
     private Chronicle newChronicle(String type, String path, String name) throws Exception {
         if (ChronicleLogConfig.TYPE_INDEXED.equalsIgnoreCase(type)) {
             return newIndexedChronicle(path, name);
+
         } else if (ChronicleLogConfig.TYPE_VANILLA.equalsIgnoreCase(type)) {
             return newVanillaChronicle(path, name);
         }

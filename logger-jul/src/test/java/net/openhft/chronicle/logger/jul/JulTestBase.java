@@ -41,15 +41,19 @@ public class JulTestBase {
             case TRACE:
                 logger.log(Level.FINER, fmt, args);
                 break;
+
             case DEBUG:
                 logger.log(Level.FINE, fmt, args);
                 break;
+
             case INFO:
                 logger.log(Level.INFO, fmt, args);
                 break;
+
             case WARN:
                 logger.log(Level.WARNING, fmt, args);
                 break;
+
             case ERROR:
                 logger.log(Level.SEVERE, fmt, args);
                 break;

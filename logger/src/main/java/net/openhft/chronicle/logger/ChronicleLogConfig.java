@@ -140,6 +140,7 @@ public class ChronicleLogConfig {
 
             interpolate(properties);
             return load(properties);
+
         } else {
             System.err.printf(
                 "Unable to configure chronicle-logger:"
@@ -184,6 +185,7 @@ public class ChronicleLogConfig {
             final File cfgFile = new File(cfgPath);
             if (!cfgFile.exists()) {
                 return Thread.currentThread().getContextClassLoader().getResourceAsStream(cfgPath);
+
             } else if (cfgFile.canRead()) {
                 return new FileInputStream(cfgFile);
             }
@@ -220,6 +222,7 @@ public class ChronicleLogConfig {
                             String newVal = null;
                             if (tmpProperties.containsKey(envKey)) {
                                 newVal = tmpProperties.getProperty(envKey);
+
                             } else if (System.getProperties().containsKey(envKey)) {
                                 newVal = System.getProperties().getProperty(envKey);
                             }
@@ -276,7 +279,6 @@ public class ChronicleLogConfig {
     // *************************************************************************
     //
     // *************************************************************************
-
 
     /**
      *
