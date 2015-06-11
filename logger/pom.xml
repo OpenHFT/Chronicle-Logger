@@ -56,6 +56,10 @@
                 <configuration>
                     <forkCount>0</forkCount>
                     <reuseForks>false</reuseForks>
+                    <systemPropertyVariables>
+                        <project.build.directory>${project.build.directory}</project.build.directory>
+                    </systemPropertyVariables>
+
                     <excludes>
                         <exclude>**/*PerfTest.java</exclude>
                     </excludes>

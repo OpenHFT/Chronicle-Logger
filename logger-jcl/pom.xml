@@ -89,6 +89,7 @@
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
                     <systemPropertyVariables>
+                        <project.build.directory>${project.build.directory}</project.build.directory>
                         <org.apache.commons.logging.diagnostics.dest>
                             STDOUT
                         </org.apache.commons.logging.diagnostics.dest>

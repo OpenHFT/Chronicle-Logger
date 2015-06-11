@@ -76,6 +76,7 @@
                         <exclude>**/*PerfTest.java</exclude>
                     </excludes>
                     <systemPropertyVariables>
+                        <project.build.directory>${project.build.directory}</project.build.directory>
                         <resources.path>
                             ${project.basedir}/src/test/resources
                         </resources.path>

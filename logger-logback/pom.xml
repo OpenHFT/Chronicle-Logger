@@ -91,6 +91,7 @@
                         <resources.path>
                             ${project.basedir}/src/test/resources
                         </resources.path>
+                        <project.build.directory>${project.build.directory}</project.build.directory>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

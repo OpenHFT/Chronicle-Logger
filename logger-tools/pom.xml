@@ -79,6 +79,9 @@
                     <excludes>
                         <exclude>**/*PerfTest.java</exclude>
                     </excludes>
+                    <systemPropertyVariables>
+                        <project.build.directory>${project.build.directory}</project.build.directory>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <!--
