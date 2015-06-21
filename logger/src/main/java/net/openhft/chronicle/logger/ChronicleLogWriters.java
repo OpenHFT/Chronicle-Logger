@@ -29,8 +29,8 @@ import java.io.PrintStream;
 
 public class ChronicleLogWriters {
 
-    public static interface ExcerptAppenderProvider {
-        public ExcerptAppender get();
+    public interface ExcerptAppenderProvider {
+        ExcerptAppender get();
     }
 
     // *************************************************************************

@@ -19,5 +19,5 @@
 package net.openhft.chronicle.logger;
 
 public interface ChronicleLogProcessor {
-    public void process(final ChronicleLogEvent event);
+    void process(final ChronicleLogEvent event);
 }

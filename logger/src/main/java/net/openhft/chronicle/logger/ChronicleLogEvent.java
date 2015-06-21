@@ -20,23 +20,23 @@ package net.openhft.chronicle.logger;
 
 public interface ChronicleLogEvent {
 
-    static final Object[] EMPTY_ARGS = new Object[] {};
+    Object[] EMPTY_ARGS = new Object[]{};
 
-    public byte getVersion();
+    byte getVersion();
 
-    public long getTimeStamp();
+    long getTimeStamp();
 
-    public String getThreadName();
+    String getThreadName();
 
-    public ChronicleLogLevel getLevel();
+    ChronicleLogLevel getLevel();
 
-    public String getMessage();
+    String getMessage();
 
-    public Object[] getArgumentArray();
+    Object[] getArgumentArray();
 
-    public boolean hasArguments();
+    boolean hasArguments();
 
-    public String getLoggerName();
+    String getLoggerName();
 
-    public Throwable getThrowable();
+    Throwable getThrowable();
 }

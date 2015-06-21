@@ -21,5 +21,5 @@ package net.openhft.chronicle.logger;
 import net.openhft.lang.io.Bytes;
 
 public interface ChronicleLogReader {
-    public void read(final Bytes bytes);
+    void read(final Bytes bytes);
 }

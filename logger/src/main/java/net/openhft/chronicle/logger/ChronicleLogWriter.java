@@ -24,48 +24,48 @@ import java.io.Closeable;
 
 public interface ChronicleLogWriter extends Closeable {
 
-    public Chronicle getChronicle();
+        Chronicle getChronicle();
 
-    public void write(
-        ChronicleLogLevel level,
-        long timestamp,
-        String threadName,
-        String loggerName,
-        String message);
+        void write(
+                ChronicleLogLevel level,
+                long timestamp,
+                String threadName,
+                String loggerName,
+                String message);
 
-    public void write(
-        ChronicleLogLevel level,
-        long timestamp,
-        String threadName,
-        String loggerName,
-        String message,
-        Throwable throwable);
+        void write(
+                ChronicleLogLevel level,
+                long timestamp,
+                String threadName,
+                String loggerName,
+                String message,
+                Throwable throwable);
 
-    public void write(
-        ChronicleLogLevel level,
-        long timestamp,
-        String threadName,
-        String loggerName,
-        String message,
-        Throwable throwable,
-        Object arg1);
+        void write(
+                ChronicleLogLevel level,
+                long timestamp,
+                String threadName,
+                String loggerName,
+                String message,
+                Throwable throwable,
+                Object arg1);
 
-    public void write(
-        ChronicleLogLevel level,
-        long timestamp,
-        String threadName,
-        String loggerName,
-        String message,
-        Throwable throwable,
-        Object arg1,
-        Object arg2);
+        void write(
+                ChronicleLogLevel level,
+                long timestamp,
+                String threadName,
+                String loggerName,
+                String message,
+                Throwable throwable,
+                Object arg1,
+                Object arg2);
 
-    public void write(
-        ChronicleLogLevel level,
-        long timestamp,
-        String threadName,
-        String loggerName,
-        String message,
-        Throwable throwable,
-        Object[] args);
+        void write(
+                ChronicleLogLevel level,
+                long timestamp,
+                String threadName,
+                String loggerName,
+                String message,
+                Throwable throwable,
+                Object[] args);
 }
