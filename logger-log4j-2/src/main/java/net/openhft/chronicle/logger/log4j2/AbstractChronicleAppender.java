@@ -98,7 +98,6 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         super.stop();
     }
 
-    @Override
     public void append(final LogEvent event) {
         if (this.writer != null) {
             doAppend(event, writer);
@@ -152,7 +151,9 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
             @PluginAttribute("messageCapacity") final String messageCapacity,
             @PluginAttribute("minimiseFootprint") final String minimiseFootprint,
             @PluginAttribute("useCheckedExcerpt") final String useCheckedExcerpt,
-            @PluginAttribute("dataBlockSize") final String dataBlockSize) {
+            @PluginAttribute("dataBlockSize") final String dataBlockSize,
+            @PluginAttribute("useCompressedObjectSerializer") final String useCompressedObjectSerializer) {
+
             final IndexedChronicleCfg cfg = new IndexedChronicleCfg();
             cfg.setProperty("indexFileCapacity",indexFileCapacity);
             cfg.setProperty("useUnsafe",useUnsafe);
@@ -164,6 +165,7 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
             cfg.setProperty("useCheckedExcerpt",useCheckedExcerpt);
             cfg.setProperty("dataBlockSize",dataBlockSize);
             cfg.setProperty("indexFileExcerpts",indexFileExcerpts);
+            cfg.setProperty("useCompressedObjectSerializer",useCompressedObjectSerializer);
 
             return cfg;
         }
@@ -187,7 +189,10 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
             @PluginAttribute("useCheckedExcerpt") final String useCheckedExcerpt,
             @PluginAttribute("entriesPerCycle") final String entriesPerCycle,
             @PluginAttribute("indexCacheCapacity") final String indexCacheCapacity,
-            @PluginAttribute("indexBlockSize") final String indexBlockSize) {
+            @PluginAttribute("indexBlockSize") final String indexBlockSize,
+            @PluginAttribute("dataBlockSize") final String dataBlockSize,
+            @PluginAttribute("useCompressedObjectSerializer") final String useCompressedObjectSerializer) {
+
             final VanillaChronicleCfg cfg = new VanillaChronicleCfg();
             cfg.setProperty("dataCacheCapacity",dataCacheCapacity);
             cfg.setProperty("cycleLength",cycleLength);
@@ -198,6 +203,8 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
             cfg.setProperty("entriesPerCycle",entriesPerCycle);
             cfg.setProperty("indexBlockSize",indexBlockSize);
             cfg.setProperty("indexCacheCapacity",indexCacheCapacity);
+            cfg.setProperty("dataBlockSize", dataBlockSize);
+            cfg.setProperty("useCompressedObjectSerializer",useCompressedObjectSerializer);
 
             return cfg;
         }
