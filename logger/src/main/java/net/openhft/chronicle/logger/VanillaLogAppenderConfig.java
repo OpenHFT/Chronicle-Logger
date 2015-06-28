@@ -170,7 +170,7 @@ public class VanillaLogAppenderConfig extends ChronicleLogAppenderConfig {
             .defaultMessageSize(this.builder.defaultMessageSize())
             .dataCacheCapacity(this.builder.dataCacheCapacity())
             .indexCacheCapacity(this.builder.indexCacheCapacity())
-        .indexBlockSize(this.builder.indexBlockSize())
+            .indexBlockSize(this.builder.indexBlockSize())
             .dataBlockSize((int) this.builder.dataBlockSize())
             .entriesPerCycle(this.builder.entriesPerCycle())
             .cleanupOnClose(this.builder.cleanupOnClose())

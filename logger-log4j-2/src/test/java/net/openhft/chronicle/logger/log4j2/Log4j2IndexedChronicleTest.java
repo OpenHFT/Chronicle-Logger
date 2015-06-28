@@ -50,6 +50,8 @@ public class Log4j2IndexedChronicleTest extends Log4j2TestBase {
 
         final BinaryIndexedChronicleAppender ba = (BinaryIndexedChronicleAppender)appender;
         assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
+        assertEquals(256, ba.getChronicleConfig().getDataBlockSize());
+        assertTrue(ba.getChronicleConfig().isUseCompressedObjectSerializer());
     }
 
     @Test

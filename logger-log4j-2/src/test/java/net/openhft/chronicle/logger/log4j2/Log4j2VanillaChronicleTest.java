@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
 
@@ -50,6 +51,8 @@ public class Log4j2VanillaChronicleTest extends Log4j2TestBase {
 
         final BinaryVanillaChronicleAppender ba = (BinaryVanillaChronicleAppender)appender;
         assertEquals(128, ba.getChronicleConfig().getDataCacheCapacity());
+        assertEquals(256, ba.getChronicleConfig().getDataBlockSize());
+        assertTrue(ba.getChronicleConfig().isUseCompressedObjectSerializer());
     }
 
     @Test
