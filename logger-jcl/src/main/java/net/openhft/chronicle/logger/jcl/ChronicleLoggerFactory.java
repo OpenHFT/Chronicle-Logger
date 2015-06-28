@@ -95,7 +95,7 @@ public class ChronicleLoggerFactory extends LogFactory {
     //
     // *************************************************************************
 
-    private synchronized Log getLogger(String name) throws Exception {
+    private synchronized Log getLogger(String name)   {
         ChronicleLogger logger = loggers.get(name);
         if (logger == null) {
             loggers.put(

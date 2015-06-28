@@ -117,7 +117,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     //
     // *************************************************************************
 
-    private synchronized Logger doGetLogger(String name) throws Exception {
+    private synchronized Logger doGetLogger(String name)   {
         Logger logger = loggers.get(name);
         if (logger == null) {
             final ChronicleLogWriter writer = manager.createWriter(name);

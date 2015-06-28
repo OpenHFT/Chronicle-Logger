@@ -26,7 +26,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class ChronicleLoggingConfigTest {
     @Test
-    public void testLoadClasspathVanilla() throws Exception {
+    public void testLoadClasspathVanilla()   {
         System.setProperty("chronicle.logger.properties", "chronicle.logger.vanilla.properties");
         assertLoadsValidVanillaConfig();
     }
@@ -39,7 +39,7 @@ public class ChronicleLoggingConfigTest {
     }
 
     @Test
-    public void testLoadClasspathIndexed() throws Exception {
+    public void testLoadClasspathIndexed()   {
         System.setProperty("chronicle.logger.properties", "chronicle.logger.indexed.properties");
         assertLoadsValidIndexedConfig();
     }
