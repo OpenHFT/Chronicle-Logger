@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogConfigurationException;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.impl.NoOpLog;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -95,7 +96,7 @@ public class ChronicleLoggerFactory extends LogFactory {
     //
     // *************************************************************************
 
-    private synchronized Log getLogger(String name)   {
+    private synchronized Log getLogger(String name) throws IOException {
         ChronicleLogger logger = loggers.get(name);
         if (logger == null) {
             loggers.put(

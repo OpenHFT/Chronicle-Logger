@@ -40,7 +40,7 @@ public class Slf4jBenchmark {
     //
     // *************************************************************************
 
-    public static void main(String... args)   {
+    public static void main(String... args) throws Exception {
         Options opt = new OptionsBuilder()
             .include(".*" + Slf4jBenchmark.class.getSimpleName() + ".*")
             .forks(1)

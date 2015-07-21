@@ -21,6 +21,7 @@ import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogManager;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class ChronicleLoggerManager extends LogManager {
     //
     // *************************************************************************
 
-    private synchronized Logger doGetLogger(String name)   {
+    private synchronized Logger doGetLogger(String name) throws IOException {
         Logger logger = loggers.get(name);
         if (logger == null) {
             final ChronicleLogWriter writer = manager.createWriter(name);

@@ -47,17 +47,17 @@
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle</artifactId>
-                <version>3.4.4</version>
+                <version>3.5.1</version>
             </dependency>
             <dependency>
                 <groupId>org.openjdk.jmh</groupId>
                 <artifactId>jmh-core</artifactId>
-                <version>1.10.1</version>
+                <version>1.10.3</version>
             </dependency>
             <dependency>
                 <groupId>org.openjdk.jmh</groupId>
                 <artifactId>jmh-core-benchmarks</artifactId>
-                <version>1.10.1</version>
+                <version>1.10.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -173,4 +173,5 @@
     </profiles>
 
 </project>
+
 
