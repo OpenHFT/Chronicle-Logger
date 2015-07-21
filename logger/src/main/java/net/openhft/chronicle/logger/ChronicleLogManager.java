@@ -84,7 +84,7 @@ public class ChronicleLogManager {
      * @return
      * @throws java.io.IOException
      */
-    public ChronicleLogWriter createWriter(String name)   {
+    public ChronicleLogWriter createWriter(String name) throws IOException  {
         if (this.cfg == null) {
             throw new IllegalArgumentException("ChronicleLogManager is not configured");
         }
@@ -143,7 +143,7 @@ public class ChronicleLogManager {
      * @return
      * @throws java.io.IOException
      */
-    private Chronicle newChronicle(String type, String path, String name)   {
+    private Chronicle newChronicle(String type, String path, String name) throws IOException  {
         if (ChronicleLogConfig.TYPE_INDEXED.equalsIgnoreCase(type)) {
             return newIndexedChronicle(path, name);
 

@@ -23,6 +23,7 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.helpers.NOPLogger;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -117,7 +118,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     //
     // *************************************************************************
 
-    private synchronized Logger doGetLogger(String name)   {
+    private synchronized Logger doGetLogger(String name) throws IOException {
         Logger logger = loggers.get(name);
         if (logger == null) {
             final ChronicleLogWriter writer = manager.createWriter(name);
