@@ -39,7 +39,6 @@ public class TimeStampFormatter {
      * Didn't want to add a dependency to, for example, Guava for this 30-line cache
      * with weak values. But maybe it's worth to.
      */
-
     private static final ReferenceQueue<TimeStampFormatter> refQueue =
         new ReferenceQueue<TimeStampFormatter>();
 
