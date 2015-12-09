@@ -406,7 +406,7 @@ public class ChronicleLogWriters {
             final String message,
             final Throwable throwable) {
             if (throwable == null) {
-                stream.printf("%s|%s|%s|%s|%s\n",
+                stream.printf("%s|%s|%s|%s|%s%n",
                     timeStampFormatter.format(timestamp),
                     level.toString(),
                     threadName,
@@ -414,7 +414,7 @@ public class ChronicleLogWriters {
                     message);
 
             } else {
-                stream.printf("%s|%s|%s|%s|%s|%s\n",
+                stream.printf("%s|%s|%s|%s|%s|%s%n",
                     timeStampFormatter.format(timestamp),
                     level.toString(),
                     threadName,

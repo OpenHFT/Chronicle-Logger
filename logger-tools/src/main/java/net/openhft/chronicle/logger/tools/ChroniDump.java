@@ -107,9 +107,9 @@ public final class ChroniDump {
                 );
 
             } else {
-                System.err.format("\nUsage: ChroniDump [-i|-u] path");
-                System.err.format("\n  -u = use uncompressed object serialization, default compressed");
-                System.err.format("\n  -i = IndexedChronicle, default VanillaChronicle");
+                System.err.format("%nUsage: ChroniDump [-i|-u] path");
+                System.err.format("%n  -u = use uncompressed object serialization, default compressed");
+                System.err.format("%n  -i = IndexedChronicle, default VanillaChronicle");
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);
