@@ -35,7 +35,7 @@ public abstract class ChronicleLogAppenderConfig {
     public abstract Chronicle build(String path)
         throws IOException;
 
-    public void setProperties(final @NotNull Properties properties, final @Nullable String prefix) {
+    public void setProperties(@NotNull final Properties properties, @Nullable final String prefix) {
         for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
             final String name = entry.getKey().toString();
             final String value = entry.getValue().toString();
@@ -50,7 +50,7 @@ public abstract class ChronicleLogAppenderConfig {
         }
     }
 
-    public void setProperty(final @NotNull String propName, final @NotNull String propValue) {
+    public void setProperty(@NotNull final String propName, @NotNull final String propValue) {
         try {
             final PropertyDescriptor property = new PropertyDescriptor(propName, this.getClass());
             final Method method = property.getWriteMethod();

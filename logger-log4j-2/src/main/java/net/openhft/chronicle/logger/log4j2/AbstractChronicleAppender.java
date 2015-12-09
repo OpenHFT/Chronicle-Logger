@@ -62,7 +62,7 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
     // *************************************************************************
 
     protected abstract ChronicleLogWriter createWriter() throws IOException;
-    protected abstract void doAppend(final @NotNull LogEvent event, final @NotNull ChronicleLogWriter writer);
+    protected abstract void doAppend(@NotNull final LogEvent event, @NotNull final ChronicleLogWriter writer);
 
     // *************************************************************************
     //
