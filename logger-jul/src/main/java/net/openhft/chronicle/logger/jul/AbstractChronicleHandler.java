@@ -20,7 +20,9 @@ package net.openhft.chronicle.logger.jul;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 
 import java.io.IOException;
+import java.util.logging.Filter;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 abstract class AbstractChronicleHandler extends Handler {
@@ -61,7 +63,17 @@ abstract class AbstractChronicleHandler extends Handler {
 
     protected abstract void doPublish(final LogRecord record, final ChronicleLogWriter writer);
 
-    protected void setWriter(ChronicleLogWriter appender) {
+    protected final void setWriter(ChronicleLogWriter appender) {
         this.writer = appender;
+    }
+    
+    @Override
+    public final void setFilter(Filter newFilter) {
+        super.setFilter(newFilter);
+    }
+
+    @Override
+    public final synchronized void setLevel(Level newLevel) {
+        super.setLevel(newLevel);
     }
 }
