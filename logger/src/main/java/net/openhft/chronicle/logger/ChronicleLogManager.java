@@ -201,5 +201,9 @@ public class ChronicleLogManager {
 
     private static class Holder {
         private static final ChronicleLogManager INSTANCE = new ChronicleLogManager();
+        
+        private Holder() {
+            
+        }
     }
 }

@@ -91,7 +91,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     }
 
     @Override
-    public void finalize() {
+    protected void finalize() {
         // An appender might be closed then garbage collected. There is no
         // point in closing twice.
         if(this.writer == null) {
