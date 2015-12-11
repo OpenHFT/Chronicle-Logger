@@ -36,6 +36,8 @@ import java.io.IOException;
     printObject = true)
 public class TextIndexedChronicleAppender extends AbstractTextChronicleAppender {
 
+    private static final long serialVersionUID = 1L;
+    
     private final IndexedLogAppenderConfig config;
 
     public TextIndexedChronicleAppender(

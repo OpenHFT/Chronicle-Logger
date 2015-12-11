@@ -26,6 +26,8 @@ import org.apache.logging.log4j.core.LogEvent;
 
 abstract class AbstractTextChronicleAppender extends AbstractChronicleAppender {
 
+    private static final long serialVersionUID = 1L;
+    
     private String dateFormat;
     private int stackTraceDepth;
 

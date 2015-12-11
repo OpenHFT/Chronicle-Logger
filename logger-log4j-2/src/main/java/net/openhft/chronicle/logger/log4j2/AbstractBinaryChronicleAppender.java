@@ -25,6 +25,8 @@ import org.apache.logging.log4j.core.LogEvent;
 
 abstract class AbstractBinaryChronicleAppender extends AbstractChronicleAppender {
 
+    private static final long serialVersionUID = 1L;
+    
     private boolean includeCallerData;
     private boolean includeMDC;
 

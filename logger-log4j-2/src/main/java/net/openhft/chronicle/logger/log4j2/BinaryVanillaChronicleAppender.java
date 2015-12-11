@@ -36,6 +36,8 @@ import java.io.IOException;
     printObject = true)
 public class BinaryVanillaChronicleAppender extends AbstractBinaryChronicleAppender {
 
+    private static final long serialVersionUID = 1L;
+    
     private final VanillaLogAppenderConfig config;
 
     public BinaryVanillaChronicleAppender(
