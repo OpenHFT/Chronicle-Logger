@@ -98,6 +98,7 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         super.stop();
     }
 
+    @Override
     public void append(final LogEvent event) {
         if (this.writer != null) {
             doAppend(event, writer);
