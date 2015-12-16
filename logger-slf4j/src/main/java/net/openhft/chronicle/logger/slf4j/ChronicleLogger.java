@@ -26,6 +26,8 @@ import org.slf4j.helpers.MessageFormatter;
 
 abstract class ChronicleLogger extends MarkerIgnoringBase {
 
+    private static final long serialVersionUID = 1L;
+    
     protected final ChronicleLogWriter writer;
     protected final ChronicleLogLevel level;
 
@@ -305,6 +307,9 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     // *************************************************************************
 
     public static final class Binary extends ChronicleLogger {
+        
+        private static final long serialVersionUID = 1L;
+        
         public Binary(ChronicleLogWriter writer, String name, ChronicleLogLevel level) {
             super(writer, name, level);
         }
@@ -384,6 +389,9 @@ abstract class ChronicleLogger extends MarkerIgnoringBase {
     // *************************************************************************
 
     public static final class Text extends ChronicleLogger {
+        
+        private static final long serialVersionUID = 1L;
+        
         public Text(ChronicleLogWriter writer, String name, ChronicleLogLevel level) {
             super(writer, name, level);
         }

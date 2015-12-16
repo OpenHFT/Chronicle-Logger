@@ -34,6 +34,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import java.io.IOException;
 
 public abstract class AbstractChronicleAppender extends AbstractAppender {
+    
+    private static final long serialVersionUID = 1L;
+    
     private String path;
 
     protected ChronicleLogWriter writer;
