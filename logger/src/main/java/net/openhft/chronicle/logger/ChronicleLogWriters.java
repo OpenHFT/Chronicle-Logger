@@ -40,7 +40,7 @@ public class ChronicleLogWriters {
     public static class IndexedExcerptAppenderProvider implements ExcerptAppenderProvider {
         private ExcerptAppender appender;
 
-        public IndexedExcerptAppenderProvider(final @NotNull Chronicle chronicle) {
+        public IndexedExcerptAppenderProvider(@NotNull final Chronicle chronicle) {
             try {
                 this.appender = chronicle.createAppender();
             } catch (IOException e) {
@@ -59,7 +59,7 @@ public class ChronicleLogWriters {
     public static class VanillaExcerptAppenderProvider implements ExcerptAppenderProvider {
         private final Chronicle chronicle;
 
-        public VanillaExcerptAppenderProvider(final @NotNull Chronicle chronicle) {
+        public VanillaExcerptAppenderProvider(@NotNull final Chronicle chronicle) {
             this.chronicle = chronicle;
         }
 
@@ -79,7 +79,7 @@ public class ChronicleLogWriters {
     //
     // *************************************************************************
 
-    public static abstract class AbstractChronicleLogWriter implements ChronicleLogWriter {
+    public abstract static class AbstractChronicleLogWriter implements ChronicleLogWriter {
 
         private final ExcerptAppenderProvider appenderProvider;
         private final Chronicle chronicle;

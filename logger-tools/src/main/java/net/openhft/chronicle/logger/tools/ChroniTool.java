@@ -39,14 +39,14 @@ public final class ChroniTool {
     //
     // *************************************************************************
 
-    public static abstract class BinaryProcessor implements ChronicleLogReader, ChronicleLogProcessor {
+    public abstract static class BinaryProcessor implements ChronicleLogReader, ChronicleLogProcessor {
         @Override
         public void read(final Bytes bytes) {
             process(ChronicleLogHelper.decodeBinary(bytes));
         }
     }
 
-    public static abstract class TextProcessor implements ChronicleLogReader, ChronicleLogProcessor {
+    public abstract static class TextProcessor implements ChronicleLogReader, ChronicleLogProcessor {
         @Override
         public void read(final Bytes bytes) {
             process(ChronicleLogHelper.decodeText(bytes));

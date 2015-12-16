@@ -63,7 +63,7 @@ abstract class AbstractTextChronicleAppender extends AbstractChronicleAppender {
     // *************************************************************************
 
     @Override
-    public void doAppend(final @NotNull LogEvent event, final @NotNull ChronicleLogWriter writer) {
+    public void doAppend(@NotNull final LogEvent event, @NotNull final ChronicleLogWriter writer) {
         writer.write(
             toChronicleLogLevel(event.getLevel()),
             event.getTimeMillis(),
