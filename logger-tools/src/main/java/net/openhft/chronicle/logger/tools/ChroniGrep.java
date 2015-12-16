@@ -75,10 +75,10 @@ public final class ChroniGrep {
                 );
 
             } else {
-                System.err.format("\nUsage: ChroniGrep [-t|-i|-u] regexp1 ... regexpN path");
-                System.err.format("\n  -u = use uncompressed object serialization, default compressed");
-                System.err.format("\n  -t = text chronicle, default binary");
-                System.err.format("\n  -i = IndexedChronicle, default VanillaChronicle");
+                System.err.format("%nUsage: ChroniGrep [-t|-i|-u] regexp1 ... regexpN path");
+                System.err.format("%n  -u = use uncompressed object serialization, default compressed");
+                System.err.format("%n  -t = text chronicle, default binary");
+                System.err.format("%n  -i = IndexedChronicle, default VanillaChronicle");
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);
