@@ -59,7 +59,7 @@
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
 
-        <!-- log4j 1.2 -->
+        <!-- log4j 1 -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
