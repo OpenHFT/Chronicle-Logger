@@ -141,6 +141,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         this.name = name;
     }
 
+    @Override
     public void doAppend(LoggingEvent event) {
         if(this.writer != null) {
             for(Filter f = this.filter; f != null;f = f.getNext()) {

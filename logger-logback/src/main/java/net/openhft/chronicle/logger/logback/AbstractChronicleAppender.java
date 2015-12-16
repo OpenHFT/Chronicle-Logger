@@ -90,18 +90,22 @@ public abstract class AbstractChronicleAppender
         return started;
     }
 
+    @Override
     public void addFilter(Filter<ILoggingEvent> newFilter) {
         this.filterAttachable.addFilter(newFilter);
     }
 
+    @Override
     public void clearAllFilters() {
         this.filterAttachable.clearAllFilters();
     }
 
+    @Override
     public List<Filter<ILoggingEvent>> getCopyOfAttachedFiltersList() {
         return this.filterAttachable.getCopyOfAttachedFiltersList();
     }
 
+    @Override
     public FilterReply getFilterChainDecision(ILoggingEvent event) {
         return this.filterAttachable.getFilterChainDecision(event);
     }

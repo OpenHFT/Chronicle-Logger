@@ -43,6 +43,7 @@ public class StaticMarkerBinder implements MarkerFactoryBinder {
      * Currently this method always returns an instance of
      * {@link BasicMarkerFactory}.
      */
+    @Override
     public IMarkerFactory getMarkerFactory() {
         return markerFactory;
     }
@@ -51,6 +52,7 @@ public class StaticMarkerBinder implements MarkerFactoryBinder {
      * Currently, this method returns the class name of
      * {@link BasicMarkerFactory}.
      */
+    @Override
     public String getMarkerFactoryClassStr() {
         return BasicMarkerFactory.class.getName();
     }
