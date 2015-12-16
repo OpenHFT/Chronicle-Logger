@@ -47,6 +47,10 @@ public class ChronicleHelper {
         chronicleToJulLevelMap.put(ChronicleLogLevel.WARN , Level.WARNING);
         chronicleToJulLevelMap.put(ChronicleLogLevel.ERROR, Level.SEVERE);
     }
+    
+    private ChronicleHelper() {
+        
+    }
 
     public static ChronicleLogLevel getLogLevel(final LogRecord julRecord) {
         return getLogLevel(julRecord.getLevel());

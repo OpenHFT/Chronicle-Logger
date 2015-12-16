@@ -38,7 +38,7 @@ public abstract class AbstractChronicleAppender
     private final FilterAttachableImpl<ILoggingEvent> filterAttachable;
 
     private String name;
-    private boolean started = false;
+    private boolean started;
 
     private String path;
 
