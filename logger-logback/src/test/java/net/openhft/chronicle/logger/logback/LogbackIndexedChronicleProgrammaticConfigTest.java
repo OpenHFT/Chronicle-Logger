@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class LogbackIndexedChronicleProgrammaticConfigTest extends LogbackTestBase {
 
     @Test
-    public void testConfig() throws Exception {
+    public void testConfig()  {
         LoggerContext context=(LoggerContext) LoggerFactory.getILoggerFactory();
         context.reset();
 
