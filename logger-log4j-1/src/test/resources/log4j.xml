@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~     Copyright (C) 2015  higherfrequencytrading.com
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU Lesser General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU Lesser General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU Lesser General Public License
+  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+    <!-- ******************************************************************* -->
+    <!-- CONFIG                                                              -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "CONFIG-BINARY-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.BinaryIndexedChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/config-binary-indexed-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+        <param name="indexBlockSize" value="128"/>
+    </appender>
+
+    <appender name  = "CONFIG-TEXT-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.TextIndexedChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/config-text-indexed-chronicle"/>
+        <param name="indexBlockSize" value="128"/>
+    </appender>
+
+    <appender name  = "CONFIG-BINARY-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/config-binary-vanilla-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+        <param name="dataCacheCapacity" value="128"/>
+    </appender>
+
+    <appender name  = "CONFIG-TEXT-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.TextVanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/config-text-vanilla-chronicle"/>
+        <param name="dataCacheCapacity" value="128"/>
+    </appender>
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "BINARY-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/binary-vanilla-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+    </appender>
+
+    <appender name  = "PERF-BINARY-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/perf-binary-vanilla-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+    </appender>
+
+    <appender name  = "TEXT-VANILLA-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.TextVanillaChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/text-vanilla-chronicle"/>
+        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
+        <param name="stackTradeDepth" value="3"/>
+    </appender>
+
+    <appender name  = "BINARY-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.BinaryIndexedChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/binary-indexed-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+    </appender>
+
+    <appender name  = "PERF-BINARY-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.BinaryIndexedChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/perf-binary-indexed-chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
+    </appender>
+
+    <appender name  = "TEXT-INDEXED-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.TextIndexedChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/text-indexed-chronicle"/>
+        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
+        <param name="stackTradeDepth" value="3"/>
+    </appender>
+
+    <appender name="PERF-PLAIN-VANILLA" class="org.apache.log4j.FileAppender">
+        <param name="file"   value="${java.io.tmpdir}/chronicle-log4j1/perf-plain-vanilla.log"/>
+        <param name="append" value="false" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d|%t|%c|%m%n" />
+        </layout>
+    </appender>
+
+    <appender name="PERF-PLAIN-INDEXED" class="org.apache.log4j.FileAppender">
+        <param name="file"   value="${java.io.tmpdir}/chronicle-log4j1/perf-plain-indexed.log"/>
+        <param name="append" value="false" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d|%t|%c|%m%n" />
+        </layout>
+    </appender>
+
+    <appender name="PERF-PLAIN-VANILLA-ASYNC" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="2048"/>
+        <appender-ref ref="PERF-PLAIN-VANILLA"/>
+    </appender>
+
+    <appender name="PERF-PLAIN-INDEXED-ASYNC" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="2048"/>
+        <appender-ref ref="PERF-PLAIN-INDEXED"/>
+    </appender>
+
+    <!-- ******************************************************************* -->
+    <!-- STDOUT                                                              -->
+    <!-- ******************************************************************* -->
+
+    <appender name  = "STDOUT"
+              class = "org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
+        </layout>
+    </appender>
+
+    <!-- ******************************************************************* -->
+    <!-- CONFIG                                                              -->
+    <!-- ******************************************************************* -->
+
+    <logger name="config-binary-indexed-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="CONFIG-BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+    <logger name="config-text-indexed-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="CONFIG-TEXT-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <logger name="config-binary-vanilla-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="CONFIG-BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+    <logger name="config-text-vanilla-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="CONFIG-TEXT-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
+
+    <logger name="binary-vanilla-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="perf-binary-vanilla-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="PERF-BINARY-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="text-vanilla-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
+    </logger>
+
+    <logger name="binary-indexed-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <logger name="perf-binary-indexed-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="PERF-BINARY-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <logger name="text-indexed-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
+    </logger>
+
+    <logger name="perf-plain-vanilla" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="PERF-PLAIN-VANILLA"/>
+    </logger>
+
+    <logger name="perf-plain-vanilla-async" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="PERF-PLAIN-VANILLA-ASYNC"/>
+    </logger>
+
+    <logger name="perf-plain-indexed" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="PERF-PLAIN-INDEXED"/>
+    </logger>
+
+    <logger name="perf-plain-indexed-async" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="PERF-PLAIN-INDEXED-ASYNC"/>
+    </logger>
+
+    <logger name="net.openhft" additivity="false">
+        <level value="warn"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root>
+        <level value="debug" />
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</log4j:configuration>
