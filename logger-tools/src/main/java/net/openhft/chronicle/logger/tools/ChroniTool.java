@@ -141,7 +141,7 @@ public final class ChroniTool {
                 } else {
                     if (waitForData) {
                         try {
-                            Thread.sleep(50);
+                            Jvm.pause(50);
                         } catch (InterruptedException ignored) {
                         }
                     } else {
