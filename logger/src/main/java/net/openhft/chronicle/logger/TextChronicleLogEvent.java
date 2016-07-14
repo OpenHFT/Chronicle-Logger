@@ -43,54 +43,24 @@ final class TextChronicleLogEvent implements ChronicleLogEvent {
             return new StringBuilder();
         }
     };
-
-    static TextChronicleLogEvent read(@NotNull Bytes in) throws IllegalStateException {
-        StringBuilder sb = sbCache.get();
-        sb.setLength(0);
-
-        // timestamp
-        in.parseUtf8(sb, PIPE_TESTER);
-        long timestamp = 0;
-        try {
-            //TODO: store date as long even in text?
-            // haven't found a simple way to get rid of this intermediate conversion to String
-            timestamp = DATE_FORMAT.parse(sb.toString()).getTime();
-        } catch(Exception e) {
-            // Ignore
-        }
-
-        // level
-        in.parseUtf8(sb, PIPE_TESTER);
-        ChronicleLogLevel level = ChronicleLogLevel.fromStringLevel(sb);
-
-        // thread name
-        in.parseUtf8(sb, PIPE_TESTER);
-        String threadName = sb.toString();
-
-        // logger name
-        in.parseUtf8(sb, PIPE_TESTER);
-        String loggerName = sb.toString();
-
-        // message
-        String message = in.readLine();
-
-        return new TextChronicleLogEvent(
-            timestamp,
-            level,
-            threadName,
-            loggerName,
-            message);
-    }
+    private final long timestamp;
 
     // *********************************************************************
     //
     // *********************************************************************
-
-    private final long timestamp;
     private final ChronicleLogLevel level;
     private final String threadName;
     private final String loggerName;
     private final String message;
+
+    private TextChronicleLogEvent(long timestamp, ChronicleLogLevel level, String threadName,
+                                  String loggerName, String message) {
+        this.timestamp = timestamp;
+        this.level = level;
+        this.threadName = threadName;
+        this.loggerName = loggerName;
+        this.message = message;
+    }
 
     static TextChronicleLogEvent read(@NotNull Bytes in) throws IllegalStateException {
         StringBuilder sb = sbCache.get();
@@ -128,15 +98,6 @@ final class TextChronicleLogEvent implements ChronicleLogEvent {
                 threadName,
                 loggerName,
                 message);
-    }
-
-    private TextChronicleLogEvent(long timestamp, ChronicleLogLevel level, String threadName,
-        String loggerName, String message) {
-        this.timestamp = timestamp;
-        this.level = level;
-        this.threadName = threadName;
-        this.loggerName = loggerName;
-        this.message = message;
     }
 
     // *********************************************************************
