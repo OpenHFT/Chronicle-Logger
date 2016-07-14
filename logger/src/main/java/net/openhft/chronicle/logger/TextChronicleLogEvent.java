@@ -49,7 +49,7 @@ final class TextChronicleLogEvent implements ChronicleLogEvent {
         sb.setLength(0);
 
         // timestamp
-        in.parseUTF(sb, PIPE_TESTER);
+        in.parseUtf8(sb, PIPE_TESTER);
         long timestamp = 0;
         try {
             //TODO: store date as long even in text?
@@ -60,15 +60,15 @@ final class TextChronicleLogEvent implements ChronicleLogEvent {
         }
 
         // level
-        in.parseUTF(sb, PIPE_TESTER);
+        in.parseUtf8(sb, PIPE_TESTER);
         ChronicleLogLevel level = ChronicleLogLevel.fromStringLevel(sb);
 
         // thread name
-        in.parseUTF(sb, PIPE_TESTER);
+        in.parseUtf8(sb, PIPE_TESTER);
         String threadName = sb.toString();
 
         // logger name
-        in.parseUTF(sb, PIPE_TESTER);
+        in.parseUtf8(sb, PIPE_TESTER);
         String loggerName = sb.toString();
 
         // message
@@ -91,6 +91,44 @@ final class TextChronicleLogEvent implements ChronicleLogEvent {
     private final String threadName;
     private final String loggerName;
     private final String message;
+
+    static TextChronicleLogEvent read(@NotNull Bytes in) throws IllegalStateException {
+        StringBuilder sb = sbCache.get();
+        sb.setLength(0);
+
+        // timestamp
+        in.parseUtf8(sb, PIPE_TESTER);
+        long timestamp = 0;
+        try {
+            //TODO: store date as long even in text?
+            // haven't found a simple way to get rid of this intermediate conversion to String
+            timestamp = DATE_FORMAT.parse(sb.toString()).getTime();
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        // level
+        in.parseUtf8(sb, PIPE_TESTER);
+        ChronicleLogLevel level = ChronicleLogLevel.fromStringLevel(sb);
+
+        // thread name
+        in.parseUtf8(sb, PIPE_TESTER);
+        String threadName = sb.toString();
+
+        // logger name
+        in.parseUtf8(sb, PIPE_TESTER);
+        String loggerName = sb.toString();
+
+        // message
+        String message = in.readLine();
+
+        return new TextChronicleLogEvent(
+                timestamp,
+                level,
+                threadName,
+                loggerName,
+                message);
+    }
 
     private TextChronicleLogEvent(long timestamp, ChronicleLogLevel level, String threadName,
         String loggerName, String message) {

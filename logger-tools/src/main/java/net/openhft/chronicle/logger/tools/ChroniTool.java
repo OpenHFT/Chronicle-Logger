@@ -38,25 +38,6 @@ public final class ChroniTool {
     // *************************************************************************
     //
     // *************************************************************************
-
-    public abstract static class BinaryProcessor implements ChronicleLogReader, ChronicleLogProcessor {
-        @Override
-        public void read(final Bytes bytes) {
-            process(ChronicleLogHelper.decodeBinary(bytes));
-        }
-    }
-
-    public abstract static class TextProcessor implements ChronicleLogReader, ChronicleLogProcessor {
-        @Override
-        public void read(final Bytes bytes) {
-            process(ChronicleLogHelper.decodeText(bytes));
-        }
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
     public static final ChronicleLogReader READER_BINARY = new BinaryProcessor() {
         private StringWriter writer = new StringWriter();
 
@@ -66,7 +47,6 @@ public final class ChroniTool {
             System.out.println(asString(event, writer));
         }
     };
-
     public static final ChronicleLogReader READER_TEXT = new TextProcessor() {
         private StringWriter writer = new StringWriter();
 
@@ -80,6 +60,9 @@ public final class ChroniTool {
     // *************************************************************************
     //
     // *************************************************************************
+
+    private ChroniTool() {
+    }
 
     public static StringWriter asString(final ChronicleLogEvent event, final StringWriter writer) {
         writer.append(DF.format(event.getTimeStamp()));
@@ -141,7 +124,7 @@ public final class ChroniTool {
                 } else {
                     if (waitForData) {
                         try {
-                            Jvm.pause(50);
+                            Thread.sleep(50);
                         } catch (InterruptedException ignored) {
                         }
                     } else {
@@ -156,5 +139,21 @@ public final class ChroniTool {
         }
     }
 
-    private ChroniTool() {}
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public abstract static class BinaryProcessor implements ChronicleLogReader, ChronicleLogProcessor {
+        @Override
+        public void read(final Bytes bytes) {
+            process(ChronicleLogHelper.decodeBinary(bytes));
+        }
+    }
+
+    public abstract static class TextProcessor implements ChronicleLogReader, ChronicleLogProcessor {
+        @Override
+        public void read(final Bytes bytes) {
+            process(ChronicleLogHelper.decodeText(bytes));
+        }
+    }
 }
