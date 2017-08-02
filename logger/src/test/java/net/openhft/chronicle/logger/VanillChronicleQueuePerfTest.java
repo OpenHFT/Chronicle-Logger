@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-/**
+/*
  * Created by peter.lawrey on 10/10/14.
  */
 public class VanillChronicleQueuePerfTest {
