@@ -13,12 +13,12 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License.
  */
-
-package net.openhft.chronicle.logger.log4j1;
+package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ChronicleQueueBuilder;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
@@ -27,32 +27,88 @@ import net.openhft.chronicle.wire.Wire;
 import net.openhft.lang.io.IOTools;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
-public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
+public class JulLoggerChronicleTest extends JulLoggerTestBase {
+
+    @Before
+    public void setUp() {
+        setupLogger(getClass());
+    }
 
     @After
     public void tearDown() {
-        IOTools.deleteDir(rootPath());
+        IOTools.deleteDir(basePath());
     }
 
+    // *************************************************************************
+    //
+    // *************************************************************************
+
     @Test
-    public void testVanillaBinaryAppender() throws IOException {
-        final String testId = "binary-chronicle";
-        final String threadId = testId + "-th";
-        final Logger logger = LoggerFactory.getLogger(testId);
+    public void testIndexedChronicleConfiguration() throws IOException {
+        testChronicleConfiguration(
+                "logger",
+                ChronicleLogger.class,
+                DefaultChronicleLogWriter.class,
+                Level.FINE);
+        testChronicleConfiguration(
+                "logger_1",
+                ChronicleLogger.class,
+                DefaultChronicleLogWriter.class,
+                Level.INFO);
+        testChronicleConfiguration(
+                "logger_bin",
+                ChronicleLogger.class,
+                DefaultChronicleLogWriter.class,
+                Level.FINER);
+    }
+
+    private static void testChronicleConfiguration(
+            final String loggerId,
+            final Class<? extends ChronicleLogger> expectedLoggerType,
+            final Class<? extends ChronicleLogWriter> expectedWriterType,
+            final Level level) throws IOException {
+
+        Logger logger = Logger.getLogger(loggerId);
+
+        assertNotNull(logger);
+        assertTrue(logger instanceof ChronicleLogger);
+        assertEquals(expectedLoggerType, logger.getClass());
+        assertEquals(loggerId, logger.getName());
+        assertNotNull(((ChronicleLogger) logger).writer());
+        assertEquals(expectedWriterType, ((ChronicleLogger) logger).writer().getClass());
+        assertEquals(level, logger.getLevel());
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    @Test
+    public void testIndexedBinaryAppender() throws IOException {
+        final String testId = "logger_bin";
+        final String basePath = basePath(testId);
+
+        Logger logger = Logger.getLogger(testId);
+
+        final String threadId = "thread-" + Thread.currentThread().getId();
+        final long timestamp = System.currentTimeMillis();
 
         Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger, level, "level is {}", level);
+            log(logger, level, "level is {0}", level);
         }
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
@@ -65,7 +121,16 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
                     assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                     assertEquals(threadId, wire.read("threadName").text());
                     assertEquals(testId, wire.read("loggerName").text());
-                    assertEquals("level is " + level, wire.read("message").text());
+                    assertEquals("level is {0}", wire.read("message").text());
+                    assertTrue(wire.hasMore());
+                    List<Object> args = new ArrayList<>();
+                    assertTrue(wire.hasMore());
+                    wire.read("args").sequence(args, (l, vi) -> {
+                        while (vi.hasNextSequenceItem()) {
+                            l.add(vi.object(Object.class));
+                        }
+                    });
+                    assertEquals(level, args.iterator().next());
                     assertFalse(wire.hasMore());
                 }
             }
@@ -74,8 +139,8 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
                 assertNull(wire);
             }
 
-            logger.debug("Throwable test 1", new UnsupportedOperationException());
-            logger.debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
+            logger.log(Level.FINE, "Throwable test 1", new UnsupportedOperationException());
+            logger.log(Level.FINE, "Throwable test 2", new UnsupportedOperationException("Exception message"));
 
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
@@ -111,11 +176,16 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
             }
 
         }
+
+
         IOTools.deleteDir(basePath(testId));
     }
 
     @NotNull
     private static SingleChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueueBuilder.single(basePath(testId)).build();
+
     }
+
+
 }

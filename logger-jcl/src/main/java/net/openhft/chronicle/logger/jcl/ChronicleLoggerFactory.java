@@ -77,16 +77,8 @@ public class ChronicleLoggerFactory extends LogFactory {
     public Log getInstance(String name) throws LogConfigurationException {
         try {
             return getLogger(name);
-        } catch(Exception e) {
-            System.err.println(
-                new StringBuilder("Unable to inzialize chronicle-jcl ")
-                    .append("(")
-                    .append(name)
-                    .append(")")
-                    .append("\n  ")
-                    .append(e.getMessage())
-                    .toString()
-            );
+        } catch (Exception e) {
+            System.err.println("Unable to initialise chronicle-jcl (" + name + ")\n  " + e.getMessage());
         }
 
         return NOP_LOGGER;
@@ -100,14 +92,14 @@ public class ChronicleLoggerFactory extends LogFactory {
         ChronicleLogger logger = loggers.get(name);
         if (logger == null) {
             loggers.put(
-                name,
-                logger = new ChronicleLogger(
-                    manager.createWriter(name),
                     name,
-                    ChronicleLogLevel.fromStringLevel(
-                        manager.cfg().getString(name, ChronicleLogConfig.KEY_LEVEL)
+                    logger = new ChronicleLogger(
+                            manager.getWriter(name),
+                            name,
+                            ChronicleLogLevel.fromStringLevel(
+                                    manager.cfg().getString(name, ChronicleLogConfig.KEY_LEVEL)
+                            )
                     )
-                )
             );
         }
 

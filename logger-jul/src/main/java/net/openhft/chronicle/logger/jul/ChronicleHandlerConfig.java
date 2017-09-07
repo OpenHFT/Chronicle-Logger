@@ -17,9 +17,7 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.logger.ChronicleLogAppenderConfig;
-import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
-import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
+import net.openhft.chronicle.logger.LogAppenderConfig;
 
 import java.util.logging.Filter;
 import java.util.logging.Formatter;
@@ -61,20 +59,8 @@ public class ChronicleHandlerConfig {
         return getFormatterProperty(this.prefix + "." + name, defaultValue);
     }
 
-    public ChronicleLogAppenderConfig getIndexedAppenderConfig() {
-        IndexedLogAppenderConfig cfg = new IndexedLogAppenderConfig();
-        for(final String key : cfg.keys()) {
-            cfg.setProperty(
-                key,
-                getStringProperty(this.prefix + ".cfg." + key, null)
-            );
-        }
-
-        return cfg;
-    }
-
-    public ChronicleLogAppenderConfig getVanillaAppenderConfig() {
-        VanillaLogAppenderConfig cfg = new VanillaLogAppenderConfig();
+    public LogAppenderConfig getIndexedAppenderConfig() {
+        LogAppenderConfig cfg = new LogAppenderConfig();
         for(final String key : cfg.keys()) {
             cfg.setProperty(
                 key,

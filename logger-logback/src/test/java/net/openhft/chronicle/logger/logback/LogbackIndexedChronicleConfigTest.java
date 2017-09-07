@@ -32,7 +32,7 @@ public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
     public void setup() {
         System.setProperty(
                 "logback.configurationFile",
-                System.getProperty("resources.path") + "/logback-indexed-chronicle-config.xml"
+                System.getProperty("resources.path") + "/logback-chronicle-config.xml"
         );
     }
 
@@ -42,43 +42,17 @@ public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
 
     @Test
     public void testBinaryIndexedChronicleAppenderConfig() throws IOException {
-        final String loggerName = "config-binary-indexed-chronicle";
-        final String appenderName = "CONFIG-BINARY-INDEXED-CHRONICLE";
+        final String loggerName = "config-binary-chronicle";
+        final String appenderName = "CONFIG-BINARY-CHRONICLE";
 
-        try {
-            final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);
-            assertNotNull(logger);
+        final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);
+        assertNotNull(logger);
 
-            final ch.qos.logback.core.Appender<ILoggingEvent> appender = logger.getAppender(appenderName);
-            assertNotNull(appender);
-            assertTrue(appender instanceof BinaryIndexedChronicleAppender);
+        final ch.qos.logback.core.Appender<ILoggingEvent> appender = logger.getAppender(appenderName);
+        assertNotNull(appender);
+        assertTrue(appender instanceof BinaryChronicleAppender);
 
-            BinaryIndexedChronicleAppender ba = (BinaryIndexedChronicleAppender) appender;
-            assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
-            assertFalse(ba.getChronicleConfig().isUseCompressedObjectSerializer());
-        } finally {
-        }
-    }
-
-    @Test
-    public void testTextIndexedChronicleAppenderConfig() throws IOException {
-        final String loggerName = "config-text-indexed-chronicle";
-        final String appenderName = "CONFIG-TEXT-INDEXED-CHRONICLE";
-
-        try {
-            final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);
-            assertNotNull(logger);
-
-            final ch.qos.logback.core.Appender<ILoggingEvent> appender = logger.getAppender(appenderName);
-            assertNotNull(appender);
-            assertTrue(appender instanceof TextIndexedChronicleAppender);
-
-            TextIndexedChronicleAppender ba = (TextIndexedChronicleAppender)appender;
-            assertEquals(128, ba.getChronicleConfig().getIndexBlockSize());
-            assertFalse(ba.getChronicleConfig().isUseCompressedObjectSerializer());
-            assertNotNull(ba.getDateFormat());
-        } finally {
-            //ChronicleTools.deleteOnExit(basePath(loggerName));
-        }
+        BinaryChronicleAppender ba = (BinaryChronicleAppender) appender;
+        assertEquals(128, ba.getChronicleConfig().getBlockSize());
     }
 }

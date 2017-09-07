@@ -17,10 +17,8 @@
  */
 package net.openhft.chronicle.logger;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.IndexedChronicle;
+import net.openhft.chronicle.queue.ChronicleQueue;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,135 +54,35 @@ public class ChronicleLogManager {
         this.writers = new ConcurrentHashMap<>();
     }
 
-    public boolean isBinary(String name) {
-        return ChronicleLogConfig.FORMAT_BINARY.equalsIgnoreCase(
-            cfg.getString(name, ChronicleLogConfig.KEY_FORMAT)
-        );
-    }
-
-    public boolean isText(String name) {
-        return ChronicleLogConfig.FORMAT_TEXT.equalsIgnoreCase(
-            cfg.getString(name, ChronicleLogConfig.KEY_FORMAT)
-        );
-    }
-
-    public boolean isSimple(String name) {
-        for(String pkg : ChronicleLogConfig.PACKAGE_MASK) {
-            if(name.startsWith(pkg)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param name
-     * @param name
-     * @return
-     * @throws java.io.IOException
-     */
-    public ChronicleLogWriter createWriter(String name) throws IOException  {
+    public ChronicleLogWriter getWriter(String name) throws IOException  {
         if (this.cfg == null) {
             throw new IllegalArgumentException("ChronicleLogManager is not configured");
         }
 
         final String path = cfg.getString(name, ChronicleLogConfig.KEY_PATH);
         if (path != null) {
-            ChronicleLogWriter appender = writers.get(path);
-            if (appender == null) {
-                final Integer stDepth = cfg.getInteger(ChronicleLogConfig.KEY_STACK_TRACE_DEPTH);
-                final String type = cfg.getString(name, ChronicleLogConfig.KEY_TYPE);
-
-                if (!isSimple(name)) {
-                    if (isBinary(name)) {
-                        appender = new ChronicleLogWriters.BinaryWriter(
-                            newChronicle(type, path, name)
-                        );
-
-                    } else if (isText(name)) {
-                        appender = new ChronicleLogWriters.TextWriter(
-                            newChronicle(type, path, name),
-                            ChronicleLogConfig.DEFAULT_DATE_FORMAT,
-                            stDepth
-                        );
-                    }
-                } else {
-                    appender = new ChronicleLogWriters.SimpleWriter(
-                        System.out
-                    );
-                }
-
-                if (appender.getChronicle() instanceof IndexedChronicle) {
-                    appender = new ChronicleLogWriters.SynchronizedWriter(appender);
-                }
-
-                this.writers.put(path, appender);
+            ChronicleLogWriter logWriter = writers.get(path);
+            if (logWriter == null) {
+                logWriter = new DefaultChronicleLogWriter(newChronicle(path, name));
+                this.writers.put(path, logWriter);
             }
 
-            return appender;
+            return logWriter;
 
         } else {
-            throw new IllegalArgumentException(new StringBuilder()
-                .append("chronicle.logger.root.path is not defined")
-                .append(",")
-                .append("chronicle.logger.")
-                .append(name)
-                .append(".path is not defined")
-                .toString()
+            throw new IllegalArgumentException(
+                    "chronicle.logger.root.path is not defined, chronicle.logger." + name + ".path is not defined"
             );
         }
     }
 
-    /**
-     * @param type
-     * @param path
-     * @param name
-     * @return
-     * @throws java.io.IOException
-     */
-    private Chronicle newChronicle(String type, String path, String name) throws IOException  {
-        if (ChronicleLogConfig.TYPE_INDEXED.equalsIgnoreCase(type)) {
-            return newIndexedChronicle(path, name);
-
-        } else if (ChronicleLogConfig.TYPE_VANILLA.equalsIgnoreCase(type)) {
-            return newVanillaChronicle(path, name);
-        }
-
-        throw new IllegalArgumentException("type should be indexed or vanilla");
-    }
-
-    /**
-     * Make a VanillaChronicle with default configuration;
-     *
-     * @param path
-     * @param name #param synchronous
-     * @return
-     */
-    private Chronicle newVanillaChronicle(String path, String name) throws IOException {
-        final Chronicle chronicle = this.cfg.getVanillaChronicleConfig().build(path);
-
+    private ChronicleQueue newChronicle(String path, String name) throws IOException  {
+        ChronicleQueue cq = this.cfg.getAppenderConfig().build(path);
         if (!cfg.getBoolean(name, ChronicleLogConfig.KEY_APPEND, true)) {
-            chronicle.clear();
+            // TODO re-enable when it's implemented. ATM it throws UnsupportedOperationException...
+            //cq.clear();
         }
-
-        return chronicle;
-    }
-
-    /**
-     * Make an IndexedChronicle with default configuration;
-     *
-     * @param path
-     * @param name
-     * @return
-     */
-    private Chronicle newIndexedChronicle(String path, String name) throws IOException {
-        if (!cfg.getBoolean(name, ChronicleLogConfig.KEY_APPEND, true)) {
-            new File(path + ".data").delete();
-            new File(path + ".index").delete();
-        }
-
-        return this.cfg.getIndexedChronicleConfig().build(path);
+        return cq;
     }
 
     // *************************************************************************
@@ -201,9 +99,9 @@ public class ChronicleLogManager {
 
     private static class Holder {
         private static final ChronicleLogManager INSTANCE = new ChronicleLogManager();
-        
+
         private Holder() {
-            
+
         }
     }
 }

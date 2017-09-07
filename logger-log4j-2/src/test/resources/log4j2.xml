@@ -26,113 +26,21 @@
             <PatternLayout pattern="[CHRONOLOGY] [%-5p] %c - %m%n%throwable{none}"/>
         </Console>
 
-        <RandomAccessFile
-                name           = "PERF-PLAIN-VANILLA"
-                fileName       = "${sys:java.io.tmpdir}/chronicle-log4j2/perf-plain-vanilla.log"
-                immediateFlush = "false"
-                append         = "false">
-            <PatternLayout>
-                <Pattern>%d|%t|%c|%m%n</Pattern>
-            </PatternLayout>
-        </RandomAccessFile>
-
-        <RandomAccessFile
-                name           = "PERF-PLAIN-INDEXED"
-                fileName       = "${sys:java.io.tmpdir}/chronicle-log4j2/perf-plain-indexed.log"
-                immediateFlush = "false"
-                append         = "false">
-            <PatternLayout>
-                <Pattern>%d|%t|%c|%m%n</Pattern>
-            </PatternLayout>
-        </RandomAccessFile>
-
-        <!-- *************************************************************** -->
-        <!-- VANILLA                                                         -->
-        <!-- *************************************************************** -->
-
-        <BinaryVanillaChronicle name="CONF-BINARY-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/conf-binary-vanilla-chronicle</path>
+        <BinaryChronicle name="CONF-BINARY-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/conf-binary-chronicle</path>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-            <vanillaChronicleConfig>
-                <dataCacheCapacity>128</dataCacheCapacity>
-                <dataBlockSize>256</dataBlockSize>
-                <useCompressedObjectSerializer>true</useCompressedObjectSerializer>
-            </vanillaChronicleConfig>
-        </BinaryVanillaChronicle>
+            <chronicleCfg>
+                <blockSize>128</blockSize>
+                <bufferCapacity>256</bufferCapacity>
+            </chronicleCfg>
+        </BinaryChronicle>
 
-        <TextVanillaChronicle name="CONF-TEXT-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/conf-text-vanilla-chronicle</path>
-            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
-            <stackTraceDepth>3</stackTraceDepth>
-        </TextVanillaChronicle>
-
-        <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-vanilla-chronicle</path>
+        <BinaryChronicle name="BINARY-CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-chronicle</path>
             <includeCallerData>false</includeCallerData>
             <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-        </BinaryVanillaChronicle>
-
-        <BinaryVanillaChronicle name="PERF-BINARY-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/perf-binary-vanilla-chronicle</path>
-            <includeCallerData>false</includeCallerData>
-            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-        </BinaryVanillaChronicle>
-
-        <TextVanillaChronicle name="CONF-TEXT-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/conf-text-vanilla-chronicle</path>
-            <vanillaChronicleConfig>
-                <dataCacheCapacity>128</dataCacheCapacity>
-            </vanillaChronicleConfig>
-        </TextVanillaChronicle>
-
-        <TextVanillaChronicle name="TEXT-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/text-vanilla-chronicle</path>
-            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
-            <stackTraceDepth>3</stackTraceDepth>
-        </TextVanillaChronicle>
-
-        <!-- *************************************************************** -->
-        <!-- INDEXED                                                         -->
-        <!-- *************************************************************** -->
-
-        <BinaryIndexedChronicle name="CONF-BINARY-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/conf-binary-indexed-chronicle</path>
-            <includeCallerData>false</includeCallerData>
-            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-            <indexedChronicleConfig>
-                <indexBlockSize>128</indexBlockSize>
-                <dataBlockSize>256</dataBlockSize>
-                <useCompressedObjectSerializer>true</useCompressedObjectSerializer>
-            </indexedChronicleConfig>
-        </BinaryIndexedChronicle>
-
-        <BinaryIndexedChronicle name="BINARY-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-indexed-chronicle</path>
-            <includeCallerData>false</includeCallerData>
-            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-        </BinaryIndexedChronicle>
-
-        <BinaryIndexedChronicle name="PERF-BINARY-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/perf-binary-indexed-chronicle</path>
-            <includeCallerData>false</includeCallerData>
-            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-        </BinaryIndexedChronicle>
-
-        <TextIndexedChronicle name="CONF-TEXT-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/conf-text-indexed-chronicle</path>
-            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
-            <stackTraceDepth>3</stackTraceDepth>
-            <indexedChronicleConfig>
-                <indexBlockSize>128</indexBlockSize>
-            </indexedChronicleConfig>
-        </TextIndexedChronicle>
-
-        <TextIndexedChronicle name="TEXT-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/text-indexed-chronicle</path>
-            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
-            <stackTraceDepth>3</stackTraceDepth>
-        </TextIndexedChronicle>
+        </BinaryChronicle>
 
     </appenders>
 
@@ -146,40 +54,11 @@
             <appender-ref ref="STDOUT"/>
         </root>
 
-        <logger name="perf-plain-vanilla" level="trace" additivity="false">
-            <appender-ref ref="PERF-PLAIN-VANILLA"/>
+        <logger name="binary-chronicle" level="trace" additivity="false">
+            <appender-ref ref="BINARY-CHRONICLE"/>
         </logger>
-
-        <logger name="perf-plain-indexed" level="trace" additivity="false">
-            <appender-ref ref="PERF-PLAIN-INDEXED"/>
-        </logger>
-
-        <!-- *************************************************************** -->
-        <!-- VANILLA                                                         -->
-        <!-- *************************************************************** -->
-
-        <logger name="binary-vanilla-chronicle" level="trace" additivity="false">
-            <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
-        </logger>
-        <logger name="perf-binary-vanilla-chronicle" level="trace" additivity="false">
-            <appender-ref ref="PERF-BINARY-VANILLA-CHRONICLE"/>
-        </logger>
-        <logger name="text-vanilla-chronicle" level="trace" additivity="false">
-            <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
-        </logger>
-
-        <!-- *************************************************************** -->
-        <!-- INDEXED                                                         -->
-        <!-- *************************************************************** -->
-
-        <logger name="binary-indexed-chronicle" level="trace" additivity="false">
-            <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
-        </logger>
-        <logger name="perf-binary-indexed-chronicle" level="trace" additivity="false">
-            <appender-ref ref="PERF-BINARY-INDEXED-CHRONICLE"/>
-        </logger>
-        <logger name="text-indexed-chronicle" level="trace" additivity="false">
-            <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
+        <logger name="conf-binary-chronicle" level="trace" additivity="false">
+            <appender-ref ref="CONF-BINARY-CHRONICLE"/>
         </logger>
 
         <!-- *************************************************************** -->

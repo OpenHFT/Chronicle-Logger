@@ -18,26 +18,12 @@
 
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.ExcerptTailer;
-import net.openhft.chronicle.logger.ChronicleLog;
-import net.openhft.chronicle.logger.ChronicleLogEvent;
-import net.openhft.chronicle.logger.ChronicleLogHelper;
-import net.openhft.chronicle.logger.ChronicleLogLevel;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class JulHandlerTestBase extends JulTestBase {
@@ -62,27 +48,6 @@ public class JulHandlerTestBase extends JulTestBase {
                 + System.getProperty("file.separator")
                 + type;
     }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    /**
-     * @param type
-     * @return
-     */
-    protected Chronicle getIndexedChronicle(String type) throws IOException {
-        return ChronicleQueueBuilder.indexed(basePath(type)).build();
-    }
-
-    /**
-     * @param type
-     * @return
-     */
-    protected Chronicle getVanillaChronicle(String type) throws IOException {
-        return ChronicleQueueBuilder.vanilla(basePath(type)).build();
-    }
-
     /**
      *
      * @param id
@@ -104,130 +69,7 @@ public class JulHandlerTestBase extends JulTestBase {
     //
     // *************************************************************************
 
-    protected void testChronicleConfiguration(
-            String testId, Logger logger, Class<? extends Handler> expectedHandlerType) throws IOException {
 
-        assertEquals(Level.INFO, logger.getLevel());
-        assertFalse(logger.getUseParentHandlers());
-        assertNull(logger.getFilter());
-        assertNotNull(logger.getHandlers());
-        assertEquals(1, logger.getHandlers().length);
 
-        assertTrue(logger.getHandlers()[0].getClass() == expectedHandlerType);
-    }
 
-    protected void testBinaryAppender(
-            String testId, Logger logger, Chronicle chronicle) throws IOException {
-
-        final String threadId = "thread-" + Thread.currentThread().getId();
-        final long timestamp = System.currentTimeMillis();
-
-        for(ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {0}",level);
-        }
-
-        ExcerptTailer tailer = chronicle.createTailer().toStart();
-        ChronicleLogEvent evt = null;
-
-        for(ChronicleLogLevel level : LOG_LEVELS) {
-            assertTrue(tailer.nextIndex());
-
-            evt = ChronicleLogHelper.decodeBinary(tailer);
-            assertNotNull(evt);
-            assertEquals(evt.getVersion(), ChronicleLog.VERSION);
-            assertTrue(evt.getTimeStamp() >= timestamp);
-            assertEquals(level, evt.getLevel());
-            assertEquals(threadId, evt.getThreadName());
-            assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is {0}", evt.getMessage());
-            assertNotNull(evt.getArgumentArray());
-            assertEquals(1, evt.getArgumentArray().length);
-            assertEquals(level , evt.getArgumentArray()[0]);
-            assertNull(evt.getThrowable());
-
-            tailer.finish();
-        }
-
-        logger.log(Level.FINE, "Throwable test 1", new UnsupportedOperationException());
-        logger.log(Level.FINE, "Throwable test 2", new UnsupportedOperationException("Exception message"));
-
-        assertTrue(tailer.nextIndex());
-        evt = ChronicleLogHelper.decodeBinary(tailer);
-        assertEquals("Throwable test 1", evt.getMessage());
-        assertNotNull(evt.getThrowable());
-        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertNull(evt.getThrowable().getMessage());
-
-        assertTrue(tailer.nextIndex());
-        evt = ChronicleLogHelper.decodeBinary(tailer);
-        assertEquals("Throwable test 2",evt.getMessage());
-        assertNotNull(evt.getThrowable());
-        assertTrue(evt.getThrowable() instanceof UnsupportedOperationException);
-        assertEquals("Exception message",evt.getThrowable().getMessage());
-
-        tailer.close();
-
-        chronicle.close();
-        chronicle.clear();
-    }
-
-    protected void testTextAppender(
-            String testId, Logger logger, Chronicle chronicle) throws IOException {
-
-        final String threadId = "thread-" + Thread.currentThread().getId();
-
-        for(ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger,level,"level is {0}",level);
-        }
-
-        ExcerptTailer tailer = chronicle.createTailer().toStart();
-        ChronicleLogEvent evt = null;
-
-        for(ChronicleLogLevel level : LOG_LEVELS) {
-            assertTrue(tailer.nextIndex());
-
-            evt = ChronicleLogHelper.decodeText(tailer);
-            assertNotNull(evt);
-            assertEquals(level,evt.getLevel());
-            assertEquals(threadId, evt.getThreadName());
-            assertEquals(testId, evt.getLoggerName());
-            assertEquals("level is " + level, evt.getMessage());
-            assertNotNull(evt.getArgumentArray());
-            assertEquals(0, evt.getArgumentArray().length);
-
-            tailer.finish();
-        }
-
-        logger.log(Level.FINE, "Throwable test", new UnsupportedOperationException());
-        logger.log(Level.FINE, "Throwable test", new UnsupportedOperationException("Exception message"));
-
-        assertTrue(tailer.nextIndex());
-        evt = ChronicleLogHelper.decodeText(tailer);
-        assertNotNull(evt);
-        assertEquals(threadId, evt.getThreadName());
-        assertEquals(testId, evt.getLoggerName());
-        assertTrue(evt.getMessage().contains("Throwable test"));
-        assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
-        assertTrue(evt.getMessage().contains(this.getClass().getName()));
-        assertNotNull(evt.getArgumentArray());
-        assertEquals(0, evt.getArgumentArray().length);
-        assertNull(evt.getThrowable());
-
-        assertTrue(tailer.nextIndex());
-        evt = ChronicleLogHelper.decodeText(tailer);assertNotNull(evt);
-        assertEquals(threadId, evt.getThreadName());
-        assertEquals(testId, evt.getLoggerName());
-        assertTrue(evt.getMessage().contains("Throwable test"));
-        assertTrue(evt.getMessage().contains("Exception message"));
-        assertTrue(evt.getMessage().contains(UnsupportedOperationException.class.getName()));
-        assertTrue(evt.getMessage().contains(this.getClass().getName()));
-        assertNotNull(evt.getArgumentArray());
-        assertEquals(0, evt.getArgumentArray().length);
-        assertNull(evt.getThrowable());
-
-        tailer.close();
-
-        chronicle.close();
-        chronicle.clear();
-    }
 }

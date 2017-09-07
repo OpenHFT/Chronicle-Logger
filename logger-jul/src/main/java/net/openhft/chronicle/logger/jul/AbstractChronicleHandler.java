@@ -41,9 +41,9 @@ abstract class AbstractChronicleHandler extends Handler {
 
     @Override
     public void close() throws SecurityException {
-        if(this.writer != null && this.writer.getChronicle() != null) {
+        if(this.writer != null) {
             try {
-                this.writer.getChronicle().close();
+                this.writer.close();
             } catch (IOException e) {
                 // Ignore
             }

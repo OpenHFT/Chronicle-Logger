@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~     Copyright (C) 2015  higherfrequencytrading.com
+  ~     Copyright (C) 2015-2017  chronicle.software
   ~
   ~     This program is free software: you can redistribute it and/or modify
   ~     it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>chronicle-logger-parent</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>OpenHFT/Chronicle-Logger</name>
@@ -44,7 +44,7 @@
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-bom</artifactId>
-                <version>1.14.45-SNAPSHOT</version>
+                <version>1.14.57</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -56,33 +56,6 @@
                 <version>1.2</version>
             </dependency>
 
-            <!-- slf4j -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.13</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jul-to-slf4j</artifactId>
-                <version>1.7.13</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.13</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.13</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-nop</artifactId>
-                <version>1.7.13</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -90,11 +63,7 @@
         <!-- openhft -->
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>affinity</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle</artifactId>
+            <artifactId>chronicle-queue</artifactId>
         </dependency>
 
         <!-- modules for testing -->
@@ -130,7 +99,7 @@
         <module>logger-logback</module>
         <module>logger-log4j-1</module>
         <module>logger-log4j-2</module>
-        <module>logger-tools</module>
+        <!--module>logger-tools</module-->
     </modules>
 
     <build>

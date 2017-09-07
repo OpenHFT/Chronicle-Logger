@@ -26,28 +26,14 @@ import static org.junit.Assert.assertNotNull;
 
 public class ChronicleLoggingConfigTest {
     @Test
-    public void testLoadClasspathVanilla()   {
-        System.setProperty("chronicle.logger.properties", "chronicle.logger.vanilla.properties");
-        assertLoadsValidVanillaConfig();
-    }
-
-    private void assertLoadsValidVanillaConfig() {
-        ChronicleLogConfig config = ChronicleLogConfig.load();
-        assertNotNull("unable to load config", config);
-        assertNotNull("is not a vanilla config", config.getVanillaChronicleConfig());
-        assertEquals(ChronicleLogConfig.FORMAT_BINARY, config.getString(ChronicleLogConfig.KEY_FORMAT));
-    }
-
-    @Test
     public void testLoadClasspathIndexed()   {
-        System.setProperty("chronicle.logger.properties", "chronicle.logger.indexed.properties");
-        assertLoadsValidIndexedConfig();
+        System.setProperty("chronicle.logger.properties", "chronicle.logger.properties");
+        assertLoadsValidConfig();
     }
 
-    private void assertLoadsValidIndexedConfig() {
+    private void assertLoadsValidConfig() {
         ChronicleLogConfig config = ChronicleLogConfig.load();
         assertNotNull("unable to load config", config);
-        assertNotNull("is not a indexed config", config.getIndexedChronicleConfig());
-        assertEquals(ChronicleLogConfig.FORMAT_BINARY, config.getString(ChronicleLogConfig.KEY_FORMAT));
+        assertNotNull("is not a valid config", config.getAppenderConfig());
     }
 }

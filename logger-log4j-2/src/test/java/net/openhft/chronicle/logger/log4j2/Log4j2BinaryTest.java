@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.logger.log4j1;
+package net.openhft.chronicle.logger.log4j2;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
@@ -36,7 +36,7 @@ import java.io.IOException;
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
-public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
+public class Log4j2BinaryTest extends Log4j2TestBase {
 
     @After
     public void tearDown() {
@@ -44,7 +44,25 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
     }
 
     @Test
-    public void testVanillaBinaryAppender() throws IOException {
+    public void testConfig() throws IOException {
+        final String appenderName = "CONF-BINARY-CHRONICLE";
+        final org.apache.logging.log4j.core.Appender appender = getAppender(appenderName);
+
+        assertNotNull(appender);
+        assertEquals(appenderName, appender.getName());
+        assertTrue(appender instanceof BinaryChronicleAppender);
+
+        final BinaryChronicleAppender ba = (BinaryChronicleAppender) appender;
+        assertEquals(128, ba.getChronicleConfig().getBlockSize());
+        assertEquals(256, ba.getChronicleConfig().getBufferCapacity());
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    @Test
+    public void testIndexedAppender() throws IOException {
         final String testId = "binary-chronicle";
         final String threadId = testId + "-th";
         final Logger logger = LoggerFactory.getLogger(testId);

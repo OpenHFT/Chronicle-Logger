@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.logger.log4j1;
+package net.openhft.chronicle.logger.logback;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
@@ -27,16 +27,26 @@ import net.openhft.chronicle.wire.Wire;
 import net.openhft.lang.io.IOTools;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
-public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
+public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
+    @Before
+    public void setup() {
+        System.setProperty(
+                "logback.configurationFile",
+                System.getProperty("resources.path")
+                        + "/logback-chronicle-binary-appender.xml");
+    }
 
     @After
     public void tearDown() {
@@ -44,9 +54,10 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
     }
 
     @Test
-    public void testVanillaBinaryAppender() throws IOException {
+    public void testBinaryAppender() throws IOException {
         final String testId = "binary-chronicle";
         final String threadId = testId + "-th";
+
         final Logger logger = LoggerFactory.getLogger(testId);
 
         Thread.currentThread().setName(threadId);
@@ -65,7 +76,16 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
                     assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                     assertEquals(threadId, wire.read("threadName").text());
                     assertEquals(testId, wire.read("loggerName").text());
-                    assertEquals("level is " + level, wire.read("message").text());
+                    assertEquals("level is {}", wire.read("message").text());
+                    assertTrue(wire.hasMore());
+                    List<Object> args = new ArrayList<>();
+                    assertTrue(wire.hasMore());
+                    wire.read("args").sequence(args, (l, vi) -> {
+                        while (vi.hasNextSequenceItem()) {
+                            l.add(vi.object(Object.class));
+                        }
+                    });
+                    assertEquals(level, args.iterator().next());
                     assertFalse(wire.hasMore());
                 }
             }

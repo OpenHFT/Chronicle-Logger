@@ -171,7 +171,6 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
 
         } else {
             LogLog.error("Attempted to append to closed appender named ["+name+"].");
-            return;
         }
     }
 

@@ -33,21 +33,13 @@ import java.util.Objects;
 
 public final class ChroniTool {
 
-    public static final DateFormat DF = new SimpleDateFormat(ChronicleLog.DEFAULT_DATE_FORMAT);
+    public static final String DEFAULT_DATE_FORMAT = "yyyy.MM.dd-HH:mm:ss.SSS";
+    public static final DateFormat DF = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
 
     // *************************************************************************
     //
     // *************************************************************************
     public static final ChronicleLogReader READER_BINARY = new BinaryProcessor() {
-        private StringWriter writer = new StringWriter();
-
-        @Override
-        public void process(final ChronicleLogEvent event) {
-            writer.getBuffer().setLength(0);
-            System.out.println(asString(event, writer));
-        }
-    };
-    public static final ChronicleLogReader READER_TEXT = new TextProcessor() {
         private StringWriter writer = new StringWriter();
 
         @Override
@@ -147,13 +139,6 @@ public final class ChroniTool {
         @Override
         public void read(final Bytes bytes) {
             process(ChronicleLogHelper.decodeBinary(bytes));
-        }
-    }
-
-    public abstract static class TextProcessor implements ChronicleLogReader, ChronicleLogProcessor {
-        @Override
-        public void read(final Bytes bytes) {
-            process(ChronicleLogHelper.decodeText(bytes));
         }
     }
 }

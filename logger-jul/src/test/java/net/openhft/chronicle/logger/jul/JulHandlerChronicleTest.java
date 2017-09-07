@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.logger.log4j1;
+package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
@@ -28,15 +28,17 @@ import net.openhft.lang.io.IOTools;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
-public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
+public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
     @After
     public void tearDown() {
@@ -44,15 +46,29 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
     }
 
     @Test
-    public void testVanillaBinaryAppender() throws IOException {
-        final String testId = "binary-chronicle";
-        final String threadId = testId + "-th";
-        final Logger logger = LoggerFactory.getLogger(testId);
+    public void testIndexedChronicleConfiguration() throws IOException {
+        setupLogManager("binary-cfg");
+        Logger logger = Logger.getLogger("binary-cfg");
+        assertEquals(Level.INFO, logger.getLevel());
+        assertFalse(logger.getUseParentHandlers());
+        assertNull(logger.getFilter());
+        assertNotNull(logger.getHandlers());
+        assertEquals(1, logger.getHandlers().length);
 
-        Thread.currentThread().setName(threadId);
+        assertEquals(BinaryChronicleHandler.class, logger.getHandlers()[0].getClass());
+    }
+
+    @Test
+    public void testIndexedBinaryAppender() throws IOException {
+        final String testId = "binary-chronicle";
+
+        setupLogManager(testId);
+        Logger logger = Logger.getLogger(testId);
+
+        final String threadId = "thread-" + Thread.currentThread().getId();
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger, level, "level is {}", level);
+            log(logger, level, "level is {0}", level);
         }
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
@@ -65,7 +81,16 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
                     assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                     assertEquals(threadId, wire.read("threadName").text());
                     assertEquals(testId, wire.read("loggerName").text());
-                    assertEquals("level is " + level, wire.read("message").text());
+                    assertEquals("level is {0}", wire.read("message").text());
+                    assertTrue(wire.hasMore());
+                    List<Object> args = new ArrayList<>();
+                    assertTrue(wire.hasMore());
+                    wire.read("args").sequence(args, (l, vi) -> {
+                        while (vi.hasNextSequenceItem()) {
+                            l.add(vi.object(Object.class));
+                        }
+                    });
+                    assertEquals(level, args.iterator().next());
                     assertFalse(wire.hasMore());
                 }
             }
@@ -74,8 +99,8 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
                 assertNull(wire);
             }
 
-            logger.debug("Throwable test 1", new UnsupportedOperationException());
-            logger.debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
+            logger.log(Level.FINE, "Throwable test 1", new UnsupportedOperationException());
+            logger.log(Level.FINE, "Throwable test 2", new UnsupportedOperationException("Exception message"));
 
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
@@ -111,6 +136,8 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
             }
 
         }
+
+
         IOTools.deleteDir(basePath(testId));
     }
 
@@ -118,4 +145,5 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
     private static SingleChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueueBuilder.single(basePath(testId)).build();
     }
+
 }
