@@ -29,13 +29,14 @@ import net.openhft.lang.io.IOTools;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
@@ -124,7 +125,6 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
     // *************************************************************************
 
     @Test
-    @Ignore
     public void testLogging() throws IOException {
         final String testId = "readwrite";
         final String threadId = testId + "-th";
@@ -132,7 +132,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
 
         IOTools.deleteDir(basePath(testId));
 
-        //Thread.currentThread().setName(threadId);
+        Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
             log(logger, level, "level is {}", level);
@@ -150,7 +150,16 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
                         assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                         assertEquals(threadId, wire.read("threadName").text());
                         assertEquals(testId, wire.read("loggerName").text());
-                        assertEquals("level is " + level.toString(), wire.read("message").text());
+                        assertEquals("level is {}", wire.read("message").text());
+                        assertTrue(wire.hasMore());
+                        List<Object> args = new ArrayList<>();
+                        assertTrue(wire.hasMore());
+                        wire.read("args").sequence(args, (l, vi) -> {
+                            while (vi.hasNextSequenceItem()) {
+                                l.add(vi.object(Object.class));
+                            }
+                        });
+                        assertEquals(level, args.iterator().next());
                         assertFalse(wire.hasMore());
                     }
                 }

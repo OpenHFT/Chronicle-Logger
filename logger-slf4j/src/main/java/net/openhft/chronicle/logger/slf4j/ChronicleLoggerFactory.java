@@ -22,6 +22,8 @@ import net.openhft.chronicle.logger.*;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.helpers.NOPLogger;
+import org.slf4j.impl.SimpleLogger;
+import org.slf4j.impl.SimpleLoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -89,12 +91,17 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     //
     // *************************************************************************
 
+    private final SimpleLoggerFactory fallback = new SimpleLoggerFactory();
+
     private synchronized Logger doGetLogger(String name) throws IOException {
         Logger logger = loggers.get(name);
         if (logger == null) {
-            final ChronicleLogWriter writer = manager.getWriter(name);
-            logger = new ChronicleLogger(writer, name, manager.cfg().getLevel(name));
-
+            if (name != null && name.startsWith("net.openhft")) {
+                logger = fallback.getLogger(name);
+            } else {
+                final ChronicleLogWriter writer = manager.getWriter(name);
+                logger = new ChronicleLogger(writer, name, manager.cfg().getLevel(name));
+            }
             loggers.put(name, logger);
         }
 
