@@ -24,8 +24,12 @@ import net.openhft.chronicle.wire.WireType;
 import net.openhft.lang.model.constraints.NotNull;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 public class DefaultChronicleLogWriter implements ChronicleLogWriter {
+
+    private static final ThreadLocal<Boolean> REENTRANCY_FLAG = ThreadLocal.withInitial(() -> false);
+    private static final ThreadLocal<SimpleDateFormat> tsFormatter = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
 
     private final ChronicleQueue cq;
 
@@ -57,6 +61,27 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             final String message,
             final Throwable throwable,
             final Object... args) {
+        if (REENTRANCY_FLAG.get()) {
+            if (throwable == null) {
+                System.out.printf("%s|%s|%s|%s|%s%n",
+                        tsFormatter.get().format(timestamp),
+                        level.toString(),
+                        threadName,
+                        loggerName,
+                        message);
+
+            } else {
+                System.out.printf("%s|%s|%s|%s|%s|%s%n",
+                        tsFormatter.get().format(timestamp),
+                        level.toString(),
+                        threadName,
+                        loggerName,
+                        message,
+                        throwable.toString());
+            }
+            return;
+        }
+        REENTRANCY_FLAG.set(true);
         try (final DocumentContext dc = cq.acquireAppender().writingDocument()) {
             Wire wire = dc.wire();
             assert wire != null;
@@ -77,6 +102,8 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
                         vo.object(o);
                 });
             }
+        } finally {
+            REENTRANCY_FLAG.set(false);
         }
     }
 

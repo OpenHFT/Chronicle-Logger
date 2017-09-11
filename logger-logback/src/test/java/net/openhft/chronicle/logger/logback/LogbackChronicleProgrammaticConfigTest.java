@@ -40,21 +40,9 @@ public class LogbackChronicleProgrammaticConfigTest extends LogbackTestBase {
         appender.setContext(context);
         appender.start();
 
-        ConsoleAppender<ILoggingEvent> console = new ConsoleAppender<>();
-        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-        encoder.setPattern("%d %contextName [%t] %level %logger{36} - %msg%n");
-        console.setEncoder(encoder);
-        console.setContext(context);
-        console.start();
-
         Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
         logger.addAppender(appender);
 
-        // this is a must to prevent recursion inside Chronicle Queue trying to log to Chronicle Logger
-        Logger hft = context.getLogger("net.openhft");
-        hft.setLevel(Level.WARN);
-        hft.addAppender(console);
-        hft.setAdditive(false);
         logger.info("Hello World");
     }
 }
