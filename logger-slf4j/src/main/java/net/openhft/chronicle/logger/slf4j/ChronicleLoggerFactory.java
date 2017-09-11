@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.slf4j;
 
-import net.openhft.chronicle.logger.*;
+import net.openhft.chronicle.logger.ChronicleLogManager;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.helpers.NOPLogger;
-import org.slf4j.impl.SimpleLogger;
 import org.slf4j.impl.SimpleLoggerFactory;
 
 import java.io.IOException;

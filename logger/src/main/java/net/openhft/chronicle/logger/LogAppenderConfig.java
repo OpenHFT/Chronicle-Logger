@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger;
 
-import net.openhft.chronicle.queue.ChronicleQueueBuilder;
 import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.ChronicleQueueBuilder;
+import net.openhft.chronicle.wire.WireType;
 import net.openhft.lang.model.constraints.NotNull;
 import net.openhft.lang.model.constraints.Nullable;
 
@@ -38,7 +38,6 @@ public class LogAppenderConfig {
 
     private int blockSize;
     private long bufferCapacity;
-
 
     public LogAppenderConfig() {
     }
@@ -73,8 +72,10 @@ public class LogAppenderConfig {
         return KEYS;
     }
 
-    public ChronicleQueue build(String path) throws IOException {
+    public ChronicleQueue build(String path, String wireType) throws IOException {
+        WireType wireTypeEnum = wireType != null ? WireType.valueOf(wireType.toUpperCase()) : WireType.BINARY_LIGHT;
         return ChronicleQueueBuilder.single(path)
+                .wireType(wireTypeEnum)
                 .blockSize(blockSize)
                 .bufferCapacity(bufferCapacity)
                 .build();

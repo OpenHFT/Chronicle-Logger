@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.Level;
@@ -32,8 +31,8 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class AbstractChronicleAppender
-    extends ContextAwareBase
-    implements Appender<ILoggingEvent> {
+        extends ContextAwareBase
+        implements Appender<ILoggingEvent> {
 
     private final FilterAttachableImpl<ILoggingEvent> filterAttachable;
 
@@ -41,6 +40,7 @@ public abstract class AbstractChronicleAppender
     private boolean started;
 
     private String path;
+    private String wireType;
 
     protected ChronicleLogWriter writer;
 
@@ -49,6 +49,7 @@ public abstract class AbstractChronicleAppender
         this.name = null;
         this.started = false;
         this.path = null;
+        this.wireType = null;
         this.writer = null;
     }
 
@@ -64,11 +65,20 @@ public abstract class AbstractChronicleAppender
         return this.path;
     }
 
+    public String getWireType() {
+        return wireType;
+    }
+
+    public void setWireType(String wireType) {
+        this.wireType = wireType;
+    }
+
     // *************************************************************************
     // Chronicle implementation
     // *************************************************************************
 
     protected abstract ChronicleLogWriter createWriter() throws IOException;
+
     protected abstract void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer);
 
     // *************************************************************************
@@ -112,14 +122,14 @@ public abstract class AbstractChronicleAppender
 
     @Override
     public void start() {
-        if(getPath() == null) {
+        if (getPath() == null) {
             addError("Appender " + getName() + " has configuration errors and is not started!");
 
         } else {
             try {
                 this.writer = createWriter();
                 this.started = true;
-            } catch(IOException e) {
+            } catch (IOException e) {
                 this.writer = null;
                 addError("Appender " + getName() + " " + e.getMessage());
             }
@@ -128,10 +138,10 @@ public abstract class AbstractChronicleAppender
 
     @Override
     public void stop() {
-        if(this.writer != null) {
+        if (this.writer != null) {
             try {
                 this.writer.close();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 addError("Appender " + getName() + " " + e.getMessage());
             }
         }
@@ -151,7 +161,7 @@ public abstract class AbstractChronicleAppender
     // *************************************************************************
 
     public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
-        switch(level.levelInt) {
+        switch (level.levelInt) {
             case Level.DEBUG_INT:
                 return ChronicleLogLevel.DEBUG;
             case Level.TRACE_INT:

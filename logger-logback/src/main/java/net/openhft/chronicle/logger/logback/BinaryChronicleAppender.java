@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -42,7 +41,7 @@ public class BinaryChronicleAppender extends AbstractChronicleAppender {
         this.config = new LogAppenderConfig();
     }
 
-    @DefaultClass(value=LogAppenderConfig.class)
+    @DefaultClass(value = LogAppenderConfig.class)
     public void setChronicleConfig(final LogAppenderConfig config) {
         this.config = config;
     }
@@ -53,7 +52,7 @@ public class BinaryChronicleAppender extends AbstractChronicleAppender {
 
     @Override
     protected ChronicleLogWriter createWriter() throws IOException {
-        return new DefaultChronicleLogWriter(this.config.build(this.getPath()));
+        return new DefaultChronicleLogWriter(this.config.build(this.getPath(), getWireType()));
     }
 
     // *************************************************************************
@@ -85,13 +84,13 @@ public class BinaryChronicleAppender extends AbstractChronicleAppender {
         final ThrowableProxy tp = (ThrowableProxy) event.getThrowableProxy();
 
         writer.write(
-            toChronicleLogLevel(event.getLevel()),
-            event.getTimeStamp(),
-            event.getThreadName(),
-            event.getLoggerName(),
-            event.getMessage(),
-            tp != null ? tp.getThrowable() : null,
-            event.getArgumentArray()
+                toChronicleLogLevel(event.getLevel()),
+                event.getTimeStamp(),
+                event.getThreadName(),
+                event.getLoggerName(),
+                event.getMessage(),
+                tp != null ? tp.getThrowable() : null,
+                event.getArgumentArray()
         );
     }
 }

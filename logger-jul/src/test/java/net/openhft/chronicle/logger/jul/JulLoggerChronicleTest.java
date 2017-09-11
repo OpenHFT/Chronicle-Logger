@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,18 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
-import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ChronicleQueueBuilder;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
+import net.openhft.chronicle.wire.WireType;
 import net.openhft.lang.io.IOTools;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
@@ -56,29 +57,29 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
     // *************************************************************************
 
     @Test
-    public void testIndexedChronicleConfiguration() throws IOException {
+    public void testChronicleConfig() throws IOException {
         testChronicleConfiguration(
                 "logger",
                 ChronicleLogger.class,
-                DefaultChronicleLogWriter.class,
-                Level.FINE);
+                Level.FINE,
+                WireType.BINARY_LIGHT);
         testChronicleConfiguration(
                 "logger_1",
                 ChronicleLogger.class,
-                DefaultChronicleLogWriter.class,
-                Level.INFO);
+                Level.INFO,
+                WireType.JSON);
         testChronicleConfiguration(
                 "logger_bin",
                 ChronicleLogger.class,
-                DefaultChronicleLogWriter.class,
-                Level.FINER);
+                Level.FINER,
+                WireType.BINARY_LIGHT);
     }
 
     private static void testChronicleConfiguration(
             final String loggerId,
             final Class<? extends ChronicleLogger> expectedLoggerType,
-            final Class<? extends ChronicleLogWriter> expectedWriterType,
-            final Level level) throws IOException {
+            final Level level,
+            final WireType wireType) throws IOException {
 
         Logger logger = Logger.getLogger(loggerId);
 
@@ -87,8 +88,8 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
         assertEquals(expectedLoggerType, logger.getClass());
         assertEquals(loggerId, logger.getName());
         assertNotNull(((ChronicleLogger) logger).writer());
-        assertEquals(expectedWriterType, ((ChronicleLogger) logger).writer().getClass());
         assertEquals(level, logger.getLevel());
+        assertEquals(wireType, ((DefaultChronicleLogWriter) ((ChronicleLogger) logger).writer()).getWireType());
     }
 
     // *************************************************************************
@@ -96,14 +97,12 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
     // *************************************************************************
 
     @Test
-    public void testIndexedBinaryAppender() throws IOException {
+    public void testAppender() throws IOException {
         final String testId = "logger_bin";
-        final String basePath = basePath(testId);
 
         Logger logger = Logger.getLogger(testId);
 
         final String threadId = "thread-" + Thread.currentThread().getId();
-        final long timestamp = System.currentTimeMillis();
 
         Thread.currentThread().setName(threadId);
 

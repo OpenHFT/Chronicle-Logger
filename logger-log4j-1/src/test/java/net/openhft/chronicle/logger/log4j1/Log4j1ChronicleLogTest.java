@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
@@ -24,9 +23,11 @@ import net.openhft.chronicle.queue.ChronicleQueueBuilder;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
+import net.openhft.chronicle.wire.WireType;
 import net.openhft.lang.io.IOTools;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ import java.io.IOException;
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
-public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
+public class Log4j1ChronicleLogTest extends Log4j1TestBase {
 
     @After
     public void tearDown() {
@@ -44,7 +45,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
     }
 
     @Test
-    public void testVanillaBinaryAppender() throws IOException {
+    public void testBinaryAppender() throws IOException {
         final String testId = "binary-chronicle";
         final String threadId = testId + "-th";
         final Logger logger = LoggerFactory.getLogger(testId);
@@ -55,7 +56,79 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
             log(logger, level, "level is {}", level);
         }
 
-        try (final ChronicleQueue cq = getChronicleQueue(testId)) {
+        try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.BINARY_LIGHT)) {
+            net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
+            for (ChronicleLogLevel level : LOG_LEVELS) {
+                try (DocumentContext dc = tailer.readingDocument()) {
+                    Wire wire = dc.wire();
+                    assertNotNull("log not found for " + level, wire);
+                    assertTrue(wire.read("ts").int64() <= currentTimeMillis());
+                    assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
+                    assertEquals(threadId, wire.read("threadName").text());
+                    assertEquals(testId, wire.read("loggerName").text());
+                    assertEquals("level is " + level, wire.read("message").text());
+                    assertFalse(wire.hasMore());
+                }
+            }
+            try (DocumentContext dc = tailer.readingDocument()) {
+                Wire wire = dc.wire();
+                assertNull(wire);
+            }
+
+            logger.debug("Throwable test 1", new UnsupportedOperationException());
+            logger.debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
+
+            try (DocumentContext dc = tailer.readingDocument()) {
+                Wire wire = dc.wire();
+                assertNotNull(wire);
+                assertTrue(wire.read("ts").int64() <= currentTimeMillis());
+                assertEquals(ChronicleLogLevel.DEBUG, wire.read("level").asEnum(ChronicleLogLevel.class));
+                assertEquals(threadId, wire.read("threadName").text());
+                assertEquals(testId, wire.read("loggerName").text());
+                assertEquals("Throwable test 1", wire.read("message").text());
+                assertTrue(wire.hasMore());
+                assertTrue(wire.read("throwable").throwable(false) instanceof UnsupportedOperationException);
+                assertFalse(wire.hasMore());
+            }
+
+            try (DocumentContext dc = tailer.readingDocument()) {
+                Wire wire = dc.wire();
+                assertNotNull(wire);
+                assertTrue(wire.read("ts").int64() <= currentTimeMillis());
+                assertEquals(ChronicleLogLevel.DEBUG, wire.read("level").asEnum(ChronicleLogLevel.class));
+                assertEquals(threadId, wire.read("threadName").text());
+                assertEquals(testId, wire.read("loggerName").text());
+                assertEquals("Throwable test 2", wire.read("message").text());
+                assertTrue(wire.hasMore());
+                Throwable throwable = wire.read("throwable").throwable(false);
+                assertTrue(throwable instanceof UnsupportedOperationException);
+                assertEquals("Exception message", throwable.getMessage());
+                assertFalse(wire.hasMore());
+            }
+
+            try (DocumentContext dc = tailer.readingDocument()) {
+                Wire wire = dc.wire();
+                assertNull(wire);
+            }
+
+        }
+        IOTools.deleteDir(basePath(testId));
+    }
+
+    @Test
+    @Ignore
+    public void testJsonAppender() throws IOException {
+        final String testId = "json-chronicle";
+        final String threadId = testId + "-th";
+        final Logger logger = LoggerFactory.getLogger(testId);
+
+        Thread.currentThread().setName(threadId);
+
+        for (ChronicleLogLevel level : LOG_LEVELS) {
+            log(logger, level, "level is {}", level);
+        }
+
+        try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.TEXT)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
             for (ChronicleLogLevel level : LOG_LEVELS) {
                 try (DocumentContext dc = tailer.readingDocument()) {
@@ -115,7 +188,7 @@ public class Log4j1VanillaChronicleTest extends Log4j1TestBase {
     }
 
     @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueueBuilder.single(basePath(testId)).build();
+    private static SingleChronicleQueue getChronicleQueue(String testId, WireType wt) {
+        return ChronicleQueueBuilder.single(basePath(testId)).wireType(wt).build();
     }
 }

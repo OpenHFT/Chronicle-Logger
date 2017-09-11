@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger;
 
 import java.io.File;
@@ -23,30 +22,35 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author lburgazzoli
  * @author dpisklov
- *
- * Configurationn example:
- *
+ * <p>
+ * Configuration example:
+ * <p>
  * # default
  * chronicle.logger.base = ${java.io.tmpdir}/chronicle/${pid}
- *
+ * <p>
  * # logger : root
  * chronicle.logger.root.path      = ${chronicle.logger.base}/root
  * chronicle.logger.root.level     = debug
  * chronicle.logger.root.shortName = false
  * chronicle.logger.root.append    = false
- *
+ * <p>
  * # logger : Logger1
  * chronicle.logger.Logger1.path = ${chronicle.logger.base}/logger_1
  * chronicle.logger.Logger1.level = info
+ * chronicle.logger.Logger1.wireType = json
  */
 public class ChronicleLogConfig {
     public static final String KEY_LEVEL = "level";
     public static final String KEY_PATH = "path";
+    public static final String KEY_WIRETYPE = "wireType";
     public static final String KEY_APPEND = "append";
     public static final String PLACEHOLDER_START = "${";
     public static final String PLACEHOLDER_END = "}";
@@ -58,8 +62,8 @@ public class ChronicleLogConfig {
     private static final String PLACEHOLDER_PID = "${pid}";
 
     private static final List<String> DEFAULT_CFG_LOCATIONS = Arrays.asList(
-        "chronicle-logger.properties",
-        "config/chronicle-logger.properties"
+            "chronicle-logger.properties",
+            "config/chronicle-logger.properties"
     );
 
     private static final String PID = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
@@ -74,14 +78,14 @@ public class ChronicleLogConfig {
 
     public static ChronicleLogConfig load(final Properties properties) {
         return new ChronicleLogConfig(
-            properties,
-            loadAppenderConfig(properties)
+                properties,
+                loadAppenderConfig(properties)
         );
     }
 
     /**
-     * @param cfgPath   the configuration path
-     * @return          the configuration object
+     * @param cfgPath the configuration path
+     * @return the configuration object
      */
     public static ChronicleLogConfig load(String cfgPath) {
         try {
@@ -109,32 +113,32 @@ public class ChronicleLogConfig {
 
         } else {
             System.err.printf(
-                "Unable to configure chronicle-logger:"
-                + " configuration file not found in default locations (%s)"
-                + " or System property (%s) is not defined \n",
-                DEFAULT_CFG_LOCATIONS.toString(),
-                KEY_PROPERTIES_FILE);
+                    "Unable to configure chronicle-logger:"
+                            + " configuration file not found in default locations (%s)"
+                            + " or System property (%s) is not defined \n",
+                    DEFAULT_CFG_LOCATIONS.toString(),
+                    KEY_PROPERTIES_FILE);
         }
 
         return null;
     }
 
     /**
-     * @return  the configuration object
+     * @return the configuration object
      */
     public static ChronicleLogConfig load() {
         try {
             InputStream is = getConfigurationStream(System.getProperty(KEY_PROPERTIES_FILE));
-            if(is == null) {
-                for(String location : DEFAULT_CFG_LOCATIONS) {
+            if (is == null) {
+                for (String location : DEFAULT_CFG_LOCATIONS) {
                     is = getConfigurationStream(location);
-                    if(is != null) {
+                    if (is != null) {
                         break;
                     }
                 }
             }
 
-            if(is != null) {
+            if (is != null) {
                 return load(is);
             }
         } catch (Exception e) {
@@ -147,7 +151,7 @@ public class ChronicleLogConfig {
     }
 
     private static InputStream getConfigurationStream(String cfgPath) throws IOException {
-        if(cfgPath != null) {
+        if (cfgPath != null) {
             final File cfgFile = new File(cfgPath);
             if (!cfgFile.exists()) {
                 return Thread.currentThread().getContextClassLoader().getResourceAsStream(cfgPath);
@@ -224,7 +228,7 @@ public class ChronicleLogConfig {
     }
 
     public String getString(final String loggerName, final String shortName) {
-        String name = KEY_PREFIX  + loggerName + "." + shortName;
+        String name = KEY_PREFIX + loggerName + "." + shortName;
         String val = this.properties.getProperty(name);
 
         if (val == null) {

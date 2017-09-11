@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.jcl;
 
-import net.openhft.chronicle.logger.*;
+import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ChronicleQueueBuilder;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
+import net.openhft.chronicle.wire.WireType;
 import net.openhft.lang.io.IOTools;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -97,21 +98,25 @@ public class JclChronicleLoggerTest extends JclTestBase {
         assertEquals(cl1.level(), ChronicleLogLevel.DEBUG);
         assertEquals(cl1.name(), "jcl-chronicle");
         assertTrue(cl1.writer() instanceof DefaultChronicleLogWriter);
+        assertEquals(WireType.BINARY_LIGHT, ((DefaultChronicleLogWriter) cl1.writer()).getWireType());
 
         ChronicleLogger cl2 = (ChronicleLogger) l2;
         assertEquals(cl2.level(), ChronicleLogLevel.DEBUG);
         assertEquals(cl2.name(), "jcl-chronicle");
         assertTrue(cl2.writer() instanceof DefaultChronicleLogWriter);
+        assertEquals(WireType.BINARY_LIGHT, ((DefaultChronicleLogWriter) cl2.writer()).getWireType());
 
         ChronicleLogger cl3 = (ChronicleLogger) l3;
         assertEquals(cl3.level(), ChronicleLogLevel.INFO);
         assertEquals(cl3.name(), "logger_1");
         assertTrue(cl3.writer() instanceof DefaultChronicleLogWriter);
+        assertEquals(WireType.JSON, ((DefaultChronicleLogWriter) cl3.writer()).getWireType());
 
         ChronicleLogger cl4 = (ChronicleLogger) l4;
         assertEquals(cl4.level(), ChronicleLogLevel.DEBUG);
         assertEquals(cl4.name(), "readwrite");
         assertTrue(cl4.writer() instanceof DefaultChronicleLogWriter);
+        assertEquals(WireType.BINARY_LIGHT, ((DefaultChronicleLogWriter) cl4.writer()).getWireType());
     }
 
     @Test

@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.log4j2;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
@@ -35,13 +34,15 @@ import java.io.IOException;
 public abstract class AbstractChronicleAppender extends AbstractAppender {
 
     private String path;
+    private String wireType;
 
     private ChronicleLogWriter writer;
 
-    AbstractChronicleAppender(String name, Filter filter, String path) {
+    AbstractChronicleAppender(String name, Filter filter, String path, String wireType) {
         super(name, filter, null, true);
 
         this.path = path;
+        this.wireType = wireType;
         this.writer = null;
     }
 
@@ -55,6 +56,14 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
 
     public String getPath() {
         return this.path;
+    }
+
+    public String getWireType() {
+        return wireType;
+    }
+
+    public void setWireType(String wireType) {
+        this.wireType = wireType;
     }
 
     // *************************************************************************

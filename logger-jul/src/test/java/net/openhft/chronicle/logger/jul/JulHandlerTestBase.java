@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.jul;
 
 import java.io.File;
@@ -34,9 +33,9 @@ public class JulHandlerTestBase extends JulTestBase {
 
     protected static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");
-        String sep  = System.getProperty("file.separator");
+        String sep = System.getProperty("file.separator");
 
-        if(!path.endsWith(sep)) {
+        if (!path.endsWith(sep)) {
             path += sep;
         }
 
@@ -48,8 +47,8 @@ public class JulHandlerTestBase extends JulTestBase {
                 + System.getProperty("file.separator")
                 + type;
     }
+
     /**
-     *
      * @param id
      * @throws IOException
      */
@@ -68,8 +67,6 @@ public class JulHandlerTestBase extends JulTestBase {
     // *************************************************************************
     //
     // *************************************************************************
-
-
 
 
 }

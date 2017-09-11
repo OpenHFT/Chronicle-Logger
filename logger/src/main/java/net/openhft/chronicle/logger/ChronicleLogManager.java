@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class ChronicleLogManager {
     }
 
     public void clear() {
-        for(final ChronicleLogWriter writer : writers.values()) {
+        for (final ChronicleLogWriter writer : writers.values()) {
             try {
                 writer.close();
             } catch (IOException e) {
@@ -54,7 +54,7 @@ public class ChronicleLogManager {
         this.writers = new ConcurrentHashMap<>();
     }
 
-    public ChronicleLogWriter getWriter(String name) throws IOException  {
+    public ChronicleLogWriter getWriter(String name) throws IOException {
         if (this.cfg == null) {
             throw new IllegalArgumentException("ChronicleLogManager is not configured");
         }
@@ -76,8 +76,9 @@ public class ChronicleLogManager {
         }
     }
 
-    private ChronicleQueue newChronicle(String path, String name) throws IOException  {
-        ChronicleQueue cq = this.cfg.getAppenderConfig().build(path);
+    private ChronicleQueue newChronicle(String path, String name) throws IOException {
+        final String wireType = cfg.getString(name, ChronicleLogConfig.KEY_WIRETYPE);
+        ChronicleQueue cq = this.cfg.getAppenderConfig().build(path, wireType);
         if (!cfg.getBoolean(name, ChronicleLogConfig.KEY_APPEND, true)) {
             // TODO re-enable when it's implemented. ATM it throws UnsupportedOperationException...
             //cq.clear();

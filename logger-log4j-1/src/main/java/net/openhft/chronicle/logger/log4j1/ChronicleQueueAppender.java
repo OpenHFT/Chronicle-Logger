@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.logger.ChronicleLogWriter;
@@ -24,13 +23,13 @@ import net.openhft.chronicle.logger.LogAppenderConfig;
 
 import java.io.IOException;
 
-public final class BinaryChronicleAppender extends AbstractChronicleAppender {
+public final class ChronicleQueueAppender extends AbstractChronicleAppender {
 
     private boolean includeCallerData;
     private boolean includeMDC;
     private final LogAppenderConfig config;
 
-    public BinaryChronicleAppender() {
+    public ChronicleQueueAppender() {
         this.includeCallerData = true;
         this.includeMDC = true;
         this.config = new LogAppenderConfig();
@@ -66,7 +65,7 @@ public final class BinaryChronicleAppender extends AbstractChronicleAppender {
 
     @Override
     protected ChronicleLogWriter createWriter() throws IOException {
-        return new DefaultChronicleLogWriter(this.config.build(this.getPath()));
+        return new DefaultChronicleLogWriter(this.config.build(this.getPath(), this.getWireType()));
     }
 
     // *************************************************************************

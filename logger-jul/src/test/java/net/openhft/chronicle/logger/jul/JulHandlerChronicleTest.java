@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
@@ -46,7 +45,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
     }
 
     @Test
-    public void testIndexedChronicleConfiguration() throws IOException {
+    public void testConfiguration() throws IOException {
         setupLogManager("binary-cfg");
         Logger logger = Logger.getLogger("binary-cfg");
         assertEquals(Level.INFO, logger.getLevel());
@@ -59,7 +58,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
     }
 
     @Test
-    public void testIndexedBinaryAppender() throws IOException {
+    public void testAppender() throws IOException {
         final String testId = "binary-chronicle";
 
         setupLogManager(testId);

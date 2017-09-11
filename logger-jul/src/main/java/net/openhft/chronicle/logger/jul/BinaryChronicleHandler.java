@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,28 +25,33 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import static net.openhft.chronicle.logger.ChronicleLogConfig.KEY_WIRETYPE;
+
 public class BinaryChronicleHandler extends AbstractChronicleHandler {
 
     public BinaryChronicleHandler() throws IOException {
         ChronicleHandlerConfig handlerCfg = new ChronicleHandlerConfig(getClass());
         String appenderPath = handlerCfg.getString("path", null);
-        LogAppenderConfig appenderCfg = handlerCfg.getIndexedAppenderConfig();
+        LogAppenderConfig appenderCfg = handlerCfg.getAppenderConfig();
 
         setLevel(handlerCfg.getLevel("level", Level.ALL));
         setFilter(handlerCfg.getFilter("filter", null));
 
-        setWriter(new DefaultChronicleLogWriter(appenderCfg.build(appenderPath)));
+        setWriter(new DefaultChronicleLogWriter(appenderCfg.build(
+                appenderPath,
+                handlerCfg.getStringProperty(KEY_WIRETYPE, "BINARY_LIGHT"))
+        ));
     }
 
     @Override
     protected void doPublish(final LogRecord record, final ChronicleLogWriter writer) {
         writer.write(
-            ChronicleHelper.getLogLevel(record),
-            record.getMillis(),
-            "thread-" + record.getThreadID(),
-            record.getLoggerName(),
-            record.getMessage(),
-            record.getThrown(),
-            record.getParameters());
+                ChronicleHelper.getLogLevel(record),
+                record.getMillis(),
+                "thread-" + record.getThreadID(),
+                record.getLoggerName(),
+                record.getMessage(),
+                record.getThrown(),
+                record.getParameters());
     }
 }

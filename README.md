@@ -131,7 +131,7 @@ The chronicle-logger-logback module provides appenders for Logback targeting [Ch
     <!-- ******************************************************************* -->
 
     <appender name  = "BINARY-CHRONICLE"
-              class = "net.openhft.chronicle.logger.log4j1.BinaryChronicleAppender">
+              class = "net.openhft.chronicle.logger.log4j1.ChronicleQueueAppender">
         <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/binary-chronicle"/>
         <param name="includeCallerData" value="false"/>
         <param name="includeMappedDiagnosticContext" value="false"/>

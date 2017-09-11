@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.log4j2;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
@@ -24,9 +23,6 @@ import org.slf4j.Logger;
 
 import java.io.File;
 
-/**
- *
- */
 public class Log4j2TestBase {
 
     // *************************************************************************
@@ -37,9 +33,9 @@ public class Log4j2TestBase {
 
     static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");
-        String sep  = System.getProperty("file.separator");
+        String sep = System.getProperty("file.separator");
 
-        if(!path.endsWith(sep)) {
+        if (!path.endsWith(sep)) {
             path += sep;
         }
 

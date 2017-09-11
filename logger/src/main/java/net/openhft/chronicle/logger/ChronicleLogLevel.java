@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger;
 
 import net.openhft.lang.io.ByteStringAppender;
@@ -87,7 +86,7 @@ public enum ChronicleLogLevel {
      *
      * @param upperCase string of A-Z characters
      * @param other     a {@code CharSequence} to compare
-     * @return          {@code true} if {@code upperCase} and {@code other} equals ignore case
+     * @return {@code true} if {@code upperCase} and {@code other} equals ignore case
      */
     private static boolean fastEqualsIgnoreCase(@NotNull String upperCase, @NotNull CharSequence other) {
         int l;

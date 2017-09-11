@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.log4j2;
 
 import net.openhft.chronicle.logger.ChronicleLogWriter;
@@ -32,18 +31,18 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import java.io.IOException;
 
 @Plugin(
-    name        = "BinaryChronicle",
-    category    = "Core",
-    elementType = "appender",
-    printObject = true)
+        name = "BinaryChronicle",
+        category = "Core",
+        elementType = "appender",
+        printObject = true)
 public class BinaryChronicleAppender extends AbstractChronicleAppender {
 
     private final ChronicleCfg config;
     private boolean includeCallerData;
     private boolean includeMDC;
 
-    public BinaryChronicleAppender(final String name, final Filter filter, final String path, final ChronicleCfg config) {
-        super(name, filter, path);
+    public BinaryChronicleAppender(final String name, final Filter filter, final String path, final String wireType, final ChronicleCfg config) {
+        super(name, filter, path, wireType);
 
         this.includeCallerData = true;
         this.includeMDC = true;
@@ -90,7 +89,7 @@ public class BinaryChronicleAppender extends AbstractChronicleAppender {
 
     @Override
     protected ChronicleLogWriter createWriter() throws IOException {
-        return new DefaultChronicleLogWriter(config.build(getPath()));
+        return new DefaultChronicleLogWriter(config.build(getPath(), getWireType()));
     }
 
     protected LogAppenderConfig getChronicleConfig() {
@@ -103,30 +102,31 @@ public class BinaryChronicleAppender extends AbstractChronicleAppender {
 
     @PluginFactory
     public static BinaryChronicleAppender createAppender(
-        @PluginAttribute("name") final String name,
-        @PluginAttribute("path") final String path,
-        @PluginAttribute("includeCallerData") final String includeCallerData,
-        @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
-        @PluginElement("chronicleCfg") final ChronicleCfg chronicleConfig,
-        @PluginElement("filter") final Filter filter) {
-        if(name == null) {
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("path") final String path,
+            @PluginAttribute("wireType") final String wireType,
+            @PluginAttribute("includeCallerData") final String includeCallerData,
+            @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
+            @PluginElement("chronicleCfg") final ChronicleCfg chronicleConfig,
+            @PluginElement("filter") final Filter filter) {
+        if (name == null) {
             LOGGER.error("No name provided for BinaryChronicleAppender");
             return null;
         }
 
-        if(path == null) {
+        if (path == null) {
             LOGGER.error("No path provided for BinaryChronicleAppender");
             return null;
         }
 
         final BinaryChronicleAppender appender =
-            new BinaryChronicleAppender(name, filter, path, chronicleConfig);
+                new BinaryChronicleAppender(name, filter, path, wireType, chronicleConfig);
 
-        if(includeCallerData != null) {
+        if (includeCallerData != null) {
             appender.setIncludeCallerData("true".equalsIgnoreCase(includeCallerData));
         }
 
-        if(includeMappedDiagnosticContext != null) {
+        if (includeMappedDiagnosticContext != null) {
             appender.setIncludeMappedDiagnosticContext("true".equalsIgnoreCase(includeMappedDiagnosticContext));
         }
 
