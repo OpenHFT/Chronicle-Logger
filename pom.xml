@@ -108,7 +108,7 @@
         <module>logger-logback</module>
         <module>logger-log4j-1</module>
         <module>logger-log4j-2</module>
-        <!--module>logger-tools</module-->
+        <module>logger-tools</module>
     </modules>
 
     <build>

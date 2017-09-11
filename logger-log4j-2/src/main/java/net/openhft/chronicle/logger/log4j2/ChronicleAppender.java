@@ -35,13 +35,13 @@ import java.io.IOException;
         category = "Core",
         elementType = "appender",
         printObject = true)
-public class BinaryChronicleAppender extends AbstractChronicleAppender {
+public class ChronicleAppender extends AbstractChronicleAppender {
 
     private final ChronicleCfg config;
     private boolean includeCallerData;
     private boolean includeMDC;
 
-    public BinaryChronicleAppender(final String name, final Filter filter, final String path, final String wireType, final ChronicleCfg config) {
+    public ChronicleAppender(final String name, final Filter filter, final String path, final String wireType, final ChronicleCfg config) {
         super(name, filter, path, wireType);
 
         this.includeCallerData = true;
@@ -101,7 +101,7 @@ public class BinaryChronicleAppender extends AbstractChronicleAppender {
     // *************************************************************************
 
     @PluginFactory
-    public static BinaryChronicleAppender createAppender(
+    public static ChronicleAppender createAppender(
             @PluginAttribute("name") final String name,
             @PluginAttribute("path") final String path,
             @PluginAttribute("wireType") final String wireType,
@@ -110,17 +110,17 @@ public class BinaryChronicleAppender extends AbstractChronicleAppender {
             @PluginElement("chronicleCfg") final ChronicleCfg chronicleConfig,
             @PluginElement("filter") final Filter filter) {
         if (name == null) {
-            LOGGER.error("No name provided for BinaryChronicleAppender");
+            LOGGER.error("No name provided for ChronicleAppender");
             return null;
         }
 
         if (path == null) {
-            LOGGER.error("No path provided for BinaryChronicleAppender");
+            LOGGER.error("No path provided for ChronicleAppender");
             return null;
         }
 
-        final BinaryChronicleAppender appender =
-                new BinaryChronicleAppender(name, filter, path, wireType, chronicleConfig);
+        final ChronicleAppender appender =
+                new ChronicleAppender(name, filter, path, wireType, chronicleConfig);
 
         if (includeCallerData != null) {
             appender.setIncludeCallerData("true".equalsIgnoreCase(includeCallerData));

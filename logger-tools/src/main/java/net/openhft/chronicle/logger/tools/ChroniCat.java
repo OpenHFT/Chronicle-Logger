@@ -17,61 +17,37 @@
  */
 package net.openhft.chronicle.logger.tools;
 
-import net.openhft.chronicle.ChronicleQueueBuilder;
+import net.openhft.chronicle.wire.WireType;
 
-/**
- *
- */
 public final class ChroniCat {
-
-    // *************************************************************************
-    //
-    // *************************************************************************
 
     public static void main(String[] args) {
         try {
-            boolean indexed = false;
-            boolean binary = true;
-            boolean compressed = true;
-
-            for (int i = 0; i < args.length - 1; i++) {
-                if ("-t".equals(args[i])) {
-                    binary = false;
-
-                } else if ("-i".equals(args[i])) {
-                    indexed = true;
-
-                } else if ("-u".equals(args[i])) {
-                    compressed = false;
-                }
-            }
 
             if (args.length >= 1) {
-                ChroniTool.process(
-                    indexed
-                        ? ChronicleQueueBuilder.indexed(args[args.length - 1])
-                            .useCompressedObjectSerializer(compressed)
-                            .build()
-                        : ChronicleQueueBuilder.vanilla(args[args.length - 1])
-                            .useCompressedObjectSerializer(compressed)
-                            .build(),
-                    binary
-                        ? ChroniTool.READER_BINARY
-                        : ChroniTool.READER_TEXT,
-                    false,
-                    false
-                );
+                int i = 0;
+                final WireType wt;
+                if ("-w".equals(args[i++])) {
+                    wt = WireType.valueOf(args[i++].trim().toUpperCase());
+                } else {
+                    wt = WireType.BINARY_LIGHT;
+                }
+
+                ChronicleLogReader reader = new ChronicleLogReader(args[i].trim(), wt);
+
+                reader.processLogs(ChronicleLogReader::printf, false);
 
             } else {
-                System.err.format("%nUsage: ChroniCat [-t|-i|-u] path");
-                System.err.format("%n  -t = text chronicle, default binary");
-                System.err.format("%n  -u = use uncompressed object serialization, default compressed");
-                System.err.format("%n  -i = IndexedChronicle, default VanillaChronicle");
+                System.err.println("\nUsage: ChroniCat [-w <wireType>] <path>");
+                System.err.println("  <wireType> - wire format, default BINARY_LIGHT");
+                System.err.println("  <path>     - base path of Chronicle Logs storage");
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
     }
 
-    private ChroniCat() {}
+    private ChroniCat() {
+    }
+
 }

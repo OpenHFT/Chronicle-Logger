@@ -32,7 +32,7 @@
     <!-- ******************************************************************* -->
 
     <appender name  = "CONFIG-BINARY-CHRONICLE"
-              class = "net.openhft.chronicle.logger.logback.BinaryChronicleAppender">
+              class = "net.openhft.chronicle.logger.logback.ChronicleAppender">
         <path>${java.io.tmpdir}/chronicle-logback/config-binary-chronicle</path>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>

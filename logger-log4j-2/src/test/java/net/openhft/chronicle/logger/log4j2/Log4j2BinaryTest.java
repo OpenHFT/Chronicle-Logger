@@ -49,9 +49,9 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
 
         assertNotNull(appender);
         assertEquals(appenderName, appender.getName());
-        assertTrue(appender instanceof BinaryChronicleAppender);
+        assertTrue(appender instanceof ChronicleAppender);
 
-        final BinaryChronicleAppender ba = (BinaryChronicleAppender) appender;
+        final ChronicleAppender ba = (ChronicleAppender) appender;
         assertEquals(128, ba.getChronicleConfig().getBlockSize());
         assertEquals(256, ba.getChronicleConfig().getBufferCapacity());
     }

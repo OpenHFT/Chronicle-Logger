@@ -17,12 +17,8 @@
  */
 package net.openhft.chronicle.logger.logback;
 
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.ConsoleAppender;
 import net.openhft.chronicle.logger.LogAppenderConfig;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
@@ -34,7 +30,7 @@ public class LogbackChronicleProgrammaticConfigTest extends LogbackTestBase {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.reset();
 
-        BinaryChronicleAppender appender = new BinaryChronicleAppender();
+        ChronicleAppender appender = new ChronicleAppender();
         appender.setPath(System.getProperty("java.io.tmpdir") + "/clog");
         appender.setChronicleConfig(new LogAppenderConfig());
         appender.setContext(context);

@@ -26,14 +26,14 @@ import net.openhft.chronicle.logger.LogAppenderConfig;
 
 import java.io.IOException;
 
-public class BinaryChronicleAppender extends AbstractChronicleAppender {
+public class ChronicleAppender extends AbstractChronicleAppender {
 
     private boolean includeCallerData;
     private boolean includeMDC;
 
     private LogAppenderConfig config;
 
-    public BinaryChronicleAppender() {
+    public ChronicleAppender() {
         super();
 
         this.includeCallerData = true;

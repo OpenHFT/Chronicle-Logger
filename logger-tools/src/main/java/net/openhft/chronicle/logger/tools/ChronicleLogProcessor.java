@@ -15,27 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.openhft.chronicle.logger;
+package net.openhft.chronicle.logger.tools;
 
-public interface ChronicleLogEvent {
+import net.openhft.chronicle.logger.ChronicleLogLevel;
+import org.jetbrains.annotations.Nullable;
 
-    Object[] EMPTY_ARGS = new Object[]{};
-
-    byte getVersion();
-
-    long getTimeStamp();
-
-    String getThreadName();
-
-    ChronicleLogLevel getLevel();
-
-    String getMessage();
-
-    Object[] getArgumentArray();
-
-    boolean hasArguments();
-
-    String getLoggerName();
-
-    Throwable getThrowable();
+public interface ChronicleLogProcessor {
+    void process(
+            final long timestamp,
+            final ChronicleLogLevel level,
+            final String loggerName,
+            final String threadName,
+            final String message,
+            @Nullable final Throwable throwable,
+            final Object[] args);
 }
