@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import java.io.IOException;
 
 @Plugin(
-        name = "BinaryChronicle",
+        name = "Chronicle",
         category = "Core",
         elementType = "appender",
         printObject = true)

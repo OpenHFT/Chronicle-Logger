@@ -54,7 +54,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
         assertNotNull(logger.getHandlers());
         assertEquals(1, logger.getHandlers().length);
 
-        assertEquals(BinaryChronicleHandler.class, logger.getHandlers()[0].getClass());
+        assertEquals(ChronicleHandler.class, logger.getHandlers()[0].getClass());
     }
 
     @Test

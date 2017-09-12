@@ -44,7 +44,7 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
 
     @Test
     public void testConfig() throws IOException {
-        final String appenderName = "CONF-BINARY-CHRONICLE";
+        final String appenderName = "CONF-CHRONICLE";
         final org.apache.logging.log4j.core.Appender appender = getAppender(appenderName);
 
         assertNotNull(appender);
@@ -62,7 +62,7 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
 
     @Test
     public void testIndexedAppender() throws IOException {
-        final String testId = "binary-chronicle";
+        final String testId = "chronicle";
         final String threadId = testId + "-th";
         final Logger logger = LoggerFactory.getLogger(testId);
 

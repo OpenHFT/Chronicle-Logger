@@ -27,9 +27,9 @@ import java.util.logging.LogRecord;
 
 import static net.openhft.chronicle.logger.ChronicleLogConfig.KEY_WIRETYPE;
 
-public class BinaryChronicleHandler extends AbstractChronicleHandler {
+public class ChronicleHandler extends AbstractChronicleHandler {
 
-    public BinaryChronicleHandler() throws IOException {
+    public ChronicleHandler() throws IOException {
         ChronicleHandlerConfig handlerCfg = new ChronicleHandlerConfig(getClass());
         String appenderPath = handlerCfg.getString("path", null);
         LogAppenderConfig appenderCfg = handlerCfg.getAppenderConfig();
