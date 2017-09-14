@@ -9,6 +9,7 @@ as persistence engine. We feel the logging should not slow down your system.
 ## Contents
 * [Overview](#overview)
 * [How it works](#how-it-works)
+* [Performance](#performance)
 * [Bindings](#bindings)
   * [SLF4j](#chronicle-logger-slf4j)
   * [Logback](#chronicle-logger-logback)
