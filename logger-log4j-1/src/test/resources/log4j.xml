@@ -25,19 +25,9 @@
     <!--                                                                     -->
     <!-- ******************************************************************* -->
 
-    <appender name  = "BINARY-CHRONICLE"
-              class = "net.openhft.chronicle.logger.log4j1.ChronicleQueueAppender">
-        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/binary-chronicle"/>
-        <param name="includeCallerData" value="false"/>
-        <param name="includeMappedDiagnosticContext" value="false"/>
-    </appender>
-
-    <appender name  = "JSON-CHRONICLE"
-              class = "net.openhft.chronicle.logger.log4j1.ChronicleQueueAppender">
-        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/json-chronicle"/>
-        <param name="wireType" value="json"/>
-        <param name="includeCallerData" value="false"/>
-        <param name="includeMappedDiagnosticContext" value="false"/>
+    <appender name  = "CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.ChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/chronicle"/>
     </appender>
 
     <!-- ******************************************************************* -->
@@ -55,14 +45,9 @@
     <!--                                                                     -->
     <!-- ******************************************************************* -->
 
-    <logger name="binary-chronicle" additivity="false">
+    <logger name="chronicle" additivity="false">
         <level value="trace"/>
-        <appender-ref ref="BINARY-CHRONICLE"/>
-    </logger>
-
-    <logger name="json-chronicle" additivity="false">
-        <level value="info"/>
-        <appender-ref ref="JSON-CHRONICLE"/>
+        <appender-ref ref="CHRONICLE"/>
     </logger>
 
     <logger name="net.openhft" additivity="false">

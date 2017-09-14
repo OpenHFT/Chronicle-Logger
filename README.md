@@ -42,6 +42,25 @@ Chronicle Logger is built on top of Chronicle Queue. It provides multiple loggin
 high throughput synchronous writer. Unlike asynchronous writers, you will always see the last message before
 the application dies, as usually it is the last message that is the most valuable.
 
+## Performance
+
+We have run a benchmark to compare Chronicle Logger with normal file appender of Log4J2 (the quickest of mainstream
+logging frameworks). Results below:
+
+**Benchmark**                           |**Mode**|**Samples**|**Score**|**Score error**|**Units**
+----------------------------------------|:------:|----------:|--------:|--------------:|:-------:
+Chronicle Logger, simple message        |  avgt  |   5       |784.761  |  68.018       | ns/op
+Chronicle Logger, message with Exception|  avgt  |   5       |12801.245|  417.695      | ns/op
+Log4J2, simple message                  |  avgt  |   5       |2427.177 |  454.057      | ns/op
+Log4J2, message with Exception          |  avgt  |   5       |17173.369|  3193.413     | ns/op
+
+Test Hardware:
+```
+Intel Core i7-6700K
+32GB DDR4 RAM
+512GB M.2 PCI-e 3.0 x 4 NVMe SSD
+```
+
 ## Bindings
 
 All config files for bindings support limited variable interpolation where the variables are replaced with the 
@@ -124,7 +143,7 @@ The chronicle-logger-logback module provides appender for Logback: `net.openhft.
 
 ## chronicle-logger-log4j-1
 
-We provide log4j1 appender `net.openhft.chronicle.logger.log4j1.ChronicleQueueAppender`
+We provide log4j1 appender `net.openhft.chronicle.logger.log4j1.ChronicleAppender`
 
 #### Config Example
 
@@ -137,8 +156,10 @@ We provide log4j1 appender `net.openhft.chronicle.logger.log4j1.ChronicleQueueAp
     <!-- ******************************************************************* -->
 
     <appender name  = "CHRONICLE"
-              class = "net.openhft.chronicle.logger.log4j1.ChronicleQueueAppender">
+              class = "net.openhft.chronicle.logger.log4j1.ChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/chronicle"/>
+        <param name="includeCallerData" value="false"/>
+        <param name="includeMappedDiagnosticContext" value="false"/>
     </appender>
 
     <!-- ******************************************************************* -->
@@ -205,6 +226,8 @@ used to tweak underlying Chronicle Queue.
 
         <Chronicle name="CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-chronicle</path>
+            <includeCallerData>false</includeCallerData>
+            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
             <chronicleCfg>
                 <blockSize>128</blockSize>
                 <bufferCapacity>256</bufferCapacity>

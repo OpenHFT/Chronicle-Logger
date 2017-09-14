@@ -46,7 +46,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
 
     @Test
     public void testBinaryAppender() throws IOException {
-        final String testId = "binary-chronicle";
+        final String testId = "chronicle";
         final String threadId = testId + "-th";
         final Logger logger = LoggerFactory.getLogger(testId);
 

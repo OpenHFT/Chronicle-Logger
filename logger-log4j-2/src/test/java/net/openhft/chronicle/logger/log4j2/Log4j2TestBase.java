@@ -78,7 +78,7 @@ public class Log4j2TestBase {
     //
     // *************************************************************************
 
-    org.apache.logging.log4j.core.Appender getAppender(String name) {
+    static org.apache.logging.log4j.core.Appender getAppender(String name) {
         final org.apache.logging.log4j.core.LoggerContext ctx =
                 (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext();
 

@@ -38,37 +38,11 @@ import java.io.IOException;
 public class ChronicleAppender extends AbstractChronicleAppender {
 
     private final ChronicleCfg config;
-    private boolean includeCallerData;
-    private boolean includeMDC;
 
     public ChronicleAppender(final String name, final Filter filter, final String path, final String wireType, final ChronicleCfg config) {
         super(name, filter, path, wireType);
 
-        this.includeCallerData = true;
-        this.includeMDC = true;
-
         this.config = config != null ? config : new ChronicleCfg();
-    }
-
-
-    // *************************************************************************
-    // Custom logging options
-    // *************************************************************************
-
-    public void setIncludeCallerData(boolean logCallerData) {
-        this.includeCallerData = logCallerData;
-    }
-
-    public boolean isIncludeCallerData() {
-        return this.includeCallerData;
-    }
-
-    public void setIncludeMappedDiagnosticContext(boolean logMDC) {
-        this.includeMDC = logMDC;
-    }
-
-    public boolean isIncludeMappedDiagnosticContext() {
-        return this.includeMDC;
     }
 
     // *************************************************************************
@@ -105,8 +79,6 @@ public class ChronicleAppender extends AbstractChronicleAppender {
             @PluginAttribute("name") final String name,
             @PluginAttribute("path") final String path,
             @PluginAttribute("wireType") final String wireType,
-            @PluginAttribute("includeCallerData") final String includeCallerData,
-            @PluginAttribute("includeMappedDiagnosticContext") final String includeMappedDiagnosticContext,
             @PluginElement("chronicleCfg") final ChronicleCfg chronicleConfig,
             @PluginElement("filter") final Filter filter) {
         if (name == null) {
@@ -119,17 +91,6 @@ public class ChronicleAppender extends AbstractChronicleAppender {
             return null;
         }
 
-        final ChronicleAppender appender =
-                new ChronicleAppender(name, filter, path, wireType, chronicleConfig);
-
-        if (includeCallerData != null) {
-            appender.setIncludeCallerData("true".equalsIgnoreCase(includeCallerData));
-        }
-
-        if (includeMappedDiagnosticContext != null) {
-            appender.setIncludeMappedDiagnosticContext("true".equalsIgnoreCase(includeMappedDiagnosticContext));
-        }
-
-        return appender;
+        return new ChronicleAppender(name, filter, path, wireType, chronicleConfig);
     }
 }

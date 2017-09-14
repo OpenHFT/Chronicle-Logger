@@ -23,37 +23,17 @@ import net.openhft.chronicle.logger.LogAppenderConfig;
 
 import java.io.IOException;
 
-public final class ChronicleQueueAppender extends AbstractChronicleAppender {
+public final class ChronicleAppender extends AbstractChronicleAppender {
 
-    private boolean includeCallerData;
-    private boolean includeMDC;
     private final LogAppenderConfig config;
 
-    public ChronicleQueueAppender() {
-        this.includeCallerData = true;
-        this.includeMDC = true;
+    public ChronicleAppender() {
         this.config = new LogAppenderConfig();
     }
 
     // *************************************************************************
     // Custom logging options
     // *************************************************************************
-
-    public void setIncludeCallerData(boolean logCallerData) {
-        this.includeCallerData = logCallerData;
-    }
-
-    public boolean isIncludeCallerData() {
-        return this.includeCallerData;
-    }
-
-    public void setIncludeMappedDiagnosticContext(boolean logMDC) {
-        this.includeMDC = logMDC;
-    }
-
-    public boolean isIncludeMappedDiagnosticContext() {
-        return this.includeMDC;
-    }
 
     public void setBlockSize(int blockSize) {
         config.setBlockSize(blockSize);
