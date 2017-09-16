@@ -7,7 +7,7 @@ An extremely fast java logger. We feel logging should not slow down your system.
 
 #### Contents
 * [Overview](https://github.com/OpenHFT/Chronicle-Logger#overview)
-* [How it works](https://github.com/OpenHFT/Chronicle-Logger#How it works)
+* [How it works](https://github.com/OpenHFT/Chronicle-Logger#how-it-works)
 * [Bindings](https://github.com/OpenHFT/Chronicle-Logger#bindings)
   * [SLF4j](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-slf4j)
   * [Logback](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-logback)
