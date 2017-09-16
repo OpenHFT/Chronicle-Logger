@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
@@ -38,6 +37,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     protected ChronicleLogWriter writer;
 
     private String path;
+    private String wireType;
 
     protected AbstractChronicleAppender() {
         this.path = null;
@@ -52,20 +52,20 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
 
     @Override
     public void activateOptions() {
-        if(path != null) {
+        if (path != null) {
             try {
                 this.writer = createWriter();
             } catch (IOException e) {
-                LogLog.warn("Exception ["+name+"].",e);
+                LogLog.warn("Exception [" + name + "].", e);
             }
         } else {
-            LogLog.warn("path option not set for appender ["+name+"].");
+            LogLog.warn("path option not set for appender [" + name + "].");
         }
     }
 
     @Override
     public void addFilter(Filter newFilter) {
-        if(filter == null) {
+        if (filter == null) {
             filter = newFilter;
 
         } else {
@@ -90,11 +90,19 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         return this.path;
     }
 
+    public void setWireType(String wireType) {
+        this.wireType = wireType;
+    }
+
+    public String getWireType() {
+        return wireType;
+    }
+
     @Override
     protected void finalize() {
         // An appender might be closed then garbage collected. There is no
         // point in closing twice.
-        if(this.writer == null) {
+        if (this.writer == null) {
             LogLog.debug("Finalizing appender named [" + name + "].");
             close();
         }
@@ -122,7 +130,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
 
     @Override
     public synchronized void setErrorHandler(ErrorHandler eh) {
-        if(eh == null) {
+        if (eh == null) {
             // We do not throw exception here since the cause is probably a
             // bad cfg file.
             LogLog.warn("You have tried to set a null error-handler.");
@@ -143,9 +151,9 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
 
     @Override
     public void doAppend(LoggingEvent event) {
-        if(this.writer != null) {
-            for(Filter f = this.filter; f != null;f = f.getNext()) {
-                switch(f.decide(event)) {
+        if (this.writer != null) {
+            for (Filter f = this.filter; f != null; f = f.getNext()) {
+                switch (f.decide(event)) {
                     case Filter.DENY:
                         return;
                     case Filter.ACCEPT:
@@ -156,22 +164,21 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
 
             Throwable throwable = null;
             ThrowableInformation ti = event.getThrowableInformation();
-            if(ti != null) {
+            if (ti != null) {
                 throwable = ti.getThrowable();
             }
 
             writer.write(
-                toChronicleLogLevel(event.getLevel()),
-                event.getTimeStamp(),
-                event.getThreadName(),
-                event.getLoggerName(),
-                event.getMessage().toString(),
-                throwable
+                    toChronicleLogLevel(event.getLevel()),
+                    event.getTimeStamp(),
+                    event.getThreadName(),
+                    event.getLoggerName(),
+                    event.getMessage().toString(),
+                    throwable
             );
 
         } else {
-            LogLog.error("Attempted to append to closed appender named ["+name+"].");
-            return;
+            LogLog.error("Attempted to append to closed appender named [" + name + "].");
         }
     }
 
@@ -187,10 +194,10 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
 
     @Override
     public void close() {
-        if(this.writer != null) {
+        if (this.writer != null) {
             try {
                 this.writer.close();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 LogLog.warn("Failed to close the writer", e);
             }
         }
@@ -206,7 +213,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     // *************************************************************************
 
     public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
-        switch(level.toInt()) {
+        switch (level.toInt()) {
             case Level.DEBUG_INT:
                 return ChronicleLogLevel.DEBUG;
             case Level.TRACE_INT:

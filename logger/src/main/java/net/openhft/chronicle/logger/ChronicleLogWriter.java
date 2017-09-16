@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,57 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger;
-
-import net.openhft.chronicle.Chronicle;
 
 import java.io.Closeable;
 
 public interface ChronicleLogWriter extends Closeable {
 
-        Chronicle getChronicle();
+    void write(
+            ChronicleLogLevel level,
+            long timestamp,
+            String threadName,
+            String loggerName,
+            String message);
 
-        void write(
-                ChronicleLogLevel level,
-                long timestamp,
-                String threadName,
-                String loggerName,
-                String message);
+    void write(
+            ChronicleLogLevel level,
+            long timestamp,
+            String threadName,
+            String loggerName,
+            String message,
+            Throwable throwable,
+            Object... args);
 
-        void write(
-                ChronicleLogLevel level,
-                long timestamp,
-                String threadName,
-                String loggerName,
-                String message,
-                Throwable throwable);
-
-        void write(
-                ChronicleLogLevel level,
-                long timestamp,
-                String threadName,
-                String loggerName,
-                String message,
-                Throwable throwable,
-                Object arg1);
-
-        void write(
-                ChronicleLogLevel level,
-                long timestamp,
-                String threadName,
-                String loggerName,
-                String message,
-                Throwable throwable,
-                Object arg1,
-                Object arg2);
-
-        void write(
-                ChronicleLogLevel level,
-                long timestamp,
-                String threadName,
-                String loggerName,
-                String message,
-                Throwable throwable,
-                Object[] args);
 }

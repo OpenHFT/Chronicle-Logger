@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,9 @@ abstract class AbstractChronicleHandler extends Handler {
 
     @Override
     public void close() throws SecurityException {
-        if(this.writer != null && this.writer.getChronicle() != null) {
+        if (this.writer != null) {
             try {
-                this.writer.getChronicle().close();
+                this.writer.close();
             } catch (IOException e) {
                 // Ignore
             }
@@ -52,7 +52,7 @@ abstract class AbstractChronicleHandler extends Handler {
 
     @Override
     public void publish(final LogRecord record) {
-        if((writer != null) && isLoggable(record)) {
+        if ((writer != null) && isLoggable(record)) {
             doPublish(record, this.writer);
         }
     }
@@ -66,7 +66,7 @@ abstract class AbstractChronicleHandler extends Handler {
     protected final void setWriter(ChronicleLogWriter appender) {
         this.writer = appender;
     }
-    
+
     @Override
     public final void setFilter(Filter newFilter) {
         super.setFilter(newFilter);

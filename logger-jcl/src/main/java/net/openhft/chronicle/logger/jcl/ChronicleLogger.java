@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
  */
 package net.openhft.chronicle.logger.jcl;
 
-import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
 import org.apache.commons.logging.Log;
 
 class ChronicleLogger implements Log {
@@ -27,13 +27,6 @@ class ChronicleLogger implements Log {
     private final ChronicleLogWriter appender;
     private final ChronicleLogLevel level;
 
-    /**
-     * c-tor
-     *
-     * @param writer
-     * @param name
-     * @param level
-     */
     ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
         this.appender = writer;
         this.name = name;
@@ -179,26 +172,26 @@ class ChronicleLogger implements Log {
     }
 
     private void append(ChronicleLogLevel level, String message) {
-        if(level.isHigherOrEqualTo(this.level)) {
+        if (level.isHigherOrEqualTo(this.level)) {
             this.appender.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                this.name,
-                message,
-                null);
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    this.name,
+                    message,
+                    null);
         }
     }
 
     private void append(ChronicleLogLevel level, String message, Throwable throwable) {
-        if(level.isHigherOrEqualTo(this.level)) {
+        if (level.isHigherOrEqualTo(this.level)) {
             this.appender.write(
-                level,
-                System.currentTimeMillis(),
-                Thread.currentThread().getName(),
-                this.name,
-                message,
-                throwable);
+                    level,
+                    System.currentTimeMillis(),
+                    Thread.currentThread().getName(),
+                    this.name,
+                    message,
+                    throwable);
         }
     }
 }

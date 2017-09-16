@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,14 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.logger.ChronicleLogAppenderConfig;
-import net.openhft.chronicle.logger.IndexedLogAppenderConfig;
-import net.openhft.chronicle.logger.VanillaLogAppenderConfig;
+import net.openhft.chronicle.logger.LogAppenderConfig;
 
 import java.util.logging.Filter;
-import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
-import static net.openhft.chronicle.logger.ChronicleLogConfig.*;
+import static net.openhft.chronicle.logger.ChronicleLogConfig.PLACEHOLDER_END;
+import static net.openhft.chronicle.logger.ChronicleLogConfig.PLACEHOLDER_START;
 
 public class ChronicleHandlerConfig {
     private final LogManager manager;
@@ -34,7 +32,7 @@ public class ChronicleHandlerConfig {
 
     public ChronicleHandlerConfig(final Class<?> type) {
         this.manager = LogManager.getLogManager();
-        this.prefix  = type.getName();
+        this.prefix = type.getName();
     }
 
     public String getString(String name, String defaultValue) {
@@ -57,28 +55,12 @@ public class ChronicleHandlerConfig {
         return getFilterProperty(this.prefix + "." + name, defaultValue);
     }
 
-    public Formatter getFormatter(String name, Formatter defaultValue) {
-        return getFormatterProperty(this.prefix + "." + name, defaultValue);
-    }
-
-    public ChronicleLogAppenderConfig getIndexedAppenderConfig() {
-        IndexedLogAppenderConfig cfg = new IndexedLogAppenderConfig();
-        for(final String key : cfg.keys()) {
+    public LogAppenderConfig getAppenderConfig() {
+        LogAppenderConfig cfg = new LogAppenderConfig();
+        for (final String key : cfg.keys()) {
             cfg.setProperty(
-                key,
-                getStringProperty(this.prefix + ".cfg." + key, null)
-            );
-        }
-
-        return cfg;
-    }
-
-    public ChronicleLogAppenderConfig getVanillaAppenderConfig() {
-        VanillaLogAppenderConfig cfg = new VanillaLogAppenderConfig();
-        for(final String key : cfg.keys()) {
-            cfg.setProperty(
-                key,
-                getStringProperty(this.prefix + ".cfg." + key, null)
+                    key,
+                    getStringProperty(this.prefix + ".cfg." + key, null)
             );
         }
 
@@ -154,23 +136,6 @@ public class ChronicleHandlerConfig {
         return l != null ? l : defaultValue;
     }
 
-    Formatter getFormatterProperty(String name, Formatter defaultValue) {
-        String val = getStringProperty(name, null);
-
-        try {
-            if (val != null) {
-                Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(val);
-                return (Formatter) clz.newInstance();
-            }
-        } catch (Exception ex) {
-            // We got one of a variety of exceptions in creating the
-            // class or creating an instance.
-            // Drop through.
-        }
-        // We got an exception.  Return the defaultValue.
-        return defaultValue;
-    }
-
     private String resolvePlaceholder(String placeholder) {
         int startIndex = 0;
         int endIndex = 0;
@@ -188,7 +153,7 @@ public class ChronicleHandlerConfig {
 
                     if (newVal != null) {
                         placeholder = placeholder.replace(
-                            PLACEHOLDER_START + envKey + PLACEHOLDER_END, newVal
+                                PLACEHOLDER_START + envKey + PLACEHOLDER_END, newVal
                         );
 
                         endIndex += newVal.length() - envKey.length() + 3;
