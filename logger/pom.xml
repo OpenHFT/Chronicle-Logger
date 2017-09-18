@@ -30,9 +30,6 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <name>OpenHFT/Chronicle-Logger/logger</name>
-    <modules>
-        <module>../benchmark</module>
-    </modules>
     <artifactId>chronicle-logger</artifactId>
 
     <dependencies>
