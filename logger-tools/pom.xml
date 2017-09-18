@@ -30,7 +30,7 @@
     <modelVersion>4.0.0</modelVersion>
     <name>OpenHFT/Chronicle-Logger/logger-tools</name>
     <artifactId>chronicle-logger-tools</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     
     <dependencyManagement>
         <dependencies>
