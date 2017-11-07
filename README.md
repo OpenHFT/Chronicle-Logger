@@ -159,8 +159,6 @@ We provide log4j1 appender `net.openhft.chronicle.logger.log4j1.ChronicleAppende
     <appender name  = "CHRONICLE"
               class = "net.openhft.chronicle.logger.log4j1.ChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/chronicle"/>
-        <param name="includeCallerData" value="false"/>
-        <param name="includeMappedDiagnosticContext" value="false"/>
     </appender>
 
     <!-- ******************************************************************* -->
@@ -227,8 +225,6 @@ used to tweak underlying Chronicle Queue.
 
         <Chronicle name="CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-chronicle</path>
-            <includeCallerData>false</includeCallerData>
-            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
             <chronicleCfg>
                 <blockSize>128</blockSize>
                 <bufferCapacity>256</bufferCapacity>
