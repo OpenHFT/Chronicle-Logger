@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogManager;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 
@@ -48,16 +47,8 @@ public class ChronicleLoggerManager extends LogManager {
     public Logger getLogger(final String name) {
         try {
             return doGetLogger(name);
-        } catch(Exception e) {
-            System.err.println(
-                new StringBuilder("Unable to initialize chronicle-logger-jul ")
-                    .append("(")
-                    .append(name)
-                    .append(")")
-                    .append("\n  ")
-                    .append(e.getMessage())
-                    .toString()
-            );
+        } catch (Exception e) {
+            System.err.println("Unable to initialize chronicle-logger-jul (" + name + ")\n  " + e.getMessage());
         }
 
         return ChronicleLogger.Null.INSTANCE;
@@ -81,38 +72,12 @@ public class ChronicleLoggerManager extends LogManager {
     private synchronized Logger doGetLogger(String name) throws IOException {
         Logger logger = loggers.get(name);
         if (logger == null) {
-            final ChronicleLogWriter writer = manager.createWriter(name);
-            if(manager.isSimple(name)) {
-                logger = new ChronicleLogger.Text(
-                        writer,
-                        name,
-                        ChronicleLogLevel.WARN);
-
-            } else if(manager.isBinary(name)) {
-                logger = new ChronicleLogger.Binary(
-                        writer,
-                        name,
-                        manager.cfg().getLevel(name));
-
-            } else if(manager.isText(name)) {
-                logger = new ChronicleLogger.Text(
-                        writer,
-                        name,
-                        manager.cfg().getLevel(name));
-            }
-
-            if(logger != null) {
-                loggers.put(name, logger);
-
-            } else {
-                System.err.println(
-                    new StringBuilder("Unable to get a logger for ")
-                            .append("(")
-                            .append(name)
-                            .append(")")
-                        .toString()
-                );
-            }
+            final ChronicleLogWriter writer = manager.getWriter(name);
+            logger = new ChronicleLogger(
+                    writer,
+                    name,
+                    manager.cfg().getLevel(name));
+            loggers.put(name, logger);
         }
 
         return logger;

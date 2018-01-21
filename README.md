@@ -1,205 +1,152 @@
 Chronicle-Logger
 ================
 
-An extremely fast java logger. We feel logging should not slow down your system.
+An extremely fast java logger, using [Chronicle Queue](https://github.com/OpenHFT/Chronicle-Queue) 
+as persistence engine. We feel the logging should not slow down your system.
 
 ![Chronicle](http://openhft.net/wp-content/uploads/2014/07/ChronicleLogger_200px_ver2.png)
 
-#### Contents
-* [Overview](https://github.com/OpenHFT/Chronicle-Logger#overview)
-* [How it works](https://github.com/OpenHFT/Chronicle-Logger#How it works)
-* [Bindings](https://github.com/OpenHFT/Chronicle-Logger#bindings)
-  * [SLF4j](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-slf4j)
-  * [Logback](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-logback)
-  * [Apache log4j 1.2](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-log4j-1)
-  * [Apache log4j 2](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-log4j-2)
-  * [Java Util Logging](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-jul)
-  * [Apache Common Logging](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-jcl)
-* [Tools](https://github.com/OpenHFT/Chronicle-Logger#tools)
+## Contents
+* [Overview](#overview)
+* [How it works](#how-it-works)
+* [Performance](#performance)
+* [Bindings](#bindings)
+  * [SLF4j](#chronicle-logger-slf4j)
+  * [Logback](#chronicle-logger-logback)
+  * [Apache log4j 1.2](#chronicle-logger-log4j-1)
+  * [Apache log4j 2](#chronicle-logger-log4j-2)
+  * [Java Util Logging](#chronicle-logger-jul)
+  * [Apache Common Logging](#chronicle-logger-jcl)
+* [Tools](#tools)
 
-### Overview
-Today most programs require the logging of large amounts of data, especially in trading systems where this is a regulatory requirement. Loggers can affect your system performance, therefore logging is sometimes kept to a minimum, With chronicle we aim to eliminate this added overhead, freeing your system to focus on the business logic.
+## Overview
+Today most programs require the logging of large amounts of data, especially in trading systems where this is a 
+regulatory requirement. Loggers can affect your system performance, therefore logging is sometimes kept to a minimum.
+With Chronicle Logger we aim to minimize logging overhead, freeing your system to focus on the business logic.
 
 Chronicle logger supports most of the standard logging API’s including: 
-  * [SLF4j](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-slf4j)
-  * [Logback](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-logback)
-  * [Apache log4j 1.2](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-log4j-1)
-  * [Apache log4j 2](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-log4j-2)
-  * [Java Util Logging](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-jul)
-  * [Apache Common Logging](https://github.com/OpenHFT/Chronicle-Logger#chronicle-logger-jcl)
+  * [SLF4j](#chronicle-logger-slf4j)
+  * [Logback](#chronicle-logger-logback)
+  * [Apache log4j 1.2](#chronicle-logger-log4j-1)
+  * [Apache log4j 2](#chronicle-logger-log4j-2)
+  * [Java Util Logging](#chronicle-logger-jul)
+  * [Apache Common Logging](#chronicle-logger-jcl)
 
-Chronicle logger is able to aggregate all your logs to a central store. It has built in resilience, so you will never lose messages.
+Chronicle Logger is able to aggregate all your logs to a central store. It has built-in resilience, so you will never
+lose messages.
 
-We also have some very helpfull [tools] (https://github.com/OpenHFT/Chronicle-Logger#tools)
+At the moment, Chronicle Logger only supports binary logs, which is beneficial for write speed but requires extra tools
+to read them. We provide some basic [tools](#tools) for that and an API to develop your own.
 
-### How it works
-Chronicle logger is built on Chronicle Queue. It provides multiple Chronicle Queue adapters and is a low latency, high throughput synchronous writer. Unlike asynchronous writers, you will always see the last message before the application dies.  As the last message is often the most valuable.
+## How it works
+Chronicle Logger is built on top of Chronicle Queue. It provides multiple logging frameworks' adapters and is a low latency,
+high throughput synchronous writer. Unlike asynchronous writers, you will always see the last message before
+the application dies, as usually it is the last message that is the most valuable.
 
-###Bindings
+## Performance
 
-#### chronicle-logger-slf4j
-The chronicle-logger-slf4j is an implementation of SLF4J API > 1.7.x with [Chronicle-Queue](https://github.com/OpenHFT/Chronicle-Queue) as persistence engine.
+We have run a benchmark to compare Chronicle Logger with normal file appender of Log4J2 (the quickest of mainstream
+logging frameworks). Results below:
 
-To configure this sl4j binding you need to specify the location of a properties files (file-system or classpath) via system properties:
+**Benchmark**                           |**Mode**|**Samples**|**Score**|**Score error**|**Units**
+----------------------------------------|:------:|----------:|--------:|--------------:|:-------:
+Chronicle Logger, simple message        |  avgt  |   5       |784.761  |  68.018       | ns/op
+Chronicle Logger, message with Exception|  avgt  |   5       |12801.245|  417.695      | ns/op
+Log4J2, simple message                  |  avgt  |   5       |2427.177 |  454.057      | ns/op
+Log4J2, message with Exception          |  avgt  |   5       |17173.369|  3193.413     | ns/op
+
+Test Hardware:
 ```
--Dchronicle.logger.properties=${pathOfYourPropertiesFile}
+Intel Core i7-6700K
+32GB DDR4 RAM
+512GB M.2 PCI-e 3.0 x 4 NVMe SSD
 ```
 
-The following properties are supported:
+## Bindings
 
- **Property** | **Description**                      | **Values**                       | **Per-Logger**
---------------|--------------------------------------|----------------------------------|----------------
-type          | the type of the underlying Chronicle | indexed, vanilla                 | no
-path          | the base directory of a Chronicle    |                                  | yes
-level         | the default log level                | trace, debug, info, warn, error  | yes
-append        |                                      | true, false                      | yes (if a specific path is defined)
-format        | write log as text or binary          | binary, text                     | yes (if a specific path is defined)
-dateFormat    | the date format for text loggers     |                                  | no 
+All config files for bindings support limited variable interpolation where the variables are replaced with the 
+corresponding values from the same configuration file or the system properties. We have one predefined variable, `pid`,
+so `${pid}`  will replaced by current process id. System properties have the precedence in placeholder replacement 
+so they can be overriden.
 
-The default configuration is build using properties with chronicle.logger.root as prefix but you can also set per-logger settings i.e. chronicle.logger.L1, an example:
+The following can be configured for each logger:
 
+ **Property** | **Description**                          | **Values**                       | **Per-Logger**
+--------------|------------------------------------------|----------------------------------|----------------
+path          | the base directory of a Chronicle        |                                  | yes
+level         | default log level                        | trace, debug, info, warn, error  | yes
+
+Additionally, underlying Chronicle Queue can be tweaked by providing the following optional config properties:
+
+* `bufferCapacity`
+* `blockSize`
+
+If set, these will override the default Chronicle Queue configuration. _Use with caution!_
+
+#### Please Note
+  * Loggers are not hierarchically grouped so `my.domain.package.MyClass1` and `my.domain` are two distinct entities.
+  * The `path` is used to track the underlying Chronicle Queue so having two loggers configured with the same `path` is unsupported
+
+### chronicle-logger-slf4j
+The chronicle-logger-slf4j is an implementation of SLF4J API > 1.7.x.
+
+To configure this sl4j binding you need to specify the location of a properties files (file-system or classpath) 
+via system properties:
+```
+-Dchronicle.logger.properties=${pathToYourPropertiesFile}
+```
+
+Alternatively, you could use one of the default locations: `chronicle-logger.properties` 
+or `config/chronicle-logger.properties` located in the classpath.
+
+The default configuration is build using properties with `chronicle.logger.root` as prefix but you can also set 
+per-logger settings i.e. `chronicle.logger.L1.*`
+
+##### Config Example
 ```properties
 # shared properties
-chronicle.base                        = ${java.io.tmpdir}/chronicle/${today}/${pid}
+chronicle.base                        = ${java.io.tmpdir}/chronicle-logs/${pid}
 
 # logger : default
-chronicle.logger.root.type            = vanilla
 chronicle.logger.root.path            = ${slf4j.chronicle.base}/main
 chronicle.logger.root.level           = debug
-chronicle.logger.root.shortName       = false
-chronicle.logger.root.append          = false
-chronicle.logger.root.format          = binary
 
-# logger : L1 (binary)
+# optional tweaks
+chronicle.logger.root.cfg.bufferCapacity = 128
+chronicle.logger.root.cfg.blockSize      = 256
+
+# logger : L1
 chronicle.logger.L1.path              = ${slf4j.chronicle.base}/L1
 chronicle.logger.L1.level             = info
 
-# logger : T1 (text)
-chronicle.logger.T1.path              = ${slf4j.chronicle.base}/T1
-chronicle.logger.T1.level             = debug
-chronicle.logger.T1.format            = text
-chronicle.logger.T1.dateFormat        = yyyyMMdd-HHmmss-S
 ```
 
-The configuration of chronicle-slf4j supports variable interpolation where the variables are replaced with the corresponding values from the same configuration file, the system properties and from some predefined values. System properties have the precedence in placeholder replacement so they can be overriden.
+### chronicle-logger-logback
+The chronicle-logger-logback module provides appender for Logback: `net.openhft.chronicle.logger.logback.ChronicleAppender`
 
-Predefined values are:
-  * pid which will replaced by the process id
-  * today which will be replaced by the current date (yyyyMMdd)
+#### Config Example
+  
+```xml
+<appender name  = "ChronicleAppender"
+        class = "net.openhft.chronicle.logger.logback.ChronicleAppender">
+  
+  <!-- Path used by the underlying ChronicleQueue -->
+  <path>${java.io.tmpdir}/ChronicleAppender</path>
 
-
-By default the underlying Chronicle is set up using the default configuration but you can tweak it via chronicle.logger.${name}.cfg prefix where the name after the prefix should be the name of the related ChronicleQueueBuilder setter (depending of the value set for chronicle.logger.${name}.type) i.e:
-
-```properties
-chronicle.logger.root.cfg.indexFileCapacity = 128
-chronicle.logger.root.cfg.dataBlockSize     = 256
-chronicle.logger.root.cfg.synchronous       = true
+  <!--
+  Configure the underlying ChronicleQueue tweaks
+  -->
+  <chronicleConfig>
+      <blockSize>128</blockSize>
+  </chronicleConfig>
+</appender>
 ```
 
-The parameters will change those defined by the default configuration.
-
-
-##Notes
-  * Loggers are not hierarchical grouped so my.domain.package.MyClass1 and my.domain are two distinct entities.
-  * The _path_ is used to track the underlying Chronicle so two loggers configured with the same _path_ will share the same Chronicle  
-
-
-## chronicle-logger-logback
-The chronicle-logger-logback module provides appenders for Logback targeting [Chronicle-Queue](https://github.com/OpenHFT/Chronicle-Queue) as underlying persistence framework:
-
-  * BinaryIndexedChronicleAppender
-  * TextIndexedChronicleAppender
-  * BinaryVanillaChronicleAppender
-  * TextVanillaChronicleAppender
-
-### Configuration
-
-* BinaryIndexedChronicleAppender
-
-  This appender writes log entries to an IndexedChronicle as binary
-  
-  ```xml
-  <appender name  = "BinaryIndexedAppender"
-            class = "net.openhft.chronicle.logger.logback.BinaryIndexedChronicleAppender">
-      
-      <!-- Path used by the underlying IndexedChronicle -->
-      <path>${java.io.tmpdir}/BinaryIndexedAppender</path>
-
-      <!--
-      Configure the underlying IndexedChronicle, for a list of the options have
-      a look at net.openhft.chronicle.ChronicleQueueBuilder 
-      -->
-      <chronicleConfig>
-          <indexFileCapacity>128</indexFileCapacity>
-      </chronicleConfig>
-  </appender>
-  ```
-
-* TextIndexedChronicleAppender
-
-  This appender writes log entries to an IndexedChronicle as text
-
-  ```xml
-  <appender name  = "TextIndexedAppender"
-            class = "net.openhft.chronicle.logger.logback.TextIndexedChronicleAppender">
-      
-      <!-- Path used by the underlying IndexedChronicle -->
-      <path>${java.io.tmpdir}/TextIndexedAppender</path>
-
-      <!--
-      Configure the underlying IndexedChronicle, for a list of the options have
-      a look at net.openhft.chronicle.ChronicleQueueBuilder 
-      -->
-      <chronicleConfig>
-          <indexFileCapacity>128</indexFileCapacity>
-      </chronicleConfig>
-  </appender>
-  ```
-
-* BinaryVanillaChronicleAppender
-
-  This appender writes log entries to a VanillaChronicle as binary
-
-  ```xml
-  <appender name  = "BinaryVanillaAppender"
-            class = "net.openhft.chronicle.logger.logback.BinaryVanillaChronicleAppender">
-
-      <!-- Path used by the underlying VanillaChronicle -->
-      <path>${java.io.tmpdir}/BinaryVanillaAppender</path>
-
-      <!--
-      Configure the underlying VanillaChronicle, for a list of the options have
-      a look at net.openhft.chronicle.ChronicleQueueBuilder 
-      -->
-      <chronicleConfig>
-          <dataCacheCapacity>128</dataCacheCapacity>
-      </chronicleConfig>
-  </appender>
-  ```
-
-* TextVanillaChronicleAppender
-
-  This appender writes log entries to a VanillaChronicle as text
-
-  ```xml
-  <appender name  = "TextVanillaAppender"
-            class = "net.openhft.chronicle.logger.logback.TextVanillaChronicleAppender">
-      
-      <!-- Path used by the underlying VanillaChronicle -->
-      <path>${java.io.tmpdir}/TextVanillaAppender</path>
-
-      <!--
-      Configure the underlying VanillaChronicle, for a list of the options have
-      a look at net.openhft.chronicle.ChronicleQueueBuilder 
-      -->
-      <chronicleConfig>
-          <dataCacheCapacity>128</dataCacheCapacity>
-      </chronicleConfig>
-
-  </appender>
-  ```
-  
 ## chronicle-logger-log4j-1
+
+We provide log4j1 appender `net.openhft.chronicle.logger.log4j1.ChronicleAppender`
+
+#### Config Example
 
 ```xml
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
@@ -209,32 +156,9 @@ The chronicle-logger-logback module provides appenders for Logback targeting [Ch
     <!--                                                                     -->
     <!-- ******************************************************************* -->
 
-    <appender name  = "BINARY-VANILLA-CHRONICLE"
-              class = "net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender">
-        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/binary-vanilla-chronicle"/>
-        <param name="includeCallerData" value="false"/>
-        <param name="includeMappedDiagnosticContext" value="false"/>
-    </appender>
-
-    <appender name  = "TEXT-VANILLA-CHRONICLE"
-              class = "net.openhft.chronicle.logger.log4j1.TextVanillaChronicleAppender">
-        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/text-vanilla-chronicle"/>
-        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
-        <param name="stackTradeDepth" value="3"/>
-    </appender>
-
-    <appender name  = "BINARY-INDEXED-CHRONICLE"
-              class = "net.openhft.chronicle.logger.log4j1.BinaryIndexedChronicleAppender">
-        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/binary-indexed-chronicle"/>
-        <param name="includeCallerData" value="false"/>
-        <param name="includeMappedDiagnosticContext" value="false"/>
-    </appender>
-
-    <appender name  = "TEXT-INDEXED-CHRONICLE"
-              class = "net.openhft.chronicle.logger.log4j1.TextIndexedChronicleAppender">
-        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/text-indexed-chronicle"/>
-        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS"/>
-        <param name="stackTradeDepth" value="3"/>
+    <appender name  = "CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.ChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/chronicle"/>
     </appender>
 
     <!-- ******************************************************************* -->
@@ -252,24 +176,9 @@ The chronicle-logger-logback module provides appenders for Logback targeting [Ch
     <!--                                                                     -->
     <!-- ******************************************************************* -->
 
-    <logger name="binary-vanilla-chronicle" additivity="false">
+    <logger name="chronicle" additivity="false">
         <level value="trace"/>
-        <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
-    </logger>
-
-    <logger name="text-vanilla-chronicle" additivity="false">
-        <level value="trace"/>
-        <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
-    </logger>
-
-    <logger name="binary-indexed-chronicle" additivity="false">
-        <level value="trace"/>
-        <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
-    </logger>
-
-    <logger name="text-indexed-chronicle" additivity="false">
-        <level value="trace"/>
-        <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
+        <appender-ref ref="CHRONICLE"/>
     </logger>
 
     <!-- ******************************************************************* -->
@@ -295,6 +204,11 @@ The chronicle-logger-logback module provides appenders for Logback targeting [Ch
 
 ## chronicle-logger-log4j-2
 
+Use `<Chronicle/>` element in `<appenders/>` to create Chronicle appender. Optional `<chronicleCfg/>` element can be
+used to tweak underlying Chronicle Queue.
+
+#### Config Example
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration packages="net.openhft.chronicle.logger,net.openhft.chronicle.logger.log4j2">
@@ -309,37 +223,13 @@ The chronicle-logger-logback module provides appenders for Logback targeting [Ch
             <PatternLayout pattern="[CHRONOLOGY] [%-5p] %c - %m%n%throwable{none}"/>
         </Console>
 
-        <!-- *************************************************************** -->
-        <!-- VANILLA                                                         -->
-        <!-- *************************************************************** -->
-
-        <BinaryVanillaChronicle name="BINARY-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-vanilla-chronicle</path>
-            <includeCallerData>false</includeCallerData>
-            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-        </BinaryVanillaChronicle>
-
-        <TextVanillaChronicle name="TEXT-VANILLA-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/text-vanilla-chronicle</path>
-            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
-            <stackTraceDepth>3</stackTraceDepth>
-        </TextVanillaChronicle>
-
-        <!-- *************************************************************** -->
-        <!-- INDEXED                                                         -->
-        <!-- *************************************************************** -->
-
-        <BinaryIndexedChronicle name="BINARY-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-indexed-chronicle</path>
-            <includeCallerData>false</includeCallerData>
-            <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
-        </BinaryIndexedChronicle>
-
-        <TextIndexedChronicle name="TEXT-INDEXED-CHRONICLE">
-            <path>${sys:java.io.tmpdir}/chronicle-log4j2/text-indexed-chronicle</path>
-            <dateFormat>yyyy.MM.dd-HH:mm:ss.SSS</dateFormat>
-            <stackTraceDepth>3</stackTraceDepth>
-        </TextIndexedChronicle>
+        <Chronicle name="CHRONICLE">
+            <path>${sys:java.io.tmpdir}/chronicle-log4j2/binary-chronicle</path>
+            <chronicleCfg>
+                <blockSize>128</blockSize>
+                <bufferCapacity>256</bufferCapacity>
+            </chronicleCfg>
+        </Chronicle>
 
     </appenders>
 
@@ -353,26 +243,8 @@ The chronicle-logger-logback module provides appenders for Logback targeting [Ch
             <appender-ref ref="STDOUT"/>
         </root>
 
-        <!-- *************************************************************** -->
-        <!-- VANILLA                                                         -->
-        <!-- *************************************************************** -->
-
-        <logger name="binary-vanilla-chronicle" level="trace" additivity="false">
-            <appender-ref ref="BINARY-VANILLA-CHRONICLE"/>
-        </logger>
-        <logger name="text-vanilla-chronicle" level="trace" additivity="false">
-            <appender-ref ref="TEXT-VANILLA-CHRONICLE"/>
-        </logger>
-
-        <!-- *************************************************************** -->
-        <!-- INDEXED                                                         -->
-        <!-- *************************************************************** -->
-
-        <logger name="binary-indexed-chronicle" level="trace" additivity="false">
-            <appender-ref ref="BINARY-INDEXED-CHRONICLE"/>
-        </logger>
-        <logger name="text-indexed-chronicle" level="trace" additivity="false">
-            <appender-ref ref="TEXT-INDEXED-CHRONICLE"/>
+        <logger name="chronicle" level="trace" additivity="false">
+            <appender-ref ref="CHRONICLE"/>
         </logger>
 
         <!-- *************************************************************** -->
@@ -388,8 +260,12 @@ The chronicle-logger-logback module provides appenders for Logback targeting [Ch
 
 ## chronicle-logger-jul
 
+Use `net.openhft.chronicle.logger.jul.ChronicleHandler` as a handler
+
+#### Config Example
+
 ```properties
-handlers=java.util.logging.ConsoleHandler, net.openhft.chronicle.logger.jul.BinaryVanillaChronicleHandler
+handlers=java.util.logging.ConsoleHandler, net.openhft.chronicle.logger.jul.ChronicleHandler
 
 .level=ALL
 
@@ -399,117 +275,62 @@ java.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter
 net.openhft.level=WARNING
 net.openhft.handlers=java.util.logging.ConsoleHandler
 
-################################################################################
-# BINARY VANILLA
-################################################################################
+net.openhft.chronicle.logger.jul.ChronicleHandler.path = ${java.io.tmpdir}/chronicle-jul
+net.openhft.chronicle.logger.jul.ChronicleHandler.level = ALL
 
-net.openhft.chronicle.logger.jul.BinaryVanillaChronicleHandler.path = ${java.io.tmpdir}/chronicle-jul/vanilla
-net.openhft.chronicle.logger.jul.BinaryVanillaChronicleHandler.level = ALL
-
-binary-vanilla-cfg.level=INFO
-binary-vanilla-cfg.handlers=net.openhft.chronicle.logger.jul.BinaryVanillaChronicleHandler
-binary-vanilla-cfg.useParentHandlers=false
+chronicle.level=INFO
+chronicle.handlers=net.openhft.chronicle.logger.jul.ChronicleHandler
+chronicle.useParentHandlers=false
 ```
 
 ## chronicle-logger-jcl
 
-### Tools
+Similar to slf4j, to configure this binding you need to specify the location of a properties files (file-system or classpath) 
+via system properties:
+```
+-Dchronicle.logger.properties=${pathToYourPropertiesFile}
+```
 
-  * net.openhft.chronicle.logger.tools.ChroniTail
-  ```
-    ChroniTail [-t|-i] path
-        -t = text chronicle, default binary
-        -i = IndexedCronicle, default VanillaChronicle
+Alternatively, you could use one of the default locations: `chronicle-logger.properties` 
+or `config/chronicle-logger.properties` located in the classpath.
 
-    mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniTail" -Dexec.args="..."
-  ```
+#### Config Example
 
-  * net.openhft.chronicle.logger.tools.ChroniCat
-  ```
-      ChroniCat [-t|-i] path
-        -t = text chronicle, default binary
-        -i = IndexedCronicle, default VanillaChronicle
+```properties
 
-      mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniCat" -Dexec.args="..."
-  ```
+chronicle.logger.base             = ${java.io.tmpdir}/chronicle-jcl
+chronicle.logger.root.path        = ${chronicle.logger.base}/root
+chronicle.logger.root.level       = debug
 
-  * net.openhft.chronicle.logger.tools.ChroniGrep
-  ```
-      ChroniCat [-t|-i] regexp1 ... regexpN path
-        -t = text chronicle, default binary
-        -i = IndexedCronicle, default VanillaChronicle
+# logger : Logger1
+chronicle.logger.logger_1.path    = ${chronicle.logger.base}/logger_1
+chronicle.logger.logger_1.level   = info
+```
 
-      mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniCat" -Dexec.args="..."
-  ```
+## Tools
 
-### Writing a simple LogSearch with Groovy and Grape
+* `net.openhft.chronicle.logger.tools.ChroniCat` - tool to dump log contents to STDOUT
+```
+ChroniCat [-w <wireType>] <path>
+    <wireType> - wire format, default BINARY_LIGHT
+    <path>     - base path of Chronicle Logs storage
 
-  * Binary log search
-  ```groovy
-  import net.openhft.chronicle.ChronicleQueueBuilder
-  import net.openhft.chronicle.logger.ChronicleLogProcessor
-  import net.openhft.chronicle.logger.tools.ChroniTool
+mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniCat" -Dexec.args="..."
+```
 
-  @Grapes([
-     @Grab(group='net.openhft', module='chronicle'              , version='3.3.5'),
-     @Grab(group='net.openhft', module='chronicle-logger-tools' , version='1.1.0-SNAPSHOT' ),
-  ])
-  class LogSearch {
-      static def main(String[] args) {
-          try {
-              if(args.length == 1) {
-                  ChroniTool.process(
-                      ChronicleQueueBuilder.vanilla(args[0]).build(),
-                      new ChroniTool.BinaryProcessor() {
-                          @Override
-                          public void process(ChronicleLogEvent event) {
-                              if(event.message =~ '.*n.*') {
-                                  printf("%s => %s\n",ts,msg)
-                              }
-                          }
-                      }
-                      false,
-                      false)
-              }
-          } catch(Exception e) {
-              e.printStackTrace(System.err);
-          }
-      }
-  }
-  ```
+* `net.openhft.chronicle.logger.tools.ChroniTail` - same as ChroniCat but waits for more data, similar to *nix `tail` utility
+```
+ChroniTail [-w <wireType>] <path>
+    <wireType> - wire format, default BINARY_LIGHT
+    <path>     - base path of Chronicle Logs storage
 
-  * Text log search
-  ```groovy
-  import net.openhft.chronicle.ChronicleQueueBuilder
-  import net.openhft.chronicle.logger.ChronicleLogProcessor
-  import net.openhft.chronicle.logger.tools.ChroniTool
+mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniTail" -Dexec.args="..."
+```
 
-  @Grapes([
-     @Grab(group='net.openhft', module='chronicle'             , version='3.3.5'),
-     @Grab(group='net.opemhft', module='chronicle-logger-tools', version='1.1.0-SNAPSHOT' ),
-  ])
-  class LogSearch {
-      static def main(String[] args) {
-          try {
-              if(args.length == 1) {
-                  ChroniTool.process(
-                      ChronicleQueueBuilder.vanilla(args[0]).build(),
-                      new ChroniTool.TextProcessor() {
-                          @Override
-                          public void process(ChronicleLogEvent event) {
-                              if(msg =~ '.*n.*') {
-                                  printf("%s => %s\n",ts,msg)
-                              }
-                          }
-                      }
-                      ChroniTool.binaryReader(processor as ChronicleLogProcessor),
-                      false,
-                      false)
-              }
-          } catch(Exception e) {
-              e.printStackTrace(System.err);
-          }
-      }
-  }
-  ```
+* We also provide generic interface to interact with logs, `net.openhft.chronicle.logger.tools.ChronicleLogReader`,
+allowing arbitrary operations with decoded log lines. Please refer to javadocs.
+
+  
+
+
   
