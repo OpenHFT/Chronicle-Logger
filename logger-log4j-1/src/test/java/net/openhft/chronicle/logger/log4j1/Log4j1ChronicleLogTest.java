@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
@@ -49,7 +51,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
         final String testId = "chronicle";
         final String threadId = testId + "-th";
         final Logger logger = LoggerFactory.getLogger(testId);
-
+        Files.createDirectories(Paths.get(basePath(testId)));
         Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {

@@ -32,6 +32,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -43,8 +45,9 @@ import static org.junit.Assert.*;
 public class JulLoggerChronicleTest extends JulLoggerTestBase {
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         setupLogger(getClass());
+        Files.createDirectories(Paths.get(basePath()));
     }
 
     @After

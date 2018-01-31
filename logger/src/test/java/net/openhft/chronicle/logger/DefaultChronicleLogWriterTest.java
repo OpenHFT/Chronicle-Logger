@@ -25,9 +25,12 @@ import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
 import net.openhft.lang.io.IOTools;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +42,11 @@ public class DefaultChronicleLogWriterTest {
     @After
     public void cleanup() {
         IOTools.deleteDir(basePath());;
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        Files.createDirectories(Paths.get(basePath()));
     }
 
     @Test

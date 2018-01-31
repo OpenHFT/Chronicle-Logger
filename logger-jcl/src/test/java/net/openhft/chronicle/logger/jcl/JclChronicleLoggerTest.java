@@ -43,11 +43,12 @@ import static org.junit.Assert.*;
 public class JclChronicleLoggerTest extends JclTestBase {
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         System.setProperty(
                 "chronicle.logger.properties",
                 "chronicle.logger.properties"
         );
+        Files.createDirectories(Paths.get(basePath()));
     }
 
     @After

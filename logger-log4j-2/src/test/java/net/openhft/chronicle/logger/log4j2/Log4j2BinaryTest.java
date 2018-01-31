@@ -17,6 +17,7 @@
  */
 package net.openhft.chronicle.logger.log4j2;
 
+import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ChronicleQueueBuilder;
@@ -31,9 +32,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class Log4j2BinaryTest extends Log4j2TestBase {
 
@@ -44,6 +51,7 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
 
     @Test
     public void testConfig() throws IOException {
+        assertNotNull(OS.memory());
         final String appenderName = "CONF-CHRONICLE";
         final org.apache.logging.log4j.core.Appender appender = getAppender(appenderName);
 
@@ -62,11 +70,13 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
 
     @Test
     public void testIndexedAppender() throws IOException {
+        assertNotNull(OS.memory());
         final String testId = "chronicle";
         final String threadId = testId + "-th";
         final Logger logger = LoggerFactory.getLogger(testId);
 
         Thread.currentThread().setName(threadId);
+        Files.createDirectories(Paths.get(basePath(testId)));
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
             log(logger, level, "level is {}", level);

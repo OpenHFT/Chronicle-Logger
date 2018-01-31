@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,6 +132,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         final Logger logger = LoggerFactory.getLogger(testId);
 
         IOTools.deleteDir(basePath(testId));
+        Files.createDirectories(Paths.get(basePath(testId)));
 
         Thread.currentThread().setName(threadId);
 
