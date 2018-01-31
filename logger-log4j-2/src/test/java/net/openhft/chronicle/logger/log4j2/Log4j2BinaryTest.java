@@ -17,6 +17,7 @@
  */
 package net.openhft.chronicle.logger.log4j2;
 
+import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ChronicleQueueBuilder;
@@ -50,7 +51,10 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
 
     @Test
     public void testConfig() throws IOException {
+        // needs to be initialised before trying to get the appender, otherwise we end up in a loop
+        final Logger logger = LoggerFactory.getLogger(OS.class);
         final String appenderName = "CONF-CHRONICLE";
+
         final org.apache.logging.log4j.core.Appender appender = getAppender(appenderName);
 
         assertNotNull(appender);
