@@ -34,6 +34,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
@@ -126,6 +128,7 @@ public class JclChronicleLoggerTest extends JclTestBase {
         final Log logger = LogFactory.getLog(testId);
 
         IOTools.deleteDir(basePath(testId));
+        Files.createDirectories(Paths.get(basePath(testId)));
         Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
