@@ -22,7 +22,7 @@
 
     <parent>
         <groupId>net.openhft</groupId>
-        <artifactId>chronicle-logger-parent</artifactId>
+        <artifactId>chronicle-logger</artifactId>
         <version>4.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -32,24 +32,14 @@
     <artifactId>chronicle-logger-jul</artifactId>
     <packaging>bundle</packaging>
     
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>net.openhft</groupId>
-                <artifactId>chronicle-logger</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.openhft</groupId>
-                <artifactId>lang</artifactId>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>chronicle-logger</artifactId>
+            <artifactId>chronicle-logger-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>lang</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

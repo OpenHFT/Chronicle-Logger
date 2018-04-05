@@ -25,7 +25,7 @@ questions.
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>chronicle-logger-parent</artifactId>
+        <artifactId>chronicle-logger</artifactId>
         <groupId>net.openhft</groupId>
         <version>4.0.1-SNAPSHOT</version>
     </parent>
@@ -44,11 +44,6 @@ questions.
         <dependencies>
             <dependency>
                 <groupId>net.openhft</groupId>
-                <artifactId>chronicle-logger</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.openhft</groupId>
                 <artifactId>chronicle-logger-log4j-2</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -58,7 +53,7 @@ questions.
     <dependencies>
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>chronicle-logger</artifactId>
+            <artifactId>chronicle-logger-core</artifactId>
         </dependency>
 
         <dependency>
