@@ -207,6 +207,27 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
                 assertNull(wire);
             }
 
+            logger.warn("Test object", new Object());
+
+            try (DocumentContext dc = tailer.readingDocument()) {
+                Wire wire = dc.wire();
+                assertNotNull(wire);
+                assertTrue(wire.read("ts").int64() <= currentTimeMillis());
+                assertEquals(ChronicleLogLevel.WARN, wire.read("level").asEnum(ChronicleLogLevel.class));
+                assertEquals(threadId, wire.read("threadName").text());
+                assertEquals(testId, wire.read("loggerName").text());
+                assertEquals("Test object", wire.read("message").text());
+                assertTrue(wire.hasMore());
+                List<Object> args = new ArrayList<>();
+                assertTrue(wire.hasMore());
+                wire.read("args").sequence(args, (l, vi) -> {
+                    while (vi.hasNextSequenceItem()) {
+                        l.add(vi.object(Object.class));
+                    }
+                });
+                assertTrue(((String)args.iterator().next()).contains("java.lang.Object@"));
+                assertFalse(wire.hasMore());
+            }
         }
 
     }

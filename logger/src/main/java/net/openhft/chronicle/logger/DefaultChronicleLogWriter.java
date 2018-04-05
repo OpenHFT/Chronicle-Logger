@@ -99,7 +99,11 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             if (args != null && args.length > 0) {
                 wire.write("args").sequence(vo -> {
                     for (Object o : args)
-                        vo.object(o);
+                        try {
+                            vo.object(o);
+                        } catch (IllegalStateException unsupported) {
+                            vo.text(o.toString());
+                        }
                 });
             }
         } finally {
