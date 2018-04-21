@@ -39,6 +39,11 @@ import static org.junit.Assert.*;
 
 public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
+    @NotNull
+    private static SingleChronicleQueue getChronicleQueue(String testId) {
+        return ChronicleQueueBuilder.single(basePath(testId)).build();
+    }
+
     @After
     public void tearDown() {
         IOTools.deleteDir(rootPath());
@@ -136,13 +141,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
         }
 
-
         IOTools.deleteDir(basePath(testId));
-    }
-
-    @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueueBuilder.single(basePath(testId)).build();
     }
 
 }

@@ -50,33 +50,53 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
     // Custom logging options
     // *************************************************************************
 
-    public void setPath(String path) {
-        this.path = path;
+    static ChronicleLogLevel toChronicleLogLevel(final Level level) {
+        if (level.intLevel() == Level.DEBUG.intLevel()) {
+            return ChronicleLogLevel.DEBUG;
+
+        } else if (level.intLevel() == Level.TRACE.intLevel()) {
+            return ChronicleLogLevel.TRACE;
+
+        } else if (level.intLevel() == Level.INFO.intLevel()) {
+            return ChronicleLogLevel.INFO;
+
+        } else if (level.intLevel() == Level.WARN.intLevel()) {
+            return ChronicleLogLevel.WARN;
+
+        } else if (level.intLevel() == Level.ERROR.intLevel()) {
+            return ChronicleLogLevel.ERROR;
+        }
+
+        throw new IllegalArgumentException(level.intLevel() + " not a valid level value");
     }
 
     public String getPath() {
         return this.path;
     }
 
-    public String getWireType() {
-        return wireType;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public void setWireType(String wireType) {
-        this.wireType = wireType;
+    public String getWireType() {
+        return wireType;
     }
 
     // *************************************************************************
     // Chronicle implementation
     // *************************************************************************
 
-    protected abstract ChronicleLogWriter createWriter() throws IOException;
+    public void setWireType(String wireType) {
+        this.wireType = wireType;
+    }
 
-    protected abstract void doAppend(@NotNull final LogEvent event, @NotNull final ChronicleLogWriter writer);
+    protected abstract ChronicleLogWriter createWriter() throws IOException;
 
     // *************************************************************************
     //
     // *************************************************************************
+
+    protected abstract void doAppend(@NotNull final LogEvent event, @NotNull final ChronicleLogWriter writer);
 
     @Override
     public void start() {
@@ -108,35 +128,15 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         super.stop();
     }
 
+    // *************************************************************************
+    //
+    // *************************************************************************
+
     @Override
     public void append(final LogEvent event) {
         if (this.writer != null) {
             doAppend(event, writer);
         }
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    static ChronicleLogLevel toChronicleLogLevel(final Level level) {
-        if (level.intLevel() == Level.DEBUG.intLevel()) {
-            return ChronicleLogLevel.DEBUG;
-
-        } else if (level.intLevel() == Level.TRACE.intLevel()) {
-            return ChronicleLogLevel.TRACE;
-
-        } else if (level.intLevel() == Level.INFO.intLevel()) {
-            return ChronicleLogLevel.INFO;
-
-        } else if (level.intLevel() == Level.WARN.intLevel()) {
-            return ChronicleLogLevel.WARN;
-
-        } else if (level.intLevel() == Level.ERROR.intLevel()) {
-            return ChronicleLogLevel.ERROR;
-        }
-
-        throw new IllegalArgumentException(level.intLevel() + " not a valid level value");
     }
 
     // *************************************************************************

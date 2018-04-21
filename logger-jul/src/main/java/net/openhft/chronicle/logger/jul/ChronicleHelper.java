@@ -31,25 +31,25 @@ class ChronicleHelper {
 
     static {
         julToCHronicleLevelMap = new HashMap<>();
-        julToCHronicleLevelMap.put(Level.ALL     , ChronicleLogLevel.TRACE);
-        julToCHronicleLevelMap.put(Level.FINEST  , ChronicleLogLevel.TRACE);
-        julToCHronicleLevelMap.put(Level.FINER   , ChronicleLogLevel.TRACE);
-        julToCHronicleLevelMap.put(Level.FINE    , ChronicleLogLevel.DEBUG);
-        julToCHronicleLevelMap.put(Level.CONFIG  , ChronicleLogLevel.DEBUG);
-        julToCHronicleLevelMap.put(Level.INFO    , ChronicleLogLevel.INFO);
-        julToCHronicleLevelMap.put(Level.WARNING , ChronicleLogLevel.WARN);
-        julToCHronicleLevelMap.put(Level.SEVERE  , ChronicleLogLevel.ERROR);
+        julToCHronicleLevelMap.put(Level.ALL, ChronicleLogLevel.TRACE);
+        julToCHronicleLevelMap.put(Level.FINEST, ChronicleLogLevel.TRACE);
+        julToCHronicleLevelMap.put(Level.FINER, ChronicleLogLevel.TRACE);
+        julToCHronicleLevelMap.put(Level.FINE, ChronicleLogLevel.DEBUG);
+        julToCHronicleLevelMap.put(Level.CONFIG, ChronicleLogLevel.DEBUG);
+        julToCHronicleLevelMap.put(Level.INFO, ChronicleLogLevel.INFO);
+        julToCHronicleLevelMap.put(Level.WARNING, ChronicleLogLevel.WARN);
+        julToCHronicleLevelMap.put(Level.SEVERE, ChronicleLogLevel.ERROR);
 
         chronicleToJulLevelMap = new HashMap<>();
         chronicleToJulLevelMap.put(ChronicleLogLevel.TRACE, Level.FINER);
         chronicleToJulLevelMap.put(ChronicleLogLevel.DEBUG, Level.FINE);
-        chronicleToJulLevelMap.put(ChronicleLogLevel.INFO , Level.INFO);
-        chronicleToJulLevelMap.put(ChronicleLogLevel.WARN , Level.WARNING);
+        chronicleToJulLevelMap.put(ChronicleLogLevel.INFO, Level.INFO);
+        chronicleToJulLevelMap.put(ChronicleLogLevel.WARN, Level.WARNING);
         chronicleToJulLevelMap.put(ChronicleLogLevel.ERROR, Level.SEVERE);
     }
-    
+
     private ChronicleHelper() {
-        
+
     }
 
     static ChronicleLogLevel getLogLevel(final LogRecord julRecord) {

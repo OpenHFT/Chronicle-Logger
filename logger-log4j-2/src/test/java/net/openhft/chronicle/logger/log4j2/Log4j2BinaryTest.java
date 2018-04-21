@@ -36,18 +36,23 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class Log4j2BinaryTest extends Log4j2TestBase {
+
+    @NotNull
+    private static SingleChronicleQueue getChronicleQueue(String testId) {
+        return ChronicleQueueBuilder.single(basePath(testId)).build();
+    }
 
     @After
     public void tearDown() {
         IOTools.deleteDir(rootPath());
     }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
 
     @Test
     public void testConfig() throws IOException {
@@ -65,10 +70,6 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
         assertEquals(128, ba.getChronicleConfig().getBlockSize());
         assertEquals(256, ba.getChronicleConfig().getBufferCapacity());
     }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
 
     @Test
     public void testIndexedAppender() throws IOException {
@@ -140,10 +141,5 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
 
         }
         IOTools.deleteDir(basePath(testId));
-    }
-
-    @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueueBuilder.single(basePath(testId)).build();
     }
 }

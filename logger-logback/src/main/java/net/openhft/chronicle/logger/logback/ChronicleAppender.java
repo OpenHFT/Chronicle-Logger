@@ -41,13 +41,13 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         this.config = new LogAppenderConfig();
     }
 
+    public LogAppenderConfig getChronicleConfig() {
+        return this.config;
+    }
+
     @DefaultClass(value = LogAppenderConfig.class)
     public void setChronicleConfig(final LogAppenderConfig config) {
         this.config = config;
-    }
-
-    public LogAppenderConfig getChronicleConfig() {
-        return this.config;
     }
 
     @Override
@@ -59,20 +59,20 @@ public class ChronicleAppender extends AbstractChronicleAppender {
     // Custom logging options
     // *************************************************************************
 
-    public void setIncludeCallerData(boolean logCallerData) {
-        this.includeCallerData = logCallerData;
-    }
-
     public boolean isIncludeCallerData() {
         return this.includeCallerData;
     }
 
-    public void setIncludeMappedDiagnosticContext(boolean logMDC) {
-        this.includeMDC = logMDC;
+    public void setIncludeCallerData(boolean logCallerData) {
+        this.includeCallerData = logCallerData;
     }
 
     public boolean isIncludeMappedDiagnosticContext() {
         return this.includeMDC;
+    }
+
+    public void setIncludeMappedDiagnosticContext(boolean logMDC) {
+        this.includeMDC = logMDC;
     }
 
     // *************************************************************************

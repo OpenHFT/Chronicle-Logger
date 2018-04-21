@@ -43,7 +43,7 @@ class ChronicleLogger extends Logger {
         this.writer = writer;
         this.name = name;
         this.level = level;
-        
+
         /*
          * Set level of super class using final method
          */

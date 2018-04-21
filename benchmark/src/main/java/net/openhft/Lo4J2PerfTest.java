@@ -26,7 +26,6 @@
 package net.openhft;
 
 import net.openhft.lang.io.IOTools;
-import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -40,6 +39,33 @@ import java.util.concurrent.TimeUnit;
 public class Lo4J2PerfTest {
     private final Logger chronicleLogger = LoggerFactory.getLogger("perf-chro");
     private final Logger fileLogger = LoggerFactory.getLogger("perf-file");
+
+    public static void main(String[] args) throws RunnerException {
+
+        Options opt = new OptionsBuilder()
+                .include(Lo4J2PerfTest.class.getSimpleName())
+                .warmupIterations(5)
+                .measurementIterations(5)
+                .forks(1)
+                .build();
+
+        new Runner(opt).run();
+
+    }
+
+    private static String rootPath() {
+        // NB:
+        // Be careful if using /tmp - quite often it's mounted as TMPFS, e.g. as RAM disk.
+        // This will nullify the benefits of Chronicle Logger
+        String path = System.getenv("HOME");
+        String sep = System.getProperty("file.separator");
+
+        if (!path.endsWith(sep)) {
+            path += sep;
+        }
+
+        return path + "chronicle-log4j2-bench";
+    }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
@@ -72,32 +98,5 @@ public class Lo4J2PerfTest {
     @TearDown
     public void tearDown() {
         IOTools.deleteDir(rootPath());
-    }
-
-    public static void main(String[] args) throws RunnerException {
-
-        Options opt = new OptionsBuilder()
-                .include(Lo4J2PerfTest.class.getSimpleName())
-                .warmupIterations(5)
-                .measurementIterations(5)
-                .forks(1)
-                .build();
-
-        new Runner(opt).run();
-
-    }
-
-    private static String rootPath() {
-        // NB:
-        // Be careful if using /tmp - quite often it's mounted as TMPFS, e.g. as RAM disk.
-        // This will nullify the benefits of Chronicle Logger
-        String path = System.getenv("HOME");
-        String sep = System.getProperty("file.separator");
-
-        if (!path.endsWith(sep)) {
-            path += sep;
-        }
-
-        return path + "chronicle-log4j2-bench";
     }
 }

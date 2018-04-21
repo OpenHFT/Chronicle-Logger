@@ -24,9 +24,8 @@ import org.slf4j.helpers.MarkerIgnoringBase;
 public final class ChronicleLogger extends MarkerIgnoringBase {
 
     private static final long serialVersionUID = 1L;
-
-    private final ChronicleLogWriter writer;
     protected final ChronicleLogLevel level;
+    private final ChronicleLogWriter writer;
 
     ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
         this.writer = writer;

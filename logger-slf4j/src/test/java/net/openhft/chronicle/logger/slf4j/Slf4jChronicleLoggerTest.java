@@ -48,6 +48,11 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
     //
     // *************************************************************************
 
+    @NotNull
+    private static SingleChronicleQueue getChronicleQueue(String testId) {
+        return ChronicleQueueBuilder.single(basePath(testId)).build();
+    }
+
     @Before
     public void setUp() {
         System.setProperty(
@@ -58,15 +63,15 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         getChronicleLoggerFactory().reload();
     }
 
+    // *************************************************************************
+    //
+    // *************************************************************************
+
     @After
     public void tearDown() {
 
         IOTools.deleteDir(basePath());
     }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
 
     @Test
     public void testLoggerFactory() {
@@ -74,6 +79,10 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
                 StaticLoggerBinder.getSingleton().getLoggerFactory().getClass(),
                 ChronicleLoggerFactory.class);
     }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
 
     @Test
     public void testLogger() {
@@ -120,10 +129,6 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         assertTrue(cl4.getWriter() instanceof DefaultChronicleLogWriter);
         assertEquals(cl4.getName(), "readwrite");
     }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
 
     @Test
     public void testLogging() throws IOException {
@@ -225,15 +230,10 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
                         l.add(vi.object(Object.class));
                     }
                 });
-                assertTrue(((String)args.iterator().next()).contains("java.lang.Object@"));
+                assertTrue(((String) args.iterator().next()).contains("java.lang.Object@"));
                 assertFalse(wire.hasMore());
             }
         }
 
-    }
-
-    @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueueBuilder.single(basePath(testId)).build();
     }
 }

@@ -42,6 +42,11 @@ import static org.junit.Assert.*;
 
 public class JclChronicleLoggerTest extends JclTestBase {
 
+    @NotNull
+    private static SingleChronicleQueue getChronicleQueue(String testId) {
+        return ChronicleQueueBuilder.single(basePath(testId)).build();
+    }
+
     @Before
     public void setUp() throws IOException {
         System.setProperty(
@@ -50,6 +55,10 @@ public class JclChronicleLoggerTest extends JclTestBase {
         );
         Files.createDirectories(Paths.get(basePath()));
     }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
 
     @After
     public void tearDown() {
@@ -67,10 +76,6 @@ public class JclChronicleLoggerTest extends JclTestBase {
                 ChronicleLoggerFactory.class,
                 LogFactory.getFactory().getClass());
     }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
 
     @Test
     public void testLogger() {
@@ -196,12 +201,6 @@ public class JclChronicleLoggerTest extends JclTestBase {
 
         }
 
-
         IOTools.deleteDir(basePath(testId));
-    }
-
-    @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueueBuilder.single(basePath(testId)).build();
     }
 }

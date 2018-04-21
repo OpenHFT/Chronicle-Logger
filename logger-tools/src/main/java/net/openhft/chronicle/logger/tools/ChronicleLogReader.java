@@ -41,7 +41,8 @@ public class ChronicleLogReader {
 
     /**
      * Create reader with default wire type
-     * @param path     the path to Chronicle Logs storage
+     *
+     * @param path the path to Chronicle Logs storage
      */
     public ChronicleLogReader(
             @NotNull String path) {
@@ -56,6 +57,39 @@ public class ChronicleLogReader {
             @NotNull String path,
             @NotNull WireType wireType) {
         cq = ChronicleQueueBuilder.single(path).wireType(wireType).build();
+    }
+
+    /**
+     * Simple {@link ChronicleLogProcessor} implementation. Prints formatted message to stdout
+     */
+    public static void printf(
+            long timestamp,
+            ChronicleLogLevel level,
+            String loggerName,
+            String threadName,
+            String message,
+            @Nullable Throwable throwable,
+            Object[] args) {
+
+        message = MessageFormatter.arrayFormat(message, args).getMessage();
+
+        if (throwable == null) {
+            System.out.printf("%s [%s] [%s] [%s] %s%n",
+                    tsFormat.format(timestamp),
+                    level.toString(),
+                    threadName,
+                    loggerName,
+                    message);
+
+        } else {
+            System.out.printf("%s [%s] [%s] [%s] %s%n%s%n",
+                    tsFormat.format(timestamp),
+                    level.toString(),
+                    threadName,
+                    loggerName,
+                    message,
+                    throwable.toString());
+        }
     }
 
     /**
@@ -98,39 +132,6 @@ public class ChronicleLogReader {
                 Object[] args = argsL.toArray(new Object[argsL.size()]);
                 processor.process(timestamp, level, threadName, loggerName, message, th, args);
             }
-        }
-    }
-
-    /**
-     * Simple {@link ChronicleLogProcessor} implementation. Prints formatted message to stdout
-     */
-    public static void printf(
-            long timestamp,
-            ChronicleLogLevel level,
-            String loggerName,
-            String threadName,
-            String message,
-            @Nullable Throwable throwable,
-            Object[] args) {
-
-        message = MessageFormatter.arrayFormat(message, args).getMessage();
-
-        if (throwable == null) {
-            System.out.printf("%s [%s] [%s] [%s] %s%n",
-                    tsFormat.format(timestamp),
-                    level.toString(),
-                    threadName,
-                    loggerName,
-                    message);
-
-        } else {
-            System.out.printf("%s [%s] [%s] [%s] %s%n%s%n",
-                    tsFormat.format(timestamp),
-                    level.toString(),
-                    threadName,
-                    loggerName,
-                    message,
-                    throwable.toString());
         }
     }
 }

@@ -21,6 +21,9 @@ import net.openhft.chronicle.wire.WireType;
 
 public final class ChroniTail {
 
+    private ChroniTail() {
+    }
+
     public static void main(String[] args) {
         try {
 
@@ -45,8 +48,5 @@ public final class ChroniTail {
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
-    }
-
-    private ChroniTail() {
     }
 }

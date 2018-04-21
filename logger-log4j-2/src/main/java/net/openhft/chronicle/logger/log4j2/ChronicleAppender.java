@@ -49,31 +49,6 @@ public class ChronicleAppender extends AbstractChronicleAppender {
     //
     // *************************************************************************
 
-    @Override
-    public void doAppend(@NotNull final LogEvent event, @NotNull final ChronicleLogWriter writer) {
-        writer.write(
-                toChronicleLogLevel(event.getLevel()),
-                event.getTimeMillis(),
-                event.getThreadName(),
-                event.getLoggerName(),
-                event.getMessage().getFormattedMessage(),
-                event.getThrown()
-        );
-    }
-
-    @Override
-    protected ChronicleLogWriter createWriter() throws IOException {
-        return new DefaultChronicleLogWriter(config.build(getPath(), getWireType()));
-    }
-
-    protected LogAppenderConfig getChronicleConfig() {
-        return this.config;
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
     @PluginFactory
     public static ChronicleAppender createAppender(
             @PluginAttribute("name") final String name,
@@ -92,5 +67,30 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         }
 
         return new ChronicleAppender(name, filter, path, wireType, chronicleConfig);
+    }
+
+    @Override
+    public void doAppend(@NotNull final LogEvent event, @NotNull final ChronicleLogWriter writer) {
+        writer.write(
+                toChronicleLogLevel(event.getLevel()),
+                event.getTimeMillis(),
+                event.getThreadName(),
+                event.getLoggerName(),
+                event.getMessage().getFormattedMessage(),
+                event.getThrown()
+        );
+    }
+
+    @Override
+    protected ChronicleLogWriter createWriter() throws IOException {
+        return new DefaultChronicleLogWriter(config.build(getPath(), getWireType()));
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    protected LogAppenderConfig getChronicleConfig() {
+        return this.config;
     }
 }

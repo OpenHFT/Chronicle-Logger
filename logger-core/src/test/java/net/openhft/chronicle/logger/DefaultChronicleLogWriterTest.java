@@ -22,7 +22,6 @@ import net.openhft.chronicle.queue.ChronicleQueueBuilder;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
-import net.openhft.chronicle.wire.WireType;
 import net.openhft.lang.io.IOTools;
 import org.junit.After;
 import org.junit.Before;
@@ -41,7 +40,8 @@ public class DefaultChronicleLogWriterTest {
 
     @After
     public void cleanup() {
-        IOTools.deleteDir(basePath());;
+        IOTools.deleteDir(basePath());
+        ;
     }
 
     @Before
@@ -75,7 +75,6 @@ public class DefaultChronicleLogWriterTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         try (final ChronicleQueue cq = ChronicleQueueBuilder.single(basePath()).build()) {
             ExcerptTailer tailer = cq.createTailer();

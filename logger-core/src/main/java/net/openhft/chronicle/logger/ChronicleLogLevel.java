@@ -60,27 +60,6 @@ public enum ChronicleLogLevel {
         throw new IllegalArgumentException(levelStr + " not a valid level value");
     }
 
-    public boolean isHigherOrEqualTo(final ChronicleLogLevel presumablyLowerLevel) {
-        return levelInt >= presumablyLowerLevel.levelInt;
-    }
-
-    public void printTo(final ByteStringAppender appender) {
-        appender.append(levelStr);
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    public void writeTo(final RandomDataOutput out) {
-        out.writeByte(ordinal());
-    }
-
-    @Override
-    public String toString() {
-        return levelStr;
-    }
-
     /**
      * Package-private for testing.
      *
@@ -102,5 +81,26 @@ public enum ChronicleLogLevel {
         }
 
         return true;
+    }
+
+    public boolean isHigherOrEqualTo(final ChronicleLogLevel presumablyLowerLevel) {
+        return levelInt >= presumablyLowerLevel.levelInt;
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public void printTo(final ByteStringAppender appender) {
+        appender.append(levelStr);
+    }
+
+    public void writeTo(final RandomDataOutput out) {
+        out.writeByte(ordinal());
+    }
+
+    @Override
+    public String toString() {
+        return levelStr;
     }
 }

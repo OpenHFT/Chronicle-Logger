@@ -41,6 +41,11 @@ import static org.junit.Assert.*;
 
 public class Log4j1ChronicleLogTest extends Log4j1TestBase {
 
+    @NotNull
+    private static SingleChronicleQueue getChronicleQueue(String testId, WireType wt) {
+        return ChronicleQueueBuilder.single(basePath(testId)).wireType(wt).build();
+    }
+
     @After
     public void tearDown() {
         IOTools.deleteDir(rootPath());
@@ -187,10 +192,5 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
 
         }
         IOTools.deleteDir(basePath(testId));
-    }
-
-    @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId, WireType wt) {
-        return ChronicleQueueBuilder.single(basePath(testId)).wireType(wt).build();
     }
 }

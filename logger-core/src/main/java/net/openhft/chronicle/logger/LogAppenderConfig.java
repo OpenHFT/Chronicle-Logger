@@ -46,7 +46,6 @@ public class LogAppenderConfig {
     //
     // *************************************************************************
 
-
     public int getBlockSize() {
         return this.blockSize;
     }
@@ -66,7 +65,6 @@ public class LogAppenderConfig {
     // *************************************************************************
     //
     // *************************************************************************
-
 
     public String[] keys() {
         return KEYS;

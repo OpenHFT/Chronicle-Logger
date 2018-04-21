@@ -49,7 +49,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ChronicleLoggerFactory implements ILoggerFactory {
     private final Map<String, Logger> loggers;
+    private final SimpleLoggerFactory fallback = new SimpleLoggerFactory();
     private ChronicleLogManager manager;
+
+    // *************************************************************************
+    //
+    // *************************************************************************
 
     /**
      * c-tor
@@ -60,7 +65,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     }
 
     // *************************************************************************
-    //
+    // for testing
     // *************************************************************************
 
     /**
@@ -78,19 +83,13 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     }
 
     // *************************************************************************
-    // for testing
+    //
     // *************************************************************************
 
     synchronized void reload() {
         this.loggers.clear();
         this.manager.reload();
     }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    private final SimpleLoggerFactory fallback = new SimpleLoggerFactory();
 
     private synchronized Logger doGetLogger(String name) throws IOException {
         Logger logger = loggers.get(name);

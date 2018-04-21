@@ -41,6 +41,11 @@ import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
 public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
+    @NotNull
+    private static SingleChronicleQueue getChronicleQueue(String testId) {
+        return ChronicleQueueBuilder.single(basePath(testId)).build();
+    }
+
     @Before
     public void setup() {
         System.setProperty(
@@ -134,10 +139,5 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
 
         }
         IOTools.deleteDir(basePath(testId));
-    }
-
-    @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueueBuilder.single(basePath(testId)).build();
     }
 }

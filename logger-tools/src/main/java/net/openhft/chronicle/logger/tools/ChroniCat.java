@@ -21,6 +21,9 @@ import net.openhft.chronicle.wire.WireType;
 
 public final class ChroniCat {
 
+    private ChroniCat() {
+    }
+
     public static void main(String[] args) {
         try {
 
@@ -45,9 +48,6 @@ public final class ChroniCat {
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
-    }
-
-    private ChroniCat() {
     }
 
 }

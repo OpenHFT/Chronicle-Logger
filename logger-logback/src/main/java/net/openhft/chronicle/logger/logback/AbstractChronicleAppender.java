@@ -35,14 +35,11 @@ public abstract class AbstractChronicleAppender
         implements Appender<ILoggingEvent> {
 
     private final FilterAttachableImpl<ILoggingEvent> filterAttachable;
-
+    protected ChronicleLogWriter writer;
     private String name;
     private boolean started;
-
     private String path;
     private String wireType;
-
-    protected ChronicleLogWriter writer;
 
     protected AbstractChronicleAppender() {
         this.filterAttachable = new FilterAttachableImpl<>();
@@ -57,33 +54,50 @@ public abstract class AbstractChronicleAppender
     // Custom logging options
     // *************************************************************************
 
-    public void setPath(String path) {
-        this.path = path;
+    public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
+        switch (level.levelInt) {
+            case Level.DEBUG_INT:
+                return ChronicleLogLevel.DEBUG;
+            case Level.TRACE_INT:
+                return ChronicleLogLevel.TRACE;
+            case Level.INFO_INT:
+                return ChronicleLogLevel.INFO;
+            case Level.WARN_INT:
+                return ChronicleLogLevel.WARN;
+            case Level.ERROR_INT:
+                return ChronicleLogLevel.ERROR;
+            default:
+                throw new IllegalArgumentException(level.levelInt + " not a valid level value");
+        }
     }
 
     public String getPath() {
         return this.path;
     }
 
-    public String getWireType() {
-        return wireType;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public void setWireType(String wireType) {
-        this.wireType = wireType;
+    public String getWireType() {
+        return wireType;
     }
 
     // *************************************************************************
     // Chronicle implementation
     // *************************************************************************
 
-    protected abstract ChronicleLogWriter createWriter() throws IOException;
+    public void setWireType(String wireType) {
+        this.wireType = wireType;
+    }
 
-    protected abstract void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer);
+    protected abstract ChronicleLogWriter createWriter() throws IOException;
 
     // *************************************************************************
     //
     // *************************************************************************
+
+    protected abstract void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer);
 
     @Override
     public String getName() {
@@ -149,31 +163,14 @@ public abstract class AbstractChronicleAppender
         this.started = false;
     }
 
-    @Override
-    public void doAppend(final ILoggingEvent event) {
-        if (getFilterChainDecision(event) != FilterReply.DENY) {
-            doAppend(event, writer);
-        }
-    }
-
     // *************************************************************************
     //
     // *************************************************************************
 
-    public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
-        switch (level.levelInt) {
-            case Level.DEBUG_INT:
-                return ChronicleLogLevel.DEBUG;
-            case Level.TRACE_INT:
-                return ChronicleLogLevel.TRACE;
-            case Level.INFO_INT:
-                return ChronicleLogLevel.INFO;
-            case Level.WARN_INT:
-                return ChronicleLogLevel.WARN;
-            case Level.ERROR_INT:
-                return ChronicleLogLevel.ERROR;
-            default:
-                throw new IllegalArgumentException(level.levelInt + " not a valid level value");
+    @Override
+    public void doAppend(final ILoggingEvent event) {
+        if (getFilterChainDecision(event) != FilterReply.DENY) {
+            doAppend(event, writer);
         }
     }
 }

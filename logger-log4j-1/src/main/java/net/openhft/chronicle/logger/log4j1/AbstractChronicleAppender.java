@@ -24,18 +24,15 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OnlyOnceErrorHandler;
-import org.apache.log4j.spi.*;
 
 import java.io.IOException;
 
 public abstract class AbstractChronicleAppender implements Appender, OptionHandler {
 
+    protected ChronicleLogWriter writer;
     private Filter filter;
     private String name;
     private ErrorHandler errorHandler;
-
-    protected ChronicleLogWriter writer;
-
     private String path;
     private String wireType;
 
@@ -49,6 +46,23 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     // *************************************************************************
     // Custom logging options
     // *************************************************************************
+
+    public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
+        switch (level.toInt()) {
+            case Level.DEBUG_INT:
+                return ChronicleLogLevel.DEBUG;
+            case Level.TRACE_INT:
+                return ChronicleLogLevel.TRACE;
+            case Level.INFO_INT:
+                return ChronicleLogLevel.INFO;
+            case Level.WARN_INT:
+                return ChronicleLogLevel.WARN;
+            case Level.ERROR_INT:
+                return ChronicleLogLevel.ERROR;
+            default:
+                throw new IllegalArgumentException(level.toInt() + " not a valid level value");
+        }
+    }
 
     @Override
     public void activateOptions() {
@@ -73,29 +87,29 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         }
     }
 
-    @Override
-    public void clearFilters() {
-        filter = null;
-    }
-
     // *************************************************************************
     // Custom logging options
     // *************************************************************************
 
-    public void setPath(String path) {
-        this.path = path;
+    @Override
+    public void clearFilters() {
+        filter = null;
     }
 
     public String getPath() {
         return this.path;
     }
 
-    public void setWireType(String wireType) {
-        this.wireType = wireType;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getWireType() {
         return wireType;
+    }
+
+    public void setWireType(String wireType) {
+        this.wireType = wireType;
     }
 
     @Override
@@ -114,21 +128,6 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     }
 
     @Override
-    public Filter getFilter() {
-        return this.filter;
-    }
-
-    @Override
-    public Layout getLayout() {
-        return null;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
     public synchronized void setErrorHandler(ErrorHandler eh) {
         if (eh == null) {
             // We do not throw exception here since the cause is probably a
@@ -141,13 +140,32 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     }
 
     @Override
+    public Filter getFilter() {
+        return this.filter;
+    }
+
+    @Override
+    public Layout getLayout() {
+        return null;
+    }
+
+    @Override
     public void setLayout(Layout layout) {
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     @Override
     public void setName(String name) {
         this.name = name;
     }
+
+    // *************************************************************************
+    // Chronicle implementation
+    // *************************************************************************
 
     @Override
     public void doAppend(LoggingEvent event) {
@@ -183,14 +201,10 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     }
 
     // *************************************************************************
-    // Chronicle implementation
+    //
     // *************************************************************************
 
     protected abstract ChronicleLogWriter createWriter() throws IOException;
-
-    // *************************************************************************
-    //
-    // *************************************************************************
 
     @Override
     public void close() {
@@ -203,29 +217,12 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         }
     }
 
-    @Override
-    public boolean requiresLayout() {
-        return false;
-    }
-
     // *************************************************************************
     //
     // *************************************************************************
 
-    public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
-        switch (level.toInt()) {
-            case Level.DEBUG_INT:
-                return ChronicleLogLevel.DEBUG;
-            case Level.TRACE_INT:
-                return ChronicleLogLevel.TRACE;
-            case Level.INFO_INT:
-                return ChronicleLogLevel.INFO;
-            case Level.WARN_INT:
-                return ChronicleLogLevel.WARN;
-            case Level.ERROR_INT:
-                return ChronicleLogLevel.ERROR;
-            default:
-                throw new IllegalArgumentException(level.toInt() + " not a valid level value");
-        }
+    @Override
+    public boolean requiresLayout() {
+        return false;
     }
 }

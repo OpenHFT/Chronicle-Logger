@@ -32,6 +32,10 @@ public class ChronicleLogManager {
         this.writers = new ConcurrentHashMap<>();
     }
 
+    public static ChronicleLogManager getInstance() {
+        return Holder.INSTANCE;
+    }
+
     public ChronicleLogConfig cfg() {
         return this.cfg;
     }
@@ -76,6 +80,10 @@ public class ChronicleLogManager {
         }
     }
 
+    // *************************************************************************
+    //
+    // *************************************************************************
+
     private ChronicleQueue newChronicle(String path, String name) throws IOException {
         final String wireType = cfg.getString(name, ChronicleLogConfig.KEY_WIRETYPE);
         ChronicleQueue cq = this.cfg.getAppenderConfig().build(path, wireType);
@@ -84,14 +92,6 @@ public class ChronicleLogManager {
             //cq.clear();
         }
         return cq;
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    public static ChronicleLogManager getInstance() {
-        return Holder.INSTANCE;
     }
 
     // *************************************************************************

@@ -60,7 +60,6 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
     public void testSingleThreadLogging1() throws IOException {
         Thread.currentThread().setName("perf-plain");
 
-
         final String testId = "perf-chronicle";
         final Logger clogger = LoggerFactory.getLogger(testId);
         final long items = 1000000;

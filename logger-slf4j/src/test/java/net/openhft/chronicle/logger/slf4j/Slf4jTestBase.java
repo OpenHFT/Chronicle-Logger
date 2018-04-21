@@ -33,7 +33,7 @@ class Slf4jTestBase {
 
     static String basePath() {
         String path = System.getProperty("java.io.tmpdir");
-        String sep  = System.getProperty("file.separator");
+        String sep = System.getProperty("file.separator");
 
         if (!path.endsWith(sep)) {
             path += sep;

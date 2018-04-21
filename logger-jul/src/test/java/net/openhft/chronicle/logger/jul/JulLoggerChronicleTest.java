@@ -44,6 +44,33 @@ import static org.junit.Assert.*;
 
 public class JulLoggerChronicleTest extends JulLoggerTestBase {
 
+    private static void testChronicleConfiguration(
+            final String loggerId,
+            final Class<? extends ChronicleLogger> expectedLoggerType,
+            final Level level,
+            final WireType wireType) throws IOException {
+
+        Logger logger = Logger.getLogger(loggerId);
+
+        assertNotNull(logger);
+        assertTrue(logger instanceof ChronicleLogger);
+        assertEquals(expectedLoggerType, logger.getClass());
+        assertEquals(loggerId, logger.getName());
+        assertNotNull(((ChronicleLogger) logger).writer());
+        assertEquals(level, logger.getLevel());
+        assertEquals(wireType, ((DefaultChronicleLogWriter) ((ChronicleLogger) logger).writer()).getWireType());
+    }
+
+    @NotNull
+    private static SingleChronicleQueue getChronicleQueue(String testId) {
+        return ChronicleQueueBuilder.single(basePath(testId)).build();
+
+    }
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
     @Before
     public void setUp() throws IOException {
         setupLogger(getClass());
@@ -77,27 +104,6 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
                 Level.FINER,
                 WireType.BINARY_LIGHT);
     }
-
-    private static void testChronicleConfiguration(
-            final String loggerId,
-            final Class<? extends ChronicleLogger> expectedLoggerType,
-            final Level level,
-            final WireType wireType) throws IOException {
-
-        Logger logger = Logger.getLogger(loggerId);
-
-        assertNotNull(logger);
-        assertTrue(logger instanceof ChronicleLogger);
-        assertEquals(expectedLoggerType, logger.getClass());
-        assertEquals(loggerId, logger.getName());
-        assertNotNull(((ChronicleLogger) logger).writer());
-        assertEquals(level, logger.getLevel());
-        assertEquals(wireType, ((DefaultChronicleLogWriter) ((ChronicleLogger) logger).writer()).getWireType());
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
 
     @Test
     public void testAppender() throws IOException {
@@ -179,15 +185,7 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
 
         }
 
-
         IOTools.deleteDir(basePath(testId));
     }
-
-    @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueueBuilder.single(basePath(testId)).build();
-
-    }
-
 
 }
