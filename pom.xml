@@ -40,7 +40,7 @@
                 <groupId>net.openhft</groupId>
                 <artifactId>third-party-bom</artifactId>
                 <type>pom</type>
-                <version>3.6.2</version>
+                <version>3.6.3-SNAPSHOT</version>
                 <scope>import</scope>
             </dependency>
 
@@ -52,12 +52,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- apache commons logging -->
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.2</version>
-            </dependency>
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-logger-core</artifactId>
@@ -72,6 +66,11 @@
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-queue</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>annotations</artifactId>
         </dependency>
 
         <!-- modules for testing -->
