@@ -52,6 +52,13 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- apache commons logging -->
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.2</version>
+            </dependency>
+
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-logger-core</artifactId>
