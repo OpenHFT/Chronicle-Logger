@@ -1,24 +1,11 @@
 = Chronicle-Logger
+:toc: manual
+:toc-placement: preamble
 
 An extremely fast java logger, using https://github.com/OpenHFT/Chronicle-Queue[Chronicle Queue] 
 as persistence engine. We feel the logging should not slow down your system.
 
 image::images/Logger_line.png[width=20%]
-
-:toc-placement: preamble
-
-## Contents
-* [Overview](#overview)
-* [How it works](#how-it-works)
-* [Performance](#performance)
-* [Bindings](#bindings)
-  * [SLF4j](#chronicle-logger-slf4j)
-  * [Logback](#chronicle-logger-logback)
-  * [Apache log4j 1.2](#chronicle-logger-log4j-1)
-  * [Apache log4j 2](#chronicle-logger-log4j-2)
-  * [Java Util Logging](#chronicle-logger-jul)
-  * [Apache Common Logging](#chronicle-logger-jcl)
-* [Tools](#tools)
 
 ==== Version
 
@@ -47,13 +34,13 @@ lose messages.
 At the moment, Chronicle Logger only supports binary logs, which is beneficial for write speed but requires extra tools
 to read them. We provide some basic #tools[tools] for that and an API to develop your own.
 
-=== How it works
+== How it works
 
 Chronicle Logger is built on top of Chronicle Queue. It provides multiple logging frameworks' adapters and is a low latency,
 high throughput synchronous writer. Unlike asynchronous writers, you will always see the last message before
 the application dies, as usually it is the last message that is the most valuable.
 
-=== Performance
+== Performance
 
 We have run a benchmark to compare Chronicle Logger with normal file appender of Log4J2 (the quickest of mainstream
 logging frameworks). Results below:
@@ -98,7 +85,7 @@ Additionally, underlying Chronicle Queue can be tweaked by providing the followi
 
 If set, these will override the default Chronicle Queue configuration. _Use with caution!_
 
-==== Please Note
+*Please Note*
 
   * Loggers are not hierarchically grouped so `my.domain.package.MyClass1` and `my.domain` are two distinct entities.
   * The `path` is used to track the underlying Chronicle Queue so having two loggers configured with the same `path` is unsupported
