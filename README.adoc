@@ -21,7 +21,7 @@ With Chronicle Logger we aim to minimize logging overhead, freeing your system t
 
 Chronicle logger supports most of the standard logging API’s including: 
 
-* <<SLF4J, SLF4J>>
+* <<chronicle-logger-slf4j, SLF4J>>
 * <<Logback, Logback>>
 * <<log4j-1, Apache log4j 1.2>>
 * <<log4j-2, Apache log4j 2>>
