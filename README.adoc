@@ -7,7 +7,7 @@ as persistence engine. We feel the logging should not slow down your system.
 
 image::images/Logger_line.png[width=20%]
 
-==== Version
+=== Version
 
 [#image-maven]
 [caption="", link=https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger]
@@ -21,12 +21,12 @@ With Chronicle Logger we aim to minimize logging overhead, freeing your system t
 
 Chronicle logger supports most of the standard logging API’s including: 
 
-* #chronicle-logger-slf4j[SLF4j]
-* #chronicle-logger-logback[Logback]
-* #chronicle-logger-log4j-1[Apache log4j 1.2]
-* #chronicle-logger-log4j-2[Apache log4j 2]
-* #chronicle-logger-jul[Java Util Logging]
-* #chronicle-logger-jcl[Apache Common Logging]
+* <<SLF4J>>
+* <<Logback>>
+* <<log4j-1, Apache log4j 1.2>>
+* <<log4j-2, Apache log4j 2>>
+* <<jul, Java Util Logging>>
+* <<jcl, Apache Common Logging>>
 
 Chronicle Logger is able to aggregate all your logs to a central store. It has built-in resilience, so you will never
 lose messages.
@@ -91,6 +91,7 @@ If set, these will override the default Chronicle Queue configuration. _Use with
   * The `path` is used to track the underlying Chronicle Queue so having two loggers configured with the same `path` is unsupported
 
 === chronicle-logger-slf4j
+anchor:SLF4J[]
 
 The chronicle-logger-slf4j is an implementation of SLF4J API > 1.7.x.
 
@@ -129,6 +130,7 @@ chronicle.logger.L1.level             = info
 ----
 
 === chronicle-logger-logback
+anchor:Logback[]
 
 The chronicle-logger-logback module provides appender for Logback: `net.openhft.chronicle.logger.logback.ChronicleAppender`
 
@@ -152,6 +154,7 @@ The chronicle-logger-logback module provides appender for Logback: `net.openhft.
 ----
 
 === chronicle-logger-log4j-1
+anchor:log4j-1[]
 
 We provide log4j1 appender `net.openhft.chronicle.logger.log4j1.ChronicleAppender`
 
@@ -213,6 +216,7 @@ We provide log4j1 appender `net.openhft.chronicle.logger.log4j1.ChronicleAppende
 ----
 
 === chronicle-logger-log4j-2
+anchor:log4j-2[]
 
 Use `<Chronicle/>` element in `<appenders/>` to create Chronicle appender. Optional `<chronicleCfg/>` element can be
 used to tweak underlying Chronicle Queue.
@@ -270,6 +274,7 @@ used to tweak underlying Chronicle Queue.
 ----
 
 === chronicle-logger-jul
+anchor:jul[]
 
 Use `net.openhft.chronicle.logger.jul.ChronicleHandler` as a handler
 
@@ -296,6 +301,7 @@ chronicle.useParentHandlers=false
 ----
 
 === chronicle-logger-jcl
+anchor:jcl[]
 
 Similar to slf4j, to configure this binding you need to specify the location of a properties files (file-system or classpath) 
 via system properties:
