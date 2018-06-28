@@ -140,27 +140,6 @@
                     <forkCount>1</forkCount>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-scm-publish-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-                <!--
-                <configuration>
-                    <checkoutDirectory>${project.build.directory}/scmpublish/javadoc</checkoutDirectory>
-                    <checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}
-                    </checkinComment>
-                    <content>${project.reporting.outputDirectory}</content>
-                    <skipDeletedFiles>true</skipDeletedFiles>
-                    <pubScmUrl>scm:git:git@github.com:OpenHFT/Chronicle-Logger</pubScmUrl>
-                    <scmBranch>gh-pages</scmBranch>
-                </configuration>-->
-            </plugin>
         </plugins>
 
     </build>
