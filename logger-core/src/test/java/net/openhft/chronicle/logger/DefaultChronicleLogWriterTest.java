@@ -41,7 +41,6 @@ public class DefaultChronicleLogWriterTest {
     @After
     public void cleanup() {
         IOTools.deleteDir(basePath());
-        ;
     }
 
     @Before
@@ -105,7 +104,6 @@ public class DefaultChronicleLogWriterTest {
                 assertEquals(Thread.currentThread().getName(), wire.read("threadName").text());
                 assertEquals(this.getClass().getCanonicalName(), wire.read("loggerName").text());
                 assertEquals("Test debug message", wire.read("message").text());
-                assertTrue(wire.isEmpty());
                 assertFalse(wire.hasMore());
             }
             try (DocumentContext dc = tailer.readingDocument()) {
