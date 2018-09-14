@@ -19,8 +19,6 @@ package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.queue.ChronicleQueueBuilder;
-import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
@@ -42,8 +40,8 @@ import static org.junit.Assert.*;
 public class Log4j1ChronicleLogTest extends Log4j1TestBase {
 
     @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId, WireType wt) {
-        return ChronicleQueueBuilder.single(basePath(testId)).wireType(wt).build();
+    private static ChronicleQueue getChronicleQueue(String testId, WireType wt) {
+        return ChronicleQueue.singleBuilder(basePath(testId)).wireType(wt).build();
     }
 
     @After

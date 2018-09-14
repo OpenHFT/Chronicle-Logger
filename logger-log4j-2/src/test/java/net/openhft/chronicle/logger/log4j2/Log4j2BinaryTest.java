@@ -20,8 +20,6 @@ package net.openhft.chronicle.logger.log4j2;
 import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.queue.ChronicleQueueBuilder;
-import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.lang.io.IOTools;
@@ -41,8 +39,8 @@ import static org.junit.Assert.*;
 public class Log4j2BinaryTest extends Log4j2TestBase {
 
     @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueueBuilder.single(basePath(testId)).build();
+    private static ChronicleQueue getChronicleQueue(String testId) {
+        return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
     @After

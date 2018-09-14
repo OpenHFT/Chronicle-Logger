@@ -18,7 +18,6 @@
 package net.openhft.chronicle.logger;
 
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.queue.ChronicleQueueBuilder;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
@@ -50,7 +49,7 @@ public class DefaultChronicleLogWriterTest {
 
     @Test
     public void testWrite() {
-        try (final ChronicleQueue cq = ChronicleQueueBuilder.single(basePath()).build()) {
+        try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(basePath()).build()) {
             ChronicleLogWriter lw = new DefaultChronicleLogWriter(cq);
             lw.write(
                     ChronicleLogLevel.ERROR,
@@ -75,7 +74,7 @@ public class DefaultChronicleLogWriterTest {
             e.printStackTrace();
         }
 
-        try (final ChronicleQueue cq = ChronicleQueueBuilder.single(basePath()).build()) {
+        try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(basePath()).build()) {
             ExcerptTailer tailer = cq.createTailer();
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();

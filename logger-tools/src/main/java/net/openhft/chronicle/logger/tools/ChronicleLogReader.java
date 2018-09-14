@@ -19,7 +19,6 @@ package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.queue.ChronicleQueueBuilder;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
@@ -56,7 +55,7 @@ public class ChronicleLogReader {
     public ChronicleLogReader(
             @NotNull String path,
             @NotNull WireType wireType) {
-        cq = ChronicleQueueBuilder.single(path).wireType(wireType).build();
+        cq = ChronicleQueue.singleBuilder(path).wireType(wireType).build();
     }
 
     /**

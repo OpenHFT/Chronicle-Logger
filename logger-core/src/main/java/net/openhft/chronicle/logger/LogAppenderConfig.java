@@ -18,13 +18,11 @@
 package net.openhft.chronicle.logger;
 
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.queue.ChronicleQueueBuilder;
 import net.openhft.chronicle.wire.WireType;
 import net.openhft.lang.model.constraints.NotNull;
 import net.openhft.lang.model.constraints.Nullable;
 
 import java.beans.PropertyDescriptor;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Properties;
@@ -70,9 +68,9 @@ public class LogAppenderConfig {
         return KEYS;
     }
 
-    public ChronicleQueue build(String path, String wireType) throws IOException {
+    public ChronicleQueue build(String path, String wireType) {
         WireType wireTypeEnum = wireType != null ? WireType.valueOf(wireType.toUpperCase()) : WireType.BINARY_LIGHT;
-        return ChronicleQueueBuilder.single(path)
+        return ChronicleQueue.singleBuilder(path)
                 .wireType(wireTypeEnum)
                 .blockSize(blockSize)
                 .bufferCapacity(bufferCapacity)

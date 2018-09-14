@@ -20,8 +20,6 @@ package net.openhft.chronicle.logger.slf4j;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.queue.ChronicleQueueBuilder;
-import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.lang.io.IOTools;
@@ -49,8 +47,8 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
     // *************************************************************************
 
     @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueueBuilder.single(basePath(testId)).build();
+    private static ChronicleQueue getChronicleQueue(String testId) {
+        return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
     @Before

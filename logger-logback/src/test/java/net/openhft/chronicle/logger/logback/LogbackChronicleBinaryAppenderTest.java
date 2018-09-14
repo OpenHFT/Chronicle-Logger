@@ -19,8 +19,6 @@ package net.openhft.chronicle.logger.logback;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.queue.ChronicleQueueBuilder;
-import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.lang.io.IOTools;
@@ -42,8 +40,8 @@ import static org.junit.Assert.*;
 
 public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
     @NotNull
-    private static SingleChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueueBuilder.single(basePath(testId)).build();
+    private static ChronicleQueue getChronicleQueue(String testId) {
+        return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
     @Before
