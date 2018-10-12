@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~     Copyright (C) 2015  higherfrequencytrading.com
+  ~ Copyright (C) 2014-2017  Chronicle Software
   ~
-  ~     This program is free software: you can redistribute it and/or modify
-  ~     it under the terms of the GNU Lesser General Public License as published by
-  ~     the Free Software Foundation, either version 3 of the License.
+  ~ http://www.chronicle.software
   ~
-  ~     This program is distributed in the hope that it will be useful,
-  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~     GNU Lesser General Public License for more details.
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
   ~
-  ~     You should have received a copy of the GNU Lesser General Public License
-  ~     along with this program.  If not, see <http://www.gnu.org/licenses />.
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
   -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>net.openhft</groupId>
         <artifactId>java-parent-pom</artifactId>
-        <version>1.1.12</version>
+        <version>1.1.16</version>
         <relativePath />
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>chronicle-logger-parent</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <artifactId>chronicle-logger</artifactId>
+    <version>4.16.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>OpenHFT/Chronicle-Logger</name>
@@ -37,20 +39,18 @@
                 <groupId>net.openhft</groupId>
                 <artifactId>third-party-bom</artifactId>
                 <type>pom</type>
-                <version>3.6.0</version>
+                <version>3.6.5</version>
                 <scope>import</scope>
             </dependency>
-
 
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-bom</artifactId>
-                <version>1.14.53</version>
+                <version>2.17-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
-            
             <!-- apache commons logging -->
             <dependency>
                 <groupId>commons-logging</groupId>
@@ -58,31 +58,10 @@
                 <version>1.2</version>
             </dependency>
 
-            <!-- slf4j -->
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.13</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jul-to-slf4j</artifactId>
-                <version>1.7.13</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.13</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.13</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-nop</artifactId>
-                <version>1.7.13</version>
+                <groupId>net.openhft</groupId>
+                <artifactId>chronicle-logger-core</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
         </dependencies>
@@ -92,11 +71,12 @@
         <!-- openhft -->
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>affinity</artifactId>
+            <artifactId>chronicle-queue</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle</artifactId>
+            <groupId>com.intellij</groupId>
+            <artifactId>annotations</artifactId>
         </dependency>
 
         <!-- modules for testing -->
@@ -125,7 +105,7 @@
     </dependencies>
 
     <modules>
-        <module>logger</module>
+        <module>logger-core</module>
         <module>logger-jul</module>
         <module>logger-jcl</module>
         <module>logger-slf4j</module>
@@ -133,6 +113,7 @@
         <module>logger-log4j-1</module>
         <module>logger-log4j-2</module>
         <module>logger-tools</module>
+        <module>benchmark</module>
     </modules>
 
     <build>
@@ -140,9 +121,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <aggregate>true</aggregate>
-                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -155,18 +133,12 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-scm-publish-plugin</artifactId>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <checkoutDirectory>${project.build.directory}/scmpublish/javadoc</checkoutDirectory>
-                    <checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}
-                    </checkinComment>
-                    <content>${project.reporting.outputDirectory}</content>
-                    <skipDeletedFiles>true</skipDeletedFiles>
-                    <pubScmUrl>scm:git:git@github.com:OpenHFT/Chronicle-Logger</pubScmUrl>
-                    <scmBranch>gh-pages</scmBranch>
+                    <reuseForks>false</reuseForks>
+                    <forkCount>1</forkCount>
                 </configuration>
             </plugin>
-
         </plugins>
 
     </build>

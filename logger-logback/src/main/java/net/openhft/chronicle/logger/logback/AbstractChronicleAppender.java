@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.Level;
@@ -32,23 +31,22 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class AbstractChronicleAppender
-    extends ContextAwareBase
-    implements Appender<ILoggingEvent> {
+        extends ContextAwareBase
+        implements Appender<ILoggingEvent> {
 
     private final FilterAttachableImpl<ILoggingEvent> filterAttachable;
-
+    protected ChronicleLogWriter writer;
     private String name;
     private boolean started;
-
     private String path;
-
-    protected ChronicleLogWriter writer;
+    private String wireType;
 
     protected AbstractChronicleAppender() {
         this.filterAttachable = new FilterAttachableImpl<>();
         this.name = null;
         this.started = false;
         this.path = null;
+        this.wireType = null;
         this.writer = null;
     }
 
@@ -56,24 +54,50 @@ public abstract class AbstractChronicleAppender
     // Custom logging options
     // *************************************************************************
 
-    public void setPath(String path) {
-        this.path = path;
+    public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
+        switch (level.levelInt) {
+            case Level.DEBUG_INT:
+                return ChronicleLogLevel.DEBUG;
+            case Level.TRACE_INT:
+                return ChronicleLogLevel.TRACE;
+            case Level.INFO_INT:
+                return ChronicleLogLevel.INFO;
+            case Level.WARN_INT:
+                return ChronicleLogLevel.WARN;
+            case Level.ERROR_INT:
+                return ChronicleLogLevel.ERROR;
+            default:
+                throw new IllegalArgumentException(level.levelInt + " not a valid level value");
+        }
     }
 
     public String getPath() {
         return this.path;
     }
 
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getWireType() {
+        return wireType;
+    }
+
     // *************************************************************************
     // Chronicle implementation
     // *************************************************************************
 
+    public void setWireType(String wireType) {
+        this.wireType = wireType;
+    }
+
     protected abstract ChronicleLogWriter createWriter() throws IOException;
-    protected abstract void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer);
 
     // *************************************************************************
     //
     // *************************************************************************
+
+    protected abstract void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer);
 
     @Override
     public String getName() {
@@ -112,14 +136,14 @@ public abstract class AbstractChronicleAppender
 
     @Override
     public void start() {
-        if(getPath() == null) {
+        if (getPath() == null) {
             addError("Appender " + getName() + " has configuration errors and is not started!");
 
         } else {
             try {
                 this.writer = createWriter();
                 this.started = true;
-            } catch(IOException e) {
+            } catch (IOException e) {
                 this.writer = null;
                 addError("Appender " + getName() + " " + e.getMessage());
             }
@@ -128,10 +152,10 @@ public abstract class AbstractChronicleAppender
 
     @Override
     public void stop() {
-        if(this.writer != null) {
+        if (this.writer != null) {
             try {
                 this.writer.close();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 addError("Appender " + getName() + " " + e.getMessage());
             }
         }
@@ -139,31 +163,14 @@ public abstract class AbstractChronicleAppender
         this.started = false;
     }
 
-    @Override
-    public void doAppend(final ILoggingEvent event) {
-        if (getFilterChainDecision(event) != FilterReply.DENY) {
-            doAppend(event, writer);
-        }
-    }
-
     // *************************************************************************
     //
     // *************************************************************************
 
-    public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
-        switch(level.levelInt) {
-            case Level.DEBUG_INT:
-                return ChronicleLogLevel.DEBUG;
-            case Level.TRACE_INT:
-                return ChronicleLogLevel.TRACE;
-            case Level.INFO_INT:
-                return ChronicleLogLevel.INFO;
-            case Level.WARN_INT:
-                return ChronicleLogLevel.WARN;
-            case Level.ERROR_INT:
-                return ChronicleLogLevel.ERROR;
-            default:
-                throw new IllegalArgumentException(level.levelInt + " not a valid level value");
+    @Override
+    public void doAppend(final ILoggingEvent event) {
+        if (getFilterChainDecision(event) != FilterReply.DENY) {
+            doAppend(event, writer);
         }
     }
 }

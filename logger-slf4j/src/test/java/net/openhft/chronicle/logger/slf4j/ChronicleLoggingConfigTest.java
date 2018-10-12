@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Higher Frequency Trading
+ * Copyright 2014-2017 Chronicle Software
  *
- * http://www.higherfrequencytrading.com
+ * http://www.chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,39 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.logger.ChronicleLogConfig;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class ChronicleLoggingConfigTest {
     @Test
-    public void testLoadClasspathVanilla()   {
-        System.setProperty("chronicle.logger.properties", "chronicle.logger.vanilla.properties");
-        assertLoadsValidVanillaConfig();
+    public void testLoadClasspathIndexed() {
+        System.setProperty("chronicle.logger.properties", "chronicle.logger.properties");
+        assertLoadsValidConfig();
     }
 
-    private void assertLoadsValidVanillaConfig() {
+    private void assertLoadsValidConfig() {
         ChronicleLogConfig config = ChronicleLogConfig.load();
         assertNotNull("unable to load config", config);
-        assertNotNull("is not a vanilla config", config.getVanillaChronicleConfig());
-        assertEquals(ChronicleLogConfig.FORMAT_BINARY, config.getString(ChronicleLogConfig.KEY_FORMAT));
-    }
-
-    @Test
-    public void testLoadClasspathIndexed()   {
-        System.setProperty("chronicle.logger.properties", "chronicle.logger.indexed.properties");
-        assertLoadsValidIndexedConfig();
-    }
-
-    private void assertLoadsValidIndexedConfig() {
-        ChronicleLogConfig config = ChronicleLogConfig.load();
-        assertNotNull("unable to load config", config);
-        assertNotNull("is not a indexed config", config.getIndexedChronicleConfig());
-        assertEquals(ChronicleLogConfig.FORMAT_BINARY, config.getString(ChronicleLogConfig.KEY_FORMAT));
+        assertNotNull("is not a valid config", config.getAppenderConfig());
     }
 }
