@@ -18,11 +18,11 @@
 package net.openhft.chronicle.logger.log4j2;
 
 import net.openhft.chronicle.core.OS;
+import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
-import net.openhft.lang.io.IOTools;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
 
     @After
     public void tearDown() {
-        IOTools.deleteDir(rootPath());
+        IOTools.deleteDirWithFiles(rootPath());
     }
 
     // *************************************************************************
@@ -53,7 +53,7 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
     // *************************************************************************
 
     @Test
-    public void testConfig() throws IOException {
+    public void testConfig() {
         // needs to be initialised before trying to get the appender, otherwise we end up in a loop
         final Logger logger = LoggerFactory.getLogger(OS.class);
         final String appenderName = "CONF-CHRONICLE";
@@ -138,6 +138,6 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
             }
 
         }
-        IOTools.deleteDir(basePath(testId));
+        IOTools.deleteDirWithFiles(basePath(testId));
     }
 }

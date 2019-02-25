@@ -17,11 +17,11 @@
  */
 package net.openhft.chronicle.logger.logback;
 
+import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
-import net.openhft.lang.io.IOTools;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
@@ -54,7 +54,7 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
 
     @After
     public void tearDown() {
-        IOTools.deleteDir(rootPath());
+        IOTools.deleteDirWithFiles(rootPath());
     }
 
     @Test
@@ -136,6 +136,6 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
             }
 
         }
-        IOTools.deleteDir(basePath(testId));
+        IOTools.deleteDirWithFiles(basePath(testId));
     }
 }

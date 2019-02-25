@@ -17,12 +17,12 @@
  */
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
-import net.openhft.lang.io.IOTools;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
@@ -68,7 +68,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
     @After
     public void tearDown() {
 
-        IOTools.deleteDir(basePath());
+        IOTools.deleteDirWithFiles(basePath());
     }
 
     @Test
@@ -134,7 +134,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         final String threadId = testId + "-th";
         final Logger logger = LoggerFactory.getLogger(testId);
 
-        IOTools.deleteDir(basePath(testId));
+        IOTools.deleteDirWithFiles(basePath(testId));
         Files.createDirectories(Paths.get(basePath(testId)));
 
         Thread.currentThread().setName(threadId);

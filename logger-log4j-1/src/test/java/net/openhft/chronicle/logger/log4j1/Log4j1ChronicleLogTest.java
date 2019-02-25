@@ -17,12 +17,12 @@
  */
 package net.openhft.chronicle.logger.log4j1;
 
+import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
-import net.openhft.lang.io.IOTools;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Ignore;
@@ -46,7 +46,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
 
     @After
     public void tearDown() {
-        IOTools.deleteDir(rootPath());
+        IOTools.deleteDirWithFiles(rootPath());
     }
 
     @Test
@@ -117,7 +117,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
             }
 
         }
-        IOTools.deleteDir(basePath(testId));
+        IOTools.deleteDirWithFiles(basePath(testId));
     }
 
     @Test
@@ -189,6 +189,6 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
             }
 
         }
-        IOTools.deleteDir(basePath(testId));
+        IOTools.deleteDirWithFiles(basePath(testId));
     }
 }

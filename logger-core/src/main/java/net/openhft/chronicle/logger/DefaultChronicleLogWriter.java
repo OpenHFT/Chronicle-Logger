@@ -21,9 +21,8 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
-import net.openhft.lang.model.constraints.NotNull;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 public class DefaultChronicleLogWriter implements ChronicleLogWriter {
@@ -33,12 +32,12 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
 
     private final ChronicleQueue cq;
 
-    public DefaultChronicleLogWriter(@NotNull ChronicleQueue cq) throws IOException {
+    public DefaultChronicleLogWriter(@NotNull ChronicleQueue cq) {
         this.cq = cq;
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         cq.close();
     }
 

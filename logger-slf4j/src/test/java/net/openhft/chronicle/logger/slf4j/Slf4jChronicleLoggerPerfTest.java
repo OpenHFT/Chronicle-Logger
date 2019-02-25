@@ -17,7 +17,7 @@
  */
 package net.openhft.chronicle.logger.slf4j;
 
-import net.openhft.lang.io.IOTools;
+import net.openhft.chronicle.core.io.IOTools;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -49,7 +49,7 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
 
     @After
     public void tearDown() {
-        IOTools.deleteDir(basePath());
+        IOTools.deleteDirWithFiles(basePath());
     }
 
     // *************************************************************************
@@ -57,7 +57,7 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
     // *************************************************************************
 
     @Test
-    public void testSingleThreadLogging1() throws IOException {
+    public void testSingleThreadLogging1() {
         Thread.currentThread().setName("perf-plain");
 
         final String testId = "perf-chronicle";
@@ -87,7 +87,7 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
     }
 
     @Test
-    public void testSingleThreadLogging2() throws IOException {
+    public void testSingleThreadLogging2() {
         Thread.currentThread().setName("perf-plain");
 
         final String testId = "perf-chronicle";
@@ -119,7 +119,7 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
     // *************************************************************************
 
     @Test
-    public void testMultiThreadLogging() throws IOException, InterruptedException {
+    public void testMultiThreadLogging() throws InterruptedException {
         warmup(LoggerFactory.getLogger("perf-chronicle"));
 
         final int RUNS = 1000000;

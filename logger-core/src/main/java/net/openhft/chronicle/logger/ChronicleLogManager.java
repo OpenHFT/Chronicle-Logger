@@ -58,7 +58,7 @@ public class ChronicleLogManager {
         this.writers = new ConcurrentHashMap<>();
     }
 
-    public ChronicleLogWriter getWriter(String name) throws IOException {
+    public ChronicleLogWriter getWriter(String name) {
         if (this.cfg == null) {
             throw new IllegalArgumentException("ChronicleLogManager is not configured");
         }
@@ -84,7 +84,7 @@ public class ChronicleLogManager {
     //
     // *************************************************************************
 
-    private ChronicleQueue newChronicle(String path, String name) throws IOException {
+    private ChronicleQueue newChronicle(String path, String name) {
         final String wireType = cfg.getString(name, ChronicleLogConfig.KEY_WIRETYPE);
         ChronicleQueue cq = this.cfg.getAppenderConfig().build(path, wireType);
         if (!cfg.getBoolean(name, ChronicleLogConfig.KEY_APPEND, true)) {

@@ -17,11 +17,11 @@
  */
 package net.openhft.chronicle.logger;
 
+import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
-import net.openhft.lang.io.IOTools;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class DefaultChronicleLogWriterTest {
 
     @After
     public void cleanup() {
-        IOTools.deleteDir(basePath());
+        IOTools.deleteDirWithFiles(basePath());
     }
 
     @Before
@@ -70,8 +70,6 @@ public class DefaultChronicleLogWriterTest {
                     "Test debug message"
             );
 
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(basePath()).build()) {

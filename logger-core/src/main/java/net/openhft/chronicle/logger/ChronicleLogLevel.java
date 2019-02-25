@@ -17,10 +17,7 @@
  */
 package net.openhft.chronicle.logger;
 
-import net.openhft.lang.io.ByteStringAppender;
-import net.openhft.lang.io.RandomDataInput;
-import net.openhft.lang.io.RandomDataOutput;
-import net.openhft.lang.model.constraints.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 public enum ChronicleLogLevel {
     ERROR(50, "ERROR"),
@@ -42,10 +39,6 @@ public enum ChronicleLogLevel {
     ChronicleLogLevel(int levelInt, String levelStr) {
         this.levelInt = levelInt;
         this.levelStr = levelStr;
-    }
-
-    public static ChronicleLogLevel readBinary(final RandomDataInput in) {
-        return VALUES[in.readByte()];
     }
 
     public static ChronicleLogLevel fromStringLevel(final CharSequence levelStr) {
@@ -85,18 +78,6 @@ public enum ChronicleLogLevel {
 
     public boolean isHigherOrEqualTo(final ChronicleLogLevel presumablyLowerLevel) {
         return levelInt >= presumablyLowerLevel.levelInt;
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    public void printTo(final ByteStringAppender appender) {
-        appender.append(levelStr);
-    }
-
-    public void writeTo(final RandomDataOutput out) {
-        out.writeByte(ordinal());
     }
 
     @Override

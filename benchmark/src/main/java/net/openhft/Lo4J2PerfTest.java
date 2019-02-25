@@ -25,7 +25,7 @@
 
 package net.openhft;
 
-import net.openhft.lang.io.IOTools;
+import net.openhft.chronicle.core.io.IOTools;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -98,6 +98,6 @@ public class Lo4J2PerfTest {
 
     @TearDown
     public void tearDown() {
-        IOTools.deleteDir(rootPath());
+        IOTools.deleteDirWithFiles(rootPath());
     }
 }

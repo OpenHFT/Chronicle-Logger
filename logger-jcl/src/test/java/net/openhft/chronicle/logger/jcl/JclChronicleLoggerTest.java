@@ -17,13 +17,13 @@
  */
 package net.openhft.chronicle.logger.jcl;
 
+import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
-import net.openhft.lang.io.IOTools;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +61,7 @@ public class JclChronicleLoggerTest extends JclTestBase {
     @After
     public void tearDown() {
         LogFactory.getFactory().release();
-        IOTools.deleteDir(basePath());
+        IOTools.deleteDirWithFiles(basePath());
     }
 
     // *************************************************************************
@@ -131,7 +131,7 @@ public class JclChronicleLoggerTest extends JclTestBase {
         final String threadId = testId + "-th";
         final Log logger = LogFactory.getLog(testId);
 
-        IOTools.deleteDir(basePath(testId));
+        IOTools.deleteDirWithFiles(basePath(testId));
         Files.createDirectories(Paths.get(basePath(testId)));
         Thread.currentThread().setName(threadId);
 
@@ -199,6 +199,6 @@ public class JclChronicleLoggerTest extends JclTestBase {
 
         }
 
-        IOTools.deleteDir(basePath(testId));
+        IOTools.deleteDirWithFiles(basePath(testId));
     }
 }
