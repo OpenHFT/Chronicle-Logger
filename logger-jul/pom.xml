@@ -38,10 +38,6 @@
             <artifactId>chronicle-logger-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>lang</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
             <scope>test</scope>
