@@ -23,7 +23,7 @@
     <parent>
         <groupId>net.openhft</groupId>
         <artifactId>chronicle-logger</artifactId>
-        <version>4.17.1</version>
+        <version>4.17.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -123,6 +123,6 @@
         <url>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</url>
         <connection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</connection>
         <developerConnection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</developerConnection>
-        <tag>chronicle-logger-4.17.1</tag>
+        <tag>master</tag>
     </scm>
 </project>
