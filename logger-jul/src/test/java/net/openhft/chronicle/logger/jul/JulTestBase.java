@@ -18,12 +18,7 @@
 package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
-import net.openhft.lang.io.Bytes;
-import net.openhft.lang.io.serialization.BytesMarshallable;
-import net.openhft.lang.model.constraints.NotNull;
-import org.apache.commons.lang3.StringUtils;
 
-import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,70 +53,6 @@ public class JulTestBase {
                 break;
             default:
                 throw new UnsupportedOperationException();
-        }
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    protected final static class MySerializableData implements Serializable {
-        private final Object data;
-
-        public MySerializableData(Object data) {
-            this.data = data;
-        }
-
-        @Override
-        public String toString() {
-            return this.data.toString();
-        }
-    }
-
-    protected final static class MyMarshallableData implements BytesMarshallable {
-        private Object data;
-
-        public MyMarshallableData() {
-            this(null);
-        }
-
-        public MyMarshallableData(Object data) {
-            this.data = data;
-        }
-
-        @Override
-        public void readMarshallable(@NotNull Bytes in) throws IllegalStateException {
-            this.data = in.readObject();
-        }
-
-        @Override
-        public void writeMarshallable(@NotNull Bytes out) {
-            out.writeObject(data);
-        }
-
-        @Override
-        public String toString() {
-            return this.data.toString();
-        }
-    }
-
-    protected final class RunnableLogger implements Runnable {
-        private final Logger logger;
-        private final int runs;
-        private final String fmt;
-        private final String fmtBase = " > val1={}, val2={}, val3={}";
-
-        public RunnableLogger(int runs, int pad, String loggerName) {
-            this.logger = Logger.getLogger(loggerName);
-            this.runs = runs;
-            this.fmt = StringUtils.rightPad(fmtBase, pad + fmtBase.length() - (4 + 8 + 8), "X");
-        }
-
-        @Override
-        public void run() {
-            for (int i = 0; i < this.runs; i++) {
-                this.logger.log(Level.INFO, fmt, new Object[]{i, i * 7L, i / 16.0});
-            }
         }
     }
 }

@@ -17,11 +17,11 @@
  */
 package net.openhft.chronicle.logger.jul;
 
+import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
-import net.openhft.lang.io.IOTools;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
     @After
     public void tearDown() {
-        IOTools.deleteDir(rootPath());
+        IOTools.deleteDirWithFiles(rootPath());
     }
 
     @Test
@@ -139,7 +139,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
         }
 
-        IOTools.deleteDir(basePath(testId));
+        IOTools.deleteDirWithFiles(basePath(testId));
     }
 
 }
