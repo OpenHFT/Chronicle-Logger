@@ -82,6 +82,7 @@ Additionally, underlying Chronicle Queue can be tweaked by providing the followi
 
 * `bufferCapacity`
 * `blockSize`
+* `rollCycle`
 
 If set, these will override the default Chronicle Queue configuration. _Use with caution!_
 
