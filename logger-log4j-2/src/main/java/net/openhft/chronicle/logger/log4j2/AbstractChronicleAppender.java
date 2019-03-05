@@ -154,11 +154,16 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         @PluginFactory
         public static ChronicleCfg create(
                 @PluginAttribute("blockSize") final String blockSize,
-                @PluginAttribute("bufferCapacity") final String bufferCapacity) {
+                @PluginAttribute("bufferCapacity") final String bufferCapacity,
+                @PluginAttribute("rollCycle") final String rollCycle) {
 
             final ChronicleCfg cfg = new ChronicleCfg();
-            cfg.setProperty("blockSize", blockSize);
-            cfg.setProperty("bufferCapacity", bufferCapacity);
+            if (blockSize != null)
+                cfg.setProperty("blockSize", blockSize);
+            if (bufferCapacity != null)
+                cfg.setProperty("bufferCapacity", bufferCapacity);
+            if (rollCycle != null)
+                cfg.setProperty("rollCycle", rollCycle);
 
             return cfg;
         }

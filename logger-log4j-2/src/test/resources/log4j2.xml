@@ -39,6 +39,9 @@
 
         <Chronicle name="CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronicle-log4j2/chronicle</path>
+            <chronicleCfg>
+                <rollCycle>HOURLY</rollCycle>
+            </chronicleCfg>
         </Chronicle>
 
     </appenders>

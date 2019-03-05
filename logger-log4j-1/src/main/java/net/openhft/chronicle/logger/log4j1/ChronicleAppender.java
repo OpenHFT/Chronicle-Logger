@@ -43,6 +43,14 @@ public final class ChronicleAppender extends AbstractChronicleAppender {
         config.setBufferCapacity(bufferCapacity);
     }
 
+    public String rollCycle() {
+        return config.getRollCycle();
+    }
+
+    public void rollCycle(String rollCycle) {
+        config.setRollCycle(rollCycle);
+    }
+
     @Override
     protected ChronicleLogWriter createWriter() throws IOException {
         return new DefaultChronicleLogWriter(this.config.build(this.getPath(), this.getWireType()));

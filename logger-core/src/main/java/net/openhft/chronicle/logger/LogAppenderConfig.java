@@ -18,6 +18,8 @@
 package net.openhft.chronicle.logger;
 
 import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.RollCycles;
+import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
 import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,11 +33,13 @@ public class LogAppenderConfig {
 
     private static final String[] KEYS = new String[]{
             "blockSize",
-            "bufferCapacity"
+            "bufferCapacity",
+            "rollCycle"
     };
 
     private int blockSize;
     private long bufferCapacity;
+    private String rollCycle;
 
     public LogAppenderConfig() {
     }
@@ -60,6 +64,14 @@ public class LogAppenderConfig {
         this.bufferCapacity = bufferCapacity;
     }
 
+    public String getRollCycle() {
+        return rollCycle;
+    }
+
+    public void setRollCycle(String rollCycle) {
+        this.rollCycle = rollCycle;
+    }
+
     // *************************************************************************
     //
     // *************************************************************************
@@ -70,11 +82,13 @@ public class LogAppenderConfig {
 
     public ChronicleQueue build(String path, String wireType) {
         WireType wireTypeEnum = wireType != null ? WireType.valueOf(wireType.toUpperCase()) : WireType.BINARY_LIGHT;
-        return ChronicleQueue.singleBuilder(path)
+        SingleChronicleQueueBuilder builder = ChronicleQueue.singleBuilder(path)
                 .wireType(wireTypeEnum)
                 .blockSize(blockSize)
-                .bufferCapacity(bufferCapacity)
-                .build();
+                .bufferCapacity(bufferCapacity);
+        if (rollCycle != null)
+            builder.rollCycle(RollCycles.valueOf(rollCycle));
+        return builder.build();
     }
 
     public void setProperties(@NotNull final Properties properties, @Nullable final String prefix) {
