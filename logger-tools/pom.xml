@@ -38,19 +38,16 @@
             <artifactId>chronicle-logger-core</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle-queue</artifactId>
-        </dependency>
-
         <!-- slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+
+        <!-- for tests -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-logger-logback</artifactId>
         </dependency>
     </dependencies>
 

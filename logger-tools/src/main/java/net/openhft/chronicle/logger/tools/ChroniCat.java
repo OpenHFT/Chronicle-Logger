@@ -30,8 +30,9 @@ public final class ChroniCat {
             if (args.length >= 1) {
                 int i = 0;
                 final WireType wt;
-                if ("-w".equals(args[i++])) {
-                    wt = WireType.valueOf(args[i++].trim().toUpperCase());
+                if ("-w".equals(args[i])) {
+                    wt = WireType.valueOf(args[++i].trim().toUpperCase());
+                    i++;
                 } else {
                     wt = WireType.BINARY_LIGHT;
                 }
