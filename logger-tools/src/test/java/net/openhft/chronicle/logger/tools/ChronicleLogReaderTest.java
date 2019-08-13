@@ -22,7 +22,6 @@ public class ChronicleLogReaderTest {
         logger.info("test {} {} {}", 2, 100L, 100.123D);
         logger.info("test {} {} {}", 3, 100L, 100.123D);
 
-
         ChronicleLogReader reader = new ChronicleLogReader(System.getProperty("java.io.tmpdir") + "/chronicle-logback/binary-chronicle", WireType.BINARY_LIGHT);
         reader.processLogs(ChronicleLogReader::printf, false);
 
