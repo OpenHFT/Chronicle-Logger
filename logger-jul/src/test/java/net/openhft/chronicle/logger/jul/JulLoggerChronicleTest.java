@@ -180,7 +180,6 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
                 Wire wire = dc.wire();
                 assertNull(wire);
             }
-
         }
 
         IOTools.deleteDirWithFiles(basePath(testId));

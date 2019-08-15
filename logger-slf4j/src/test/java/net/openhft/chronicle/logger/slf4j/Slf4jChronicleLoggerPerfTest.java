@@ -83,7 +83,6 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
                     (cEnd1 - cStart1) / 1e6,
                     (cEnd1 - cStart1) / items / 1e3);
         }
-
     }
 
     @Test
@@ -111,7 +110,6 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
                     (cEnd1 - cStart1) / 1e6,
                     (cEnd1 - cStart1) / items / 1e3);
         }
-
     }
 
     // *************************************************************************
@@ -147,6 +145,5 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
                 );
             }
         }
-
     }
 }

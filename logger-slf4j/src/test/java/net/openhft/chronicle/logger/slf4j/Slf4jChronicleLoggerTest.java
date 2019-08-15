@@ -232,6 +232,5 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
                 assertFalse(wire.hasMore());
             }
         }
-
     }
 }

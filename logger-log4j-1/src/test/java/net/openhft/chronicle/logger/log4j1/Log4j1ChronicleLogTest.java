@@ -115,7 +115,6 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
                 Wire wire = dc.wire();
                 assertNull(wire);
             }
-
         }
         IOTools.deleteDirWithFiles(basePath(testId));
     }
@@ -187,7 +186,6 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
                 Wire wire = dc.wire();
                 assertNull(wire);
             }
-
         }
         IOTools.deleteDirWithFiles(basePath(testId));
     }

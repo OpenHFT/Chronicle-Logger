@@ -196,7 +196,6 @@ public class JclChronicleLoggerTest extends JclTestBase {
                 Wire wire = dc.wire();
                 assertNull(wire);
             }
-
         }
 
         IOTools.deleteDirWithFiles(basePath(testId));

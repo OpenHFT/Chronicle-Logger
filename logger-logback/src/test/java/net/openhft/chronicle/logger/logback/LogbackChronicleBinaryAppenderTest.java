@@ -134,7 +134,6 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
                 Wire wire = dc.wire();
                 assertNull(wire);
             }
-
         }
         IOTools.deleteDirWithFiles(basePath(testId));
     }

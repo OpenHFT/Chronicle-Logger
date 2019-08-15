@@ -136,7 +136,6 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
                 Wire wire = dc.wire();
                 assertNull(wire);
             }
-
         }
 
         IOTools.deleteDirWithFiles(basePath(testId));

@@ -136,7 +136,6 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
                 Wire wire = dc.wire();
                 assertNull(wire);
             }
-
         }
         IOTools.deleteDirWithFiles(basePath(testId));
     }
