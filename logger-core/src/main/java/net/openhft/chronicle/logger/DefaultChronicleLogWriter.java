@@ -100,7 +100,7 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
                     for (Object o : args)
                         try {
                             vo.object(o);
-                        } catch (IllegalStateException unsupported) {
+                        } catch (IllegalArgumentException unsupported) {
                             vo.text(o.toString());
                         }
                 });

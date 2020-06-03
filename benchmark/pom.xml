@@ -24,12 +24,13 @@ questions.
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>chronicle-logger</artifactId>
-        <groupId>net.openhft</groupId>
-        <version>4.17.3-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.openhft</groupId>
+        <artifactId>chronicle-logger</artifactId>
+        <version>4.19.30-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
     <artifactId>chronicle-logger-benchmark</artifactId>
     <packaging>jar</packaging>
