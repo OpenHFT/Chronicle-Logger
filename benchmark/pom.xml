@@ -28,7 +28,7 @@ questions.
     <parent>
         <groupId>net.openhft</groupId>
         <artifactId>chronicle-logger</artifactId>
-        <version>4.19.30</version>
+        <version>4.19.31-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
