@@ -347,6 +347,3 @@ mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniTail" -
 * We also provide generic interface to interact with logs, `net.openhft.chronicle.logger.tools.ChronicleLogReader`,
 allowing arbitrary operations with decoded log lines. Please refer to javadocs.
 
-  
-
-
