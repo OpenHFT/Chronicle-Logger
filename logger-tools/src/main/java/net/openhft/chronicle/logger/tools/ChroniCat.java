@@ -38,8 +38,9 @@ public final class ChroniCat {
                 }
 
                 ChronicleLogReader reader = new ChronicleLogReader(args[i].trim(), wt);
-
-                reader.processLogs(ChronicleLogReader::printf, false);
+                ChronicleEntryProcessor entryProcessor = new DefaultChronicleEntryProcessor();
+                ChronicleLogProcessor logProcessor = new StdoutLogProcessor(entryProcessor);
+                reader.processLogs(logProcessor, false);
 
             } else {
                 System.err.println("\nUsage: ChroniCat [-w <wireType>] <path>");

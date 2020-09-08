@@ -48,7 +48,9 @@
         <!-- for tests -->
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>chronicle-logger-logback</artifactId>
+            <artifactId>chronicle-logger-slf4j</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -62,6 +64,15 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
+                    <annotationProcessorPaths>
+                        <!-- need a better jdk11 solution -->
+                        <!-- otherwise this will only work with jdk 1.8 -->
+                        <path>
+                            <groupId>jakarta.annotation</groupId>
+                            <artifactId>jakarta.annotation-api</artifactId>
+                            <version>1.3.5</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>

@@ -19,9 +19,7 @@ package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.logger.LogAppenderConfig;
 
-import java.util.logging.Filter;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
+import java.util.logging.*;
 
 import static net.openhft.chronicle.logger.ChronicleLogConfig.PLACEHOLDER_END;
 import static net.openhft.chronicle.logger.ChronicleLogConfig.PLACEHOLDER_START;
@@ -39,14 +37,6 @@ public class ChronicleHandlerConfig {
         return getStringProperty(this.prefix + "." + name, defaultValue);
     }
 
-    public int getInt(String name, int defaultValue) {
-        return getIntProperty(this.prefix + "." + name, defaultValue);
-    }
-
-    public boolean getBoolean(String name, boolean defaultValue) {
-        return getBooleanProperty(this.prefix + "." + name, defaultValue);
-    }
-
     public Level getLevel(String name, Level defaultValue) {
         return getLevelProperty(this.prefix + "." + name, defaultValue);
     }
@@ -55,12 +45,16 @@ public class ChronicleHandlerConfig {
         return getFilterProperty(this.prefix + "." + name, defaultValue);
     }
 
+    public Formatter getFormatter(String name, Formatter defaultValue) {
+        return getFormatterProperty(this.prefix + "."  + name, defaultValue);
+    }
+
     public LogAppenderConfig getAppenderConfig() {
         LogAppenderConfig cfg = new LogAppenderConfig();
         for (final String key : cfg.keys()) {
             cfg.setProperty(
                     key,
-                    getStringProperty(this.prefix + ".cfg." + key, null)
+                    getStringProperty(this.prefix + ".cfg." + key, "")
             );
         }
 
@@ -116,6 +110,23 @@ public class ChronicleHandlerConfig {
             if (val != null) {
                 Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(val);
                 return (Filter) clz.newInstance();
+            }
+        } catch (Exception ex) {
+            // We got one of a variety of exceptions in creating the
+            // class or creating an instance.
+            // Drop through.
+        }
+        // We got an exception.  Return the defaultValue.
+        return defaultValue;
+    }
+
+    Formatter getFormatterProperty(String name, Formatter defaultValue) {
+        String val = getStringProperty(name, null);
+
+        try {
+            if (val != null) {
+                Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(val);
+                return (Formatter) clz.newInstance();
             }
         } catch (Exception ex) {
             // We got one of a variety of exceptions in creating the

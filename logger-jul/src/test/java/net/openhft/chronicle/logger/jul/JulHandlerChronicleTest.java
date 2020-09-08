@@ -18,26 +18,23 @@
 package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.core.io.IOTools;
-import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
-import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
-import static java.lang.System.currentTimeMillis;
+import static java.util.logging.Level.*;
 import static org.junit.Assert.*;
 
 public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
-    @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
@@ -58,6 +55,9 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
         assertEquals(1, logger.getHandlers().length);
 
         assertEquals(ChronicleHandler.class, logger.getHandlers()[0].getClass());
+        ChronicleHandler chronicleHandler = (ChronicleHandler) logger.getHandlers()[0];
+        assertNotNull(chronicleHandler.getFormatter());
+        assertEquals(SimpleFormatter.class, chronicleHandler.getFormatter().getClass());
     }
 
     @Test
@@ -69,33 +69,32 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
         final String threadId = "thread-" + Thread.currentThread().getId();
 
-        for (ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger, level, "level is {0}", level);
+        Level[] standardLevels = {
+                SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST
+        };
+
+        for (Level level : standardLevels) {
+            logger.log(level, "level is {0}", level);
         }
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
-            for (ChronicleLogLevel level : LOG_LEVELS) {
+            for (Level level : standardLevels) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
                     assertNotNull("log not found for " + level, wire);
-                    assertTrue(wire.read("ts").int64() <= currentTimeMillis());
-                    assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
+                    assertTrue(wire.read("instant").zonedDateTime().toInstant().isBefore(Instant.now()));
+                    assertEquals(level.intValue(), wire.read("level").int32());
                     assertEquals(threadId, wire.read("threadName").text());
                     assertEquals(testId, wire.read("loggerName").text());
-                    assertEquals("level is {0}", wire.read("message").text());
+                    String entry = wire.read("entry").text();
+                    assertTrue(entry.contains("level is " + level.getName()));
                     assertTrue(wire.hasMore());
-                    List<Object> args = new ArrayList<>();
-                    assertTrue(wire.hasMore());
-                    wire.read("args").sequence(args, (l, vi) -> {
-                        while (vi.hasNextSequenceItem()) {
-                            l.add(vi.object(Object.class));
-                        }
-                    });
-                    assertEquals(level, args.iterator().next());
-                    assertFalse(wire.hasMore());
+                    assertEquals(wire.read("type").text(), "text/plain");
+                    assertEquals(wire.read("encoding").text(), "identity");
                 }
             }
+
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
                 assertNull(wire);
@@ -107,29 +106,25 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
                 assertNotNull(wire);
-                assertTrue(wire.read("ts").int64() <= currentTimeMillis());
-                assertEquals(ChronicleLogLevel.DEBUG, wire.read("level").asEnum(ChronicleLogLevel.class));
+                assertTrue(wire.read("instant").zonedDateTime().toInstant().isBefore(Instant.now()));
+                assertEquals(FINE.intValue(), wire.read("level").int32());
                 assertEquals(threadId, wire.read("threadName").text());
                 assertEquals(testId, wire.read("loggerName").text());
-                assertEquals("Throwable test 1", wire.read("message").text());
-                assertTrue(wire.hasMore());
-                assertTrue(wire.read("throwable").throwable(false) instanceof UnsupportedOperationException);
-                assertFalse(wire.hasMore());
+                String entry = wire.read("entry").text();
+                assertTrue(entry.contains("FINE: Throwable test 1"));
+                assertTrue(entry.contains("java.lang.UnsupportedOperationException"));
             }
 
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
                 assertNotNull(wire);
-                assertTrue(wire.read("ts").int64() <= currentTimeMillis());
-                assertEquals(ChronicleLogLevel.DEBUG, wire.read("level").asEnum(ChronicleLogLevel.class));
+                assertTrue(wire.read("instant").zonedDateTime().toInstant().isBefore(Instant.now()));
+                assertEquals(FINE.intValue(), wire.read("level").int32());
                 assertEquals(threadId, wire.read("threadName").text());
                 assertEquals(testId, wire.read("loggerName").text());
-                assertEquals("Throwable test 2", wire.read("message").text());
-                assertTrue(wire.hasMore());
-                Throwable throwable = wire.read("throwable").throwable(false);
-                assertTrue(throwable instanceof UnsupportedOperationException);
-                assertEquals("Exception message", throwable.getMessage());
-                assertFalse(wire.hasMore());
+                String entry = wire.read("entry").text();
+                assertTrue(entry.contains("FINE: Throwable test 2"));
+                assertTrue(entry.contains("java.lang.UnsupportedOperationException: Exception message"));
             }
 
             try (DocumentContext dc = tailer.readingDocument()) {

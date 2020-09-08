@@ -18,17 +18,17 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.LoggerContext;
-import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
+
+import static org.slf4j.event.Level.*;
 
 public class LogbackTestBase {
 
     // *************************************************************************
     //
     // *************************************************************************
-
-    static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");
@@ -47,7 +47,7 @@ public class LogbackTestBase {
                 + type;
     }
 
-    static void log(Logger logger, ChronicleLogLevel level, String fmt, Object... args) {
+    static void log(Logger logger, Level level, String fmt, Object... args) {
         switch (level) {
             case TRACE:
                 logger.trace(fmt, args);

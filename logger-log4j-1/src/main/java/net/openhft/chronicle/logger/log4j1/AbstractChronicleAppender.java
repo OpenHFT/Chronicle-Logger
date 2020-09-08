@@ -17,16 +17,17 @@
  */
 package net.openhft.chronicle.logger.log4j1;
 
-import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
+import org.apache.log4j.TTCCLayout;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OnlyOnceErrorHandler;
 import org.apache.log4j.spi.*;
 
 import java.io.IOException;
+import java.time.Instant;
 
 public abstract class AbstractChronicleAppender implements Appender, OptionHandler {
 
@@ -36,34 +37,19 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     private ErrorHandler errorHandler;
     private String path;
     private String wireType;
+    private Layout layout;
 
     protected AbstractChronicleAppender() {
         this.path = null;
         this.writer = null;
         this.name = null;
+        this.layout = new TTCCLayout();
         this.errorHandler = new OnlyOnceErrorHandler();
     }
 
     // *************************************************************************
     // Custom logging options
     // *************************************************************************
-
-    public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
-        switch (level.toInt()) {
-            case Level.DEBUG_INT:
-                return ChronicleLogLevel.DEBUG;
-            case Level.TRACE_INT:
-                return ChronicleLogLevel.TRACE;
-            case Level.INFO_INT:
-                return ChronicleLogLevel.INFO;
-            case Level.WARN_INT:
-                return ChronicleLogLevel.WARN;
-            case Level.ERROR_INT:
-                return ChronicleLogLevel.ERROR;
-            default:
-                throw new IllegalArgumentException(level.toInt() + " not a valid level value");
-        }
-    }
 
     @Override
     public void activateOptions() {
@@ -147,11 +133,12 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
 
     @Override
     public Layout getLayout() {
-        return null;
+        return this.layout;
     }
 
     @Override
     public void setLayout(Layout layout) {
+        this.layout = layout;
     }
 
     @Override
@@ -181,19 +168,13 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
                 }
             }
 
-            Throwable throwable = null;
-            ThrowableInformation ti = event.getThrowableInformation();
-            if (ti != null) {
-                throwable = ti.getThrowable();
-            }
-
+            BytesStore entry = BytesStore.from(getLayout().format(event));
             writer.write(
-                    toChronicleLogLevel(event.getLevel()),
-                    event.getTimeStamp(),
+                    Instant.ofEpochMilli(event.getTimeStamp()),
+                    event.getLevel().toInt(),
                     event.getThreadName(),
                     event.getLoggerName(),
-                    event.getMessage().toString(),
-                    throwable
+                    entry
             );
 
         } else {

@@ -17,14 +17,21 @@
  */
 package net.openhft.chronicle.logger.jul;
 
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.XMLFormatter;
 
+import static java.lang.invoke.MethodType.methodType;
 import static net.openhft.chronicle.logger.ChronicleLogConfig.KEY_WIRETYPE;
 
 public class ChronicleHandler extends AbstractChronicleHandler {
@@ -34,6 +41,7 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         String appenderPath = handlerCfg.getString("path", null);
         LogAppenderConfig appenderCfg = handlerCfg.getAppenderConfig();
 
+        setFormatter(handlerCfg.getFormatter("formatter", new SimpleFormatter()));
         setLevel(handlerCfg.getLevel("level", Level.ALL));
         setFilter(handlerCfg.getFilter("filter", null));
 
@@ -45,13 +53,68 @@ public class ChronicleHandler extends AbstractChronicleHandler {
 
     @Override
     protected void doPublish(final LogRecord record, final ChronicleLogWriter writer) {
-        writer.write(
-                ChronicleHelper.getLogLevel(record),
-                record.getMillis(),
-                "thread-" + record.getThreadID(),
-                record.getLoggerName(),
-                record.getMessage(),
-                record.getThrown(),
-                record.getParameters());
+        // if we're running on JDK 1.9, we can get nanoseconds here.
+        int level = record.getLevel().intValue();
+        Instant instant = getInstant(record);
+        String threadName = "thread-" + record.getThreadID();
+        String loggerName = record.getLoggerName();
+        String format = getFormatter().format(record);
+        Bytes entry = Bytes.from(format);
+        String charsetEncoding = getEncoding();
+
+        String contentType;
+        if (getFormatter() instanceof XMLFormatter) {
+            contentType = "text/xml";
+        } else {
+            contentType = "text/plain";
+        }
+
+        // character set encoding
+        if (charsetEncoding != null) {
+            writer.write(
+                    instant,
+                    level,
+                    threadName,
+                    loggerName,
+                    entry,
+                    contentType + "; charset=" + charsetEncoding,
+                    "identity"
+            );
+        } else {
+            writer.write(
+                    instant,
+                    level,
+                    threadName,
+                    loggerName,
+                    entry,
+                    contentType,
+                    "identity"
+            );
+        }
     }
+
+    // if we're running on 9, then we can get the method handle to invoke getInstant,
+    // otherwise we want getMillis
+    private static MethodHandle instantMethod = null;
+    static {
+        try {
+            MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+            instantMethod = lookup.findVirtual(LogRecord.class, "getInstant", methodType(Instant.class));
+        }  catch (NoSuchMethodException | IllegalAccessException e) {
+            // e.printStackTrace();
+        }
+    }
+
+    private Instant getInstant(LogRecord record) {
+        if (instantMethod != null) {
+            try {
+                return (Instant) instantMethod.invoke(record);
+            } catch (Throwable throwable) {
+                return Instant.ofEpochMilli(record.getMillis());
+            }
+        } else {
+            return Instant.ofEpochMilli(record.getMillis());
+        }
+    }
+
 }

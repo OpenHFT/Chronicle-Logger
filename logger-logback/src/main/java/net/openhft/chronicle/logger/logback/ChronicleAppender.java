@@ -19,25 +19,23 @@ package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.joran.spi.DefaultClass;
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
 
 import java.io.IOException;
+import java.time.Instant;
 
 public class ChronicleAppender extends AbstractChronicleAppender {
 
-    private boolean includeCallerData;
-    private boolean includeMDC;
-
-    private LogAppenderConfig config;
+    protected LogAppenderConfig config;
+    protected Encoder<ILoggingEvent> encoder;
 
     public ChronicleAppender() {
         super();
-
-        this.includeCallerData = true;
-        this.includeMDC = true;
         this.config = new LogAppenderConfig();
     }
 
@@ -55,24 +53,21 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         return new DefaultChronicleLogWriter(this.config.build(this.getPath(), getWireType()));
     }
 
-    // *************************************************************************
-    // Custom logging options
-    // *************************************************************************
-
-    public boolean isIncludeCallerData() {
-        return this.includeCallerData;
+    public Encoder<ILoggingEvent> getEncoder() {
+        return this.encoder;
     }
 
-    public void setIncludeCallerData(boolean logCallerData) {
-        this.includeCallerData = logCallerData;
+    public void setEncoder(Encoder<ILoggingEvent> encoder) {
+        this.encoder = encoder;
     }
 
-    public boolean isIncludeMappedDiagnosticContext() {
-        return this.includeMDC;
-    }
-
-    public void setIncludeMappedDiagnosticContext(boolean logMDC) {
-        this.includeMDC = logMDC;
+    @Override
+    public void start() {
+        if (encoder == null) {
+            addError("Null encoder!");
+        } else {
+            super.start();
+        }
     }
 
     // *************************************************************************
@@ -81,16 +76,13 @@ public class ChronicleAppender extends AbstractChronicleAppender {
 
     @Override
     public void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer) {
-        final ThrowableProxy tp = (ThrowableProxy) event.getThrowableProxy();
-
+        byte[] encode = encoder.encode(event);
         writer.write(
-                toChronicleLogLevel(event.getLevel()),
-                event.getTimeStamp(),
+                Instant.ofEpochMilli(event.getTimeStamp()),
+                event.getLevel().toInt(),
                 event.getThreadName(),
                 event.getLoggerName(),
-                event.getMessage(),
-                tp != null ? tp.getThrowable() : null,
-                event.getArgumentArray()
+                (encode != null) ? BytesStore.wrap(encode) : BytesStore.empty()
         );
     }
 }

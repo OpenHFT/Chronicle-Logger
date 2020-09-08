@@ -28,6 +28,9 @@
     <appender name  = "CHRONICLE"
               class = "net.openhft.chronicle.logger.log4j1.ChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/chronicle"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param name="ConversionPattern" value="%m %throwable{short}" />
+        </layout>
     </appender>
 
     <!-- ******************************************************************* -->

@@ -17,6 +17,7 @@
  */
 package net.openhft.chronicle.logger;
 
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
@@ -26,13 +27,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
-import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
 public class DefaultChronicleLogWriterTest {
@@ -51,23 +50,18 @@ public class DefaultChronicleLogWriterTest {
     public void testWrite() {
         try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(basePath()).build()) {
             ChronicleLogWriter lw = new DefaultChronicleLogWriter(cq);
-            lw.write(
-                    ChronicleLogLevel.ERROR,
-                    currentTimeMillis(),
+            lw.write(Instant.now(),
+                    10,
                     Thread.currentThread().getName(),
                     this.getClass().getCanonicalName(),
-                    "Test message",
-                    new Exception("Test exception"),
-                    10,
-                    12.1
+                    BytesStore.from("Test message")
             );
 
-            lw.write(
-                    ChronicleLogLevel.DEBUG,
-                    currentTimeMillis(),
+            lw.write(Instant.now(),
+                    50,
                     Thread.currentThread().getName(),
                     this.getClass().getCanonicalName(),
-                    "Test debug message"
+                    BytesStore.from("Test debug message")
             );
 
         }
@@ -77,30 +71,21 @@ public class DefaultChronicleLogWriterTest {
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
                 assertNotNull(wire);
-                assertTrue(wire.read("ts").int64() <= currentTimeMillis());
-                assertEquals(ChronicleLogLevel.ERROR, wire.read("level").asEnum(ChronicleLogLevel.class));
+                assertTrue(wire.read("instant").zonedDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)));
+                assertEquals(10, wire.read("level").int32());
                 assertEquals(Thread.currentThread().getName(), wire.read("threadName").text());
                 assertEquals(this.getClass().getCanonicalName(), wire.read("loggerName").text());
-                assertEquals("Test message", wire.read("message").text());
-                assertEquals("Test exception", wire.read("throwable").throwable(false).getMessage());
-                List<Object> args = new ArrayList<>();
-                assertTrue(wire.hasMore());
-                wire.read("args").sequence(args, (l, vi) -> {
-                    while (vi.hasNextSequenceItem()) {
-                        l.add(vi.object(Object.class));
-                    }
-                });
-                assertArrayEquals(new Object[]{10, 12.1}, args.toArray(new Object[args.size()]));
+                assertEquals("Test message", wire.read("entry").text());
             }
 
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
                 assertNotNull(wire);
-                assertTrue(wire.read("ts").int64() <= currentTimeMillis());
-                assertEquals(ChronicleLogLevel.DEBUG, wire.read("level").asEnum(ChronicleLogLevel.class));
+                assertTrue(wire.read("instant").zonedDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)));
+                assertEquals(50, wire.read("level").int32());
                 assertEquals(Thread.currentThread().getName(), wire.read("threadName").text());
                 assertEquals(this.getClass().getCanonicalName(), wire.read("loggerName").text());
-                assertEquals("Test debug message", wire.read("message").text());
+                assertEquals("Test debug message", wire.read("entry").text());
                 assertFalse(wire.hasMore());
             }
             try (DocumentContext dc = tailer.readingDocument()) {

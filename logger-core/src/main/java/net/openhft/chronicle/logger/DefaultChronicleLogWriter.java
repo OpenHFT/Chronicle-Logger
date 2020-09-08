@@ -17,18 +17,30 @@
  */
 package net.openhft.chronicle.logger;
 
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
+/**
+ * A log writer that defers encoding to the logging framework in question.
+ *
+ *  <ul>
+ *      <li>Timestamp written as zoned date time in UTC</li>
+ *      <li>Level written out as raw integer (log4j2 can have custom levels)</li>
+ *      <li>Uses encoded bytes (much safer than having throwable/args encoded directly)</li>
+ *      <li>Optional content type as HTTP content type (bytes are known SMILE/CBOR/ION/JSON+UTF8)</li>
+ *      <li>Optional encoding as HTTP content encoding header (zstd/br/gzip) etc</li>
+ *  </ul>
+ */
 public class DefaultChronicleLogWriter implements ChronicleLogWriter {
 
     private static final ThreadLocal<Boolean> REENTRANCY_FLAG = ThreadLocal.withInitial(() -> false);
-    private static final ThreadLocal<SimpleDateFormat> tsFormatter = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
 
     private final ChronicleQueue cq;
 
@@ -42,42 +54,26 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
     }
 
     @Override
-    public void write(
-            final ChronicleLogLevel level,
-            final long timestamp,
-            final String threadName,
-            final String loggerName,
-            final String message) {
-        write(level, timestamp, threadName, loggerName, message, null);
+    public void write(@NotNull Instant timestamp, int level, String threadName, @NotNull String loggerName, @NotNull BytesStore entry) {
+        write(timestamp, level, threadName, loggerName, entry, null, null);
     }
 
     @Override
     public void write(
-            final ChronicleLogLevel level,
-            final long timestamp,
+            final Instant timestamp,
+            final int level,
             final String threadName,
             final String loggerName,
-            final String message,
-            final Throwable throwable,
-            final Object... args) {
+            final BytesStore entry,
+            final String contentType,
+            final String contentEncoding) {
         if (REENTRANCY_FLAG.get()) {
-            if (throwable == null) {
-                System.out.printf("%s|%s|%s|%s|%s%n",
-                        tsFormatter.get().format(timestamp),
-                        level.toString(),
-                        threadName,
-                        loggerName,
-                        message);
-
-            } else {
-                System.out.printf("%s|%s|%s|%s|%s|%s%n",
-                        tsFormatter.get().format(timestamp),
-                        level.toString(),
-                        threadName,
-                        loggerName,
-                        message,
-                        throwable.toString());
-            }
+            System.out.printf("%s|%s|%s|%s|%s%n",
+                    timestamp.toString(),
+                    level,
+                    threadName,
+                    loggerName,
+                    entry.toDebugString());
             return;
         }
         REENTRANCY_FLAG.set(true);
@@ -85,26 +81,17 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             Wire wire = dc.wire();
             assert wire != null;
             wire
-                    .write("ts").int64(timestamp)
-                    .write("level").asEnum(level)
+                    .write("instant").zonedDateTime(timestamp.atZone(ZoneOffset.UTC)) // there is no "instant" mapping
+                    .write("level").int32(level) // log4j2 can have custom levels
                     .write("threadName").text(threadName)
                     .write("loggerName").text(loggerName)
-                    .write("message").text(message);
-
-            if (throwable != null) {
-                wire.write("throwable").throwable(throwable);
-            }
-
-            if (args != null && args.length > 0) {
-                wire.write("args").sequence(vo -> {
-                    for (Object o : args)
-                        try {
-                            vo.object(o);
-                        } catch (IllegalArgumentException unsupported) {
-                            vo.text(o.toString());
-                        }
-                });
-            }
+                    .write("entry").bytes(entry);
+                    if (contentType != null) {
+                        wire.write("type").text(contentType); // HTTP content-type header,
+                    }
+                    if (contentEncoding != null) {
+                        wire.write("encoding").text(contentEncoding);
+                    }
         } finally {
             REENTRANCY_FLAG.set(false);
         }
@@ -113,4 +100,5 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
     public WireType getWireType() {
         return cq.wireType();
     }
+
 }

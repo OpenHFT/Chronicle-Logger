@@ -17,18 +17,18 @@
  */
 package net.openhft.chronicle.logger.log4j1;
 
-import net.openhft.chronicle.logger.ChronicleLogLevel;
-import org.slf4j.Logger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.io.File;
+
+import static org.apache.log4j.Level.*;
 
 class Log4j1TestBase {
 
     // *************************************************************************
     //
     // *************************************************************************
-
-    static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");
@@ -47,29 +47,21 @@ class Log4j1TestBase {
                 + type;
     }
 
-    static void log(Logger logger, ChronicleLogLevel level, String fmt, Object... args) {
-        switch (level) {
-            case TRACE:
-                logger.trace(fmt, args);
-                break;
-
-            case DEBUG:
-                logger.debug(fmt, args);
-                break;
-
-            case INFO:
-                logger.info(fmt, args);
-                break;
-
-            case WARN:
-                logger.warn(fmt, args);
-                break;
-
-            case ERROR:
-                logger.error(fmt, args);
-                break;
-            default:
-                throw new UnsupportedOperationException();
+    static void log(Logger logger, Level level, String fmt, Throwable args) {
+        if (TRACE.equals(level)) {
+            logger.trace(fmt, args);
+        } else if (DEBUG.equals(level)) {
+            logger.debug(fmt, args);
+        } else if (INFO.equals(level)) {
+            logger.info(fmt, args);
+        } else if (WARN.equals(level)) {
+            logger.warn(fmt, args);
+        } else if (ERROR.equals(level)) {
+            logger.error(fmt, args);
+        } else if (FATAL.equals(level)) {
+            logger.fatal(fmt, args);
+        } else {
+            throw new UnsupportedOperationException();
         }
     }
 }

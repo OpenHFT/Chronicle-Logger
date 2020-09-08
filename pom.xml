@@ -52,13 +52,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- apache commons logging -->
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.2</version>
-            </dependency>
-
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-logger-core</artifactId>
@@ -114,8 +107,6 @@
     <modules>
         <module>logger-core</module>
         <module>logger-jul</module>
-        <module>logger-jcl</module>
-        <module>logger-slf4j</module>
         <module>logger-logback</module>
         <module>logger-log4j-1</module>
         <module>logger-log4j-2</module>

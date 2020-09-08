@@ -17,14 +17,12 @@
  */
 package net.openhft.chronicle.logger.logback;
 
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
-import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 
 import java.io.IOException;
@@ -53,23 +51,6 @@ public abstract class AbstractChronicleAppender
     // *************************************************************************
     // Custom logging options
     // *************************************************************************
-
-    public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
-        switch (level.levelInt) {
-            case Level.DEBUG_INT:
-                return ChronicleLogLevel.DEBUG;
-            case Level.TRACE_INT:
-                return ChronicleLogLevel.TRACE;
-            case Level.INFO_INT:
-                return ChronicleLogLevel.INFO;
-            case Level.WARN_INT:
-                return ChronicleLogLevel.WARN;
-            case Level.ERROR_INT:
-                return ChronicleLogLevel.ERROR;
-            default:
-                throw new IllegalArgumentException(level.levelInt + " not a valid level value");
-        }
-    }
 
     public String getPath() {
         return this.path;
@@ -138,7 +119,6 @@ public abstract class AbstractChronicleAppender
     public void start() {
         if (getPath() == null) {
             addError("Appender " + getName() + " has configuration errors and is not started!");
-
         } else {
             try {
                 this.writer = createWriter();
@@ -169,8 +149,9 @@ public abstract class AbstractChronicleAppender
 
     @Override
     public void doAppend(final ILoggingEvent event) {
-        if (getFilterChainDecision(event) != FilterReply.DENY) {
-            doAppend(event, writer);
+        if (!started) {
+            return;
         }
+        doAppend(event, writer);
     }
 }

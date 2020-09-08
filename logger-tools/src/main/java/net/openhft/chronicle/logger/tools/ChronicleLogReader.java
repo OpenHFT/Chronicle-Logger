@@ -17,17 +17,16 @@
  */
 package net.openhft.chronicle.logger.tools;
 
-import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.helpers.MessageFormatter;
 
-import java.text.SimpleDateFormat;
+import java.nio.charset.StandardCharsets;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,6 @@ import java.util.List;
  * Generic tool allowing users to process Chronicle logs in their own way
  */
 public class ChronicleLogReader {
-    private static final SimpleDateFormat tsFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private final ChronicleQueue cq;
 
     /**
@@ -56,39 +54,6 @@ public class ChronicleLogReader {
             @NotNull String path,
             @NotNull WireType wireType) {
         cq = ChronicleQueue.singleBuilder(path).wireType(wireType).build();
-    }
-
-    /**
-     * Simple {@link ChronicleLogProcessor} implementation. Prints formatted message to stdout
-     */
-    public static void printf(
-            long timestamp,
-            ChronicleLogLevel level,
-            String loggerName,
-            String threadName,
-            String message,
-            @Nullable Throwable throwable,
-            Object[] args) {
-
-        message = MessageFormatter.arrayFormat(message, args).getMessage();
-
-        if (throwable == null) {
-            System.out.printf("%s [%s] [%s] [%s] %s%n",
-                    tsFormat.format(timestamp),
-                    level.toString(),
-                    threadName,
-                    loggerName,
-                    message);
-
-        } else {
-            System.out.printf("%s [%s] [%s] [%s] %s%n%s%n",
-                    tsFormat.format(timestamp),
-                    level.toString(),
-                    threadName,
-                    loggerName,
-                    message,
-                    throwable.toString());
-        }
     }
 
     /**
@@ -114,23 +79,30 @@ public class ChronicleLogReader {
                         break;
                     }
 
-                long timestamp = wire.read("ts").int64();
-                ChronicleLogLevel level = wire.read("level").asEnum(ChronicleLogLevel.class);
-                String threadName = wire.read("threadName").text();
-                String loggerName = wire.read("loggerName").text();
-                String message = wire.read("message").text();
-                Throwable th = wire.hasMore() ? wire.read("throwable").throwable(false) : null;
-                List<Object> argsL = new ArrayList<>();
-                if (wire.hasMore()) {
-                    wire.read("args").sequence(argsL, (l, vi) -> {
-                        while (vi.hasNextSequenceItem()) {
-                            l.add(vi.object(Object.class));
-                        }
-                    });
-                }
-                Object[] args = argsL.toArray(new Object[argsL.size()]);
-                processor.process(timestamp, level, threadName, loggerName, message, th, args);
+                ChronicleLogEvent logEvent = createLogEvent(wire);
+                processor.process(logEvent);
             }
         }
+    }
+
+    private ChronicleLogEvent createLogEvent(Wire wire) {
+        ZonedDateTime timestamp = wire.read("instant").zonedDateTime();
+        int level = wire.read("level").int32();
+        String threadName = wire.read("threadName").text();
+        String loggerName = wire.read("loggerName").text();
+
+        byte[] entry = wire.read("entry").bytes();
+
+        String contentType = null;
+        if (wire.hasMore()) {
+            contentType = wire.read("type").text();
+        }
+
+        String encoding = null;
+        if (wire.hasMore()) {
+            encoding = wire.read("encoding").text();
+        }
+
+        return new ChronicleLogEvent(timestamp.toInstant(), level, threadName, loggerName, entry, contentType, encoding);
     }
 }

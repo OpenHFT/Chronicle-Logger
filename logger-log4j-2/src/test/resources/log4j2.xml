@@ -42,6 +42,7 @@
             <chronicleCfg>
                 <rollCycle>HOURLY</rollCycle>
             </chronicleCfg>
+            <PatternLayout pattern="%level %msg"/>
         </Chronicle>
 
     </appenders>

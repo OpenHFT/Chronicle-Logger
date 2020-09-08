@@ -17,9 +17,9 @@
  */
 package net.openhft.chronicle.logger.log4j2;
 
-import net.openhft.chronicle.logger.ChronicleLogLevel;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
@@ -28,8 +28,6 @@ public class Log4j2TestBase {
     // *************************************************************************
     //
     // *************************************************************************
-
-    static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");
@@ -48,29 +46,21 @@ public class Log4j2TestBase {
                 + type;
     }
 
-    static void log(Logger logger, ChronicleLogLevel level, String fmt, Object... args) {
-        switch (level) {
-            case TRACE:
-                logger.trace(fmt, args);
-                break;
-
-            case DEBUG:
-                logger.debug(fmt, args);
-                break;
-
-            case INFO:
-                logger.info(fmt, args);
-                break;
-
-            case WARN:
-                logger.warn(fmt, args);
-                break;
-
-            case ERROR:
-                logger.error(fmt, args);
-                break;
-            default:
-                throw new UnsupportedOperationException();
+    static void log(Logger logger, Level level, String fmt, Object... args) {
+        if (Level.TRACE.equals(level)) {
+            logger.trace(fmt, args);
+        } else if (Level.DEBUG.equals(level)) {
+            logger.debug(fmt, args);
+        } else if (Level.INFO.equals(level)) {
+            logger.info(fmt, args);
+        } else if (Level.WARN.equals(level)) {
+            logger.warn(fmt, args);
+        } else if (Level.ERROR.equals(level)) {
+            logger.error(fmt, args);
+        }  else if (Level.FATAL.equals(level)) {
+            logger.fatal(fmt, args);
+        } else {
+            throw new UnsupportedOperationException("Unknown level " + level);
         }
     }
 

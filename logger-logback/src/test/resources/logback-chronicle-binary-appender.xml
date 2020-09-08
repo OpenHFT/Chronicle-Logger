@@ -34,8 +34,9 @@
     <appender name  = "BINARY-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.ChronicleAppender">
         <path>${java.io.tmpdir}/chronicle-logback/binary-chronicle</path>
-        <includeCallerData>false</includeCallerData>
-        <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%msg</pattern>
+        </encoder>
     </appender>
 
     <logger name="binary-chronicle" level="TRACE" additivity="false">

@@ -17,16 +17,6 @@
  */
 package net.openhft.chronicle.logger.tools;
 
-import net.openhft.chronicle.logger.ChronicleLogLevel;
-import org.jetbrains.annotations.Nullable;
-
 public interface ChronicleLogProcessor {
-    void process(
-            final long timestamp,
-            final ChronicleLogLevel level,
-            final String loggerName,
-            final String threadName,
-            final String message,
-            @Nullable final Throwable throwable,
-            final Object[] args);
+    void process(ChronicleLogEvent e);
 }

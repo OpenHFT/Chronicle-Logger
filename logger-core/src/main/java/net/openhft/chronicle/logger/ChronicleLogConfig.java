@@ -48,7 +48,6 @@ import java.util.Properties;
  * chronicle.logger.Logger1.wireType = json
  */
 public class ChronicleLogConfig {
-    public static final String KEY_LEVEL = "level";
     public static final String KEY_PATH = "path";
     public static final String KEY_WIRETYPE = "wireType";
     public static final String KEY_APPEND = "append";
@@ -277,12 +276,4 @@ public class ChronicleLogConfig {
         return (prop != null) ? Long.parseLong(prop) : null;
     }
 
-    public ChronicleLogLevel getLevel(final String loggerName) {
-        return getLevel(loggerName, null);
-    }
-
-    public ChronicleLogLevel getLevel(final String loggerName, ChronicleLogLevel defVal) {
-        String prop = getString(loggerName, KEY_LEVEL);
-        return (prop != null) ? ChronicleLogLevel.fromStringLevel(prop) : defVal;
-    }
 }

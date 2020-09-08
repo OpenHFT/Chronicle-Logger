@@ -37,8 +37,8 @@ public final class ChroniTail {
                 }
 
                 ChronicleLogReader reader = new ChronicleLogReader(args[i].trim(), wt);
-
-                reader.processLogs(ChronicleLogReader::printf, true);
+                ChronicleLogProcessor processor = new StdoutLogProcessor(new DefaultChronicleEntryProcessor());
+                reader.processLogs(processor, true);
 
             } else {
                 System.err.println("\nUsage: ChroniTail [-w <wireType>] <path>");

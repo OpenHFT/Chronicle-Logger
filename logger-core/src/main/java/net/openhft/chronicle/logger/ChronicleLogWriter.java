@@ -17,24 +17,46 @@
  */
 package net.openhft.chronicle.logger;
 
+import net.openhft.chronicle.bytes.BytesStore;
+
 import java.io.Closeable;
+import java.time.Instant;
 
 public interface ChronicleLogWriter extends Closeable {
 
+    /**
+     * Writes a logging event to the store.
+     *
+     * @param level the integer level of the log event.
+     * @param timestamp event timestamp.
+     * @param threadName thread name of the event.
+     * @param loggerName logger that caused this event.
+     * @param entry the bytes containing the event.
+     */
     void write(
-            ChronicleLogLevel level,
-            long timestamp,
-            String threadName,
-            String loggerName,
-            String message);
+            final Instant timestamp,
+            final int level,
+            final String threadName,
+            final String loggerName,
+            final BytesStore entry);
 
+    /**
+     * Writes a logging event to the store.
+     *
+     * @param level the integer level of the log event.
+     * @param timestamp event timestamp.
+     * @param threadName thread name of the event.
+     * @param loggerName logger that caused this event.
+     * @param entry the bytes containing the encoded event.
+     * @param contentType the content type of the entry.
+     * @param contentEncoding the encoding (compression, usually) of the entry.
+     */
     void write(
-            ChronicleLogLevel level,
-            long timestamp,
-            String threadName,
-            String loggerName,
-            String message,
-            Throwable throwable,
-            Object... args);
-
+            final Instant timestamp,
+            final int level,
+            final String threadName,
+            final String loggerName,
+            final BytesStore entry,
+            final String contentType,
+            final String contentEncoding);
 }

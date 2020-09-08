@@ -25,7 +25,7 @@ import java.util.logging.LogManager;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class JulHandlerTestBase extends JulTestBase {
+public class JulHandlerTestBase {
 
     // *************************************************************************
     //

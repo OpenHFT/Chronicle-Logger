@@ -17,19 +17,20 @@
  */
 package net.openhft.chronicle.logger.log4j2;
 
-import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 public abstract class AbstractChronicleAppender extends AbstractAppender {
 
@@ -38,36 +39,18 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
 
     private ChronicleLogWriter writer;
 
-    AbstractChronicleAppender(String name, Filter filter, String path, String wireType) {
-        super(name, filter, null, true);
+    AbstractChronicleAppender(String name,
+                              Filter filter,
+                              Layout<? extends Serializable> layout,
+                              boolean ignoreExceptions,
+                              Property[] properties,
+                              String path,
+                              String wireType) {
+        super(name, filter, layout, ignoreExceptions, properties);
 
         this.path = path;
         this.wireType = wireType;
         this.writer = null;
-    }
-
-    // *************************************************************************
-    // Custom logging options
-    // *************************************************************************
-
-    static ChronicleLogLevel toChronicleLogLevel(final Level level) {
-        if (level.intLevel() == Level.DEBUG.intLevel()) {
-            return ChronicleLogLevel.DEBUG;
-
-        } else if (level.intLevel() == Level.TRACE.intLevel()) {
-            return ChronicleLogLevel.TRACE;
-
-        } else if (level.intLevel() == Level.INFO.intLevel()) {
-            return ChronicleLogLevel.INFO;
-
-        } else if (level.intLevel() == Level.WARN.intLevel()) {
-            return ChronicleLogLevel.WARN;
-
-        } else if (level.intLevel() == Level.ERROR.intLevel()) {
-            return ChronicleLogLevel.ERROR;
-        }
-
-        throw new IllegalArgumentException(level.intLevel() + " not a valid level value");
     }
 
     public String getPath() {
@@ -134,6 +117,9 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
+        if (! isStarted()) {
+            throw new IllegalStateException("Not started!");
+        }
         if (this.writer != null) {
             doAppend(event, writer);
         }
