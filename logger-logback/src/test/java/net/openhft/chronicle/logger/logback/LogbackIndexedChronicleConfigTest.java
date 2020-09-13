@@ -27,12 +27,9 @@ import static org.junit.Assert.*;
 
 public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
 
-    @Before
-    public void setup() {
-        System.setProperty(
-                "logback.configurationFile",
-                System.getProperty("resources.path") + "/logback-chronicle-config.xml"
-        );
+    @Override
+    String getResource() {
+        return "/logback-chronicle-config.xml";
     }
 
     // *************************************************************************

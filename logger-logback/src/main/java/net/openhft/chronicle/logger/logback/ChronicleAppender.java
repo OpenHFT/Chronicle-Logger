@@ -18,21 +18,28 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.joran.spi.DefaultClass;
-import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
+import net.openhft.chronicle.logger.codec.Codec;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
+import net.openhft.chronicle.logger.codec.IdentityCodec;
+import net.openhft.chronicle.logger.codec.ZStandardCodec;
+import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 
 public class ChronicleAppender extends AbstractChronicleAppender {
 
     protected LogAppenderConfig config;
     protected Encoder<ILoggingEvent> encoder;
+    private String contentType = null;
+    private String contentEncoding = null;
 
     public ChronicleAppender() {
         super();
@@ -50,7 +57,10 @@ public class ChronicleAppender extends AbstractChronicleAppender {
 
     @Override
     protected ChronicleLogWriter createWriter() throws IOException {
-        return new DefaultChronicleLogWriter(this.config.build(this.getPath(), getWireType()));
+        ChronicleQueue cq = this.config.build(this.getPath(), getWireType());
+        Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
+        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
+        return new DefaultChronicleLogWriter(registry, cq);
     }
 
     public Encoder<ILoggingEvent> getEncoder() {
@@ -59,6 +69,14 @@ public class ChronicleAppender extends AbstractChronicleAppender {
 
     public void setEncoder(Encoder<ILoggingEvent> encoder) {
         this.encoder = encoder;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public void setContentEncoding(String contentEncoding) {
+        this.contentEncoding = contentEncoding;
     }
 
     @Override
@@ -76,13 +94,16 @@ public class ChronicleAppender extends AbstractChronicleAppender {
 
     @Override
     public void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer) {
-        byte[] encode = encoder.encode(event);
+        byte[] entry = encoder.encode(event);
         writer.write(
                 Instant.ofEpochMilli(event.getTimeStamp()),
                 event.getLevel().toInt(),
                 event.getThreadName(),
                 event.getLoggerName(),
-                (encode != null) ? BytesStore.wrap(encode) : BytesStore.empty()
+                entry,
+                contentType,
+                contentEncoding
         );
     }
+
 }

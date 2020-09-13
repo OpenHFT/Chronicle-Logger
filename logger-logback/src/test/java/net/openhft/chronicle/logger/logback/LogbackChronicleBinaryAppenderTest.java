@@ -17,6 +17,10 @@
  */
 package net.openhft.chronicle.logger.logback;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
@@ -27,33 +31,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.ZoneOffset;
 
+import static ch.qos.logback.classic.Level.*;
 import static org.junit.Assert.*;
 
 public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
-    @NotNull
-    private static ChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueue.singleBuilder(basePath(testId)).build();
-    }
 
-    @Before
-    public void setup() {
-        System.setProperty(
-                "logback.configurationFile",
-                System.getProperty("resources.path")
-                        + "/logback-chronicle-binary-appender.xml");
-    }
-
-    @After
-    public void tearDown() {
-        IOTools.deleteDirWithFiles(rootPath());
+    @Override
+    String getResource() {
+        return "/logback-chronicle-binary-appender.xml";
     }
 
     @Test
@@ -61,26 +54,29 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
         final String testId = "binary-chronicle";
         final String threadId = testId + "-th";
 
-        final Logger logger = LoggerFactory.getLogger(testId);
+        final Logger logger = getLoggerContext().getLogger(testId);
         Files.createDirectories(Paths.get(basePath(testId)));
 
         Thread.currentThread().setName(threadId);
 
-        for (Level level : Level.values()) {
+        Level[] levels = { ERROR, WARN, INFO, DEBUG, TRACE };
+        for (Level level : levels) {
             log(logger, level, "level is {}", level);
         }
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
-            for (Level level: Level.values()) {
+            for (Level level: levels) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
                     assertNotNull("log not found for " + level, wire);
                     assertTrue(wire.read("instant").zonedDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)));
-                    assertEquals(ch.qos.logback.classic.Level.toLevel(level.name()).toInt(), wire.read("level").int32());
+                    assertEquals(level.toInt(), wire.read("level").int32());
                     assertEquals(threadId, wire.read("threadName").text());
                     assertEquals(testId, wire.read("loggerName").text());
-                    assertEquals("level is " + level.name(), wire.read("entry").text());
+                    assertEquals("level is " + level.levelStr, wire.read("entry").text());
+                    assertNull(wire.read("type").text());
+                    assertNull(wire.read("encoding").text());
                     assertFalse(wire.hasMore());
                 }
             }
@@ -96,13 +92,15 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
                 Wire wire = dc.wire();
                 assertNotNull(wire);
                 assertTrue(wire.read("instant").zonedDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)));
-                assertEquals(ch.qos.logback.classic.Level.DEBUG.toInt(), wire.read("level").int32());
+                assertEquals(Level.DEBUG.toInt(), wire.read("level").int32());
                 assertEquals(threadId, wire.read("threadName").text());
                 assertEquals(testId, wire.read("loggerName").text());
                 String entry = wire.read("entry").text();
                 assertTrue(entry.startsWith("Throwable test 1"));
                 assertTrue(entry.contains("UnsupportedOperationException"));
                 // java.lang.UnsupportedOperationException: null
+                assertNull(wire.read("type").text());
+                assertNull(wire.read("encoding").text());
                 assertFalse(wire.hasMore());
             }
 
@@ -110,13 +108,14 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
                 Wire wire = dc.wire();
                 assertNotNull(wire);
                 assertTrue(wire.read("instant").zonedDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)));
-                assertEquals(ch.qos.logback.classic.Level.DEBUG.toInt(), wire.read("level").int32());
+                assertEquals(Level.DEBUG.toInt(), wire.read("level").int32());
                 assertEquals(threadId, wire.read("threadName").text());
                 assertEquals(testId, wire.read("loggerName").text());
                 String entry = wire.read("entry").text();
                 assertTrue(entry.startsWith("Throwable test 2"));
                 assertTrue(entry.contains("UnsupportedOperationException: Exception message"));
-
+                assertNull(wire.read("type").text());
+                assertNull(wire.read("encoding").text());
                 assertFalse(wire.hasMore());
             }
 

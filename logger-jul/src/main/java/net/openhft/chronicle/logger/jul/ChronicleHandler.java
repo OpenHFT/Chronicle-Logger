@@ -17,14 +17,17 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.bytes.Bytes;
-import net.openhft.chronicle.logger.ChronicleLogWriter;
-import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
-import net.openhft.chronicle.logger.LogAppenderConfig;
+import net.openhft.chronicle.logger.*;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
+import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -32,7 +35,7 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.XMLFormatter;
 
 import static java.lang.invoke.MethodType.methodType;
-import static net.openhft.chronicle.logger.ChronicleLogConfig.KEY_WIRETYPE;
+
 
 public class ChronicleHandler extends AbstractChronicleHandler {
 
@@ -45,10 +48,13 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         setLevel(handlerCfg.getLevel("level", Level.ALL));
         setFilter(handlerCfg.getFilter("filter", null));
 
-        setWriter(new DefaultChronicleLogWriter(appenderCfg.build(
-                appenderPath,
-                handlerCfg.getStringProperty(KEY_WIRETYPE, "BINARY_LIGHT"))
-        ));
+        String wireType = handlerCfg.getStringProperty("wireType", "BINARY_LIGHT");
+        ChronicleQueue cq = appenderCfg.build(appenderPath, wireType);
+        Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
+        Path dictionaryPath = parent.resolve("dictionary");
+        CodecRegistry registry = CodecRegistry.builder().withDefaults(dictionaryPath).build();
+        DefaultChronicleLogWriter chronicleLogWriter = new DefaultChronicleLogWriter(registry, cq);
+        setWriter(chronicleLogWriter);
     }
 
     @Override
@@ -59,7 +65,6 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         String threadName = "thread-" + record.getThreadID();
         String loggerName = record.getLoggerName();
         String format = getFormatter().format(record);
-        Bytes entry = Bytes.from(format);
         String charsetEncoding = getEncoding();
 
         String contentType;
@@ -76,7 +81,7 @@ public class ChronicleHandler extends AbstractChronicleHandler {
                     level,
                     threadName,
                     loggerName,
-                    entry,
+                    format.getBytes(Charset.forName(charsetEncoding)),
                     contentType + "; charset=" + charsetEncoding,
                     "identity"
             );
@@ -86,7 +91,7 @@ public class ChronicleHandler extends AbstractChronicleHandler {
                     level,
                     threadName,
                     loggerName,
-                    entry,
+                    format.getBytes(StandardCharsets.UTF_8),
                     contentType,
                     "identity"
             );

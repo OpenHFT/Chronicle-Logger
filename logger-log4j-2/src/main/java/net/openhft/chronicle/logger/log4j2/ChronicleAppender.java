@@ -17,10 +17,13 @@
  */
 package net.openhft.chronicle.logger.log4j2;
 
-import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
+import net.openhft.chronicle.logger.codec.Codec;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
+import net.openhft.chronicle.logger.codec.IdentityCodec;
+import net.openhft.chronicle.queue.ChronicleQueue;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -33,6 +36,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 
 @Plugin(
@@ -51,8 +56,10 @@ public class ChronicleAppender extends AbstractChronicleAppender {
                              final Property[] properties,
                              final String path,
                              final String wireType,
-                             final ChronicleCfg config) {
-        super(name, filter, layout, ignoreExceptions, properties, path, wireType);
+                             final ChronicleCfg config,
+                             final String contentType,
+                             final String contentEncoding) {
+        super(name, filter, layout, ignoreExceptions, properties, path, wireType, contentType, contentEncoding);
 
         this.config = config != null ? config : new ChronicleCfg();
     }
@@ -66,6 +73,8 @@ public class ChronicleAppender extends AbstractChronicleAppender {
             @PluginAttribute("name") final String name,
             @PluginAttribute("path") final String path,
             @PluginAttribute("wireType") final String wireType,
+            @PluginAttribute("contentType") final String contentType,
+            @PluginAttribute("contentEncoding") final String contentEncoding,
             @PluginElement("layout") final Layout<? extends Serializable> layout,
             @PluginElement("chronicleCfg") final ChronicleCfg chronicleConfig,
             @PluginElement("filter") final Filter filter) {
@@ -81,28 +90,32 @@ public class ChronicleAppender extends AbstractChronicleAppender {
 
         boolean ignoreExceptions = true;
         Property[] properties = {};
-        return new ChronicleAppender(name, filter, layout, ignoreExceptions, properties, path, wireType, chronicleConfig);
+        return new ChronicleAppender(name, filter, layout, ignoreExceptions, properties, path, wireType, chronicleConfig, contentType, contentEncoding);
     }
 
     @Override
     public void doAppend(@NotNull final LogEvent event, @NotNull final ChronicleLogWriter writer) {
         Instant instant = Instant.ofEpochMilli(event.getTimeMillis()).plusNanos(event.getNanoTime());
-        byte[] bytes = getLayout().toByteArray(event);
         int level = event.getLevel().intLevel();
+        byte[] entry = getLayout().toByteArray(event);
+        String contentEncoding = getContentEncoding();
         writer.write(
                 instant,
                 level,
                 event.getThreadName(),
                 event.getLoggerName(),
-                BytesStore.wrap(bytes),
-                null,
-                null
+                entry,
+                getContentType(),
+                contentEncoding
         );
     }
 
     @Override
     protected ChronicleLogWriter createWriter() throws IOException {
-        return new DefaultChronicleLogWriter(config.build(getPath(), getWireType()));
+        ChronicleQueue cq = config.build(getPath(), getWireType());
+        Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
+        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
+        return new DefaultChronicleLogWriter(registry, cq);
     }
 
     // *************************************************************************

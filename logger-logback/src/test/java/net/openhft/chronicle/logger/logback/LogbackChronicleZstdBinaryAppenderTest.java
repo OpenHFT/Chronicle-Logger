@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.openhft.chronicle.logger.log4j2;
+package net.openhft.chronicle.logger.logback;
 
-import net.openhft.chronicle.core.OS;
+import ch.qos.logback.classic.Level;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleEntryProcessor;
 import net.openhft.chronicle.logger.ChronicleEventReader;
@@ -27,12 +27,8 @@ import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.junit.After;
 import org.junit.Test;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,62 +36,39 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 
+import static ch.qos.logback.classic.Level.*;
 import static org.junit.Assert.*;
 
-public class Log4j2BinaryTest extends Log4j2TestBase {
+public class LogbackChronicleZstdBinaryAppenderTest extends LogbackTestBase {
 
-    @NotNull
-    private static ChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueue.singleBuilder(basePath(testId)).build();
-    }
-
-    @After
-    public void tearDown() {
-        IOTools.deleteDirWithFiles(rootPath());
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    @Test
-    public void testConfig() {
-        // needs to be initialised before trying to get the appender, otherwise we end up in a loop
-        final Logger logger = LogManager.getLogger(OS.class);
-        final String appenderName = "CONF-CHRONICLE";
-
-        final org.apache.logging.log4j.core.Appender appender = getAppender(appenderName);
-
-        assertNotNull(appender);
-        assertEquals(appenderName, appender.getName());
-        assertTrue(appender instanceof ChronicleAppender);
-
-        final ChronicleAppender ba = (ChronicleAppender) appender;
-        assertEquals(128, ba.getChronicleConfig().getBlockSize());
-        assertEquals(256, ba.getChronicleConfig().getBufferCapacity());
+    @Override
+    String getResource() {
+        return "/logback-chronicle-zstd-binary-appender.xml";
     }
 
     @Test
-    public void testIndexedAppender() throws IOException {
-        final String testId = "chronicle";
+    public void testZstdBinaryAppender() throws IOException {
+        final String testId = "binary-zstd-chronicle";
         final String threadId = testId + "-th";
-        final Logger logger = LogManager.getLogger(testId);
 
-        Thread.currentThread().setName(threadId);
+        final Logger logger = getLoggerContext().getLogger(testId);
         Path path = Paths.get(basePath(testId));
         Files.createDirectories(path);
 
-        Level[] values = { Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR, Level.FATAL };
-        for (Level level : values) {
+        Thread.currentThread().setName(threadId);
+
+        Level[] levels = { ERROR, WARN, INFO, DEBUG, TRACE };
+        for (Level level : levels) {
             log(logger, level, "level is {}", level);
         }
+
         ChronicleEventReader eventReader = new ChronicleEventReader();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
         ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(registry);
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
-            for (Level level : values) {
+            for (Level level: levels) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
                     assertNotNull("log not found for " + level, wire);
@@ -103,13 +76,12 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
                     ChronicleLogEvent logEvent = eventReader.createLogEvent(wire);
                     assertFalse(wire.hasMore());
                     assertTrue(logEvent.timestamp.isBefore(Instant.now()));
-                    assertEquals(level.intLevel(), logEvent.level);
+                    assertEquals(level.toInt(), logEvent.level);
                     assertEquals(threadId, logEvent.threadName);
                     assertEquals(testId, logEvent.loggerName);
-                    assertEquals("level is " + level.toString(), processor.apply(logEvent));
+                    assertEquals("level is " + level.levelStr, processor.apply(logEvent));
                 }
             }
-
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
                 assertNull(wire);

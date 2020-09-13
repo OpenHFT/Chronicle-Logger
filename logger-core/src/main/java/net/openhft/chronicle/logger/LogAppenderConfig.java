@@ -34,7 +34,8 @@ public class LogAppenderConfig {
     private static final String[] KEYS = new String[]{
             "blockSize",
             "bufferCapacity",
-            "rollCycle"
+            "rollCycle",
+            "compression"
     };
 
     private int blockSize;
@@ -129,4 +130,5 @@ public class LogAppenderConfig {
         } catch (Exception e) {
         }
     }
+
 }

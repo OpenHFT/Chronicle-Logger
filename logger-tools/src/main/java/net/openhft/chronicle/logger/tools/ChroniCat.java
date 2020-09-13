@@ -17,7 +17,15 @@
  */
 package net.openhft.chronicle.logger.tools;
 
-import net.openhft.chronicle.wire.WireType;
+import net.openhft.chronicle.logger.ChronicleEntryProcessor;
+import net.openhft.chronicle.logger.ChronicleEventReader;
+import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
+import net.openhft.chronicle.logger.codec.Codec;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
+import net.openhft.chronicle.queue.ChronicleQueue;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public final class ChroniCat {
 
@@ -25,31 +33,20 @@ public final class ChroniCat {
     }
 
     public static void main(String[] args) {
-        try {
-
-            if (args.length >= 1) {
-                int i = 0;
-                final WireType wt;
-                if ("-w".equals(args[i])) {
-                    wt = WireType.valueOf(args[++i].trim().toUpperCase());
-                    i++;
-                } else {
-                    wt = WireType.BINARY_LIGHT;
-                }
-
-                ChronicleLogReader reader = new ChronicleLogReader(args[i].trim(), wt);
-                ChronicleEntryProcessor entryProcessor = new DefaultChronicleEntryProcessor();
-                ChronicleLogProcessor logProcessor = new StdoutLogProcessor(entryProcessor);
-                reader.processLogs(logProcessor, false);
-
-            } else {
-                System.err.println("\nUsage: ChroniCat [-w <wireType>] <path>");
-                System.err.println("  <wireType> - wire format, default BINARY_LIGHT");
-                System.err.println("  <path>     - base path of Chronicle Logs storage");
-            }
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
+        ChronicleQueue cq = ChronicleArgs.createChronicleQueue(args);
+        if (cq == null) {
+            System.err.println("\nUsage: ChroniCat [-w <wireType>] <path>");
+            System.err.println("  <wireType> - wire format, default BINARY_LIGHT");
+            System.err.println("  <path>     - base path of Chronicle Logs storage");
+            System.exit(-1);
         }
+
+        ChronicleEventReader reader = new ChronicleEventReader();
+        Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
+        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
+        ChronicleEntryProcessor<String> entryProcessor = new DefaultChronicleEntryProcessor(registry);
+        ChronicleLogProcessor logProcessor = e -> System.out.println(entryProcessor.apply(e));
+        logProcessor.processLogs(cq, reader, false);
     }
 
 }

@@ -17,18 +17,54 @@
  */
 package net.openhft.chronicle.logger.logback;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import net.openhft.chronicle.core.io.IOTools;
+import net.openhft.chronicle.queue.ChronicleQueue;
+import org.jetbrains.annotations.NotNull;
+import org.junit.After;
+import org.junit.Before;
+import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
-import static org.slf4j.event.Level.*;
+import java.net.URL;
+import java.util.Objects;
 
-public class LogbackTestBase {
+import static ch.qos.logback.classic.Level.*;
+import static java.util.Objects.requireNonNull;
+
+public abstract class LogbackTestBase {
+    private LoggerContext context;
 
     // *************************************************************************
     //
     // *************************************************************************
+
+    @Before
+    public void setup() throws JoranException {
+        LoggerContext context = new LoggerContext();
+        String resourcePath = requireNonNull(getResource());
+        URL resource = requireNonNull(getClass().getResource(resourcePath));
+        JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext(context);
+        configurator.doConfigure(resource);
+        this.context = context;
+    }
+
+    @After
+    public void tearDown() {
+        IOTools.deleteDirWithFiles(rootPath());
+    }
+
+    abstract String getResource();
+
+    @NotNull
+    protected static ChronicleQueue getChronicleQueue(String testId) {
+        return ChronicleQueue.singleBuilder(basePath(testId)).build();
+    }
 
     static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");
@@ -48,28 +84,18 @@ public class LogbackTestBase {
     }
 
     static void log(Logger logger, Level level, String fmt, Object... args) {
-        switch (level) {
-            case TRACE:
-                logger.trace(fmt, args);
-                break;
-
-            case DEBUG:
-                logger.debug(fmt, args);
-                break;
-
-            case INFO:
-                logger.info(fmt, args);
-                break;
-
-            case WARN:
-                logger.warn(fmt, args);
-                break;
-
-            case ERROR:
-                logger.error(fmt, args);
-                break;
-            default:
-                throw new UnsupportedOperationException();
+        if (TRACE.equals(level)) {
+            logger.trace(fmt, args);
+        } else if (DEBUG.equals(level)) {
+            logger.debug(fmt, args);
+        } else if (INFO.equals(level)) {
+            logger.info(fmt, args);
+        } else if (WARN.equals(level)) {
+            logger.warn(fmt, args);
+        } else if (ERROR.equals(level)) {
+            logger.error(fmt, args);
+        } else {
+            throw new UnsupportedOperationException("Level not found " + level);
         }
     }
 
@@ -78,6 +104,6 @@ public class LogbackTestBase {
     // *************************************************************************
 
     LoggerContext getLoggerContext() {
-        return (LoggerContext) LoggerFactory.getILoggerFactory();
+        return context;
     }
 }

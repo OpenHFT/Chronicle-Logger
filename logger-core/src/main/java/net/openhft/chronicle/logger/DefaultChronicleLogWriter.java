@@ -18,6 +18,9 @@
 package net.openhft.chronicle.logger;
 
 import net.openhft.chronicle.bytes.BytesStore;
+import net.openhft.chronicle.logger.codec.Codec;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
+import net.openhft.chronicle.logger.codec.IdentityCodec;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
@@ -28,24 +31,18 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 
 /**
- * A log writer that defers encoding to the logging framework in question.
- *
- *  <ul>
- *      <li>Timestamp written as zoned date time in UTC</li>
- *      <li>Level written out as raw integer (log4j2 can have custom levels)</li>
- *      <li>Uses encoded bytes (much safer than having throwable/args encoded directly)</li>
- *      <li>Optional content type as HTTP content type (bytes are known SMILE/CBOR/ION/JSON+UTF8)</li>
- *      <li>Optional encoding as HTTP content encoding header (zstd/br/gzip) etc</li>
- *  </ul>
+ * A log writer that runs a compression operation based on the content encoding.
  */
 public class DefaultChronicleLogWriter implements ChronicleLogWriter {
 
     private static final ThreadLocal<Boolean> REENTRANCY_FLAG = ThreadLocal.withInitial(() -> false);
 
     private final ChronicleQueue cq;
+    private final CodecRegistry codecRegistry;
 
-    public DefaultChronicleLogWriter(@NotNull ChronicleQueue cq) {
+    public DefaultChronicleLogWriter(@NotNull CodecRegistry codecRegistry, @NotNull ChronicleQueue cq) {
         this.cq = cq;
+        this.codecRegistry = codecRegistry;
     }
 
     @Override
@@ -54,7 +51,7 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
     }
 
     @Override
-    public void write(@NotNull Instant timestamp, int level, String threadName, @NotNull String loggerName, @NotNull BytesStore entry) {
+    public void write(@NotNull Instant timestamp, int level, String threadName, @NotNull String loggerName, @NotNull byte[] entry) {
         write(timestamp, level, threadName, loggerName, entry, null, null);
     }
 
@@ -64,7 +61,7 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             final int level,
             final String threadName,
             final String loggerName,
-            final BytesStore entry,
+            final byte[] entry,
             final String contentType,
             final String contentEncoding) {
         if (REENTRANCY_FLAG.get()) {
@@ -73,25 +70,25 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
                     level,
                     threadName,
                     loggerName,
-                    entry.toDebugString());
+                    BytesStore.wrap(entry).toDebugString());
             return;
         }
+
         REENTRANCY_FLAG.set(true);
+
         try (final DocumentContext dc = cq.acquireAppender().writingDocument()) {
             Wire wire = dc.wire();
             assert wire != null;
+            Codec codec = codecRegistry.find(contentEncoding);
+            byte[] compressed = codec.compress(entry);
             wire
                     .write("instant").zonedDateTime(timestamp.atZone(ZoneOffset.UTC)) // there is no "instant" mapping
-                    .write("level").int32(level) // log4j2 can have custom levels
+                    .write("level").int32(level) // log4j2 can have custom levels, log4j has FATAL level
                     .write("threadName").text(threadName)
                     .write("loggerName").text(loggerName)
-                    .write("entry").bytes(entry);
-                    if (contentType != null) {
-                        wire.write("type").text(contentType); // HTTP content-type header,
-                    }
-                    if (contentEncoding != null) {
-                        wire.write("encoding").text(contentEncoding);
-                    }
+                    .write("entry").bytes(compressed)
+                    .write("type").text(contentType) // HTTP content-type header
+                    .write("encoding").text(contentEncoding); // HTTP content encoding header
         } finally {
             REENTRANCY_FLAG.set(false);
         }

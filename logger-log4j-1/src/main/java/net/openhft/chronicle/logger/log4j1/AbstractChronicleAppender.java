@@ -29,6 +29,8 @@ import org.apache.log4j.spi.*;
 import java.io.IOException;
 import java.time.Instant;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public abstract class AbstractChronicleAppender implements Appender, OptionHandler {
 
     protected ChronicleLogWriter writer;
@@ -168,13 +170,13 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
                 }
             }
 
-            BytesStore entry = BytesStore.from(getLayout().format(event));
+            String format = getLayout().format(event);
             writer.write(
                     Instant.ofEpochMilli(event.getTimeStamp()),
                     event.getLevel().toInt(),
                     event.getThreadName(),
                     event.getLoggerName(),
-                    entry
+                    format.getBytes(UTF_8)
             );
 
         } else {

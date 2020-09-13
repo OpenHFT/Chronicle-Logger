@@ -20,8 +20,14 @@ package net.openhft.chronicle.logger.log4j1;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
+import net.openhft.chronicle.logger.codec.Codec;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
+import net.openhft.chronicle.logger.codec.IdentityCodec;
+import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public final class ChronicleAppender extends AbstractChronicleAppender {
 
@@ -53,7 +59,10 @@ public final class ChronicleAppender extends AbstractChronicleAppender {
 
     @Override
     protected ChronicleLogWriter createWriter() throws IOException {
-        return new DefaultChronicleLogWriter(this.config.build(this.getPath(), this.getWireType()));
+        ChronicleQueue cq = this.config.build(this.getPath(), this.getWireType());
+        Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
+        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
+        return new DefaultChronicleLogWriter(registry, cq);
     }
 
     // *************************************************************************

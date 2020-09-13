@@ -17,6 +17,41 @@
  */
 package net.openhft.chronicle.logger.tools;
 
+import net.openhft.chronicle.logger.ChronicleLogEvent;
+import net.openhft.chronicle.logger.ChronicleEventReader;
+import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.ExcerptTailer;
+import net.openhft.chronicle.wire.DocumentContext;
+import net.openhft.chronicle.wire.Wire;
+import org.jetbrains.annotations.NotNull;
+
+@FunctionalInterface
 public interface ChronicleLogProcessor {
     void process(ChronicleLogEvent e);
+
+    /**
+     * Decode logs
+     */
+    default void processLogs(@NotNull ChronicleQueue cq, ChronicleEventReader reader, boolean waitForIt) {
+        ExcerptTailer tailer = cq.createTailer();
+        for (; ; ) {
+            try (DocumentContext dc = tailer.readingDocument()) {
+                Wire wire = dc.wire();
+                if (wire == null)
+                    if (waitForIt) {
+                        try {
+                            Thread.sleep(50L);
+                        } catch (InterruptedException ignored) {
+
+                        }
+                        continue;
+                    } else {
+                        break;
+                    }
+
+                ChronicleLogEvent logEvent = reader.createLogEvent(wire);
+                process(logEvent);
+            }
+        }
+    }
 }

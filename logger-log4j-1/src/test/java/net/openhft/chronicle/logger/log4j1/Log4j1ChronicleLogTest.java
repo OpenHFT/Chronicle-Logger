@@ -18,6 +18,11 @@
 package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.core.io.IOTools;
+import net.openhft.chronicle.logger.ChronicleEntryProcessor;
+import net.openhft.chronicle.logger.ChronicleEventReader;
+import net.openhft.chronicle.logger.ChronicleLogEvent;
+import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
@@ -31,6 +36,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -57,59 +63,33 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
         final String testId = "chronicle";
         final String threadId = testId + "-th";
         final Logger logger = LogManager.getLogger(testId);
-        Files.createDirectories(Paths.get(basePath(testId)));
+        Path path = Paths.get(basePath(testId));
+        Files.createDirectories(path);
         Thread.currentThread().setName(threadId);
 
         for (Level level: levels) {
             log(logger, level, "level is " + level, null);
         }
-
         try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.BINARY_LIGHT)) {
+            Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
+            CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
+            ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(registry);
+            ChronicleEventReader eventReader = new ChronicleEventReader();
+
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
             for (Level level: levels) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
                     assertNotNull("log not found for " + level, wire);
-                    ZonedDateTime now = Instant.now().atZone(ZoneOffset.UTC);
-                    assertTrue(wire.read("instant").zonedDateTime().isBefore(now));
-                    assertEquals(level.toInt(), wire.read("level").int32());
-                    assertEquals(threadId, wire.read("threadName").text());
-                    assertEquals(testId, wire.read("loggerName").text());
-                    assertTrue(wire.read("entry").text().contains("level is " + level));
+
+                    ChronicleLogEvent logEvent = eventReader.createLogEvent(wire);
                     assertFalse(wire.hasMore());
+                    assertTrue(logEvent.timestamp.isBefore(Instant.now()));
+                    assertEquals(level.toInt(), logEvent.level);
+                    assertEquals(threadId, logEvent.threadName);
+                    assertEquals(testId, logEvent.loggerName);
+                    assertEquals("level is " + level.toString() + " ", processor.apply(logEvent));
                 }
-            }
-            try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNull(wire);
-            }
-
-            logger.debug("Throwable test 1", new UnsupportedOperationException());
-            logger.debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
-
-            try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNotNull(wire);
-                ZonedDateTime now = Instant.now().atZone(ZoneOffset.UTC);
-                assertTrue(wire.read("instant").zonedDateTime().isBefore(now));
-                assertEquals(DEBUG.toInt(), wire.read("level").int32());
-                assertEquals(threadId, wire.read("threadName").text());
-                assertEquals(testId, wire.read("loggerName").text());
-                String entry = wire.read("entry").text();
-                assertTrue(entry.contains("Throwable test 1 java.lang.UnsupportedOperationException"));
-            }
-
-            try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNotNull(wire);
-                ZonedDateTime now = Instant.now().atZone(ZoneOffset.UTC);
-                assertTrue(wire.read("instant").zonedDateTime().isBefore(now));
-                assertEquals(DEBUG.toInt(), wire.read("level").int32());
-                assertEquals(threadId, wire.read("threadName").text());
-                assertEquals(testId, wire.read("loggerName").text());
-                String entry = wire.read("entry").text();
-                assertTrue(entry.contains("Throwable test 2 java.lang.UnsupportedOperationException: Exception message\n"));
-                assertFalse(wire.hasMore());
             }
 
             try (DocumentContext dc = tailer.readingDocument()) {

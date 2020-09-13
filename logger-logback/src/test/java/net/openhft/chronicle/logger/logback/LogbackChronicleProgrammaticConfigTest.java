@@ -35,17 +35,18 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.*;
 
-public class LogbackChronicleProgrammaticConfigTest extends LogbackTestBase {
+public class LogbackChronicleProgrammaticConfigTest {
 
     @Test
     public void testConfig() {
         LoggerContext context = new LoggerContext();
-        final AtomicReference<BytesStore> expected = new AtomicReference<>();
+        final AtomicReference<byte[]> expected = new AtomicReference<>();
         ChronicleLogWriter mockWriter = new StubWriter() {
             @Override
-            public void write(Instant timestamp, int level, String threadName, String loggerName, BytesStore entry, String contentType, String contentEncoding) {
+            public void write(Instant timestamp, int level, String threadName, String loggerName, byte[] entry, String contentType, String contentEncoding) {
                 expected.set(entry);
             }
         };
@@ -70,8 +71,8 @@ public class LogbackChronicleProgrammaticConfigTest extends LogbackTestBase {
         logger.addAppender(appender);
 
         logger.info("Hello World");
-        BytesStore bytesStore = expected.get();
-        assertEquals(BytesStore.from("Hello World IN BED"), bytesStore);
+        String actual = new String(expected.get(), UTF_8);
+        assertEquals("Hello World IN BED", actual);
     }
 
     abstract static class StubWriter implements ChronicleLogWriter {
@@ -81,11 +82,11 @@ public class LogbackChronicleProgrammaticConfigTest extends LogbackTestBase {
         }
 
         @Override
-        public void write(Instant timestamp, int level, String threadName, String loggerName, BytesStore entry) {
+        public void write(Instant timestamp, int level, String threadName, String loggerName, byte[] entry) {
             write(timestamp, level, threadName, loggerName, entry, null, null);
         }
 
         @Override
-        public abstract void write(Instant timestamp, int level, String threadName, String loggerName, BytesStore entry, String contentType, String contentEncoding);
+        public abstract void write(Instant timestamp, int level, String threadName, String loggerName, byte[] entry, String contentType, String contentEncoding);
     }
 }

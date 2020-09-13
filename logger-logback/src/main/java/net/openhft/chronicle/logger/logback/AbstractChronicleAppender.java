@@ -150,6 +150,7 @@ public abstract class AbstractChronicleAppender
     @Override
     public void doAppend(final ILoggingEvent event) {
         if (!started) {
+            addError("Cannot append, not started!");
             return;
         }
         doAppend(event, writer);

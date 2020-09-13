@@ -21,10 +21,10 @@ import net.openhft.chronicle.logger.LogAppenderConfig;
 
 import java.util.logging.*;
 
-import static net.openhft.chronicle.logger.ChronicleLogConfig.PLACEHOLDER_END;
-import static net.openhft.chronicle.logger.ChronicleLogConfig.PLACEHOLDER_START;
-
 public class ChronicleHandlerConfig {
+    private static final String PLACEHOLDER_START = "${";
+    private static final String PLACEHOLDER_END = "}";
+
     private final LogManager manager;
     private final String prefix;
 
@@ -84,23 +84,6 @@ public class ChronicleHandlerConfig {
         } catch (Exception ex) {
             return defaultValue;
         }
-    }
-
-    boolean getBooleanProperty(String name, boolean defaultValue) {
-        String val = getStringProperty(name, null);
-        if (val == null) {
-            return defaultValue;
-        }
-
-        val = val.toLowerCase();
-        if (val.equals("true") || val.equals("1")) {
-            return true;
-
-        } else if (val.equals("false") || val.equals("0")) {
-            return false;
-        }
-
-        return defaultValue;
     }
 
     Filter getFilterProperty(String name, Filter defaultValue) {

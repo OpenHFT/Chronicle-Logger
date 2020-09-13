@@ -34,6 +34,8 @@ import java.io.Serializable;
 
 public abstract class AbstractChronicleAppender extends AbstractAppender {
 
+    private String contentType;
+    private String contentEncoding;
     private String path;
     private String wireType;
 
@@ -45,11 +47,15 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
                               boolean ignoreExceptions,
                               Property[] properties,
                               String path,
-                              String wireType) {
+                              String wireType,
+                              String contentType,
+                              String contentEncoding) {
         super(name, filter, layout, ignoreExceptions, properties);
 
         this.path = path;
         this.wireType = wireType;
+        this.contentType = contentType;
+        this.contentEncoding = contentEncoding;
         this.writer = null;
     }
 
@@ -63,6 +69,22 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
 
     public String getWireType() {
         return wireType;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getContentEncoding() {
+        return contentEncoding;
+    }
+
+    public void setContentEncoding(String contentEncoding) {
+        this.contentEncoding = contentEncoding;
     }
 
     // *************************************************************************
@@ -133,7 +155,6 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
             name = "chronicleCfg",
             category = "Core")
     public static final class ChronicleCfg extends LogAppenderConfig {
-
         ChronicleCfg() {
         }
 

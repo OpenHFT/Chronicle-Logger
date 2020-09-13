@@ -19,6 +19,7 @@ package net.openhft.chronicle.logger;
 
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.IOTools;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
@@ -27,6 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
@@ -49,21 +51,22 @@ public class DefaultChronicleLogWriterTest {
     @Test
     public void testWrite() {
         try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(basePath()).build()) {
-            ChronicleLogWriter lw = new DefaultChronicleLogWriter(cq);
-            lw.write(Instant.now(),
-                    10,
-                    Thread.currentThread().getName(),
-                    this.getClass().getCanonicalName(),
-                    BytesStore.from("Test message")
-            );
+            try (CodecRegistry codecRegistry = CodecRegistry.builder().withDefaults(basePath()).build()) {
+                ChronicleLogWriter lw = new DefaultChronicleLogWriter(codecRegistry, cq);
+                lw.write(Instant.now(),
+                        10,
+                        Thread.currentThread().getName(),
+                        this.getClass().getCanonicalName(),
+                        "Test message".getBytes(StandardCharsets.UTF_8)
+                );
 
-            lw.write(Instant.now(),
-                    50,
-                    Thread.currentThread().getName(),
-                    this.getClass().getCanonicalName(),
-                    BytesStore.from("Test debug message")
-            );
-
+                lw.write(Instant.now(),
+                        50,
+                        Thread.currentThread().getName(),
+                        this.getClass().getCanonicalName(),
+                        "Test debug message".getBytes(StandardCharsets.UTF_8)
+                );
+            }
         }
 
         try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(basePath()).build()) {
@@ -76,6 +79,9 @@ public class DefaultChronicleLogWriterTest {
                 assertEquals(Thread.currentThread().getName(), wire.read("threadName").text());
                 assertEquals(this.getClass().getCanonicalName(), wire.read("loggerName").text());
                 assertEquals("Test message", wire.read("entry").text());
+                assertNull(wire.read("type").text());
+                assertNull(wire.read("encoding").text());
+                assertFalse(wire.hasMore());
             }
 
             try (DocumentContext dc = tailer.readingDocument()) {
@@ -86,6 +92,8 @@ public class DefaultChronicleLogWriterTest {
                 assertEquals(Thread.currentThread().getName(), wire.read("threadName").text());
                 assertEquals(this.getClass().getCanonicalName(), wire.read("loggerName").text());
                 assertEquals("Test debug message", wire.read("entry").text());
+                assertNull(wire.read("type").text());
+                assertNull(wire.read("encoding").text());
                 assertFalse(wire.hasMore());
             }
             try (DocumentContext dc = tailer.readingDocument()) {

@@ -28,19 +28,21 @@
     </appender>
 
     <!-- ******************************************************************* -->
-    <!-- CONFIG - INDEXED                                                    -->
+    <!-- INDEXED - BINARY                                                    -->
     <!-- ******************************************************************* -->
 
-    <appender name  = "CONFIG-BINARY-CHRONICLE"
+    <appender name  = "BINARY-ZSTD-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.ChronicleAppender">
-        <path>${java.io.tmpdir}/chronicle-logback/config-binary-chronicle</path>
-        <chronicleConfig>
-            <blockSize>128</blockSize>
-        </chronicleConfig>
+        <path>${java.io.tmpdir}/chronicle-logback/binary-zstd-chronicle</path>
+        <contentType>text/plain</contentType>
+        <contentEncoding>zstd</contentEncoding>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%msg</pattern>
+        </encoder>
     </appender>
 
-    <logger name="config-binary-chronicle" level="TRACE" additivity="false">
-        <appender-ref ref="CONFIG-BINARY-CHRONICLE"/>
+    <logger name="binary-zstd-chronicle" level="TRACE" additivity="false">
+        <appender-ref ref="BINARY-ZSTD-CHRONICLE"/>
     </logger>
 
     <!-- ******************************************************************* -->

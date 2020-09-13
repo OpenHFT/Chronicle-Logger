@@ -39,10 +39,12 @@
 
         <Chronicle name="CHRONICLE">
             <path>${sys:java.io.tmpdir}/chronicle-log4j2/chronicle</path>
+            <contentType>text/plain</contentType>
+            <contentEncoding>zstd</contentEncoding>
             <chronicleCfg>
                 <rollCycle>HOURLY</rollCycle>
             </chronicleCfg>
-            <PatternLayout pattern="%level %msg"/>
+            <PatternLayout pattern="%msg"/>
         </Chronicle>
 
     </appenders>

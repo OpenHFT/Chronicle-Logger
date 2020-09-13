@@ -48,7 +48,7 @@
         <!-- for tests -->
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>chronicle-logger-slf4j</artifactId>
+            <artifactId>chronicle-logger-logback</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

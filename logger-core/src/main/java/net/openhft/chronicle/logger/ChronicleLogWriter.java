@@ -17,11 +17,12 @@
  */
 package net.openhft.chronicle.logger;
 
-import net.openhft.chronicle.bytes.BytesStore;
-
 import java.io.Closeable;
 import java.time.Instant;
 
+/**
+ * Writes a logging event out to a chronicle log.
+ */
 public interface ChronicleLogWriter extends Closeable {
 
     /**
@@ -38,7 +39,7 @@ public interface ChronicleLogWriter extends Closeable {
             final int level,
             final String threadName,
             final String loggerName,
-            final BytesStore entry);
+            final byte[] entry);
 
     /**
      * Writes a logging event to the store.
@@ -56,7 +57,7 @@ public interface ChronicleLogWriter extends Closeable {
             final int level,
             final String threadName,
             final String loggerName,
-            final BytesStore entry,
+            final byte[] entry,
             final String contentType,
             final String contentEncoding);
 }
