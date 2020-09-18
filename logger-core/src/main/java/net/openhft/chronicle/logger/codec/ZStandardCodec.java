@@ -120,25 +120,13 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         @Override
         public byte[] decompress(byte[] bytes) {
             int originalSize = (int) Zstd.decompressedSize(bytes);
-            byte[] dst = new byte[originalSize];
-            return Zstd.decompress(dst, zstdDictDecompress, originalSize);
+            return Zstd.decompress(bytes, zstdDictDecompress, originalSize);
         }
 
         @Override
         public byte[] compress(byte[] bytes) throws CodecException {
             try {
-                int dstSize = (int) Zstd.compressBound(bytes.length);
-                // XXX is this right?  Seems wasteful...
-                byte[] dst = new byte[dstSize];
-                long ret = Zstd.compress(dst, bytes, this.zstdDictCompress);
-                if (Zstd.isError(ret)) {
-                    String errorName = Zstd.getErrorName(ret);
-                    throw new CodecException(errorName);
-                }
-                int actualSize = (int) ret;
-                byte[] actual = new byte[actualSize];
-                System.arraycopy(dst, 0, actual, 0, actualSize);
-                return actual;
+                return Zstd.compress(bytes, zstdDictCompress);
             } catch (ZstdException ze) {
                 throw new CodecException(ze);
             }
@@ -232,6 +220,7 @@ class ZStandardDictionary {
         // Run this as a future so it's off the current thread (we don't
         // care when it completes)
         return trainer -> CompletableFuture.supplyAsync(() -> {
+
             try {
                 byte[] dictBytes = trainer.trainSamples();
                 if (Files.isDirectory(path)) {
@@ -242,7 +231,14 @@ class ZStandardDictionary {
                 }
                 return dictBytes;
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new CodecException(e);
+            } catch (ZstdException e) {
+                // XXX throws ZstdException (should use a try / catch)
+                // https://github.com/facebook/zstd/issues/1735
+                // I think "Src size is incorrect" means that there's not enough unique info in the
+                // messages to create a dictionary.  So keep going?  Or throw out the
+                // trainer and start from scratch?
+                throw new CodecException("Cannot create dictionary: probably not enough unique data", e);
             }
         }, ForkJoinPool.commonPool());
     }
@@ -255,11 +251,11 @@ class ZStandardDictionary {
      * @throws IOException if the bytes cannot be read.
      */
     public static byte[] readFromFile(Path path) throws IOException {
-        if (! Files.exists(path)) {
+        if (!Files.exists(path)) {
             String msg = String.format("Dictionary %s does not exist!", path);
             throw new IOException(msg);
         }
-        if (! Files.isReadable(path)) {
+        if (!Files.isReadable(path)) {
             String msg = String.format("Dictionary %s is not readable!", path);
             throw new IOException(msg);
         }
@@ -269,5 +265,4 @@ class ZStandardDictionary {
         }
         return Files.readAllBytes(path);
     }
-
 }
