@@ -1,0 +1,12 @@
+{
+"timeMillis" : 1513290111664,
+"thread" : "main",
+"level" : "DEBUG",
+"loggerName" : "CONSOLE_JSON_APPENDER",
+"message" : "My debug message",
+"endOfBatch" : false,
+"loggerFqcn" : "org.apache.logging.log4j.spi.AbstractLogger",
+"threadId" : 1,
+"threadPriority" : 5,
+"myCustomField" : "myCustomValue"
+}

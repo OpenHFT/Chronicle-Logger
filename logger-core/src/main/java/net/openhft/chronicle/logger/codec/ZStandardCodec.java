@@ -88,13 +88,15 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         @Override
         public byte[] compress(byte[] bytes) throws CodecException {
             // Once it's trained, send it to the completion hook.
-            if (!(trained || this.trainer.addSample(bytes))) {
-                trained = true;
-                trainingHook.apply(trainer).thenAccept(dictBytes -> {
-                    // Not thread safe but this is fine
-                    ZStandardCodec.this.zstdDictCodec = new ZStandardDictCodec(dictBytes);
-                });
+            if (trained || this.trainer.addSample(bytes)) {
+                return staticCompress(bytes);
             }
+
+            trained = true;
+            trainingHook.apply(trainer).thenAccept(dictBytes -> {
+                // Not thread safe but this is fine
+                ZStandardCodec.this.zstdDictCodec = new ZStandardDictCodec(dictBytes);
+            });
             return staticCompress(bytes);
         }
     }
