@@ -111,7 +111,7 @@ public class ChronicleAppender extends AbstractChronicleAppender {
     }
 
     @Override
-    protected ChronicleLogWriter createWriter() throws IOException {
+    protected ChronicleLogWriter createWriter() {
         ChronicleQueue cq = config.build(getPath(), getWireType());
         Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();

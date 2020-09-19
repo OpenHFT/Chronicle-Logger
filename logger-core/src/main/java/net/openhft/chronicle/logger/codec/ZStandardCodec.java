@@ -2,14 +2,18 @@ package net.openhft.chronicle.logger.codec;
 
 import com.github.luben.zstd.*;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -119,8 +123,12 @@ public class ZStandardCodec implements Codec, AutoCloseable {
 
         @Override
         public byte[] decompress(byte[] bytes) {
-            int originalSize = (int) Zstd.decompressedSize(bytes);
-            return Zstd.decompress(bytes, zstdDictDecompress, originalSize);
+            try {
+                int originalSize = (int) Zstd.decompressedSize(bytes);
+                return Zstd.decompress(bytes, zstdDictDecompress, originalSize);
+            } catch (ZstdException ze) {
+                throw new CodecException(ze);
+            }
         }
 
         @Override
@@ -151,7 +159,7 @@ public class ZStandardCodec implements Codec, AutoCloseable {
     public static class Builder {
         private int sampleSize = ZStandardCodec.DEFAULT_SAMPLE_SIZE;
         private int dictSize = ZStandardCodec.DEFAULT_DICT_SIZE;
-        private ZStandardCodec codec;
+        private Supplier<ZStandardCodec> codecSupplier;
 
         Builder() {
         }
@@ -193,21 +201,28 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         }
 
         public Builder withDefaults(Path dictionaryPath) {
-            try {
-                byte[] dictBytes = ZStandardDictionary.readFromFile(dictionaryPath);
-                return this.withDictionary(dictBytes);
-            } catch (IOException e) {
-                return this.withTrainingHook(ZStandardDictionary.writeToFile(dictionaryPath));
-            }
-        }
-
-        private Builder withCodec(ZStandardCodec codec) {
-            this.codec = codec;
+            this.codecSupplier = () -> {
+                try {
+                    byte[] dictBytes = ZStandardDictionary.readFromFile(dictionaryPath);
+                    return new ZStandardCodec(dictBytes);
+                } catch (NoSuchFileException | FileNotFoundException e) {
+                    Function<ZstdDictTrainer, CompletionStage<byte[]>> trainingHook =
+                            ZStandardDictionary.writeToFile(dictionaryPath);
+                    return new ZStandardCodec(sampleSize, dictSize, trainingHook);
+                } catch (IOException e) {
+                    throw new CodecException(e);
+                }
+            };
             return this;
         }
 
-        public ZStandardCodec build() {
-            return this.codec;
+        private Builder withCodec(ZStandardCodec codec) {
+            this.codecSupplier = () -> codec;
+            return this;
+        }
+
+        public ZStandardCodec build() throws CodecException {
+            return this.codecSupplier.get();
         }
     }
 }
@@ -220,7 +235,6 @@ class ZStandardDictionary {
         // Run this as a future so it's off the current thread (we don't
         // care when it completes)
         return trainer -> CompletableFuture.supplyAsync(() -> {
-
             try {
                 byte[] dictBytes = trainer.trainSamples();
                 if (Files.isDirectory(path)) {
@@ -231,14 +245,14 @@ class ZStandardDictionary {
                 }
                 return dictBytes;
             } catch (IOException e) {
-                throw new CodecException(e);
+                throw new CompletionException(new CodecException(e));
             } catch (ZstdException e) {
                 // XXX throws ZstdException (should use a try / catch)
                 // https://github.com/facebook/zstd/issues/1735
                 // I think "Src size is incorrect" means that there's not enough unique info in the
                 // messages to create a dictionary.  So keep going?  Or throw out the
                 // trainer and start from scratch?
-                throw new CodecException("Cannot create dictionary: probably not enough unique data", e);
+                throw new CompletionException(new CodecException("Cannot create dictionary: probably not enough unique data", e));
             }
         }, ForkJoinPool.commonPool());
     }
@@ -253,11 +267,7 @@ class ZStandardDictionary {
     public static byte[] readFromFile(Path path) throws IOException {
         if (!Files.exists(path)) {
             String msg = String.format("Dictionary %s does not exist!", path);
-            throw new IOException(msg);
-        }
-        if (!Files.isReadable(path)) {
-            String msg = String.format("Dictionary %s is not readable!", path);
-            throw new IOException(msg);
+            throw new FileNotFoundException(msg);
         }
         if (Files.isDirectory(path)) {
             Path dictPath = path.resolve(DEFAULT_DICT_FILENAME);
