@@ -37,14 +37,14 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
-public class Lo4J2PerfTest {
+public class Log4J2PerfTest {
     private final Logger chronicleLogger = LoggerFactory.getLogger("perf-chro");
     private final Logger fileLogger = LoggerFactory.getLogger("perf-file");
 
     public static void main(String[] args) throws RunnerException {
 
         Options opt = new OptionsBuilder()
-                .include(Lo4J2PerfTest.class.getSimpleName())
+                .include(Log4J2PerfTest.class.getSimpleName())
                 .warmupIterations(5)
                 .measurementIterations(5)
                 .forks(1)

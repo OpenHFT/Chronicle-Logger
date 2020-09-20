@@ -31,10 +31,12 @@
 
         <Chronicle name="PERF-CHRONICLE">
             <path>${env:HOME}/chronicle-log4j2-bench/perf-chronicle</path>
+            <contentEncoding>zstd</contentEncoding>
+            <PatternLayout><pattern>%d [%t] %p %m%n</pattern></PatternLayout>
         </Chronicle>
 
         <File name="FILE" fileName="${env:HOME}/chronicle-log4j2-bench/test.log">
-            <PatternLayout><pattern>%d [%t] %p %c - %m %ex%n</pattern></PatternLayout>
+            <PatternLayout><pattern>%d [%t] %p %m%n</pattern></PatternLayout>
         </File>
 
     </Appenders>

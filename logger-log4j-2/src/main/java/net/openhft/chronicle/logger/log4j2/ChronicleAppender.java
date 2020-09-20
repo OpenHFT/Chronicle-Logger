@@ -97,7 +97,11 @@ public class ChronicleAppender extends AbstractChronicleAppender {
     public void doAppend(@NotNull final LogEvent event, @NotNull final ChronicleLogWriter writer) {
         Instant instant = Instant.ofEpochMilli(event.getTimeMillis()).plusNanos(event.getNanoTime());
         int level = event.getLevel().intLevel();
-        byte[] entry = getLayout().toByteArray(event);
+        Layout<? extends Serializable> layout = getLayout();
+        if (layout == null) {
+            throw new IllegalStateException("Null layout");
+        }
+        byte[] entry = layout.toByteArray(event);
         String contentEncoding = getContentEncoding();
         writer.write(
                 instant,
