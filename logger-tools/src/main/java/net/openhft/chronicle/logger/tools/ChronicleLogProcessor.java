@@ -17,23 +17,27 @@
  */
 package net.openhft.chronicle.logger.tools;
 
-import net.openhft.chronicle.logger.ChronicleLogEvent;
-import net.openhft.chronicle.logger.ChronicleEventReader;
+import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.logger.entry.Entry;
+import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.ByteBuffer;
+
 @FunctionalInterface
 public interface ChronicleLogProcessor {
-    void process(ChronicleLogEvent e);
+    void process(Entry e);
 
     /**
      * Decode logs
      */
-    default void processLogs(@NotNull ChronicleQueue cq, ChronicleEventReader reader, boolean waitForIt) {
+    default void processLogs(@NotNull ChronicleQueue cq, EntryReader reader, boolean waitForIt) {
         ExcerptTailer tailer = cq.createTailer();
+        Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
         for (; ; ) {
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
@@ -49,8 +53,9 @@ public interface ChronicleLogProcessor {
                         break;
                     }
 
-                ChronicleLogEvent logEvent = reader.createLogEvent(wire);
-                process(logEvent);
+                wire.readBytes(bytes);
+                Entry entry = reader.read(bytes);
+                process(entry);
             }
         }
     }

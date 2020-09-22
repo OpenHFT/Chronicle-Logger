@@ -18,9 +18,8 @@
 package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.logger.ChronicleEntryProcessor;
-import net.openhft.chronicle.logger.ChronicleEventReader;
+import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
-import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
@@ -41,7 +40,7 @@ public final class ChroniCat {
             System.exit(-1);
         }
 
-        ChronicleEventReader reader = new ChronicleEventReader();
+        EntryReader reader = new EntryReader();
         Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
         ChronicleEntryProcessor<String> entryProcessor = new DefaultChronicleEntryProcessor(registry);

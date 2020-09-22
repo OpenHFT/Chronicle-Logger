@@ -174,9 +174,11 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
             writer.write(
                     Instant.ofEpochMilli(event.getTimeStamp()),
                     event.getLevel().toInt(),
-                    event.getThreadName(),
                     event.getLoggerName(),
-                    format.getBytes(UTF_8)
+                    event.getThreadName(),
+                    format.getBytes(UTF_8),
+                    null,
+                    null
             );
 
         } else {

@@ -1,0 +1,41 @@
+namespace net.openhft.chronicle.logger.entry;
+
+// This struct is to make it easy to nail down by second first,
+// and then order by nano if necessary.
+// It also makes pulling a java Instant easy through
+// Instant.ofEpochSecond(epochSecond, nanoAdjustment)
+struct EntryTimestamp {
+  // The number of seconds since the epoch
+  epoch_second:ulong;
+  // Nanosecond adjustment inside the instant
+  // always positive, never exceeds 999,999,999
+  nano_adjust:int;
+}
+
+table Entry {
+  // an optional unique id
+  id: [ubyte];
+
+  // timestamp when the log event occured (required as a struct)
+  timestamp: EntryTimestamp;
+
+  // Logging level
+  level:uint32;
+
+  // logger name (required)
+  logger_name:string (required);
+
+  // thread name (optional)
+  thread_name:string;
+
+  // Serialized entry content as unsigned byte array
+  content: [ubyte];
+
+  // Optional content type like HTTP content type header, look for charset=utf-8 etc for plaintext
+  contentType: string;
+
+  // Content encoding like HTTP content encoding.  zstd, br, gzip, etc.
+  contentEncoding: string;
+}
+
+root_type Entry;

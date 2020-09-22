@@ -1,5 +1,7 @@
 package net.openhft.chronicle.logger;
 
+import net.openhft.chronicle.logger.entry.Entry;
+
 import java.util.function.Function;
 
 /**
@@ -9,5 +11,5 @@ import java.util.function.Function;
  * @param <T> the type.
  */
 @FunctionalInterface
-public interface ChronicleEntryProcessor<T> extends Function<ChronicleLogEvent, T> {
+public interface ChronicleEntryProcessor<T> extends Function<Entry, T> {
 }

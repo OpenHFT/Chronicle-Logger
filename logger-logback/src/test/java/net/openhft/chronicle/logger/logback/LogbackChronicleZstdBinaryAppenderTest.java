@@ -18,19 +18,22 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.Level;
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleEntryProcessor;
-import net.openhft.chronicle.logger.ChronicleEventReader;
-import net.openhft.chronicle.logger.ChronicleLogEvent;
+import net.openhft.chronicle.logger.entry.Entry;
+import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -62,25 +65,21 @@ public class LogbackChronicleZstdBinaryAppenderTest extends LogbackTestBase {
             log(logger, level, "level is {}", level);
         }
 
-        ChronicleEventReader eventReader = new ChronicleEventReader();
+        EntryReader eventReader = new EntryReader();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
         ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(registry);
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
+            Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
             for (Level level: levels) {
-                try (DocumentContext dc = tailer.readingDocument()) {
-                    Wire wire = dc.wire();
-                    assertNotNull("log not found for " + level, wire);
-
-                    ChronicleLogEvent logEvent = eventReader.createLogEvent(wire);
-                    assertFalse(wire.hasMore());
-                    assertTrue(logEvent.timestamp.isBefore(Instant.now()));
-                    assertEquals(level.toInt(), logEvent.level);
-                    assertEquals(threadId, logEvent.threadName);
-                    assertEquals(testId, logEvent.loggerName);
-                    assertEquals("level is " + level.levelStr, processor.apply(logEvent));
-                }
+                tailer.readBytes(bytes);
+                Entry entry = eventReader.read(bytes);
+                assertTrue(entry.timestamp().epochSecond() < Instant.now().getEpochSecond());
+                assertEquals(level.toInt(), entry.level());
+                assertEquals(threadId, entry.threadName());
+                assertEquals(testId, entry.name());
+                assertEquals("level is " + level.levelStr, processor.apply(entry));
             }
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();

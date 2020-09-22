@@ -1,7 +1,7 @@
 package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.logger.ChronicleEntryProcessor;
-import net.openhft.chronicle.logger.ChronicleEventReader;
+import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
@@ -32,7 +32,7 @@ public class ChronicleLogReaderTest {
 
         String path = System.getProperty("java.io.tmpdir") + "/chronicle-logback/binary-chronicle";
         ChronicleQueue cq = ChronicleQueue.singleBuilder(path).wireType(WireType.BINARY_LIGHT).build();
-        ChronicleEventReader reader = new ChronicleEventReader();
+        EntryReader reader = new EntryReader();
         Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
         ChronicleEntryProcessor<String> entryProcessor = new DefaultChronicleEntryProcessor(registry);

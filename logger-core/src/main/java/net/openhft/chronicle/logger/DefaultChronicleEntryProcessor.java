@@ -1,9 +1,13 @@
 package net.openhft.chronicle.logger;
 
+import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
+import net.openhft.chronicle.logger.entry.Entry;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -19,7 +23,7 @@ public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<S
     }
 
     @Override
-    public String apply(ChronicleLogEvent e) {
+    public String apply(Entry e) {
         try {
             return decode(e);
         } catch (UnsupportedEncodingException ex) {
@@ -27,9 +31,9 @@ public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<S
         }
     }
 
-    protected String decode(ChronicleLogEvent e) throws UnsupportedEncodingException {
-        byte[] bytes = decompress(e.encoding, e.entry);
-        String charset = getCharset(e.contentType);
+    protected String decode(Entry e) throws UnsupportedEncodingException {
+        byte[] bytes = decompress(e.contentEncoding(), e.contentAsByteBuffer().array());
+        String charset = getCharset(e.contentType());
         return new String(bytes, charset);
     }
 

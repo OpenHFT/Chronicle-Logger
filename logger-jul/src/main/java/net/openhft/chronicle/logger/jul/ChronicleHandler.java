@@ -79,8 +79,8 @@ public class ChronicleHandler extends AbstractChronicleHandler {
             writer.write(
                     instant,
                     level,
-                    threadName,
                     loggerName,
+                    threadName,
                     format.getBytes(Charset.forName(charsetEncoding)),
                     contentType + "; charset=" + charsetEncoding,
                     "identity"
@@ -89,8 +89,8 @@ public class ChronicleHandler extends AbstractChronicleHandler {
             writer.write(
                     instant,
                     level,
-                    threadName,
                     loggerName,
+                    threadName,
                     format.getBytes(StandardCharsets.UTF_8),
                     contentType,
                     "identity"

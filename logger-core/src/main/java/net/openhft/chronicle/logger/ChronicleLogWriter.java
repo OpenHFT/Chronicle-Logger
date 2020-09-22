@@ -22,6 +22,8 @@ import java.time.Instant;
 
 /**
  * Writes a logging event out to a chronicle log.
+ *
+ * XXX Use epochseconds and nanos here
  */
 public interface ChronicleLogWriter extends Closeable {
 
@@ -30,15 +32,15 @@ public interface ChronicleLogWriter extends Closeable {
      *
      * @param level the integer level of the log event.
      * @param timestamp event timestamp.
-     * @param threadName thread name of the event.
      * @param loggerName logger that caused this event.
+     * @param threadName thread name of the event.
      * @param entry the bytes containing the event.
      */
     void write(
             final Instant timestamp,
             final int level,
-            final String threadName,
             final String loggerName,
+            final String threadName,
             final byte[] entry);
 
     /**
@@ -55,8 +57,8 @@ public interface ChronicleLogWriter extends Closeable {
     void write(
             final Instant timestamp,
             final int level,
-            final String threadName,
             final String loggerName,
+            final String threadName,
             final byte[] entry,
             final String contentType,
             final String contentEncoding);

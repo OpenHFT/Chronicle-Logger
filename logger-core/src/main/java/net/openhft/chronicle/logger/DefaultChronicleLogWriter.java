@@ -17,16 +17,20 @@
  */
 package net.openhft.chronicle.logger;
 
+import com.google.flatbuffers.FlatBufferBuilder;
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.codec.IdentityCodec;
+import net.openhft.chronicle.logger.entry.EntryWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.ZoneOffset;
 
@@ -35,67 +39,78 @@ import java.time.ZoneOffset;
  */
 public class DefaultChronicleLogWriter implements ChronicleLogWriter {
 
-    private static final ThreadLocal<Boolean> REENTRANCY_FLAG = ThreadLocal.withInitial(() -> false);
+    private final EntryWriter entryWriter;
+    private final FlatBufferBuilder builder;
+    private final Bytes<ByteBuffer> bytes;
 
     private final ChronicleQueue cq;
     private final CodecRegistry codecRegistry;
 
     public DefaultChronicleLogWriter(@NotNull CodecRegistry codecRegistry, @NotNull ChronicleQueue cq) {
         this.cq = cq;
+        this.entryWriter = new EntryWriter();
+        this.bytes = Bytes.elasticByteBuffer();
+        FlatBufferBuilder.ByteBufferFactory factory = FlatBufferBuilder.HeapByteBufferFactory.INSTANCE;
+        this.builder = new FlatBufferBuilder(1024, factory);
         this.codecRegistry = codecRegistry;
-    }
-
-    @Override
-    public void close() {
-        cq.close();
-    }
-
-    @Override
-    public void write(@NotNull Instant timestamp, int level, String threadName, @NotNull String loggerName, @NotNull byte[] entry) {
-        write(timestamp, level, threadName, loggerName, entry, null, null);
     }
 
     @Override
     public void write(
             final Instant timestamp,
             final int level,
-            final String threadName,
             final String loggerName,
-            final byte[] entry,
+            final String threadName,
+            final byte[] content) {
+        try {
+            ByteBuffer contentBuffer = ByteBuffer.wrap(content);
+            ByteBuffer entryBuffer = entryWriter.write(builder,
+                    timestamp.getEpochSecond(),
+                    timestamp.getNano(),
+                    level,
+                    loggerName,
+                    threadName,
+                    contentBuffer);
+            bytes.writeSome(entryBuffer);
+            cq.acquireAppender().writeBytes(bytes);
+        } finally {
+            bytes.clear();
+            builder.clear();
+        }
+    }
+
+    @Override
+    public void write(
+            final Instant timestamp,
+            final int level,
+            final String loggerName,
+            final String threadName,
+            final byte[] content,
             final String contentType,
             final String contentEncoding) {
-        if (REENTRANCY_FLAG.get()) {
-            System.out.printf("%s|%s|%s|%s|%s%n",
-                    timestamp.toString(),
-                    level,
-                    threadName,
-                    loggerName,
-                    BytesStore.wrap(entry).toDebugString());
-            return;
-        }
-
-        REENTRANCY_FLAG.set(true);
-
-        try (final DocumentContext dc = cq.acquireAppender().writingDocument()) {
-            Wire wire = dc.wire();
-            assert wire != null;
+        try {
             Codec codec = codecRegistry.find(contentEncoding);
-            byte[] compressed = codec.compress(entry);
-            wire
-                    .write("instant").zonedDateTime(timestamp.atZone(ZoneOffset.UTC)) // there is no "instant" mapping
-                    .write("level").int32(level) // log4j2 can have custom levels, log4j has FATAL level
-                    .write("threadName").text(threadName)
-                    .write("loggerName").text(loggerName)
-                    .write("entry").bytes(compressed)
-                    .write("type").text(contentType) // HTTP content-type header
-                    .write("encoding").text(contentEncoding); // HTTP content encoding header
+            byte[] encoded = codec.compress(content);
+            ByteBuffer contentBuffer = ByteBuffer.wrap(encoded);
+            ByteBuffer entryBuffer = entryWriter.write(builder,
+                    timestamp.getEpochSecond(),
+                    timestamp.getNano(),
+                    level,
+                    loggerName,
+                    threadName,
+                    contentBuffer,
+                    contentType,
+                    contentEncoding);
+            bytes.writeSome(entryBuffer);
+            cq.acquireAppender().writeBytes(bytes);
         } finally {
-            REENTRANCY_FLAG.set(false);
+            bytes.clear();
+            builder.clear();
         }
     }
 
-    public WireType getWireType() {
-        return cq.wireType();
+    @Override
+    public void close() {
+        this.bytes.releaseLast();
     }
-
 }

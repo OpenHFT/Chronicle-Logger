@@ -17,9 +17,12 @@
  */
 package net.openhft.chronicle.logger;
 
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
+import net.openhft.chronicle.logger.entry.Entry;
+import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
@@ -28,8 +31,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -38,64 +43,67 @@ import static org.junit.Assert.*;
 
 public class DefaultChronicleLogWriterTest {
 
+    private Path path;
+
     @After
     public void cleanup() {
-        IOTools.deleteDirWithFiles(basePath());
+        IOTools.deleteDirWithFiles(this.path.toFile());
     }
 
     @Before
     public void setUp() throws Exception {
-        Files.createDirectories(Paths.get(basePath()));
+        this.path = Files.createTempDirectory(basePath());
     }
 
     @Test
     public void testWrite() {
-        try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(basePath()).build()) {
-            try (CodecRegistry codecRegistry = CodecRegistry.builder().withDefaults(basePath()).build()) {
+        try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(path).build()) {
+            try (CodecRegistry codecRegistry = CodecRegistry.builder().withDefaults(path).build()) {
                 ChronicleLogWriter lw = new DefaultChronicleLogWriter(codecRegistry, cq);
                 lw.write(Instant.now(),
                         10,
-                        Thread.currentThread().getName(),
                         this.getClass().getCanonicalName(),
+                        Thread.currentThread().getName(),
                         "Test message".getBytes(StandardCharsets.UTF_8)
                 );
 
                 lw.write(Instant.now(),
                         50,
-                        Thread.currentThread().getName(),
                         this.getClass().getCanonicalName(),
+                        Thread.currentThread().getName(),
                         "Test debug message".getBytes(StandardCharsets.UTF_8)
                 );
             }
         }
 
-        try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(basePath()).build()) {
+        try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(path).build()) {
             ExcerptTailer tailer = cq.createTailer();
-            try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNotNull(wire);
-                assertTrue(wire.read("instant").zonedDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)));
-                assertEquals(10, wire.read("level").int32());
-                assertEquals(Thread.currentThread().getName(), wire.read("threadName").text());
-                assertEquals(this.getClass().getCanonicalName(), wire.read("loggerName").text());
-                assertEquals("Test message", wire.read("entry").text());
-                assertNull(wire.read("type").text());
-                assertNull(wire.read("encoding").text());
-                assertFalse(wire.hasMore());
-            }
 
-            try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNotNull(wire);
-                assertTrue(wire.read("instant").zonedDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)));
-                assertEquals(50, wire.read("level").int32());
-                assertEquals(Thread.currentThread().getName(), wire.read("threadName").text());
-                assertEquals(this.getClass().getCanonicalName(), wire.read("loggerName").text());
-                assertEquals("Test debug message", wire.read("entry").text());
-                assertNull(wire.read("type").text());
-                assertNull(wire.read("encoding").text());
-                assertFalse(wire.hasMore());
-            }
+            // XXX this is awkward, should just have EntryTailer
+            Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
+            tailer.readBytes(bytes);
+            EntryReader entryReader = new EntryReader();
+            Entry entry = entryReader.read(bytes);
+            assertTrue(entry.timestamp().epochSecond() <= Instant.now().getEpochSecond());
+            assertTrue(entry.timestamp().nanoAdjust() > 0);
+            assertEquals(10, entry.level());
+            assertEquals(Thread.currentThread().getName(), entry.threadName());
+            assertEquals(this.getClass().getCanonicalName(), entry.loggerName());
+            assertEquals("Test message", Bytes.wrapForRead(entry.contentAsByteBuffer()).to8bitString());
+            assertNull(entry.contentType());
+            assertNull(entry.contentEncoding());
+
+            bytes.clear();
+            tailer.readBytes(bytes);
+            Entry entry2 = entryReader.read(bytes);
+            assertTrue(entry2.timestamp().epochSecond() <= Instant.now().getEpochSecond());
+            assertEquals(50, entry2.level());
+            assertEquals(Thread.currentThread().getName(), entry2.threadName());
+            assertEquals(this.getClass().getCanonicalName(), entry2.loggerName());
+            assertEquals("Test debug message", Bytes.wrapForRead(entry2.contentAsByteBuffer()).to8bitString());
+            assertNull(entry2.contentType());
+            assertNull(entry2.contentEncoding());
+
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
                 assertNull(wire);
@@ -104,13 +112,6 @@ public class DefaultChronicleLogWriterTest {
     }
 
     private String basePath() {
-        String path = System.getProperty("java.io.tmpdir");
-        String sep = System.getProperty("file.separator");
-
-        if (!path.endsWith(sep)) {
-            path += sep;
-        }
-
-        return path + "chronicle-logger" + sep;
+        return "chronicle-logger";
     }
 }

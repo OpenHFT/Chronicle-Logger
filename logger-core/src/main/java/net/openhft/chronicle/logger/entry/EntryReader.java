@@ -15,26 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.openhft.chronicle.logger;
+package net.openhft.chronicle.logger.entry;
 
+import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.logger.entry.Entry;
 import net.openhft.chronicle.wire.Wire;
 
+import java.nio.ByteBuffer;
 import java.time.ZonedDateTime;
 
 /**
- * Constructs a ChronicleLogEvent from Chronicle Wire.
+ *
  */
-public class ChronicleEventReader {
+public class EntryReader {
 
-    public ChronicleLogEvent createLogEvent(Wire wire) {
-        ZonedDateTime timestamp = wire.read("instant").zonedDateTime();
-        int level = wire.read("level").int32();
-        String threadName = wire.read("threadName").text();
-        String loggerName = wire.read("loggerName").text();
-        byte[] entry = wire.read("entry").bytes();
-        String contentType = wire.read("type").text();
-        String encoding = wire.read("encoding").text();
+    public Entry read(Bytes<ByteBuffer> bytes) {
+        return read(bytes.underlyingObject());
+    }
 
-        return new ChronicleLogEvent(timestamp.toInstant(), level, threadName, loggerName, entry, contentType, encoding);
+    public Entry read(ByteBuffer buf) {
+        return Entry.getRootAsEntry(buf);
     }
 }

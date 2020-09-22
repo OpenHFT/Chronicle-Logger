@@ -82,11 +82,12 @@ public class LogbackChronicleProgrammaticConfigTest {
         }
 
         @Override
-        public void write(Instant timestamp, int level, String threadName, String loggerName, byte[] entry) {
-            write(timestamp, level, threadName, loggerName, entry, null, null);
-        }
-
-        @Override
-        public abstract void write(Instant timestamp, int level, String threadName, String loggerName, byte[] entry, String contentType, String contentEncoding);
+        public abstract void write(Instant timestamp,
+                                   int level,
+                                   String loggerName,
+                                   String threadName,
+                                   byte[] entry,
+                                   String contentType,
+                                   String contentEncoding);
     }
 }
