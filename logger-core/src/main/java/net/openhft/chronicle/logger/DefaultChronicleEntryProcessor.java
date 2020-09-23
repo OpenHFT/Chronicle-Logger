@@ -33,6 +33,8 @@ public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<S
     }
 
     protected String decode(Entry e) throws UnsupportedEncodingException {
+        // XXX fix this so not as wasteful
+        // https://openhft.github.io/Chronicle-Bytes/apidocs/net/openhft/chronicle/bytes/Bytes.html#wrapForRead-byte:A-
         Bytes<ByteBuffer> bytes = Bytes.wrapForRead(e.contentAsByteBuffer());
         byte[] decoded = decompress(e.contentEncoding(), bytes.toByteArray());
         Charset charset = getCharset(e.contentType());

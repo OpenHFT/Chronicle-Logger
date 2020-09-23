@@ -102,6 +102,8 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         }
 
         // XXX Calling encode directly to a reusable bytes might be more efficient
+        // on the other hand, it looks like encode just calls toByteArray under the
+        // hood anyway.
         // layout.encode(event, byteBufferDestination);
         byte[] entry = layout.toByteArray(event);
 

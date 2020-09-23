@@ -2,6 +2,9 @@ package net.openhft.chronicle.logger.entry;
 
 import java.time.Instant;
 
+/**
+ * Helpers for converting between flatbuffer reps and java reps.
+ */
 public final class EntryHelpers {
 
     private EntryHelpers() {
@@ -12,14 +15,23 @@ public final class EntryHelpers {
         return LazyHolder.INSTANCE;
     }
 
+    /**
+     * Gets the epoch second portion from the TSE.
+     */
     public long epochSecondFromMillis(long epochMilli) {
         return Math.floorDiv(epochMilli, (long) 1000);
     }
 
+    /**
+     * Gets the nanosecond portion from the TSE.
+     */
     public int nanosFromMillis(long epochMilli) {
         return (int) Math.floorMod(epochMilli, (long) 1000);
     }
 
+    /**
+     * Gets a time since epoch in milliseconds from the entry timestamp.
+     */
     public long millisFromTimestamp(EntryTimestamp ts) {
         long seconds = ts.epochSecond();
         int nanos = ts.nanoAdjust();
@@ -36,6 +48,11 @@ public final class EntryHelpers {
         }
     }
 
+    /**
+     * Creates an instant from an entry timestamp.
+     *
+     * NOTE: This does an allocation of {@code new Instant()}.
+     */
     public Instant instantFromTimestamp(EntryTimestamp ts) {
         return Instant.ofEpochSecond(ts.epochSecond(), ts.nanoAdjust());
     }

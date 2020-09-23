@@ -50,6 +50,7 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
         this.cq = cq;
         this.entryWriter = new EntryWriter();
         this.bytes = Bytes.elasticByteBuffer();
+        // XXX can make this more efficient by using off-heap memory & working with Bytes?
         FlatBufferBuilder.ByteBufferFactory factory = FlatBufferBuilder.HeapByteBufferFactory.INSTANCE;
         this.builder = new FlatBufferBuilder(1024, factory);
         this.codecRegistry = codecRegistry;
@@ -64,6 +65,7 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             final String threadName,
             final byte[] content) {
         try {
+            // XXX use a Bytes here?
             ByteBuffer contentBuffer = ByteBuffer.wrap(content);
             ByteBuffer entryBuffer = entryWriter.write(builder,
                     epochSecond,
@@ -95,9 +97,6 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             byte[] encoded = codec.compress(content);
             ByteBuffer contentBuffer = ByteBuffer.wrap(encoded);
 
-            String ctype = (contentType == null) ? "text/plain" : contentType;
-            String cencoding = (contentEncoding == null) ? "identity" : contentEncoding;
-
             ByteBuffer entryBuffer = entryWriter.write(builder,
                     epochSecond,
                     nanos,
@@ -105,8 +104,8 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
                     loggerName,
                     threadName,
                     contentBuffer,
-                    ctype,
-                    cencoding);
+                    contentType,
+                    contentEncoding);
             bytes.writeSome(entryBuffer);
             cq.acquireAppender().writeBytes(bytes);
         } finally {
