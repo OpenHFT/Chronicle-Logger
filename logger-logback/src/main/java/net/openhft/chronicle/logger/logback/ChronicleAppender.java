@@ -27,6 +27,7 @@ import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.codec.IdentityCodec;
 import net.openhft.chronicle.logger.codec.ZStandardCodec;
+import net.openhft.chronicle.logger.entry.EntryHelpers;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;
@@ -95,8 +96,13 @@ public class ChronicleAppender extends AbstractChronicleAppender {
     @Override
     public void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer) {
         byte[] entry = encoder.encode(event);
+        long epochMillis = event.getTimeStamp();
+        EntryHelpers helpers = EntryHelpers.instance();
+        long second = helpers.epochSecondFromMillis(epochMillis);
+        int nanos = helpers.nanosFromMillis(epochMillis);
         writer.write(
-                Instant.ofEpochMilli(event.getTimeStamp()),
+                second,
+                nanos,
                 event.getLevel().toInt(),
                 event.getLoggerName(),
                 event.getThreadName(),

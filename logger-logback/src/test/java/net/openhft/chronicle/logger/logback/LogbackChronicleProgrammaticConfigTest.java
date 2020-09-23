@@ -46,7 +46,7 @@ public class LogbackChronicleProgrammaticConfigTest {
         final AtomicReference<byte[]> expected = new AtomicReference<>();
         ChronicleLogWriter mockWriter = new StubWriter() {
             @Override
-            public void write(Instant timestamp, int level, String threadName, String loggerName, byte[] entry, String contentType, String contentEncoding) {
+            public void write(long second, int nanos, int level, String threadName, String loggerName, byte[] entry, String contentType, String contentEncoding) {
                 expected.set(entry);
             }
         };
@@ -82,7 +82,8 @@ public class LogbackChronicleProgrammaticConfigTest {
         }
 
         public void write(
-                final Instant timestamp,
+                long second,
+                int nanos,
                 final int level,
                 final String loggerName,
                 final String threadName,
@@ -91,7 +92,8 @@ public class LogbackChronicleProgrammaticConfigTest {
         }
 
         @Override
-        public abstract void write(Instant timestamp,
+        public abstract void write(long second,
+                                   int nanos,
                                    int level,
                                    String loggerName,
                                    String threadName,

@@ -22,6 +22,7 @@ import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.Entry;
+import net.openhft.chronicle.logger.entry.EntryHelpers;
 import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
@@ -60,14 +61,20 @@ public class DefaultChronicleLogWriterTest {
         try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(path).build()) {
             try (CodecRegistry codecRegistry = CodecRegistry.builder().withDefaults(path).build()) {
                 ChronicleLogWriter lw = new DefaultChronicleLogWriter(codecRegistry, cq);
-                lw.write(Instant.now(),
+
+                EntryHelpers helpers = EntryHelpers.instance();
+                Instant now = Instant.now();
+                lw.write(now.getEpochSecond(),
+                        now.getNano(),
                         10,
                         this.getClass().getCanonicalName(),
                         Thread.currentThread().getName(),
                         "Test message".getBytes(StandardCharsets.UTF_8)
                 );
 
-                lw.write(Instant.now(),
+                Instant n2 = Instant.now();
+                lw.write(n2.getEpochSecond(),
+                        n2.getNano(),
                         50,
                         this.getClass().getCanonicalName(),
                         Thread.currentThread().getName(),

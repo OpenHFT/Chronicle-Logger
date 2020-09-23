@@ -77,7 +77,8 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         // character set encoding
         if (charsetEncoding != null) {
             writer.write(
-                    instant,
+                    instant.getEpochSecond(),
+                    instant.getNano(),
                     level,
                     loggerName,
                     threadName,
@@ -87,7 +88,8 @@ public class ChronicleHandler extends AbstractChronicleHandler {
             );
         } else {
             writer.write(
-                    instant,
+                    instant.getEpochSecond(),
+                    instant.getNano(),
                     level,
                     loggerName,
                     threadName,

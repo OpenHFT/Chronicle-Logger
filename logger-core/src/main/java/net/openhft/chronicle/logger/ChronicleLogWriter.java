@@ -31,13 +31,15 @@ public interface ChronicleLogWriter extends Closeable {
      * Writes a logging event to the store.
      *
      * @param level the integer level of the log event.
-     * @param timestamp event timestamp.
+     * @param epochSecond event timestamp.
+     * @param nanos event timestamp.
      * @param loggerName logger that caused this event.
      * @param threadName thread name of the event.
      * @param entry the bytes containing the event.
      */
     void write(
-            final Instant timestamp,
+            final long epochSecond,
+            final int nanos,
             final int level,
             final String loggerName,
             final String threadName,
@@ -47,7 +49,8 @@ public interface ChronicleLogWriter extends Closeable {
      * Writes a logging event to the store.
      *
      * @param level the integer level of the log event.
-     * @param timestamp event timestamp.
+     * @param epochSecond event timestamp.
+     * @param nanos event timestamp.
      * @param threadName thread name of the event.
      * @param loggerName logger that caused this event.
      * @param entry the bytes containing the encoded event.
@@ -55,7 +58,8 @@ public interface ChronicleLogWriter extends Closeable {
      * @param contentEncoding the encoding (compression, usually) of the entry.
      */
     void write(
-            final Instant timestamp,
+            final long epochSecond,
+            final int nanos,
             final int level,
             final String loggerName,
             final String threadName,

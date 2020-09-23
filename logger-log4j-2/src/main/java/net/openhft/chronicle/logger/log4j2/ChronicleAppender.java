@@ -23,6 +23,7 @@ import net.openhft.chronicle.logger.LogAppenderConfig;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.codec.IdentityCodec;
+import net.openhft.chronicle.logger.entry.EntryHelpers;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -32,13 +33,13 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.time.Instant;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
 
 @Plugin(
         name = "Chronicle",
@@ -95,22 +96,26 @@ public class ChronicleAppender extends AbstractChronicleAppender {
 
     @Override
     public void doAppend(@NotNull final LogEvent event, @NotNull final ChronicleLogWriter writer) {
-        Instant instant = Instant.ofEpochMilli(event.getTimeMillis()).plusNanos(event.getNanoTime());
-        int level = event.getLevel().intLevel();
         Layout<? extends Serializable> layout = getLayout();
         if (layout == null) {
             throw new IllegalStateException("Null layout");
         }
+
+        // XXX Calling encode directly to a reusable bytes might be more efficient
+        // layout.encode(event, byteBufferDestination);
         byte[] entry = layout.toByteArray(event);
-        String contentEncoding = getContentEncoding();
+
+        Instant instant = event.getInstant();
+        int level = event.getLevel().intLevel();
         writer.write(
-                instant,
+                instant.getEpochSecond(),
+                instant.getNanoOfSecond(),
                 level,
                 event.getLoggerName(),
                 event.getThreadName(),
                 entry,
                 getContentType(),
-                contentEncoding
+                getContentEncoding()
         );
     }
 

@@ -57,7 +57,8 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
 
     @Override
     public void write(
-            final Instant timestamp,
+            final long epochSecond,
+            final int nanos,
             final int level,
             final String loggerName,
             final String threadName,
@@ -65,8 +66,8 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
         try {
             ByteBuffer contentBuffer = ByteBuffer.wrap(content);
             ByteBuffer entryBuffer = entryWriter.write(builder,
-                    timestamp.getEpochSecond(),
-                    timestamp.getNano(),
+                    epochSecond,
+                    nanos,
                     level,
                     loggerName,
                     threadName,
@@ -81,7 +82,8 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
 
     @Override
     public void write(
-            final Instant timestamp,
+            final long epochSecond,
+            final int nanos,
             final int level,
             final String loggerName,
             final String threadName,
@@ -97,8 +99,8 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             String cencoding = (contentEncoding == null) ? "identity" : contentEncoding;
 
             ByteBuffer entryBuffer = entryWriter.write(builder,
-                    timestamp.getEpochSecond(),
-                    timestamp.getNano(),
+                    epochSecond,
+                    nanos,
                     level,
                     loggerName,
                     threadName,

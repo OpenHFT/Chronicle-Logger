@@ -19,6 +19,7 @@ package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.entry.EntryHelpers;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.TTCCLayout;
@@ -171,8 +172,13 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
             }
 
             String format = getLayout().format(event);
+            long epochMillis = event.getTimeStamp();
+            EntryHelpers helpers = EntryHelpers.instance();
+            long second = helpers.epochSecondFromMillis(epochMillis);
+            int nanos = helpers.nanosFromMillis(epochMillis);
             writer.write(
-                    Instant.ofEpochMilli(event.getTimeStamp()),
+                    second,
+                    nanos,
                     event.getLevel().toInt(),
                     event.getLoggerName(),
                     event.getThreadName(),
