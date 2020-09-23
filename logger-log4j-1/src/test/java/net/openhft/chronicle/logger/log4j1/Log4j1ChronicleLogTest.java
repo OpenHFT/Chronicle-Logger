@@ -25,6 +25,7 @@ import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.Entry;
 import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
@@ -78,15 +79,15 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
             ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(registry);
             EntryReader entryReader = new EntryReader();
 
-            net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
+            ExcerptTailer tailer = cq.createTailer();
             for (Level level: levels) {
                 Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
                 tailer.readBytes(bytes);
                 Entry entry = entryReader.read(bytes);
-                assertTrue(entry.timestamp().epochSecond() < Instant.now().getEpochSecond());
+                assertTrue(entry.timestamp().epochSecond() <= Instant.now().getEpochSecond());
                 assertEquals(level.toInt(), entry.level());
                 assertEquals(threadId, entry.threadName());
-                assertEquals(testId, entry.name());
+                assertEquals(testId, entry.loggerName());
                 assertEquals("level is " + level.toString() + " ", processor.apply(entry));
             }
 
@@ -104,7 +105,8 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
         final String testId = "json-chronicle";
         final String threadId = testId + "-th";
         final Logger logger = LogManager.getLogger(testId);
-
+        Path path = Paths.get(basePath(testId));
+        Files.createDirectories(path);
         Thread.currentThread().setName(threadId);
 
         for (Level level: levels) {
@@ -112,19 +114,22 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
         }
 
         try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.TEXT)) {
-            net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
+            Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
+            CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
+            ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(registry);
+
+            ExcerptTailer tailer = cq.createTailer();
+            EntryReader entryReader = new EntryReader();
+
             for (Level level: levels) {
-                try (DocumentContext dc = tailer.readingDocument()) {
-                    Wire wire = dc.wire();
-                    assertNotNull("log not found for " + level, wire);
-                    ZonedDateTime now = Instant.now().atZone(ZoneOffset.UTC);
-                    assertTrue(wire.read("instant").zonedDateTime().isBefore(now));
-                    assertEquals(DEBUG.toInt(), wire.read("level").int32());
-                    assertEquals(threadId, wire.read("threadName").text());
-                    assertEquals(testId, wire.read("loggerName").text());
-                    assertEquals("level is " + level, wire.read("entry").text());
-                    assertFalse(wire.hasMore());
-                }
+                Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
+                tailer.readBytes(bytes);
+                Entry entry = entryReader.read(bytes);
+                assertTrue(entry.timestamp().epochSecond() <= Instant.now().getEpochSecond());
+                assertEquals(level.toInt(), entry.level());
+                assertEquals(threadId, entry.threadName());
+                assertEquals(testId, entry.loggerName());
+                assertEquals("level is " + level.toString() + " ", processor.apply(entry));
             }
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
@@ -134,34 +139,27 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
             logger.debug("Throwable test 1", new UnsupportedOperationException());
             logger.debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
 
-            try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNotNull(wire);
-                ZonedDateTime now = Instant.now().atZone(ZoneOffset.UTC);
-                assertTrue(wire.read("instant").zonedDateTime().isBefore(now));
-                assertEquals(DEBUG.toInt(), wire.read("level").int32());
-                assertEquals(threadId, wire.read("threadName").text());
-                assertEquals(testId, wire.read("loggerName").text());
-                assertEquals("Throwable test 1", wire.read("entry").text());
-                assertTrue(wire.hasMore());
-                assertTrue(wire.read("throwable").throwable(false) instanceof UnsupportedOperationException);
-                assertFalse(wire.hasMore());
+            {
+                Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
+                tailer.readBytes(bytes);
+                Entry entry = entryReader.read(bytes);
+                assertTrue(entry.timestamp().epochSecond() <= Instant.now().getEpochSecond());
+                assertEquals(DEBUG.toInt(), entry.level());
+                assertEquals(threadId, entry.threadName());
+                assertEquals(testId, entry.loggerName());
+                assertEquals("Throwable test 1", processor.apply(entry));
             }
 
-            try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNotNull(wire);
-                ZonedDateTime now = Instant.now().atZone(ZoneOffset.UTC);
-                assertTrue(wire.read("instant").zonedDateTime().isBefore(now));
-                assertEquals(DEBUG.toInt(), wire.read("level").int32());
-                assertEquals(threadId, wire.read("threadName").text());
-                assertEquals(testId, wire.read("loggerName").text());
-                assertEquals("Throwable test 2", wire.read("entry").text());
-                assertTrue(wire.hasMore());
-                Throwable throwable = wire.read("throwable").throwable(false);
-                assertTrue(throwable instanceof UnsupportedOperationException);
-                assertEquals("Exception message", throwable.getMessage());
-                assertFalse(wire.hasMore());
+            {
+                Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
+                tailer.readBytes(bytes);
+                Entry entry = entryReader.read(bytes);
+                assertTrue(entry.timestamp().epochSecond() <= Instant.now().getEpochSecond());
+                assertEquals(DEBUG.toInt(), entry.level());
+                assertEquals(threadId, entry.threadName());
+                assertEquals(testId, entry.loggerName());
+
+                assertEquals("Throwable test 2", processor.apply(entry));
             }
 
             try (DocumentContext dc = tailer.readingDocument()) {

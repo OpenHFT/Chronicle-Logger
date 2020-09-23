@@ -92,6 +92,10 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             Codec codec = codecRegistry.find(contentEncoding);
             byte[] encoded = codec.compress(content);
             ByteBuffer contentBuffer = ByteBuffer.wrap(encoded);
+
+            String ctype = (contentType == null) ? "text/plain" : contentType;
+            String cencoding = (contentEncoding == null) ? "identity" : contentEncoding;
+
             ByteBuffer entryBuffer = entryWriter.write(builder,
                     timestamp.getEpochSecond(),
                     timestamp.getNano(),
@@ -99,8 +103,8 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
                     loggerName,
                     threadName,
                     contentBuffer,
-                    contentType,
-                    contentEncoding);
+                    ctype,
+                    cencoding);
             bytes.writeSome(entryBuffer);
             cq.acquireAppender().writeBytes(bytes);
         } finally {

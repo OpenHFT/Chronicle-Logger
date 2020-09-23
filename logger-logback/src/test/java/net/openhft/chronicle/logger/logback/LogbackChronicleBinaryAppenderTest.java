@@ -18,26 +18,25 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IOTools;
+import net.openhft.chronicle.logger.ChronicleEntryProcessor;
+import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
+import net.openhft.chronicle.logger.entry.Entry;
+import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
-import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.time.ZoneOffset;
 
 import static ch.qos.logback.classic.Level.*;
 import static org.junit.Assert.*;
@@ -55,30 +54,30 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
         final String threadId = testId + "-th";
 
         final Logger logger = getLoggerContext().getLogger(testId);
-        Files.createDirectories(Paths.get(basePath(testId)));
+        Path path = Paths.get(basePath(testId));
+        Files.createDirectories(path);
 
         Thread.currentThread().setName(threadId);
 
-        Level[] levels = { ERROR, WARN, INFO, DEBUG, TRACE };
+        Level[] levels = {ERROR, WARN, INFO, DEBUG, TRACE};
         for (Level level : levels) {
             log(logger, level, "level is {}", level);
         }
+        EntryReader eventReader = new EntryReader();
+        CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
+        ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(registry);
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
-            for (Level level: levels) {
-                try (DocumentContext dc = tailer.readingDocument()) {
-                    Wire wire = dc.wire();
-                    assertNotNull("log not found for " + level, wire);
-                    assertTrue(wire.read("instant").zonedDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)));
-                    assertEquals(level.toInt(), wire.read("level").int32());
-                    assertEquals(threadId, wire.read("threadName").text());
-                    assertEquals(testId, wire.read("loggerName").text());
-                    assertEquals("level is " + level.levelStr, wire.read("entry").text());
-                    assertNull(wire.read("type").text());
-                    assertNull(wire.read("encoding").text());
-                    assertFalse(wire.hasMore());
-                }
+            for (Level level : levels) {
+                Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
+                tailer.readBytes(bytes);
+                Entry entry = eventReader.read(bytes);
+                assertTrue(entry.timestamp().epochSecond() <= Instant.now().getEpochSecond());
+                assertEquals(level.toInt(), entry.level());
+                assertEquals(threadId, entry.threadName());
+                assertEquals(testId, entry.loggerName());
+                assertEquals("level is " + level.levelStr, processor.apply(entry));
             }
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
@@ -88,35 +87,32 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
             logger.debug("Throwable test 1", new UnsupportedOperationException());
             logger.debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
 
-            try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNotNull(wire);
-                assertTrue(wire.read("instant").zonedDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)));
-                assertEquals(Level.DEBUG.toInt(), wire.read("level").int32());
-                assertEquals(threadId, wire.read("threadName").text());
-                assertEquals(testId, wire.read("loggerName").text());
-                String entry = wire.read("entry").text();
-                assertTrue(entry.startsWith("Throwable test 1"));
-                assertTrue(entry.contains("UnsupportedOperationException"));
-                // java.lang.UnsupportedOperationException: null
-                assertNull(wire.read("type").text());
-                assertNull(wire.read("encoding").text());
-                assertFalse(wire.hasMore());
+            {
+                Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
+                tailer.readBytes(bytes);
+                Entry entry = eventReader.read(bytes);
+                assertTrue(entry.timestamp().epochSecond() <= Instant.now().getEpochSecond());
+                assertEquals(DEBUG.toInt(), entry.level());
+                assertEquals(threadId, entry.threadName());
+                assertEquals(testId, entry.loggerName());
+
+                String content = processor.apply(entry);
+                assertTrue(content.startsWith("Throwable test 1"));
+                assertTrue(content.contains("UnsupportedOperationException"));
             }
 
-            try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNotNull(wire);
-                assertTrue(wire.read("instant").zonedDateTime().isBefore(Instant.now().atZone(ZoneOffset.UTC)));
-                assertEquals(Level.DEBUG.toInt(), wire.read("level").int32());
-                assertEquals(threadId, wire.read("threadName").text());
-                assertEquals(testId, wire.read("loggerName").text());
-                String entry = wire.read("entry").text();
-                assertTrue(entry.startsWith("Throwable test 2"));
-                assertTrue(entry.contains("UnsupportedOperationException: Exception message"));
-                assertNull(wire.read("type").text());
-                assertNull(wire.read("encoding").text());
-                assertFalse(wire.hasMore());
+            {
+                Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
+                tailer.readBytes(bytes);
+                Entry entry = eventReader.read(bytes);
+                assertTrue(entry.timestamp().epochSecond() <= Instant.now().getEpochSecond());
+                assertEquals(DEBUG.toInt(), entry.level());
+                assertEquals(threadId, entry.threadName());
+                assertEquals(testId, entry.loggerName());
+
+                String content = processor.apply(entry);
+                assertTrue(content.startsWith("Throwable test 2"));
+                assertTrue(content.contains("UnsupportedOperationException: Exception message"));
             }
 
             try (DocumentContext dc = tailer.readingDocument()) {

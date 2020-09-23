@@ -71,14 +71,14 @@ public class LogbackChronicleZstdBinaryAppenderTest extends LogbackTestBase {
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
-            Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
             for (Level level: levels) {
+                Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
                 tailer.readBytes(bytes);
                 Entry entry = eventReader.read(bytes);
-                assertTrue(entry.timestamp().epochSecond() < Instant.now().getEpochSecond());
+                assertTrue(entry.timestamp().epochSecond() <= Instant.now().getEpochSecond());
                 assertEquals(level.toInt(), entry.level());
                 assertEquals(threadId, entry.threadName());
-                assertEquals(testId, entry.name());
+                assertEquals(testId, entry.loggerName());
                 assertEquals("level is " + level.levelStr, processor.apply(entry));
             }
             try (DocumentContext dc = tailer.readingDocument()) {

@@ -8,6 +8,7 @@ import net.openhft.chronicle.logger.entry.Entry;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -32,9 +33,10 @@ public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<S
     }
 
     protected String decode(Entry e) throws UnsupportedEncodingException {
-        byte[] bytes = decompress(e.contentEncoding(), e.contentAsByteBuffer().array());
-        String charset = getCharset(e.contentType());
-        return new String(bytes, charset);
+        Bytes<ByteBuffer> bytes = Bytes.wrapForRead(e.contentAsByteBuffer());
+        byte[] decoded = decompress(e.contentEncoding(), bytes.toByteArray());
+        Charset charset = getCharset(e.contentType());
+        return new String(decoded, charset);
     }
 
     protected byte[] decompress(String encoding, byte[] bytes) {
@@ -42,17 +44,16 @@ public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<S
         return codec.decompress(bytes);
     }
 
-    protected String getCharset(String contentType) {
-        String charset = StandardCharsets.UTF_8.toString();
+    protected Charset getCharset(String contentType) {
         if (contentType != null) {
             for (String param : contentType.replace(" ", "").split(";")) {
                 if (param.startsWith("charset=")) {
-                    charset = param.split("=", 2)[1];
-                    break;
+                    String charset = param.split("=", 2)[1];
+                    return Charset.forName(charset);
                 }
             }
         }
-        return charset;
+        return StandardCharsets.UTF_8;
     }
 
 }

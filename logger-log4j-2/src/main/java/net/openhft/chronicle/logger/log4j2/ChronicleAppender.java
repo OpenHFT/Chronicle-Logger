@@ -106,8 +106,8 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         writer.write(
                 instant,
                 level,
-                event.getThreadName(),
                 event.getLoggerName(),
+                event.getThreadName(),
                 entry,
                 getContentType(),
                 contentEncoding

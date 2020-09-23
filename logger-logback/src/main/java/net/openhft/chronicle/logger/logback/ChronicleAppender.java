@@ -98,8 +98,8 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         writer.write(
                 Instant.ofEpochMilli(event.getTimeStamp()),
                 event.getLevel().toInt(),
-                event.getThreadName(),
                 event.getLoggerName(),
+                event.getThreadName(),
                 entry,
                 contentType,
                 contentEncoding

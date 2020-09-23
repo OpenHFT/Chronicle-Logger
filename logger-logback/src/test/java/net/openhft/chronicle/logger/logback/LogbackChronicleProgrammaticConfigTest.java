@@ -81,6 +81,15 @@ public class LogbackChronicleProgrammaticConfigTest {
         public void close() throws IOException {
         }
 
+        public void write(
+                final Instant timestamp,
+                final int level,
+                final String loggerName,
+                final String threadName,
+                final byte[] entry) {
+            throw new UnsupportedOperationException("Do not want");
+        }
+
         @Override
         public abstract void write(Instant timestamp,
                                    int level,
