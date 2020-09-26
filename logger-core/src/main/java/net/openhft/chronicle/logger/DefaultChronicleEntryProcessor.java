@@ -15,12 +15,16 @@ import java.nio.charset.StandardCharsets;
  * Turns a log entry into a String with the appropriate, passing it through a decompression
  * codec depending on the event's encoding.
  */
-public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<String> {
+public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<String>, AutoCloseable {
 
     private final CodecRegistry codecRegistry;
+    private final Bytes<ByteBuffer> sourceBytes;
+    private final Bytes<ByteBuffer> destBytes;
 
     public DefaultChronicleEntryProcessor(CodecRegistry registry) {
         this.codecRegistry = registry;
+        this.sourceBytes = Bytes.elasticByteBuffer(1024);
+        this.destBytes = Bytes.elasticByteBuffer(1024);
     }
 
     @Override
@@ -35,15 +39,30 @@ public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<S
     protected String decode(Entry e) throws UnsupportedEncodingException {
         // XXX fix this so not as wasteful
         // https://openhft.github.io/Chronicle-Bytes/apidocs/net/openhft/chronicle/bytes/Bytes.html#wrapForRead-byte:A-
-        Bytes<ByteBuffer> bytes = Bytes.wrapForRead(e.contentAsByteBuffer());
-        byte[] decoded = decompress(e.contentEncoding(), bytes.toByteArray());
-        Charset charset = getCharset(e.contentType());
-        return new String(decoded, charset);
-    }
 
-    protected byte[] decompress(String encoding, byte[] bytes) {
-        Codec codec = codecRegistry.find(encoding);
-        return codec.decompress(bytes);
+        try {
+            sourceBytes.writeSome(e.contentAsByteBuffer());
+            ByteBuffer src = sourceBytes.underlyingObject();
+            src.position(0);
+            src.limit((int) sourceBytes.readLimit());
+
+            Codec codec = codecRegistry.find(e.contentEncoding());
+            long maxBounds = codec.compressBounds(src.limit());
+            destBytes.ensureCapacity(maxBounds);
+            ByteBuffer dst = destBytes.underlyingObject();
+            dst.position(0);
+            dst.limit((int) maxBounds);
+
+            int actualSize = codec.decompress(src, dst);
+            destBytes.readLimit(actualSize);
+            byte[] actualArray = new byte[actualSize];
+            destBytes.read(actualArray);
+            Charset charset = getCharset(e.contentType());
+            return new String(actualArray, charset);
+        } finally {
+            sourceBytes.clear();
+            destBytes.clear();
+        }
     }
 
     protected Charset getCharset(String contentType) {
@@ -58,4 +77,9 @@ public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<S
         return StandardCharsets.UTF_8;
     }
 
+    @Override
+    public void close() {
+        sourceBytes.releaseLast();
+        destBytes.releaseLast();
+    }
 }

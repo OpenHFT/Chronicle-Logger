@@ -19,20 +19,13 @@ package net.openhft.chronicle.logger;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import net.openhft.chronicle.bytes.Bytes;
-import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
-import net.openhft.chronicle.logger.codec.IdentityCodec;
 import net.openhft.chronicle.logger.entry.EntryWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.wire.DocumentContext;
-import net.openhft.chronicle.wire.Wire;
-import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
-import java.time.Instant;
-import java.time.ZoneOffset;
 
 /**
  * A log writer that runs a compression operation based on the content encoding.
@@ -41,15 +34,21 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
 
     private final EntryWriter entryWriter;
     private final FlatBufferBuilder builder;
-    private final Bytes<ByteBuffer> bytes;
 
     private final ChronicleQueue cq;
     private final CodecRegistry codecRegistry;
 
+    private final Bytes<ByteBuffer> entryBytes;
+    private final Bytes<ByteBuffer> destBytes;
+    private final Bytes<ByteBuffer> sourceBytes;
+
     public DefaultChronicleLogWriter(@NotNull CodecRegistry codecRegistry, @NotNull ChronicleQueue cq) {
         this.cq = cq;
         this.entryWriter = new EntryWriter();
-        this.bytes = Bytes.elasticByteBuffer();
+        this.entryBytes = Bytes.elasticByteBuffer(1024);
+        this.sourceBytes = Bytes.elasticByteBuffer(1024);
+        this.destBytes = Bytes.elasticByteBuffer(1024);
+
         // XXX can make this more efficient by using off-heap memory & working with Bytes?
         FlatBufferBuilder.ByteBufferFactory factory = FlatBufferBuilder.HeapByteBufferFactory.INSTANCE;
         this.builder = new FlatBufferBuilder(1024, factory);
@@ -74,10 +73,10 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
                     loggerName,
                     threadName,
                     contentBuffer);
-            bytes.writeSome(entryBuffer);
-            cq.acquireAppender().writeBytes(bytes);
+            entryBytes.writeSome(entryBuffer);
+            cq.acquireAppender().writeBytes(entryBytes);
         } finally {
-            bytes.clear();
+            entryBytes.clear();
             builder.clear();
         }
     }
@@ -94,8 +93,23 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             final String contentEncoding) {
         try {
             Codec codec = codecRegistry.find(contentEncoding);
-            byte[] encoded = codec.compress(content);
-            ByteBuffer contentBuffer = ByteBuffer.wrap(encoded);
+
+            // Put the content bytes into buffer and flip for reading.
+            sourceBytes.ensureCapacity(content.length);
+            sourceBytes.write(content);
+            ByteBuffer src = sourceBytes.underlyingObject();
+            src.position(0);
+            src.limit(content.length);
+
+            // Put the compressed bytes into the dst byte buffer and flip reading.
+            long compressBounds = codec.compressBounds(content.length);
+            destBytes.ensureCapacity(compressBounds);
+            ByteBuffer dst = destBytes.underlyingObject();
+            dst.position(0);
+            dst.limit((int) compressBounds);
+            int actualSize = codec.compress(src, dst);
+            dst.position(0);
+            dst.limit(actualSize);
 
             ByteBuffer entryBuffer = entryWriter.write(builder,
                     epochSecond,
@@ -103,19 +117,23 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
                     level,
                     loggerName,
                     threadName,
-                    contentBuffer,
+                    dst,
                     contentType,
                     contentEncoding);
-            bytes.writeSome(entryBuffer);
-            cq.acquireAppender().writeBytes(bytes);
+            entryBytes.writeSome(entryBuffer);
+            cq.acquireAppender().writeBytes(entryBytes);
         } finally {
-            bytes.clear();
+            entryBytes.clear();
+            sourceBytes.clear();
+            destBytes.clear();
             builder.clear();
         }
     }
 
     @Override
     public void close() {
-        this.bytes.releaseLast();
+        this.sourceBytes.releaseLast();
+        this.destBytes.releaseLast();
+        this.entryBytes.releaseLast();
     }
 }

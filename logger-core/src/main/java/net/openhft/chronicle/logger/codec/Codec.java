@@ -1,11 +1,16 @@
 package net.openhft.chronicle.logger.codec;
 
-// XXX should make this use Bytes and work garbage-free
-public interface Codec extends AutoCloseable {
-    byte[] decompress(byte[] bytes) throws CodecException;
+import java.nio.ByteBuffer;
 
-    byte[] compress(byte[] bytes) throws CodecException;
+public interface Codec extends AutoCloseable {
+    int decompress(ByteBuffer src, ByteBuffer dst) throws CodecException;
+
+    int compress(ByteBuffer src, ByteBuffer dst) throws CodecException;
 
     default void close() {
     }
+
+    long compressBounds(int length);
+
+    long uncompressedSize(ByteBuffer buf);
 }

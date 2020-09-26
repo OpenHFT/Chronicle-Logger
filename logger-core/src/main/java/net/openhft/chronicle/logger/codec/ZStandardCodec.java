@@ -1,13 +1,16 @@
 package net.openhft.chronicle.logger.codec;
 
 import com.github.luben.zstd.*;
+import net.openhft.chronicle.bytes.Bytes;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -44,20 +47,26 @@ public class ZStandardCodec implements Codec, AutoCloseable {
     }
 
     @Override
-    public byte[] decompress(byte[] bytes) {
+    public int decompress(ByteBuffer compressed, ByteBuffer decompressed) {
+        Objects.requireNonNull(compressed);
+        Objects.requireNonNull(decompressed);
+
         if (zstdDictCodec != null) {
-            return zstdDictCodec.decompress(bytes);
+             return zstdDictCodec.decompress(compressed, decompressed);
         } else {
-            return staticDecompress(bytes);
+            return Zstd.decompress(decompressed, compressed);
         }
     }
 
     @Override
-    public byte[] compress(byte[] bytes) {
+    public int compress(ByteBuffer original, ByteBuffer compressed) {
+        Objects.requireNonNull(original);
+        Objects.requireNonNull(compressed);
+        assert (original.limit() > 0);
         if (zstdDictCodec != null) {
-            return zstdDictCodec.compress(bytes);
+            return zstdDictCodec.compress(original, compressed);
         } else {
-            return zstdTrainerCodec.compress(bytes);
+            return zstdTrainerCodec.compress(original, compressed);
         }
     }
 
@@ -66,6 +75,24 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         if (zstdDictCodec != null) {
             zstdDictCodec.close();
         }
+    }
+
+    @Override
+    public long compressBounds(int length) {
+        return zsdCompressBounds(length);
+    }
+
+    @Override
+    public long uncompressedSize(ByteBuffer buf) {
+        return zstdUncompressedSize(buf);
+    }
+
+    private static long zsdCompressBounds(int length) {
+        return Zstd.compressBound(length);
+    }
+
+    private static long zstdUncompressedSize(ByteBuffer buf) {
+        return Zstd.decompressedSize(buf);
     }
 
     /**
@@ -85,23 +112,39 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         }
 
         @Override
-        public byte[] decompress(byte[] bytes) throws CodecException {
-            return staticDecompress(bytes);
+        public int compress(ByteBuffer src, ByteBuffer dst) throws CodecException {
+            if (! trained) {
+                byte[] byteArray = new byte[src.limit()];
+                src.get(byteArray);
+                src.rewind();
+                if (this.trainer.addSample(byteArray)) {
+                    return Zstd.compress(dst, src);
+                } else {
+                    trained = true;
+                    return Zstd.compress(dst, src);
+                }
+            } else {
+                trainingHook.apply(trainer).thenAccept(dictBytes -> {
+                    // Not thread safe but this is fine?
+                    ZStandardCodec.this.zstdDictCodec = new ZStandardDictCodec(dictBytes);
+                });
+                return Zstd.compress(dst, src);
+            }
         }
 
         @Override
-        public byte[] compress(byte[] bytes) throws CodecException {
-            // Once it's trained, send it to the completion hook.
-            if (trained || this.trainer.addSample(bytes)) {
-                return staticCompress(bytes);
-            }
+        public int decompress(ByteBuffer src, ByteBuffer dst) throws CodecException {
+            return Zstd.decompress(dst, src);
+        }
 
-            trained = true;
-            trainingHook.apply(trainer).thenAccept(dictBytes -> {
-                // Not thread safe but this is fine
-                ZStandardCodec.this.zstdDictCodec = new ZStandardDictCodec(dictBytes);
-            });
-            return staticCompress(bytes);
+        @Override
+        public long compressBounds(int length) {
+            return zsdCompressBounds(length);
+        }
+
+        @Override
+        public long uncompressedSize(ByteBuffer buf) {
+            return zstdUncompressedSize(buf);
         }
     }
 
@@ -122,22 +165,33 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         }
 
         @Override
-        public byte[] decompress(byte[] bytes) {
+        public int decompress(ByteBuffer src, ByteBuffer dst) throws CodecException {
             try {
-                int originalSize = (int) Zstd.decompressedSize(bytes);
-                return Zstd.decompress(bytes, zstdDictDecompress, originalSize);
-            } catch (ZstdException ze) {
-                throw new CodecException(ze);
+                //long decompressedSize = Zstd.decompressedSize(src);
+                return Zstd.decompress(dst, src, zstdDictDecompress);
+            } catch (ZstdException e) {
+                throw new CodecException(e);
             }
         }
 
         @Override
-        public byte[] compress(byte[] bytes) throws CodecException {
+        public int compress(ByteBuffer src, ByteBuffer dst) throws CodecException {
             try {
-                return Zstd.compress(bytes, zstdDictCompress);
-            } catch (ZstdException ze) {
-                throw new CodecException(ze);
+                //long compressBound = Zstd.compressBound(src.limit());
+                return Zstd.compress(dst, src, zstdDictCompress);
+            } catch (ZstdException e) {
+                throw new CodecException(e);
             }
+        }
+
+        @Override
+        public long compressBounds(int length) {
+            return zsdCompressBounds(length);
+        }
+
+        @Override
+        public long uncompressedSize(ByteBuffer buf) {
+            return zstdUncompressedSize(buf);
         }
 
         @Override
@@ -145,15 +199,6 @@ public class ZStandardCodec implements Codec, AutoCloseable {
             zstdDictCompress.close();
             zstdDictDecompress.close();
         }
-    }
-
-    private static byte[] staticDecompress(byte[] bytes) {
-        int maxSize = (int) Zstd.decompressedSize(bytes);
-        return Zstd.decompress(bytes, maxSize);
-    }
-
-    private static byte[] staticCompress(byte[] bytes) {
-        return Zstd.compress(bytes);
     }
 
     public static class Builder {
