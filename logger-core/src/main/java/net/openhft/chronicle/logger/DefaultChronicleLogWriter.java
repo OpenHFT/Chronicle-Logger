@@ -45,13 +45,14 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
     public DefaultChronicleLogWriter(@NotNull CodecRegistry codecRegistry, @NotNull ChronicleQueue cq) {
         this.cq = cq;
         this.entryWriter = new EntryWriter();
+
+        // Direct byte buffer makes access to memory mapped file faster?
         this.entryBytes = Bytes.elasticByteBuffer(1024);
+
+        // Use a direct byte buffer because this helps make JNI memory access faster
         this.sourceBytes = Bytes.elasticByteBuffer(1024);
         this.destBytes = Bytes.elasticByteBuffer(1024);
-
-        // XXX can make this more efficient by using off-heap memory & working with Bytes?
-        FlatBufferBuilder.ByteBufferFactory factory = FlatBufferBuilder.HeapByteBufferFactory.INSTANCE;
-        this.builder = new FlatBufferBuilder(1024, factory);
+        this.builder = new FlatBufferBuilder(1024);
         this.codecRegistry = codecRegistry;
     }
 
@@ -64,7 +65,6 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             final String threadName,
             final byte[] content) {
         try {
-            // XXX use a Bytes here?
             ByteBuffer contentBuffer = ByteBuffer.wrap(content);
             ByteBuffer entryBuffer = entryWriter.write(builder,
                     epochSecond,
