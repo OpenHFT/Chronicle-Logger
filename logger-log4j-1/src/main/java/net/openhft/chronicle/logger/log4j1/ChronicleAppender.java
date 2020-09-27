@@ -20,9 +20,7 @@ package net.openhft.chronicle.logger.log4j1;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
-import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
-import net.openhft.chronicle.logger.codec.IdentityCodec;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;

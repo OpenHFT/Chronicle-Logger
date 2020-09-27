@@ -39,24 +39,29 @@ public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<S
     protected String decode(Entry e) throws UnsupportedEncodingException {
         // XXX fix this so not as wasteful
         // https://openhft.github.io/Chronicle-Bytes/apidocs/net/openhft/chronicle/bytes/Bytes.html#wrapForRead-byte:A-
-
         try {
             sourceBytes.writeSome(e.contentAsByteBuffer());
-            ByteBuffer src = sourceBytes.underlyingObject();
-            src.position(0);
-            src.limit((int) sourceBytes.readLimit());
-
             Codec codec = codecRegistry.find(e.contentEncoding());
-            long maxBounds = codec.compressBounds(src.limit());
-            destBytes.ensureCapacity(maxBounds);
-            ByteBuffer dst = destBytes.underlyingObject();
-            dst.position(0);
-            dst.limit((int) maxBounds);
+            byte[] actualArray;
+            if (codec != null) {
+                ByteBuffer src = sourceBytes.underlyingObject();
+                src.position(0);
+                src.limit((int) sourceBytes.readLimit());
+                long maxBounds = codec.compressBounds(src.limit());
+                destBytes.ensureCapacity(maxBounds);
+                ByteBuffer dst = destBytes.underlyingObject();
+                dst.position(0);
+                dst.limit((int) maxBounds);
+                int actualSize = codec.decompress(src, dst);
+                destBytes.readLimit(actualSize);
 
-            int actualSize = codec.decompress(src, dst);
-            destBytes.readLimit(actualSize);
-            byte[] actualArray = new byte[actualSize];
-            destBytes.read(actualArray);
+                actualArray = new byte[actualSize];
+                destBytes.read(actualArray);
+            } else {
+                actualArray = new byte[(int) sourceBytes.readRemaining()];
+                sourceBytes.copyTo(actualArray);
+            }
+
             Charset charset = getCharset(e.contentType());
             return new String(actualArray, charset);
         } finally {

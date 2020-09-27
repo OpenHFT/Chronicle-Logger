@@ -25,15 +25,17 @@ import java.nio.ByteBuffer;
 import java.time.ZonedDateTime;
 
 /**
- *
+ * This class is not thread safe, and uses a thread-local entry.
  */
 public class EntryReader {
 
+    private final ThreadLocal<Entry> entry = ThreadLocal.withInitial(Entry::new);
+
     public Entry read(Bytes<ByteBuffer> bytes) {
-        return read(bytes.underlyingObject());
+        return Entry.getRootAsEntry(bytes.underlyingObject(), entry.get());
     }
 
     public Entry read(ByteBuffer buf) {
-        return Entry.getRootAsEntry(buf);
+        return Entry.getRootAsEntry(buf, entry.get());
     }
 }

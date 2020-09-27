@@ -19,6 +19,7 @@ package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.Level;
 import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleEntryProcessor;
 import net.openhft.chronicle.logger.entry.Entry;
@@ -34,12 +35,17 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 
 import static ch.qos.logback.classic.Level.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.*;
 
 public class LogbackChronicleZstdBinaryAppenderTest extends LogbackTestBase {

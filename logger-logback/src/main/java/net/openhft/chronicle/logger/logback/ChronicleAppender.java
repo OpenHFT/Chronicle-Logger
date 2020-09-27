@@ -23,18 +23,20 @@ import ch.qos.logback.core.joran.spi.DefaultClass;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
-import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
-import net.openhft.chronicle.logger.codec.IdentityCodec;
-import net.openhft.chronicle.logger.codec.ZStandardCodec;
 import net.openhft.chronicle.logger.entry.EntryHelpers;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
 
+/**
+ * XXX This appender is not thread-safe
+ *
+ * XXX Need to make version extending AppenderBase or wrap in an async-appender
+ * and error if not wrapped in another appender
+ */
 public class ChronicleAppender extends AbstractChronicleAppender {
 
     protected LogAppenderConfig config;

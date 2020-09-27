@@ -92,7 +92,6 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             final String contentType,
             final String contentEncoding) {
         try {
-            Codec codec = codecRegistry.find(contentEncoding);
 
             // Put the content bytes into buffer and flip for reading.
             sourceBytes.ensureCapacity(content.length);
@@ -100,16 +99,21 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             ByteBuffer src = sourceBytes.underlyingObject();
             src.position(0);
             src.limit(content.length);
-
-            // Put the compressed bytes into the dst byte buffer and flip reading.
-            long compressBounds = codec.compressBounds(content.length);
-            destBytes.ensureCapacity(compressBounds);
-            ByteBuffer dst = destBytes.underlyingObject();
-            dst.position(0);
-            dst.limit((int) compressBounds);
-            int actualSize = codec.compress(src, dst);
-            dst.position(0);
-            dst.limit(actualSize);
+            ByteBuffer dst;
+            Codec codec = codecRegistry.find(contentEncoding);
+            if (codec != null) {
+                // Put the compressed bytes into the dst byte buffer and flip reading.
+                long compressBounds = codec.compressBounds(content.length);
+                destBytes.ensureCapacity(compressBounds);
+                dst = destBytes.underlyingObject();
+                dst.position(0);
+                dst.limit((int) compressBounds);
+                int actualSize = codec.compress(src, dst);
+                dst.position(0);
+                dst.limit(actualSize);
+            } else {
+                dst = src;
+            }
 
             ByteBuffer entryBuffer = entryWriter.write(builder,
                     epochSecond,

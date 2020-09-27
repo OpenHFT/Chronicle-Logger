@@ -17,19 +17,12 @@
  */
 package net.openhft.chronicle.logger.tools;
 
-import net.openhft.chronicle.logger.ChronicleEntryProcessor;
-import net.openhft.chronicle.logger.entry.EntryReader;
-import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
-import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public final class ChroniCat {
-
-    private ChroniCat() {
-    }
 
     public static void main(String[] args) {
         ChronicleQueue cq = ChronicleArgs.createChronicleQueue(args);
@@ -40,12 +33,10 @@ public final class ChroniCat {
             System.exit(-1);
         }
 
-        EntryReader reader = new EntryReader();
         Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
-        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-        ChronicleEntryProcessor<String> entryProcessor = new DefaultChronicleEntryProcessor(registry);
-        ChronicleLogProcessor logProcessor = e -> System.out.println(entryProcessor.apply(e));
-        logProcessor.processLogs(cq, reader, false);
+        ChronicleOutput chroniCat = new ChronicleOutput(cq, parent);
+        boolean waitForIt = false;
+        chroniCat.process(waitForIt);
     }
 
 }

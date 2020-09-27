@@ -17,10 +17,6 @@
  */
 package net.openhft.chronicle.logger.tools;
 
-import net.openhft.chronicle.logger.ChronicleEntryProcessor;
-import net.openhft.chronicle.logger.entry.EntryReader;
-import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
-import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.nio.file.Path;
@@ -34,16 +30,13 @@ public final class ChroniTail {
     public static void main(String[] args) {
         ChronicleQueue cq = ChronicleArgs.createChronicleQueue(args);
         if (cq == null) {
-            System.err.println("\nUsage: ChroniTail [-w <wireType>] <path>");
-            System.err.println("  <wireType> - wire format, default BINARY_LIGHT");
+            System.err.println("\nUsage: ChroniTail <path>");
             System.err.println("  <path>     - base path of Chronicle Logs storage");
             System.exit(-1);
         }
-        EntryReader reader = new EntryReader();
         Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
-        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-        ChronicleEntryProcessor<String> entryProcessor = new DefaultChronicleEntryProcessor(registry);
-        ChronicleLogProcessor logProcessor = e -> System.out.println(entryProcessor.apply(e));
-        logProcessor.processLogs(cq, reader, true);
+        ChronicleOutput chronicleOutput = new ChronicleOutput(cq, parent);
+        boolean waitForIt = true;
+        chronicleOutput.process(waitForIt);
     }
 }

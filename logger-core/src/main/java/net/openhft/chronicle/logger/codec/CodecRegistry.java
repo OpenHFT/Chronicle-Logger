@@ -12,8 +12,6 @@ public class CodecRegistry implements Closeable {
 
     private final HashMap<String, Codec> codecMap;
 
-    private static final Codec IDENTITY = new IdentityCodec();
-
     CodecRegistry() {
         codecMap = new HashMap<>();
     }
@@ -23,7 +21,7 @@ public class CodecRegistry implements Closeable {
     }
 
     public Codec find(String encoding) throws CodecException {
-        if (encoding == null || IDENTITY_ENCODING.equalsIgnoreCase(encoding)) return IDENTITY;
+        if (encoding == null || IDENTITY_ENCODING.equalsIgnoreCase(encoding)) return null;
         Codec codec = codecMap.get(encoding);
         if (codec == null) {
             throw new CodecException("No codec found for encoding " + encoding);

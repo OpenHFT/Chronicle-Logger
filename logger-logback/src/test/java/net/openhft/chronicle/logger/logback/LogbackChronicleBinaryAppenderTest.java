@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -86,7 +88,6 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
 
             logger.debug("Throwable test 1", new UnsupportedOperationException());
             logger.debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
-
             {
                 Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
                 tailer.readBytes(bytes);
