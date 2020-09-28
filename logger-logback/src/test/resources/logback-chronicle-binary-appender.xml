@@ -32,7 +32,7 @@
     <!-- ******************************************************************* -->
 
     <appender name  = "BINARY-CHRONICLE"
-              class = "net.openhft.chronicle.logger.logback.ChronicleAppender">
+              class = "net.openhft.chronicle.logger.logback.BlockingChronicleAppender">
         <path>${java.io.tmpdir}/chronicle-logback/binary-chronicle</path>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%msg</pattern>

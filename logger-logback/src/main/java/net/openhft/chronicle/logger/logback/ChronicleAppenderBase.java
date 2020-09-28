@@ -18,35 +18,43 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.encoder.Encoder;
+import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.joran.spi.DefaultClass;
+import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.FilterAttachableImpl;
+import ch.qos.logback.core.spi.FilterReply;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
-import net.openhft.chronicle.logger.entry.EntryHelpers;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
-/**
- * XXX This appender is not thread-safe
- *
- * XXX Need to make version extending AppenderBase or wrap in an async-appender
- * and error if not wrapped in another appender
- */
-public class ChronicleAppender extends AbstractChronicleAppender {
+public abstract class ChronicleAppenderBase
+        extends UnsynchronizedAppenderBase<ILoggingEvent>
+        implements Appender<ILoggingEvent> {
+
+    protected ChronicleLogWriter writer;
+    private String path;
 
     protected LogAppenderConfig config;
     protected Encoder<ILoggingEvent> encoder;
-    private String contentType = null;
-    private String contentEncoding = null;
+    protected String contentType = null;
+    protected String contentEncoding = null;
 
-    public ChronicleAppender() {
-        super();
+    protected ChronicleAppenderBase() {
         this.config = new LogAppenderConfig();
+        this.path = null;
+        this.writer = null;
     }
 
     public LogAppenderConfig getChronicleConfig() {
@@ -58,14 +66,6 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         this.config = config;
     }
 
-    @Override
-    protected ChronicleLogWriter createWriter() throws IOException {
-        ChronicleQueue cq = this.config.build(this.getPath());
-        Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
-        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-        return new DefaultChronicleLogWriter(registry, cq);
-    }
-
     public Encoder<ILoggingEvent> getEncoder() {
         return this.encoder;
     }
@@ -74,44 +74,65 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         this.encoder = encoder;
     }
 
+    public String getContentType() {
+        return contentType;
+    }
+
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public String getContentEncoding() {
+        return contentEncoding;
     }
 
     public void setContentEncoding(String contentEncoding) {
         this.contentEncoding = contentEncoding;
     }
 
+    public String getPath() {
+        return this.path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     @Override
     public void start() {
         if (encoder == null) {
             addError("Null encoder!");
+        }
+        if (getPath() == null) {
+            addError("Appender " + getName() + " has configuration errors and is not started!");
         } else {
-            super.start();
+            try {
+                this.writer = createWriter();
+                this.started = true;
+            } catch (IOException e) {
+                this.writer = null;
+                addError("Appender " + getName() + " " + e.getMessage());
+            }
         }
     }
 
-    // *************************************************************************
-    //
-    // *************************************************************************
-
     @Override
-    public void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer) {
-        byte[] entry = encoder.encode(event);
-        long epochMillis = event.getTimeStamp();
-        EntryHelpers helpers = EntryHelpers.instance();
-        long second = helpers.epochSecondFromMillis(epochMillis);
-        int nanos = helpers.nanosFromMillis(epochMillis);
-        writer.write(
-                second,
-                nanos,
-                event.getLevel().toInt(),
-                event.getLoggerName(),
-                event.getThreadName(),
-                entry,
-                contentType,
-                contentEncoding
-        );
+    public void stop() {
+        if (this.writer != null) {
+            try {
+                this.writer.close();
+            } catch (IOException e) {
+                addError("Appender " + getName() + " " + e.getMessage());
+            }
+        }
+
+        this.started = false;
     }
 
+    protected ChronicleLogWriter createWriter() throws IOException {
+        ChronicleQueue cq = this.config.build(this.getPath());
+        Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
+        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
+        return new DefaultChronicleLogWriter(registry, cq);
+    }
 }

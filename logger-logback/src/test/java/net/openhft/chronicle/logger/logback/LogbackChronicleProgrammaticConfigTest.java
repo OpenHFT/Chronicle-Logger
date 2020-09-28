@@ -50,7 +50,7 @@ public class LogbackChronicleProgrammaticConfigTest {
                 expected.set(entry);
             }
         };
-        ChronicleAppender appender = new ChronicleAppender() {
+        BlockingChronicleAppender appender = new BlockingChronicleAppender() {
             @Override
             protected ChronicleLogWriter createWriter() throws IOException {
                 ChronicleQueue cq = this.config.build(this.getPath());

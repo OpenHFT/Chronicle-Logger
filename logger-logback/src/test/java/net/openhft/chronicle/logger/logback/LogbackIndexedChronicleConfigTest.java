@@ -46,9 +46,9 @@ public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
 
         final ch.qos.logback.core.Appender<ILoggingEvent> appender = logger.getAppender(appenderName);
         assertNotNull(appender);
-        assertTrue(appender instanceof ChronicleAppender);
+        assertTrue(appender instanceof BlockingChronicleAppender);
 
-        ChronicleAppender ba = (ChronicleAppender) appender;
+        BlockingChronicleAppender ba = (BlockingChronicleAppender) appender;
         assertEquals(128, ba.getChronicleConfig().getBlockSize());
     }
 }
