@@ -2,6 +2,8 @@ package net.openhft.chronicle.logger.codec;
 
 import com.github.luben.zstd.*;
 import net.openhft.chronicle.bytes.Bytes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -274,6 +276,8 @@ public class ZStandardCodec implements Codec, AutoCloseable {
 
 class ZStandardDictionary {
 
+    private static final Logger logger = LoggerFactory.getLogger(ZStandardDictionary.class);
+
     public static final String DEFAULT_DICT_FILENAME = "dictionary";
 
     public static Function<ZstdDictTrainer, CompletionStage<byte[]>> writeToFile(Path path) {
@@ -284,8 +288,10 @@ class ZStandardDictionary {
                 byte[] dictBytes = trainer.trainSamples();
                 if (Files.isDirectory(path)) {
                     Path filename = path.resolve(DEFAULT_DICT_FILENAME);
+                    logger.info("Training samples and writing to file " + filename);
                     Files.write(filename, dictBytes, CREATE_NEW);
                 } else {
+                    logger.info("Training samples and writing zstandard dictionary to file " + path);
                     Files.write(path, dictBytes);
                 }
                 return dictBytes;
