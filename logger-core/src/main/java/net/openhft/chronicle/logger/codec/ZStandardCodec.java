@@ -12,11 +12,12 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.StampedLock;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -41,7 +42,11 @@ public class ZStandardCodec implements Codec, AutoCloseable {
     }
 
     public ZStandardCodec(int sampleSize, int dictSize, Function<ZstdDictTrainer, CompletionStage<byte[]>> trainingHook) {
-        this.zstdTrainerCodec = new ZStandardTrainerCodec(sampleSize, dictSize, trainingHook);
+        this(sampleSize, dictSize, Duration.ofSeconds(0), trainingHook);
+    }
+
+    public ZStandardCodec(int sampleSize, int dictSize, Duration trainingSleep, Function<ZstdDictTrainer, CompletionStage<byte[]>> trainingHook) {
+        this.zstdTrainerCodec = new ZStandardTrainerCodec(sampleSize, dictSize, trainingSleep, trainingHook);
     }
 
     public static Builder builder() {
@@ -103,29 +108,43 @@ public class ZStandardCodec implements Codec, AutoCloseable {
      * the hook is called.
      */
     class ZStandardTrainerCodec implements Codec {
+        private final Logger logger = LoggerFactory.getLogger(getClass());
+
         private final Function<ZstdDictTrainer, CompletionStage<byte[]>> trainingHook;
+        private final Instant trainingDeadline;
         private volatile boolean trained = false;
 
         private final ZstdDictTrainer trainer;
 
-        public ZStandardTrainerCodec(int sampleSize, int dictSize, Function<ZstdDictTrainer, CompletionStage<byte[]>> trainingHook) throws CodecException {
+        public ZStandardTrainerCodec(int sampleSize, int dictSize, Duration trainingSleep, Function<ZstdDictTrainer, CompletionStage<byte[]>> trainingHook) throws CodecException {
             this.trainer = new ZstdDictTrainer(sampleSize, dictSize);
+            this.trainingDeadline = Instant.now().plus(trainingSleep);
             this.trainingHook = trainingHook;
+            logger.info("Dictionary training enabled, will begin training in {} after {}", trainingSleep, trainingDeadline);
+        }
+
+        public boolean isTraining() {
+            return Instant.now().isAfter(trainingDeadline);
         }
 
         @Override
         public int compress(ByteBuffer src, ByteBuffer dst) throws CodecException {
             if (! trained) {
-                byte[] byteArray = new byte[src.limit()];
-                src.get(byteArray);
-                src.rewind();
-                if (this.trainer.addSample(byteArray)) {
-                    return Zstd.compress(dst, src);
+                if (isTraining()) {
+                    byte[] byteArray = new byte[src.limit()];
+                    src.get(byteArray);
+                    src.rewind();
+                    if (this.trainer.addSample(byteArray)) {
+                        return Zstd.compress(dst, src);
+                    } else {
+                        trained = true;
+                        return Zstd.compress(dst, src);
+                    }
                 } else {
-                    trained = true;
                     return Zstd.compress(dst, src);
                 }
             } else {
+                // XXX this isn't a hook, this is an actual class
                 trainingHook.apply(trainer).thenAccept(dictBytes -> {
                     // Not thread safe but this is fine?
                     ZStandardCodec.this.zstdDictCodec = new ZStandardDictCodec(dictBytes);
@@ -206,6 +225,7 @@ public class ZStandardCodec implements Codec, AutoCloseable {
     public static class Builder {
         private int sampleSize = ZStandardCodec.DEFAULT_SAMPLE_SIZE;
         private int dictSize = ZStandardCodec.DEFAULT_DICT_SIZE;
+        private Duration initialDelay = Duration.ZERO;
         private Supplier<ZStandardCodec> codecSupplier;
 
         Builder() {
@@ -247,6 +267,11 @@ public class ZStandardCodec implements Codec, AutoCloseable {
             return withDefaults(Paths.get(path));
         }
 
+        public Builder withInitialDelay(Duration initialDelay) {
+            this.initialDelay = initialDelay;
+            return this;
+        }
+
         public Builder withDefaults(Path dictionaryPath) {
             this.codecSupplier = () -> {
                 try {
@@ -255,7 +280,7 @@ public class ZStandardCodec implements Codec, AutoCloseable {
                 } catch (NoSuchFileException | FileNotFoundException e) {
                     Function<ZstdDictTrainer, CompletionStage<byte[]>> trainingHook =
                             ZStandardDictionary.writeToFile(dictionaryPath);
-                    return new ZStandardCodec(sampleSize, dictSize, trainingHook);
+                    return new ZStandardCodec(sampleSize, dictSize, initialDelay, trainingHook);
                 } catch (IOException e) {
                     throw new CodecException(e);
                 }
@@ -280,32 +305,39 @@ class ZStandardDictionary {
 
     public static final String DEFAULT_DICT_FILENAME = "dictionary";
 
+    private static final AtomicBoolean lock = new AtomicBoolean(true);
+
     public static Function<ZstdDictTrainer, CompletionStage<byte[]>> writeToFile(Path path) {
         // Run this as a future so it's off the current thread (we don't
         // care when it completes)
+
         return trainer -> CompletableFuture.supplyAsync(() -> {
-            try {
-                byte[] dictBytes = trainer.trainSamples();
-                if (Files.isDirectory(path)) {
-                    Path filename = path.resolve(DEFAULT_DICT_FILENAME);
+            Path filename = Files.isDirectory(path) ? path.resolve(DEFAULT_DICT_FILENAME) : path;
+            if (lock.getAndSet(false)) {
+                try {
+                    byte[] dictBytes = trainer.trainSamples();
                     logger.info("Training samples and writing to file " + filename);
                     Files.write(filename, dictBytes, CREATE_NEW);
-                } else {
-                    logger.info("Training samples and writing zstandard dictionary to file " + path);
-                    Files.write(path, dictBytes);
+                    return dictBytes;
+                } catch (IOException e) {
+                    throw new CompletionException(new CodecException(e));
+                } catch (ZstdException e) {
+                    // XXX throws ZstdException (should use a try / catch)
+                    // https://github.com/facebook/zstd/issues/1735
+                    // I think "Src size is incorrect" means that there's not enough unique info in the
+                    // messages to create a dictionary.  So keep going?  Or throw out the
+                    // trainer and start from scratch?
+                    throw new CompletionException(new CodecException("Cannot create dictionary: probably not enough unique data", e));
                 }
-                return dictBytes;
-            } catch (IOException e) {
-                throw new CompletionException(new CodecException(e));
-            } catch (ZstdException e) {
-                // XXX throws ZstdException (should use a try / catch)
-                // https://github.com/facebook/zstd/issues/1735
-                // I think "Src size is incorrect" means that there's not enough unique info in the
-                // messages to create a dictionary.  So keep going?  Or throw out the
-                // trainer and start from scratch?
-                throw new CompletionException(new CodecException("Cannot create dictionary: probably not enough unique data", e));
+            } else {
+                try {
+                    return Files.readAllBytes(filename);
+                } catch (IOException e) {
+                    throw new CompletionException(e);
+                }
             }
         }, ForkJoinPool.commonPool());
+
     }
 
     /**

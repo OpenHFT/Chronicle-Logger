@@ -1,8 +1,11 @@
 package net.openhft.chronicle.logger.codec;
 
+import net.openhft.chronicle.logger.LogAppenderConfig;
+
 import java.io.Closeable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +42,7 @@ public class CodecRegistry implements Closeable {
 
     public static class Builder {
         private final CodecRegistry registry;
+        private Duration initialDelay = Duration.ZERO;
 
         Builder() {
             registry = new CodecRegistry();
@@ -58,8 +62,16 @@ public class CodecRegistry implements Closeable {
         }
 
         public Builder withDefaults(Path path) {
-            ZStandardCodec codec = ZStandardCodec.builder().withDefaults(path).build();
+            ZStandardCodec codec = ZStandardCodec.builder()
+                    .withInitialDelay(initialDelay)
+                    .withDefaults(path)
+                    .build();
             return withCodec("zstd", codec);
+        }
+
+        public Builder withInitialDelay(Duration initialDelay) {
+            this.initialDelay = initialDelay;
+            return this;
         }
     }
 

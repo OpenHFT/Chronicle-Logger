@@ -37,6 +37,7 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.List;
 
 public abstract class ChronicleAppenderBase
@@ -131,8 +132,12 @@ public abstract class ChronicleAppenderBase
 
     protected ChronicleLogWriter createWriter() throws IOException {
         ChronicleQueue cq = this.config.build(this.getPath());
-        Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
-        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
+        Path dictDirectory = Paths.get(cq.fileAbsolutePath());
+        Duration initialDelay = Duration.ofSeconds(10);
+        CodecRegistry registry = CodecRegistry.builder()
+                .withInitialDelay(initialDelay)
+                .withDefaults(dictDirectory)
+                .build();
         return new DefaultChronicleLogWriter(registry, cq);
     }
 }
