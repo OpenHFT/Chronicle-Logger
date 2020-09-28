@@ -315,8 +315,9 @@ class ZStandardDictionary {
             Path filename = Files.isDirectory(path) ? path.resolve(DEFAULT_DICT_FILENAME) : path;
             if (lock.getAndSet(false)) {
                 try {
+                    logger.info("Training zstd dictionary samples...");
                     byte[] dictBytes = trainer.trainSamples();
-                    logger.info("Training samples and writing to file " + filename);
+                    logger.info("Writing zstd dictionary of {} bytes to {}", dictBytes.length, filename);
                     Files.write(filename, dictBytes, CREATE_NEW);
                     return dictBytes;
                 } catch (IOException e) {
