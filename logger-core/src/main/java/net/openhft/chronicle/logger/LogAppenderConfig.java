@@ -81,8 +81,8 @@ public class LogAppenderConfig {
         return KEYS;
     }
 
-    public ChronicleQueue build(String path, String wireType) {
-        WireType wireTypeEnum = wireType != null ? WireType.valueOf(wireType.toUpperCase()) : WireType.BINARY_LIGHT;
+    public ChronicleQueue build(String path) {
+        WireType wireTypeEnum = WireType.BINARY_LIGHT;
         SingleChronicleQueueBuilder builder = ChronicleQueue.singleBuilder(path)
                 .wireType(wireTypeEnum)
                 .blockSize(blockSize)

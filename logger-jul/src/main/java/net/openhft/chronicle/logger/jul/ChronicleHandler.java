@@ -48,8 +48,7 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         setLevel(handlerCfg.getLevel("level", Level.ALL));
         setFilter(handlerCfg.getFilter("filter", null));
 
-        String wireType = handlerCfg.getStringProperty("wireType", "BINARY_LIGHT");
-        ChronicleQueue cq = appenderCfg.build(appenderPath, wireType);
+        ChronicleQueue cq = appenderCfg.build(appenderPath);
         Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
         Path dictionaryPath = parent.resolve("dictionary");
         CodecRegistry registry = CodecRegistry.builder().withDefaults(dictionaryPath).build();

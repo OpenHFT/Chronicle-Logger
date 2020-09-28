@@ -53,7 +53,7 @@ public class LogbackChronicleProgrammaticConfigTest {
         ChronicleAppender appender = new ChronicleAppender() {
             @Override
             protected ChronicleLogWriter createWriter() throws IOException {
-                ChronicleQueue cq = this.config.build(this.getPath(), getWireType());
+                ChronicleQueue cq = this.config.build(this.getPath());
                 return mockWriter;
             }
         };
