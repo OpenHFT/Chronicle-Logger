@@ -30,7 +30,7 @@ public class ZStandardCodecTest {
         int sampleSize = 1024 * 1024;
         int dictSize = 32 * 1024;
         Function<ZstdDictTrainer, CompletionStage<byte[]>> trainingHook = zstdDictTrainer -> null;
-        ZStandardCodec codec = new ZStandardCodec(sampleSize, dictSize, trainingHook);
+        ZStandardCodec codec = new ZStandardCodec(sampleSize, dictSize, 3, trainingHook);
 
         int size = bytes.length;
         Bytes<ByteBuffer> inputBytes = Bytes.elasticByteBuffer(size);
@@ -74,7 +74,7 @@ public class ZStandardCodecTest {
                 throw new CodecException(msg, e);
             }
         };
-        ZStandardCodec codec = new ZStandardCodec(sampleSize, dictSize, trainingHook);
+        ZStandardCodec codec = new ZStandardCodec(sampleSize, dictSize, 3, trainingHook);
 
         Bytes<ByteBuffer> sourceBytes = Bytes.elasticByteBuffer();
         Bytes<ByteBuffer> destBytes = Bytes.elasticByteBuffer();
