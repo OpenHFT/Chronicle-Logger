@@ -132,12 +132,6 @@ public abstract class ChronicleAppenderBase
 
     protected ChronicleLogWriter createWriter() throws IOException {
         ChronicleQueue cq = this.config.build(this.getPath());
-        Path dictDirectory = Paths.get(cq.fileAbsolutePath());
-        Duration initialDelay = Duration.ofSeconds(10);
-        CodecRegistry registry = CodecRegistry.builder()
-                .withInitialDelay(initialDelay)
-                .withDefaults(dictDirectory)
-                .build();
-        return new DefaultChronicleLogWriter(registry, cq);
+        return new DefaultChronicleLogWriter(cq);
     }
 }

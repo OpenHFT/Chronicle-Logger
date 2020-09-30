@@ -20,6 +20,7 @@ package net.openhft.chronicle.logger.log4j1;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleEntryProcessor;
+import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
@@ -76,7 +77,8 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
         try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.BINARY_LIGHT)) {
             Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
             CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-            ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(registry);
+            Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+            ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(codec);
             EntryReader entryReader = new EntryReader();
 
             ExcerptTailer tailer = cq.createTailer();
@@ -116,7 +118,8 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
         try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.TEXT)) {
             Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
             CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
-            ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(registry);
+            Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+            ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(codec);
 
             ExcerptTailer tailer = cq.createTailer();
             EntryReader entryReader = new EntryReader();

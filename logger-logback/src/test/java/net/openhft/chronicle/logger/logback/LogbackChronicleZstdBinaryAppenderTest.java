@@ -22,6 +22,7 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleEntryProcessor;
+import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.entry.Entry;
 import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
@@ -73,7 +74,8 @@ public class LogbackChronicleZstdBinaryAppenderTest extends LogbackTestBase {
 
         EntryReader eventReader = new EntryReader();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
-        ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(registry);
+        Codec codec = registry.find(CodecRegistry.IDENTITY);
+        ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(codec);
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();

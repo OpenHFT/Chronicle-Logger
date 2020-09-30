@@ -17,15 +17,24 @@
  */
 package net.openhft.chronicle.logger;
 
+import net.openhft.chronicle.bytes.Bytes;
+
 import java.io.Closeable;
+import java.nio.ByteBuffer;
 import java.time.Instant;
 
 /**
  * Writes a logging event out to a chronicle log.
- *
- * XXX Use epochseconds and nanos here
  */
 public interface ChronicleLogWriter extends Closeable {
+
+    void write(
+            long epochSecond,
+            int nanos,
+            int level,
+            String loggerName,
+            String threadName,
+            ByteBuffer contentBuffer);
 
     /**
      * Writes a logging event to the store.
@@ -45,25 +54,4 @@ public interface ChronicleLogWriter extends Closeable {
             final String threadName,
             final byte[] entry);
 
-    /**
-     * Writes a logging event to the store.
-     *
-     * @param level the integer level of the log event.
-     * @param epochSecond event timestamp.
-     * @param nanos event timestamp.
-     * @param threadName thread name of the event.
-     * @param loggerName logger that caused this event.
-     * @param entry the bytes containing the encoded event.
-     * @param contentType the content type of the entry.
-     * @param contentEncoding the encoding (compression, usually) of the entry.
-     */
-    void write(
-            final long epochSecond,
-            final int nanos,
-            final int level,
-            final String loggerName,
-            final String threadName,
-            final byte[] entry,
-            final String contentType,
-            final String contentEncoding);
 }

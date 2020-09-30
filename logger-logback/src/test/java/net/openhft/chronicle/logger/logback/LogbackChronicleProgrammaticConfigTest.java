@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -46,7 +47,12 @@ public class LogbackChronicleProgrammaticConfigTest {
         final AtomicReference<byte[]> expected = new AtomicReference<>();
         ChronicleLogWriter mockWriter = new StubWriter() {
             @Override
-            public void write(long second, int nanos, int level, String threadName, String loggerName, byte[] entry, String contentType, String contentEncoding) {
+            public void write(long epochSecond, int nanos, int level, String loggerName, String threadName, ByteBuffer contentBuffer) {
+                throw new UnsupportedOperationException("not implemented");
+            }
+
+            @Override
+            public void write(long second, int nanos, int level, String loggerName, String threadName, byte[] entry) {
                 expected.set(entry);
             }
         };
@@ -90,15 +96,5 @@ public class LogbackChronicleProgrammaticConfigTest {
                 final byte[] entry) {
             throw new UnsupportedOperationException("Do not want");
         }
-
-        @Override
-        public abstract void write(long second,
-                                   int nanos,
-                                   int level,
-                                   String loggerName,
-                                   String threadName,
-                                   byte[] entry,
-                                   String contentType,
-                                   String contentEncoding);
     }
 }

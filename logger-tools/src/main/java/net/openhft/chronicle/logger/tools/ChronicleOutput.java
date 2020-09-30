@@ -2,12 +2,15 @@ package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.logger.ChronicleEntryProcessor;
 import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
+import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 public class ChronicleOutput {
@@ -22,12 +25,25 @@ public class ChronicleOutput {
     public void process(boolean waitForIt) {
         EntryReader reader = new EntryReader();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-        ChronicleEntryProcessor<String> entryProcessor = new DefaultChronicleEntryProcessor(registry);
+        Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+        ChronicleEntryProcessor<String> entryProcessor = new DefaultChronicleEntryProcessor(codec);
         ChronicleLogProcessor logProcessor = e -> {
             String content = entryProcessor.apply(e);
             System.out.println(content);
         };
         logProcessor.processLogs(cq, reader, waitForIt);
+    }
+
+    protected Charset getCharset(String contentType) {
+        if (contentType != null) {
+            for (String param : contentType.replace(" ", "").split(";")) {
+                if (param.startsWith("charset=")) {
+                    String charset = param.split("=", 2)[1];
+                    return Charset.forName(charset);
+                }
+            }
+        }
+        return StandardCharsets.UTF_8;
     }
 
 }

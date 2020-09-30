@@ -17,13 +17,16 @@
  */
 package net.openhft.chronicle.logger.jul;
 
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.logger.*;
+import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -39,6 +42,10 @@ import static java.lang.invoke.MethodType.methodType;
 
 public class ChronicleHandler extends AbstractChronicleHandler {
 
+    private final Codec codec;
+    private final Charset charset;
+    private final Bytes<ByteBuffer> dst;
+
     public ChronicleHandler() throws IOException {
         ChronicleHandlerConfig handlerCfg = new ChronicleHandlerConfig(getClass());
         String appenderPath = handlerCfg.getString("path", null);
@@ -52,8 +59,14 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
         Path dictionaryPath = parent.resolve("dictionary");
         CodecRegistry registry = CodecRegistry.builder().withDefaults(dictionaryPath).build();
-        DefaultChronicleLogWriter chronicleLogWriter = new DefaultChronicleLogWriter(registry, cq);
+
+        DefaultChronicleLogWriter chronicleLogWriter = new DefaultChronicleLogWriter(cq);
         setWriter(chronicleLogWriter);
+
+        this.codec = registry.find(CodecRegistry.ZSTANDARD);
+        String encoding = getEncoding();
+        this.charset = (encoding == null) ? StandardCharsets.UTF_8 : Charset.forName(encoding);
+        this.dst = Bytes.elasticByteBuffer();
     }
 
     @Override
@@ -64,38 +77,20 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         String threadName = "thread-" + record.getThreadID();
         String loggerName = record.getLoggerName();
         String format = getFormatter().format(record);
-        String charsetEncoding = getEncoding();
 
-        String contentType;
-        if (getFormatter() instanceof XMLFormatter) {
-            contentType = "text/xml";
-        } else {
-            contentType = "text/plain";
-        }
-
-        // character set encoding
-        if (charsetEncoding != null) {
+        try {
+            ByteBuffer src = ByteBuffer.wrap(format.getBytes(this.charset));
+            codec.compress(src, dst.underlyingObject());
             writer.write(
                     instant.getEpochSecond(),
                     instant.getNano(),
                     level,
                     loggerName,
                     threadName,
-                    format.getBytes(Charset.forName(charsetEncoding)),
-                    contentType + "; charset=" + charsetEncoding,
-                    "identity"
+                    dst.toByteArray()
             );
-        } else {
-            writer.write(
-                    instant.getEpochSecond(),
-                    instant.getNano(),
-                    level,
-                    loggerName,
-                    threadName,
-                    format.getBytes(StandardCharsets.UTF_8),
-                    contentType,
-                    "identity"
-            );
+        } finally {
+            dst.clear();
         }
     }
 

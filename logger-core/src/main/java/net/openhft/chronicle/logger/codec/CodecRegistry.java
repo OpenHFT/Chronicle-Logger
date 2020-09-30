@@ -1,8 +1,7 @@
 package net.openhft.chronicle.logger.codec;
 
-import net.openhft.chronicle.logger.LogAppenderConfig;
-
 import java.io.Closeable;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -11,12 +10,14 @@ import java.util.Map;
 
 public class CodecRegistry implements Closeable {
 
-    public static final String IDENTITY_ENCODING = "identity";
+    public static final String IDENTITY = "identity";
+    public static final String ZSTANDARD = "zstd";
 
     private final HashMap<String, Codec> codecMap;
 
     CodecRegistry() {
         codecMap = new HashMap<>();
+        codecMap.put(IDENTITY, new IdentityCodec());
     }
 
     public void addCodec(String key, Codec codec) {
@@ -24,7 +25,7 @@ public class CodecRegistry implements Closeable {
     }
 
     public Codec find(String encoding) throws CodecException {
-        if (encoding == null || IDENTITY_ENCODING.equalsIgnoreCase(encoding)) return null;
+        if (encoding == null || IDENTITY.equalsIgnoreCase(encoding)) return null;
         Codec codec = codecMap.get(encoding);
         if (codec == null) {
             throw new CodecException("No codec found for encoding " + encoding);
@@ -37,6 +38,31 @@ public class CodecRegistry implements Closeable {
         for (Map.Entry<String, Codec> entry : codecMap.entrySet()) {
             Codec codec = entry.getValue();
             codec.close();
+        }
+    }
+
+    public static class IdentityCodec implements Codec {
+
+        @Override
+        public int decompress(ByteBuffer src, ByteBuffer dst) throws CodecException {
+            src.put(dst);
+            return dst.limit();
+        }
+
+        @Override
+        public int compress(ByteBuffer src, ByteBuffer dst) throws CodecException {
+            src.put(dst);
+            return dst.limit();
+        }
+
+        @Override
+        public long compressBounds(int length) {
+            return length;
+        }
+
+        @Override
+        public long uncompressedSize(ByteBuffer buf) {
+            return buf.limit();
         }
     }
 

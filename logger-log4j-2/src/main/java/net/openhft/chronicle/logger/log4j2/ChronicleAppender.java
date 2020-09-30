@@ -111,18 +111,17 @@ public class ChronicleAppender extends AbstractChronicleAppender {
                 level,
                 event.getLoggerName(),
                 event.getThreadName(),
-                entry,
-                getContentType(),
-                getContentEncoding()
+                entry
         );
+    }
+
+    protected ChronicleQueue createQueue() {
+        return config.build(getPath());
     }
 
     @Override
     protected ChronicleLogWriter createWriter() {
-        ChronicleQueue cq = config.build(getPath());
-        Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
-        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-        return new DefaultChronicleLogWriter(registry, cq);
+        return new DefaultChronicleLogWriter(createQueue());
     }
 
     // *************************************************************************

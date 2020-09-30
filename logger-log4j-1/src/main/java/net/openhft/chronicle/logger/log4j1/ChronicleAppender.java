@@ -55,12 +55,13 @@ public final class ChronicleAppender extends AbstractChronicleAppender {
         config.setRollCycle(rollCycle);
     }
 
+    protected ChronicleQueue createQueue() {
+        return this.config.build(this.getPath());
+    }
+
     @Override
     protected ChronicleLogWriter createWriter() throws IOException {
-        ChronicleQueue cq = this.config.build(this.getPath());
-        Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
-        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-        return new DefaultChronicleLogWriter(registry, cq);
+        return new DefaultChronicleLogWriter(createQueue());
     }
 
     // *************************************************************************

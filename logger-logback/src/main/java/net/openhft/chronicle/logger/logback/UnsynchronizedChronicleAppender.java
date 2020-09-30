@@ -42,9 +42,7 @@ public class UnsynchronizedChronicleAppender extends ChronicleAppenderBase {
                 event.getLevel().toInt(),
                 event.getLoggerName(),
                 event.getThreadName(),
-                entry,
-                contentType,
-                contentEncoding
+                entry
         );
     }
 

@@ -96,9 +96,6 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
                 String content = Bytes.wrapForRead(entry.contentAsByteBuffer()).to8bitString();
                 assertTrue(content.contains("level is " + level.getName()));
-
-                assertEquals(entry.contentType(), "text/plain");
-                assertEquals(entry.contentEncoding(), "identity");
             }
 
             try (DocumentContext dc = tailer.readingDocument()) {

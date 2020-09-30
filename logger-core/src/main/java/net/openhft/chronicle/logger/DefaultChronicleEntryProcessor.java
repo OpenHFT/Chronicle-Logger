@@ -17,14 +17,15 @@ import java.nio.charset.StandardCharsets;
  */
 public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<String>, AutoCloseable {
 
-    private final CodecRegistry codecRegistry;
     private final Bytes<ByteBuffer> sourceBytes;
     private final Bytes<ByteBuffer> destBytes;
+    private final Codec codec;
+    private final Charset charset = StandardCharsets.UTF_8;
 
-    public DefaultChronicleEntryProcessor(CodecRegistry registry) {
-        this.codecRegistry = registry;
+    public DefaultChronicleEntryProcessor(Codec codec) {
         this.sourceBytes = Bytes.elasticByteBuffer(1024);
         this.destBytes = Bytes.elasticByteBuffer(1024);
+        this.codec = codec;
     }
 
     @Override
@@ -41,45 +42,25 @@ public class DefaultChronicleEntryProcessor implements ChronicleEntryProcessor<S
         // https://openhft.github.io/Chronicle-Bytes/apidocs/net/openhft/chronicle/bytes/Bytes.html#wrapForRead-byte:A-
         try {
             sourceBytes.writeSome(e.contentAsByteBuffer());
-            Codec codec = codecRegistry.find(e.contentEncoding());
             byte[] actualArray;
-            if (codec != null) {
-                ByteBuffer src = sourceBytes.underlyingObject();
-                src.position(0);
-                src.limit((int) sourceBytes.readLimit());
-                long maxBounds = codec.compressBounds(src.limit());
-                destBytes.ensureCapacity(maxBounds);
-                ByteBuffer dst = destBytes.underlyingObject();
-                dst.position(0);
-                dst.limit((int) maxBounds);
-                int actualSize = codec.decompress(src, dst);
-                destBytes.readLimit(actualSize);
+            ByteBuffer src = sourceBytes.underlyingObject();
+            src.position(0);
+            src.limit((int) sourceBytes.readLimit());
+            long maxBounds = codec.compressBounds(src.limit());
+            destBytes.ensureCapacity(maxBounds);
+            ByteBuffer dst = destBytes.underlyingObject();
+            dst.position(0);
+            dst.limit((int) maxBounds);
+            int actualSize = codec.decompress(src, dst);
+            destBytes.readLimit(actualSize);
 
-                actualArray = new byte[actualSize];
-                destBytes.read(actualArray);
-            } else {
-                actualArray = new byte[(int) sourceBytes.readRemaining()];
-                sourceBytes.copyTo(actualArray);
-            }
-
-            Charset charset = getCharset(e.contentType());
+            actualArray = new byte[actualSize];
+            destBytes.read(actualArray);
             return new String(actualArray, charset);
         } finally {
             sourceBytes.clear();
             destBytes.clear();
         }
-    }
-
-    protected Charset getCharset(String contentType) {
-        if (contentType != null) {
-            for (String param : contentType.replace(" ", "").split(";")) {
-                if (param.startsWith("charset=")) {
-                    String charset = param.split("=", 2)[1];
-                    return Charset.forName(charset);
-                }
-            }
-        }
-        return StandardCharsets.UTF_8;
     }
 
     @Override

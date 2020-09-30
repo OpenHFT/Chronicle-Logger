@@ -182,9 +182,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
                     event.getLevel().toInt(),
                     event.getLoggerName(),
                     event.getThreadName(),
-                    format.getBytes(UTF_8),
-                    null,
-                    null
+                    format.getBytes(UTF_8)
             );
 
         } else {

@@ -36,24 +36,41 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
     private final FlatBufferBuilder builder;
 
     private final ChronicleQueue cq;
-    private final CodecRegistry codecRegistry;
 
     private final Bytes<ByteBuffer> entryBytes;
-    private final Bytes<ByteBuffer> destBytes;
-    private final Bytes<ByteBuffer> sourceBytes;
 
-    public DefaultChronicleLogWriter(@NotNull CodecRegistry codecRegistry, @NotNull ChronicleQueue cq) {
+    public DefaultChronicleLogWriter(@NotNull ChronicleQueue cq) {
         this.cq = cq;
         this.entryWriter = new EntryWriter();
 
         // Direct byte buffer makes access to memory mapped file faster?
         this.entryBytes = Bytes.elasticByteBuffer(1024);
-
-        // Use a direct byte buffer because this helps make JNI memory access faster
-        this.sourceBytes = Bytes.elasticByteBuffer(1024);
-        this.destBytes = Bytes.elasticByteBuffer(1024);
         this.builder = new FlatBufferBuilder(1024);
-        this.codecRegistry = codecRegistry;
+    }
+
+    @Override
+    public void write(
+            final long epochSecond,
+            final int nanos,
+            final int level,
+            final String loggerName,
+            final String threadName,
+            final ByteBuffer contentBuffer) {
+        try {
+            ByteBuffer entryBuffer = entryWriter.write(builder,
+                    epochSecond,
+                    nanos,
+                    level,
+                    loggerName,
+                    threadName,
+                    contentBuffer);
+            entryBytes.writeSome(entryBuffer);
+            // XXX would it be faster if we didn't have to acquire an appender every time?
+            cq.acquireAppender().writeBytes(entryBytes);
+        } finally {
+            entryBytes.clear();
+            builder.clear();
+        }
     }
 
     @Override
@@ -64,80 +81,11 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             final String loggerName,
             final String threadName,
             final byte[] content) {
-        try {
-            ByteBuffer contentBuffer = ByteBuffer.wrap(content);
-            ByteBuffer entryBuffer = entryWriter.write(builder,
-                    epochSecond,
-                    nanos,
-                    level,
-                    loggerName,
-                    threadName,
-                    contentBuffer);
-            entryBytes.writeSome(entryBuffer);
-            cq.acquireAppender().writeBytes(entryBytes);
-        } finally {
-            entryBytes.clear();
-            builder.clear();
-        }
-    }
-
-    @Override
-    public void write(
-            final long epochSecond,
-            final int nanos,
-            final int level,
-            final String loggerName,
-            final String threadName,
-            final byte[] content,
-            final String contentType,
-            final String contentEncoding) {
-        try {
-
-            // Put the content bytes into buffer and flip for reading.
-            sourceBytes.ensureCapacity(content.length);
-            sourceBytes.write(content);
-            ByteBuffer src = sourceBytes.underlyingObject();
-            src.position(0);
-            src.limit(content.length);
-            ByteBuffer dst;
-            Codec codec = codecRegistry.find(contentEncoding);
-            if (codec != null) {
-                // Put the compressed bytes into the dst byte buffer and flip reading.
-                long compressBounds = codec.compressBounds(content.length);
-                destBytes.ensureCapacity(compressBounds);
-                dst = destBytes.underlyingObject();
-                dst.position(0);
-                dst.limit((int) compressBounds);
-                int actualSize = codec.compress(src, dst);
-                dst.position(0);
-                dst.limit(actualSize);
-            } else {
-                dst = src;
-            }
-
-            ByteBuffer entryBuffer = entryWriter.write(builder,
-                    epochSecond,
-                    nanos,
-                    level,
-                    loggerName,
-                    threadName,
-                    dst,
-                    contentType,
-                    contentEncoding);
-            entryBytes.writeSome(entryBuffer);
-            cq.acquireAppender().writeBytes(entryBytes);
-        } finally {
-            entryBytes.clear();
-            sourceBytes.clear();
-            destBytes.clear();
-            builder.clear();
-        }
+        write(epochSecond, nanos, level, loggerName, threadName, ByteBuffer.wrap(content));
     }
 
     @Override
     public void close() {
-        this.sourceBytes.releaseLast();
-        this.destBytes.releaseLast();
         this.entryBytes.releaseLast();
     }
 }

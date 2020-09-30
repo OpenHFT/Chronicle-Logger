@@ -1,6 +1,7 @@
 package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.logger.ChronicleEntryProcessor;
+import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
@@ -35,7 +36,8 @@ public class ChronicleLogReaderTest {
         EntryReader reader = new EntryReader();
         Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-        ChronicleEntryProcessor<String> entryProcessor = new DefaultChronicleEntryProcessor(registry);
+        Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+        ChronicleEntryProcessor<String> entryProcessor = new DefaultChronicleEntryProcessor(codec);
         ChronicleLogProcessor logProcessor = e -> System.out.println(entryProcessor.apply(e));
         logProcessor.processLogs(cq, reader, false);
 

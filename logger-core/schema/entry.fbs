@@ -13,13 +13,10 @@ struct EntryTimestamp {
 }
 
 table Entry {
-  // an optional unique id
-  id: [ubyte];
-
   // timestamp when the log event occured (required as a struct)
   timestamp: EntryTimestamp;
 
-  // Logging level
+  // Logging level (may be custom per logging framework, always positive, could be more than 65,536)
   level:uint32;
 
   // logger name (required)
@@ -28,14 +25,11 @@ table Entry {
   // thread name (optional)
   thread_name:string;
 
-  // Serialized entry content as unsigned byte array
+  // Serialized entry content as unsigned byte array.
+  // Entry content is always serialized with zstandard, potentially with a dictionary.
+  // A good assumption is that the data is application/json encoded as UTF-8, but
+  // there is no constraint on data input, and it could be binary JSON like CBOR, msgpack, or SMILE.
   content: [ubyte];
-
-  // Optional content type like HTTP content type header, look for charset=utf-8 etc for plaintext
-  contentType: string;
-
-  // Content encoding like HTTP content encoding.  zstd, br, gzip, etc.
-  contentEncoding: string;
 }
 
 root_type Entry;

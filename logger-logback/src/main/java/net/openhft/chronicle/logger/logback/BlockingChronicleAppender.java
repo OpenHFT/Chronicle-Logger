@@ -33,9 +33,7 @@ public class BlockingChronicleAppender extends ChronicleAppenderBase {
                     event.getLevel().toInt(),
                     event.getLoggerName(),
                     event.getThreadName(),
-                    entry,
-                    contentType,
-                    contentEncoding
+                    entry
             );
         } finally {
             lock.unlock();
