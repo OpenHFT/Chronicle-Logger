@@ -23,28 +23,31 @@ import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.EntryWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.ExcerptAppender;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 
 /**
  * A log writer that runs a compression operation based on the content encoding.
+ *
+ * This class is not thread safe and should only be run inside a single thread.
  */
-public class DefaultChronicleLogWriter implements ChronicleLogWriter {
+public class DefaultChronicleLogWriter implements ChronicleLogWriter, AutoCloseable {
 
     private final EntryWriter entryWriter;
     private final FlatBufferBuilder builder;
 
-    private final ChronicleQueue cq;
-
     private final Bytes<ByteBuffer> entryBytes;
+    private final ExcerptAppender excerptAppender;
 
     public DefaultChronicleLogWriter(@NotNull ChronicleQueue cq) {
-        this.cq = cq;
+        this.excerptAppender = cq.acquireAppender();
         this.entryWriter = new EntryWriter();
 
         // Direct byte buffer makes access to memory mapped file faster?
         this.entryBytes = Bytes.elasticByteBuffer(1024);
+        // XXX Would this be faster if the builder could use entryBytes bytebuffer directly?
         this.builder = new FlatBufferBuilder(1024);
     }
 
@@ -57,9 +60,6 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             final String threadName,
             final Bytes<ByteBuffer> content) {
         try {
-            assert loggerName != null;
-            assert threadName != null;
-            assert content.length() > 0;
             //System.out.println("write: " + content.toHexString());
             ByteBuffer entryBuffer = entryWriter.write(builder,
                     epochSecond,
@@ -69,8 +69,7 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
                     threadName,
                     content);
             entryBytes.writeSome(entryBuffer);
-            // XXX would it be faster if we didn't have to acquire an appender every time?
-            cq.acquireAppender().writeBytes(entryBytes);
+            excerptAppender.writeBytes(entryBytes);
         } finally {
             entryBytes.clear();
             builder.clear();
@@ -79,6 +78,7 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
 
     @Override
     public void close() {
+        excerptAppender.close();
         this.entryBytes.releaseLast();
     }
 }
