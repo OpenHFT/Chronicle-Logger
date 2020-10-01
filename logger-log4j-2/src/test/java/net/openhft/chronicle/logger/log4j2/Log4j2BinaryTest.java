@@ -94,7 +94,7 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
         }
         EntryReader eventReader = new EntryReader();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
-        Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+        Codec codec = registry.find(CodecRegistry.IDENTITY);
         EntryProcessor<String> processor = new DefaultEntryProcessor(codec);
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {

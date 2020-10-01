@@ -57,6 +57,10 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             final String threadName,
             final Bytes<ByteBuffer> content) {
         try {
+            assert loggerName != null;
+            assert threadName != null;
+            assert content.length() > 0;
+            //System.out.println("write: " + content.toHexString());
             ByteBuffer entryBuffer = entryWriter.write(builder,
                     epochSecond,
                     nanos,

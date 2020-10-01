@@ -69,6 +69,7 @@ public class ZStandardCodec implements Codec, AutoCloseable {
 
         dstBytes.readPosition(dst.position());
         dstBytes.readLimit(dst.limit());
+        assert dstBytes.length() > 0;
 
         return actualSize;
     }

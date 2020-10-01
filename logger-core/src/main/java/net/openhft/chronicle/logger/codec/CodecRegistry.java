@@ -50,13 +50,13 @@ public class CodecRegistry implements Closeable {
 
         @Override
         public int compress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException {
-            src.write(dst);
+            dst.write(src);
             return (int) dst.readLimit();
         }
 
         @Override
         public int decompress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException {
-            src.write(dst);
+            dst.write(src);
             return (int) dst.readLimit();
         }
 

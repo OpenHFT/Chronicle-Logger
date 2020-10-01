@@ -18,12 +18,17 @@ public class DefaultEntryProcessor implements EntryProcessor<String>, AutoClosea
     private final Bytes<ByteBuffer> sourceBytes;
     private final Bytes<ByteBuffer> destBytes;
     private final Codec codec;
-    private final Charset charset = StandardCharsets.UTF_8;
+    private final Charset charset;
 
     public DefaultEntryProcessor(Codec codec) {
+        this(codec, StandardCharsets.UTF_8);
+    }
+
+    public DefaultEntryProcessor(Codec codec, Charset charset) {
         this.sourceBytes = Bytes.elasticByteBuffer(1024);
         this.destBytes = Bytes.elasticByteBuffer(1024);
         this.codec = codec;
+        this.charset = charset;
     }
 
     @Override
@@ -41,7 +46,7 @@ public class DefaultEntryProcessor implements EntryProcessor<String>, AutoClosea
         try {
             ByteBuffer byteBuffer = e.contentAsByteBuffer();
             sourceBytes.writeSome(byteBuffer);
-            System.out.println("sourceBytes = " + sourceBytes.toHexString());
+            //System.out.println("read: " + sourceBytes.toHexString());
             int actualSize = codec.decompress(sourceBytes, destBytes);
             byte[] actualArray;
             actualArray = new byte[actualSize];

@@ -35,7 +35,6 @@ import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
-import java.util.logging.XMLFormatter;
 
 import static java.lang.invoke.MethodType.methodType;
 
@@ -44,8 +43,8 @@ public class ChronicleHandler extends AbstractChronicleHandler {
 
     private final Codec codec;
     private final Charset charset;
-    private final Bytes<ByteBuffer> src;
-    private final Bytes<ByteBuffer> dst;
+    private final Bytes<ByteBuffer> contentBytes;
+    private final Bytes<ByteBuffer> compressedBytes;
 
     public ChronicleHandler() throws IOException {
         ChronicleHandlerConfig handlerCfg = new ChronicleHandlerConfig(getClass());
@@ -68,8 +67,8 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         String encoding = getEncoding();
         this.charset = (encoding == null) ? StandardCharsets.UTF_8 : Charset.forName(encoding);
 
-        this.src = Bytes.elasticByteBuffer();
-        this.dst = Bytes.elasticByteBuffer();
+        this.contentBytes = Bytes.elasticByteBuffer(1024);
+        this.compressedBytes = Bytes.elasticByteBuffer(1024);
     }
 
     @Override
@@ -82,19 +81,22 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         String format = getFormatter().format(record);
 
         try {
-            src.write(format.getBytes(this.charset));
-            codec.compress(src, dst);
+            byte[] content = format.getBytes(this.charset);
+            contentBytes.write(content);
+
+
+            codec.compress(contentBytes, compressedBytes);
             writer.write(
                     instant.getEpochSecond(),
                     instant.getNano(),
                     level,
                     loggerName,
                     threadName,
-                    dst
+                    compressedBytes
             );
         } finally {
-            src.clear();
-            dst.clear();
+            contentBytes.clear();
+            compressedBytes.clear();
         }
     }
 
