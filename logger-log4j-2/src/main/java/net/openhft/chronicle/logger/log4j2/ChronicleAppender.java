@@ -17,6 +17,7 @@
  */
 package net.openhft.chronicle.logger.log4j2;
 
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
@@ -34,6 +35,7 @@ import org.apache.logging.log4j.core.time.Instant;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -43,6 +45,8 @@ import java.nio.file.Paths;
         elementType = "appender",
         printObject = true)
 public class ChronicleAppender extends AbstractChronicleAppender {
+
+    private final Bytes<ByteBuffer> contentBytes;
 
     private final ChronicleCfg config;
 
@@ -58,6 +62,7 @@ public class ChronicleAppender extends AbstractChronicleAppender {
                              final String contentEncoding) {
         super(name, filter, layout, ignoreExceptions, properties, path, wireType, contentType, contentEncoding);
 
+        this.contentBytes = Bytes.elasticByteBuffer();
         this.config = config != null ? config : new ChronicleCfg();
     }
 
@@ -101,18 +106,24 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         // on the other hand, it looks like encode just calls toByteArray under the
         // hood anyway.
         // layout.encode(event, byteBufferDestination);
-        byte[] entry = layout.toByteArray(event);
 
         Instant instant = event.getInstant();
         int level = event.getLevel().intLevel();
-        writer.write(
-                instant.getEpochSecond(),
-                instant.getNanoOfSecond(),
-                level,
-                event.getLoggerName(),
-                event.getThreadName(),
-                entry
-        );
+
+        byte[] entry = layout.toByteArray(event);
+        try {
+            contentBytes.write(entry);
+            writer.write(
+                    instant.getEpochSecond(),
+                    instant.getNanoOfSecond(),
+                    level,
+                    event.getLoggerName(),
+                    event.getThreadName(),
+                    contentBytes
+            );
+        } finally {
+            contentBytes.clear();
+        }
     }
 
     protected ChronicleQueue createQueue() {

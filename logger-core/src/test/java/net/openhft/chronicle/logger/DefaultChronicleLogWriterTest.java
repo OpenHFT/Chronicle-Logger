@@ -63,7 +63,7 @@ public class DefaultChronicleLogWriterTest {
                     10,
                     this.getClass().getCanonicalName(),
                     Thread.currentThread().getName(),
-                    "Test message".getBytes(StandardCharsets.UTF_8)
+                    Bytes.elasticHeapByteBuffer().write("Test message")
             );
 
             Instant n2 = Instant.now();
@@ -72,7 +72,7 @@ public class DefaultChronicleLogWriterTest {
                     50,
                     this.getClass().getCanonicalName(),
                     Thread.currentThread().getName(),
-                    "Test debug message".getBytes(StandardCharsets.UTF_8)
+                    Bytes.elasticHeapByteBuffer().write("Test debug message")
             );
         }
 

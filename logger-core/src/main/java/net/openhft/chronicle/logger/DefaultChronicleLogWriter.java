@@ -55,7 +55,7 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             final int level,
             final String loggerName,
             final String threadName,
-            final ByteBuffer contentBuffer) {
+            final Bytes<ByteBuffer> content) {
         try {
             ByteBuffer entryBuffer = entryWriter.write(builder,
                     epochSecond,
@@ -63,7 +63,7 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
                     level,
                     loggerName,
                     threadName,
-                    contentBuffer);
+                    content);
             entryBytes.writeSome(entryBuffer);
             // XXX would it be faster if we didn't have to acquire an appender every time?
             cq.acquireAppender().writeBytes(entryBytes);
@@ -71,17 +71,6 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             entryBytes.clear();
             builder.clear();
         }
-    }
-
-    @Override
-    public void write(
-            final long epochSecond,
-            final int nanos,
-            final int level,
-            final String loggerName,
-            final String threadName,
-            final byte[] content) {
-        write(epochSecond, nanos, level, loggerName, threadName, ByteBuffer.wrap(content));
     }
 
     @Override

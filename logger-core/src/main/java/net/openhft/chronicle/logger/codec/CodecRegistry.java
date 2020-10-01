@@ -1,5 +1,7 @@
 package net.openhft.chronicle.logger.codec;
 
+import net.openhft.chronicle.bytes.Bytes;
+
 import java.io.Closeable;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
@@ -8,6 +10,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+// XXX this should use a ServiceLoader map
 public class CodecRegistry implements Closeable {
 
     public static final String IDENTITY = "identity";
@@ -25,7 +28,9 @@ public class CodecRegistry implements Closeable {
     }
 
     public Codec find(String encoding) throws CodecException {
-        if (encoding == null || IDENTITY.equalsIgnoreCase(encoding)) return null;
+        if (encoding == null) {
+            throw new IllegalArgumentException("Null encoding!");
+        }
         Codec codec = codecMap.get(encoding);
         if (codec == null) {
             throw new CodecException("No codec found for encoding " + encoding);
@@ -44,15 +49,15 @@ public class CodecRegistry implements Closeable {
     public static class IdentityCodec implements Codec {
 
         @Override
-        public int decompress(ByteBuffer src, ByteBuffer dst) throws CodecException {
-            src.put(dst);
-            return dst.limit();
+        public int compress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException {
+            src.write(dst);
+            return (int) dst.readLimit();
         }
 
         @Override
-        public int compress(ByteBuffer src, ByteBuffer dst) throws CodecException {
-            src.put(dst);
-            return dst.limit();
+        public int decompress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException {
+            src.write(dst);
+            return (int) dst.readLimit();
         }
 
         @Override

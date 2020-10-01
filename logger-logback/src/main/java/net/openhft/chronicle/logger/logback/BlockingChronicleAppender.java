@@ -1,8 +1,10 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.logger.entry.EntryHelpers;
 
+import java.nio.ByteBuffer;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -13,6 +15,9 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class BlockingChronicleAppender extends ChronicleAppenderBase {
 
+    private final Bytes<ByteBuffer> contentBytes = Bytes.elasticByteBuffer(1024);
+    private final Bytes<ByteBuffer> destBytes = Bytes.elasticByteBuffer(1024);
+
     /**
      * All synchronization in this class is done via the lock object.
      */
@@ -20,22 +25,26 @@ public class BlockingChronicleAppender extends ChronicleAppenderBase {
 
     @Override
     public void append(final ILoggingEvent event) {
-        lock.lock();
+        long epochMillis = event.getTimeStamp();
+        EntryHelpers helpers = EntryHelpers.instance();
+        long second = helpers.epochSecondFromMillis(epochMillis);
+        int nanos = helpers.nanosFromMillis(epochMillis);
         try {
-            byte[] entry = encoder.encode(event);
-            long epochMillis = event.getTimeStamp();
-            EntryHelpers helpers = EntryHelpers.instance();
-            long second = helpers.epochSecondFromMillis(epochMillis);
-            int nanos = helpers.nanosFromMillis(epochMillis);
+            lock.lock();
+            byte[] content = encoder.encode(event);
+            contentBytes.write(content);
+            codec.compress(contentBytes, destBytes);
             writer.write(
                     second,
                     nanos,
                     event.getLevel().toInt(),
                     event.getLoggerName(),
                     event.getThreadName(),
-                    entry
+                    destBytes
             );
         } finally {
+            contentBytes.clear();
+            destBytes.clear();
             lock.unlock();
         }
     }

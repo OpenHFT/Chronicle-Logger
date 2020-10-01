@@ -44,6 +44,7 @@ public class ChronicleHandler extends AbstractChronicleHandler {
 
     private final Codec codec;
     private final Charset charset;
+    private final Bytes<ByteBuffer> src;
     private final Bytes<ByteBuffer> dst;
 
     public ChronicleHandler() throws IOException {
@@ -66,30 +67,33 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         this.codec = registry.find(CodecRegistry.ZSTANDARD);
         String encoding = getEncoding();
         this.charset = (encoding == null) ? StandardCharsets.UTF_8 : Charset.forName(encoding);
+
+        this.src = Bytes.elasticByteBuffer();
         this.dst = Bytes.elasticByteBuffer();
     }
 
     @Override
     protected void doPublish(final LogRecord record, final ChronicleLogWriter writer) {
         // if we're running on JDK 1.9, we can get nanoseconds here.
-        int level = record.getLevel().intValue();
         Instant instant = getInstant(record);
+        int level = record.getLevel().intValue();
         String threadName = "thread-" + record.getThreadID();
         String loggerName = record.getLoggerName();
         String format = getFormatter().format(record);
 
         try {
-            ByteBuffer src = ByteBuffer.wrap(format.getBytes(this.charset));
-            codec.compress(src, dst.underlyingObject());
+            src.write(format.getBytes(this.charset));
+            codec.compress(src, dst);
             writer.write(
                     instant.getEpochSecond(),
                     instant.getNano(),
                     level,
                     loggerName,
                     threadName,
-                    dst.toByteArray()
+                    dst
             );
         } finally {
+            src.clear();
             dst.clear();
         }
     }

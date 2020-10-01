@@ -24,34 +24,26 @@ import java.nio.ByteBuffer;
 import java.time.Instant;
 
 /**
- * Writes a logging event out to a chronicle log.
+ * Writes a logging entry out to a chronicle log.
  */
 public interface ChronicleLogWriter extends Closeable {
 
+    /**
+     * Writes a logging entry to the store.
+     *
+     * @param level the integer level of the log event.
+     * @param epochSecond seconds since epoch of the entry.
+     * @param nanos nanosecond adjustment.
+     * @param loggerName logger that caused this entry.
+     * @param threadName thread name of the entry.
+     * @param content the bytes containing the content of the entry.
+     */
     void write(
             long epochSecond,
             int nanos,
             int level,
             String loggerName,
             String threadName,
-            ByteBuffer contentBuffer);
-
-    /**
-     * Writes a logging event to the store.
-     *
-     * @param level the integer level of the log event.
-     * @param epochSecond event timestamp.
-     * @param nanos event timestamp.
-     * @param loggerName logger that caused this event.
-     * @param threadName thread name of the event.
-     * @param entry the bytes containing the event.
-     */
-    void write(
-            final long epochSecond,
-            final int nanos,
-            final int level,
-            final String loggerName,
-            final String threadName,
-            final byte[] entry);
+            Bytes<ByteBuffer> content);
 
 }

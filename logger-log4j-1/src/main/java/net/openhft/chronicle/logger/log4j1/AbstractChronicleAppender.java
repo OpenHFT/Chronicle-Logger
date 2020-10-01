@@ -17,8 +17,11 @@
  */
 package net.openhft.chronicle.logger.log4j1;
 
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.codec.Codec;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.EntryHelpers;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
@@ -28,6 +31,7 @@ import org.apache.log4j.helpers.OnlyOnceErrorHandler;
 import org.apache.log4j.spi.*;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.time.Instant;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -41,14 +45,19 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     private String path;
     private String wireType;
     private Layout layout;
+    private Codec codec;
 
     protected AbstractChronicleAppender() {
         this.path = null;
         this.writer = null;
         this.name = null;
+        this.codec = null;
         this.layout = new TTCCLayout();
         this.errorHandler = new OnlyOnceErrorHandler();
     }
+
+    private Bytes<ByteBuffer> sourceBytes;
+    private Bytes<ByteBuffer> destBytes;
 
     // *************************************************************************
     // Custom logging options
@@ -58,6 +67,10 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     public void activateOptions() {
         if (path != null) {
             try {
+                CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
+                this.codec = registry.find(CodecRegistry.ZSTANDARD);
+                this.sourceBytes = Bytes.elasticByteBuffer();
+                this.destBytes = Bytes.elasticByteBuffer();
                 this.writer = createWriter();
             } catch (IOException e) {
                 LogLog.warn("Exception [" + name + "].", e);
@@ -176,15 +189,22 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
             EntryHelpers helpers = EntryHelpers.instance();
             long second = helpers.epochSecondFromMillis(epochMillis);
             int nanos = helpers.nanosFromMillis(epochMillis);
-            writer.write(
-                    second,
-                    nanos,
-                    event.getLevel().toInt(),
-                    event.getLoggerName(),
-                    event.getThreadName(),
-                    format.getBytes(UTF_8)
-            );
-
+            byte[] content = format.getBytes(UTF_8);
+            try {
+                sourceBytes.write(content);
+                codec.compress(sourceBytes, destBytes);
+                writer.write(
+                        second,
+                        nanos,
+                        event.getLevel().toInt(),
+                        event.getLoggerName(),
+                        event.getThreadName(),
+                        destBytes
+                );
+            } finally {
+                sourceBytes.clear();
+                destBytes.clear();
+            }
         } else {
             LogLog.error("Attempted to append to closed appender named [" + name + "].");
         }

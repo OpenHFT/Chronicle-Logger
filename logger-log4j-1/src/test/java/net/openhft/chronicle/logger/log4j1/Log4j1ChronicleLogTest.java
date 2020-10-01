@@ -19,10 +19,10 @@ package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IOTools;
-import net.openhft.chronicle.logger.ChronicleEntryProcessor;
+import net.openhft.chronicle.logger.EntryProcessor;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.entry.EntryReader;
-import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
+import net.openhft.chronicle.logger.DefaultEntryProcessor;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.Entry;
 import net.openhft.chronicle.queue.ChronicleQueue;
@@ -43,8 +43,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 
 import static org.apache.log4j.Level.*;
 import static org.junit.Assert.*;
@@ -78,7 +76,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
             Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
             CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
             Codec codec = registry.find(CodecRegistry.ZSTANDARD);
-            ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(codec);
+            EntryProcessor<String> processor = new DefaultEntryProcessor(codec);
             EntryReader entryReader = new EntryReader();
 
             ExcerptTailer tailer = cq.createTailer();
@@ -119,7 +117,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
             Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
             CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
             Codec codec = registry.find(CodecRegistry.ZSTANDARD);
-            ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(codec);
+            EntryProcessor<String> processor = new DefaultEntryProcessor(codec);
 
             ExcerptTailer tailer = cq.createTailer();
             EntryReader entryReader = new EntryReader();

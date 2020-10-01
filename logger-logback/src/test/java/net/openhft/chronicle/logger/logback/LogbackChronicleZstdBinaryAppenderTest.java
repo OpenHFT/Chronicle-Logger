@@ -19,34 +19,27 @@ package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.Level;
 import net.openhft.chronicle.bytes.Bytes;
-import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.IOTools;
-import net.openhft.chronicle.logger.ChronicleEntryProcessor;
+import net.openhft.chronicle.logger.EntryProcessor;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.entry.Entry;
 import net.openhft.chronicle.logger.entry.EntryReader;
-import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
+import net.openhft.chronicle.logger.DefaultEntryProcessor;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 
 import static ch.qos.logback.classic.Level.*;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.*;
 
 public class LogbackChronicleZstdBinaryAppenderTest extends LogbackTestBase {
@@ -75,7 +68,7 @@ public class LogbackChronicleZstdBinaryAppenderTest extends LogbackTestBase {
         EntryReader eventReader = new EntryReader();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
         Codec codec = registry.find(CodecRegistry.IDENTITY);
-        ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(codec);
+        EntryProcessor<String> processor = new DefaultEntryProcessor(codec);
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();

@@ -21,6 +21,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
@@ -47,13 +48,8 @@ public class LogbackChronicleProgrammaticConfigTest {
         final AtomicReference<byte[]> expected = new AtomicReference<>();
         ChronicleLogWriter mockWriter = new StubWriter() {
             @Override
-            public void write(long epochSecond, int nanos, int level, String loggerName, String threadName, ByteBuffer contentBuffer) {
-                throw new UnsupportedOperationException("not implemented");
-            }
-
-            @Override
-            public void write(long second, int nanos, int level, String loggerName, String threadName, byte[] entry) {
-                expected.set(entry);
+            public void write(long epochSecond, int nanos, int level, String loggerName, String threadName, Bytes<ByteBuffer> content) {
+                expected.set(content.toByteArray());
             }
         };
         BlockingChronicleAppender appender = new BlockingChronicleAppender() {

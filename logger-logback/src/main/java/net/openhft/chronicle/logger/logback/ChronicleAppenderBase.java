@@ -31,6 +31,7 @@ import ch.qos.logback.core.spi.FilterReply;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
+import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
@@ -49,8 +50,8 @@ public abstract class ChronicleAppenderBase
 
     protected LogAppenderConfig config;
     protected Encoder<ILoggingEvent> encoder;
-    protected String contentType = null;
-    protected String contentEncoding = null;
+    protected String contentEncoding = CodecRegistry.IDENTITY;
+    protected Codec codec;
 
     protected ChronicleAppenderBase() {
         this.config = new LogAppenderConfig();
@@ -73,14 +74,6 @@ public abstract class ChronicleAppenderBase
 
     public void setEncoder(Encoder<ILoggingEvent> encoder) {
         this.encoder = encoder;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
     }
 
     public String getContentEncoding() {
@@ -109,10 +102,12 @@ public abstract class ChronicleAppenderBase
         } else {
             try {
                 this.writer = createWriter();
+                this.codec = createCodecRegistry().find(getContentEncoding());
                 this.started = true;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 this.writer = null;
-                addError("Appender " + getName() + " " + e.getMessage());
+                this.codec = null;
+                addError("Appender " + getName() + " " + e.getMessage(), e);
             }
         }
     }
@@ -128,6 +123,10 @@ public abstract class ChronicleAppenderBase
         }
 
         this.started = false;
+    }
+
+    protected CodecRegistry createCodecRegistry() {
+        return CodecRegistry.builder().withDefaults(this.getPath()).build();
     }
 
     protected ChronicleLogWriter createWriter() throws IOException {

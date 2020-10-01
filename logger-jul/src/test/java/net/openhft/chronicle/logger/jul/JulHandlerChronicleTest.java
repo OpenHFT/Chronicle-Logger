@@ -19,6 +19,10 @@ package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IOTools;
+import net.openhft.chronicle.logger.EntryProcessor;
+import net.openhft.chronicle.logger.DefaultEntryProcessor;
+import net.openhft.chronicle.logger.codec.Codec;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.Entry;
 import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.queue.ChronicleQueue;
@@ -39,7 +43,7 @@ import static org.junit.Assert.*;
 
 public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
-    private static ChronicleQueue getChronicleQueue(String testId) {
+    private static ChronicleQueue getChronicleQueue(String testId) throws IOException {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
@@ -81,6 +85,9 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
             logger.log(level, "level is {0}", level);
         }
         EntryReader entryReader = new EntryReader();
+        CodecRegistry registry = CodecRegistry.builder().withDefaults(basePath(testId)).build();
+        Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+        EntryProcessor<String> processor = new DefaultEntryProcessor(codec);
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
@@ -88,13 +95,13 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
                 Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
                 tailer.readBytes(bytes);
                 Entry entry = entryReader.read(bytes);
+                String content = processor.apply(entry);
                 assertTrue(entry.timestamp().epochSecond() <= Instant.now().getEpochSecond());
                 assertTrue(entry.timestamp().nanoAdjust() > 0);
                 assertEquals(level.intValue(), entry.level());
                 assertEquals(threadId, entry.threadName());
                 assertEquals(testId, entry.loggerName());
 
-                String content = Bytes.wrapForRead(entry.contentAsByteBuffer()).to8bitString();
                 assertTrue(content.contains("level is " + level.getName()));
             }
 
@@ -116,7 +123,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
                 assertEquals(threadId, entry.threadName());
                 assertEquals(testId, entry.loggerName());
 
-                String content = Bytes.wrapForRead(entry.contentAsByteBuffer()).to8bitString();
+                String content = processor.apply(entry);
                 assertTrue(content.contains("FINE: Throwable test 1"));
                 assertTrue(content.contains("java.lang.UnsupportedOperationException"));
             }
@@ -131,8 +138,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
                 assertEquals(threadId, entry.threadName());
                 assertEquals(testId, entry.loggerName());
 
-                String content = Bytes.wrapForRead(entry.contentAsByteBuffer()).to8bitString();
-                System.out.println("content = " + content);
+                String content = processor.apply(entry);
                 assertTrue(content.contains("FINE: Throwable test 2"));
                 assertTrue(content.contains("java.lang.UnsupportedOperationException: Exception message"));
             }
@@ -142,8 +148,6 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
                 assertNull(wire);
             }
         }
-
-        IOTools.deleteDirWithFiles(basePath(testId));
     }
 
 }

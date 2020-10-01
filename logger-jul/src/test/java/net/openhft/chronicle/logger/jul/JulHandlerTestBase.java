@@ -20,6 +20,8 @@ package net.openhft.chronicle.logger.jul;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.logging.LogManager;
 
 import static org.junit.Assert.assertNotNull;

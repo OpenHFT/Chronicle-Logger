@@ -20,8 +20,8 @@ package net.openhft.chronicle.logger.logback;
 import ch.qos.logback.classic.Level;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IOTools;
-import net.openhft.chronicle.logger.ChronicleEntryProcessor;
-import net.openhft.chronicle.logger.DefaultChronicleEntryProcessor;
+import net.openhft.chronicle.logger.EntryProcessor;
+import net.openhft.chronicle.logger.DefaultEntryProcessor;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.Entry;
@@ -34,8 +34,6 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -69,7 +67,7 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
         EntryReader eventReader = new EntryReader();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
         Codec codec = registry.find(CodecRegistry.ZSTANDARD);
-        ChronicleEntryProcessor<String> processor = new DefaultChronicleEntryProcessor(codec);
+        EntryProcessor<String> processor = new DefaultEntryProcessor(codec);
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();

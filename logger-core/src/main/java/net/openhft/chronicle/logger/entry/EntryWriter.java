@@ -1,6 +1,7 @@
 package net.openhft.chronicle.logger.entry;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import net.openhft.chronicle.bytes.Bytes;
 
 import java.nio.ByteBuffer;
 
@@ -12,9 +13,12 @@ public class EntryWriter {
                             int level,
                             String loggerName,
                             String threadName,
-                            ByteBuffer contentBuf) {
+                            Bytes<ByteBuffer> contentBytes) {
+        ByteBuffer src = contentBytes.underlyingObject();
+        src.position((int) contentBytes.readPosition());
+        src.limit((int) contentBytes.readLimit());
         int name = builder.createString(loggerName);
-        int content = builder.createByteVector(contentBuf);
+        int content = builder.createByteVector(src);
         int threadNameOffset = builder.createString(threadName);
         Entry.startEntry(builder);
         Entry.addTimestamp(builder, EntryTimestamp.createEntryTimestamp(builder, secs, nanos));

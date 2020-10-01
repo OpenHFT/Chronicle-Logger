@@ -18,7 +18,10 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.logger.entry.EntryHelpers;
+
+import java.nio.ByteBuffer;
 
 /**
  * An unsynchronized chronicle appender.
@@ -29,21 +32,31 @@ import net.openhft.chronicle.logger.entry.EntryHelpers;
  */
 public class UnsynchronizedChronicleAppender extends ChronicleAppenderBase {
 
+    private final Bytes<ByteBuffer> sourceBytes = Bytes.elasticByteBuffer(1024);
+    private final Bytes<ByteBuffer> destBytes = Bytes.elasticByteBuffer(1024);
+
     @Override
     public void append(final ILoggingEvent event) {
-        byte[] entry = encoder.encode(event);
         long epochMillis = event.getTimeStamp();
         EntryHelpers helpers = EntryHelpers.instance();
         long second = helpers.epochSecondFromMillis(epochMillis);
         int nanos = helpers.nanosFromMillis(epochMillis);
-        writer.write(
-                second,
-                nanos,
-                event.getLevel().toInt(),
-                event.getLoggerName(),
-                event.getThreadName(),
-                entry
-        );
+        try {
+            byte[] content = encoder.encode(event);
+            sourceBytes.write(content);
+            codec.compress(sourceBytes, destBytes);
+            writer.write(
+                    second,
+                    nanos,
+                    event.getLevel().toInt(),
+                    event.getLoggerName(),
+                    event.getThreadName(),
+                    destBytes
+            );
+        } finally {
+            sourceBytes.clear();
+            destBytes.clear();
+        }
     }
 
 }
