@@ -20,9 +20,11 @@ package net.openhft.chronicle.logger.log4j1;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.LogAppenderConfig;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.EntryHelpers;
+import net.openhft.chronicle.queue.ChronicleQueue;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.TTCCLayout;
@@ -32,6 +34,7 @@ import org.apache.log4j.spi.*;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.Paths;
 import java.time.Instant;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -43,9 +46,21 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     private String name;
     private ErrorHandler errorHandler;
     private String path;
-    private String wireType;
     private Layout layout;
     private Codec codec;
+
+    private final LogAppenderConfig config = new LogAppenderConfig();
+
+    private final Bytes<ByteBuffer> sourceBytes = Bytes.elasticByteBuffer();
+    private final Bytes<ByteBuffer> destBytes = Bytes.elasticByteBuffer();
+
+    // *************************************************************************
+    // LogAppenderConfig
+    // *************************************************************************
+
+    LogAppenderConfig getChronicleConfig() {
+        return this.config;
+    }
 
     protected AbstractChronicleAppender() {
         this.path = null;
@@ -56,9 +71,6 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         this.errorHandler = new OnlyOnceErrorHandler();
     }
 
-    private Bytes<ByteBuffer> sourceBytes;
-    private Bytes<ByteBuffer> destBytes;
-
     // *************************************************************************
     // Custom logging options
     // *************************************************************************
@@ -67,11 +79,10 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     public void activateOptions() {
         if (path != null) {
             try {
-                CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
-                this.codec = registry.find(CodecRegistry.ZSTANDARD);
-                this.sourceBytes = Bytes.elasticByteBuffer();
-                this.destBytes = Bytes.elasticByteBuffer();
                 this.writer = createWriter();
+                LogAppenderConfig.write(config, Paths.get(path));
+                CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
+                this.codec = registry.find(config.contentEncoding);
             } catch (IOException e) {
                 LogLog.warn("Exception [" + name + "].", e);
             }
@@ -94,6 +105,26 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     // Custom logging options
     // *************************************************************************
 
+    public void setBlockSize(int blockSize) {
+        config.blockSize = blockSize;
+    }
+
+    public void setBufferCapacity(int bufferCapacity) {
+        config.bufferCapacity = bufferCapacity;
+    }
+
+    public String rollCycle() {
+        return config.rollCycle;
+    }
+
+    public void rollCycle(String rollCycle) {
+        config.rollCycle = rollCycle;
+    }
+
+    protected ChronicleQueue createQueue() {
+        return this.config.build(this.getPath());
+    }
+
     @Override
     public void clearFilters() {
         filter = null;
@@ -105,14 +136,6 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public String getWireType() {
-        return wireType;
-    }
-
-    public void setWireType(String wireType) {
-        this.wireType = wireType;
     }
 
     @Override
@@ -218,6 +241,9 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
 
     @Override
     public void close() {
+        sourceBytes.releaseLast();
+        destBytes.releaseLast();
+
         if (this.writer != null) {
             try {
                 this.writer.close();

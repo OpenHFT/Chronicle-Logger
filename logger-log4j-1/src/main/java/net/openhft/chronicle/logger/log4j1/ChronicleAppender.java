@@ -20,52 +20,18 @@ package net.openhft.chronicle.logger.log4j1;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
+import net.openhft.chronicle.logger.codec.Codec;
+import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public final class ChronicleAppender extends AbstractChronicleAppender {
-
-    private final LogAppenderConfig config;
-
-    public ChronicleAppender() {
-        this.config = new LogAppenderConfig();
-    }
-
-    // *************************************************************************
-    // Custom logging options
-    // *************************************************************************
-
-    public void setBlockSize(int blockSize) {
-        config.blockSize = blockSize;
-    }
-
-    public void setBufferCapacity(int bufferCapacity) {
-        config.bufferCapacity = bufferCapacity;
-    }
-
-    public String rollCycle() {
-        return config.rollCycle;
-    }
-
-    public void rollCycle(String rollCycle) {
-        config.rollCycle = rollCycle;
-    }
-
-    protected ChronicleQueue createQueue() {
-        return this.config.build(this.getPath());
-    }
 
     @Override
     protected ChronicleLogWriter createWriter() throws IOException {
         return new DefaultChronicleLogWriter(createQueue());
     }
 
-    // *************************************************************************
-    // LogAppenderConfig
-    // *************************************************************************
-
-    LogAppenderConfig getChronicleConfig() {
-        return this.config;
-    }
 }

@@ -20,6 +20,7 @@ package net.openhft.chronicle.logger.log4j1;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.EntryProcessor;
+import net.openhft.chronicle.logger.LogAppenderConfig;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.logger.DefaultEntryProcessor;
@@ -51,8 +52,8 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
 
     static final Level[] levels = { FATAL, ERROR, WARN, INFO, DEBUG, TRACE };
 
-    private static ChronicleQueue getChronicleQueue(String testId, WireType wt) {
-        return ChronicleQueue.singleBuilder(basePath(testId)).wireType(wt).build();
+    private static ChronicleQueue getChronicleQueue(LogAppenderConfig config, Path path) {
+        return config.build(path);
     }
 
     @After
@@ -72,10 +73,11 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
         for (Level level: levels) {
             log(logger, level, "level is " + level, null);
         }
-        try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.BINARY_LIGHT)) {
+        LogAppenderConfig config = LogAppenderConfig.parse(path);
+        try (final ChronicleQueue cq = getChronicleQueue(config, path)) {
             Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
             CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-            Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+            Codec codec = registry.find(config.contentEncoding);
             EntryProcessor<String> processor = new DefaultEntryProcessor(codec);
             EntryReader entryReader = new EntryReader();
 
@@ -113,10 +115,11 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
             log(logger, level, "level is " + level, null);
         }
 
-        try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.TEXT)) {
+        LogAppenderConfig config = LogAppenderConfig.parse(path);
+        try (final ChronicleQueue cq = getChronicleQueue(config, path)) {
             Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
             CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
-            Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+            Codec codec = registry.find(config.contentEncoding);
             EntryProcessor<String> processor = new DefaultEntryProcessor(codec);
 
             ExcerptTailer tailer = cq.createTailer();
