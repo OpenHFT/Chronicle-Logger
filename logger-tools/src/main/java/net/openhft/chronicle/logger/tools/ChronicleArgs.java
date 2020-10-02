@@ -8,16 +8,10 @@ public class ChronicleArgs {
     public static ChronicleQueue createChronicleQueue(String[] args) {
         if (args.length >= 1) {
             int i = 0;
-            final WireType wt;
-            if ("-w".equals(args[i])) {
-                wt = WireType.valueOf(args[++i].trim().toUpperCase());
-                i++;
-            } else {
-                wt = WireType.BINARY_LIGHT;
-            }
+            final WireType wt = WireType.BINARY_LIGHT;
             return ChronicleQueue.singleBuilder(args[i].trim()).wireType(wt).build();
         } else {
-            return null;
+            throw new IllegalStateException("Not enough arguments!");
         }
     }
 

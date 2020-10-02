@@ -32,7 +32,10 @@ public class EntryReader {
     private final ThreadLocal<Entry> entry = ThreadLocal.withInitial(Entry::new);
 
     public Entry read(Bytes<ByteBuffer> bytes) {
-        return Entry.getRootAsEntry(bytes.underlyingObject(), entry.get());
+        ByteBuffer byteBuffer = bytes.underlyingObject();
+        byteBuffer.position((int) bytes.readPosition());
+        byteBuffer.limit((int) bytes.readLimit());
+        return Entry.getRootAsEntry(byteBuffer, entry.get());
     }
 
     public Entry read(ByteBuffer buf) {

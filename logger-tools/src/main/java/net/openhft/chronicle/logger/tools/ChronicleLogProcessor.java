@@ -37,11 +37,14 @@ public interface ChronicleLogProcessor {
      */
     default void processLogs(@NotNull ChronicleQueue cq, EntryReader reader, boolean waitForIt) {
         ExcerptTailer tailer = cq.createTailer();
-        Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
-        for (; ; ) {
-            try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                if (wire == null)
+        Bytes<ByteBuffer> bytes = Bytes.elasticByteBuffer();
+
+        for(;;) {
+            try {
+                if (tailer.readBytes(bytes)) {
+                    Entry entry = reader.read(bytes);
+                    process(entry);
+                } else {
                     if (waitForIt) {
                         try {
                             Thread.sleep(50L);
@@ -52,10 +55,9 @@ public interface ChronicleLogProcessor {
                     } else {
                         break;
                     }
-
-                wire.readBytes(bytes);
-                Entry entry = reader.read(bytes);
-                process(entry);
+                }
+            } finally {
+                bytes.clear();
             }
         }
     }
