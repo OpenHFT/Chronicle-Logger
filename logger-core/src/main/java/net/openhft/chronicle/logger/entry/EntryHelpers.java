@@ -1,6 +1,7 @@
 package net.openhft.chronicle.logger.entry;
 
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Helpers for converting between flatbuffer reps and java reps.
@@ -16,17 +17,17 @@ public final class EntryHelpers {
     }
 
     /**
-     * Gets the epoch second portion from the TSE.
+     * Gets the epoch second portion from the milliseconds from epoch.
      */
     public long epochSecondFromMillis(long epochMilli) {
         return Math.floorDiv(epochMilli, (long) 1000);
     }
 
     /**
-     * Gets the nanosecond portion from the TSE.
+     * Gets the nanosecond portion from the the milliseconds from epoch.
      */
     public int nanosFromMillis(long epochMilli) {
-        return (int) Math.floorMod(epochMilli, (long) 1000);
+        return (int) Math.floorMod(epochMilli, (long) 1000) * 1_000_000;
     }
 
     /**

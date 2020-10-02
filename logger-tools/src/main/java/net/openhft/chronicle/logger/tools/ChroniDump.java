@@ -18,6 +18,15 @@ import java.sql.*;
 import java.time.Instant;
 import java.util.concurrent.atomic.LongAdder;
 
+/**
+ * Dumps from chronicle-queue into SQLite, decompressing the content.
+ *
+ * Note that this dump does not contain any indexes and represents the content as a BLOB.
+ * You are best using this as a raw source of input and creating your own tables with
+ * some parsed output.
+ *
+ * This works great with <a href="https://docs.datasette.io/en/stable/">Datasette</a>.
+ */
 public class ChroniDump {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ChroniDump.class);
@@ -29,6 +38,7 @@ public class ChroniDump {
     private long counter;
 
     public static void main(String[] args) throws SQLException {
+        // XXX Use an argument processing library
         ChronicleQueue cq = ChronicleArgs.createChronicleQueue(args);
         Path directory = Paths.get(cq.fileAbsolutePath());
         logger.info(String.format("Reading from path %s", directory));
