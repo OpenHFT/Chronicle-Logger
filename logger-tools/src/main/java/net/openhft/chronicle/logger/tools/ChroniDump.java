@@ -8,6 +8,7 @@ import net.openhft.chronicle.logger.entry.EntryHelpers;
 import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.logger.entry.EntryTimestamp;
 import net.openhft.chronicle.queue.ChronicleQueue;
+import org.slf4j.Logger;
 import org.sqlite.SQLiteConfig;
 
 import java.nio.ByteBuffer;
@@ -19,6 +20,7 @@ import java.util.concurrent.atomic.LongAdder;
 
 public class ChroniDump {
 
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ChroniDump.class);
     private final ChronicleQueue cq;
     private final Codec codec;
     private final Bytes<ByteBuffer> sourceBytes = Bytes.elasticByteBuffer();
@@ -29,7 +31,7 @@ public class ChroniDump {
     public static void main(String[] args) throws SQLException {
         ChronicleQueue cq = ChronicleArgs.createChronicleQueue(args);
         Path directory = Paths.get(cq.fileAbsolutePath());
-        addInfo(String.format("Reading from path %s", directory));
+        logger.info(String.format("Reading from path %s", directory));
         CodecRegistry registry = CodecRegistry.builder().withDefaults(directory).build();
         // XXX Pull this from a configuration file
         Codec codec = registry.find(CodecRegistry.ZSTANDARD);
@@ -37,7 +39,8 @@ public class ChroniDump {
         String databaseName = "dump.db";
         try (Connection conn = createDatabaseConnection(databaseName);) {
             ChroniDump chroniDump = new ChroniDump(cq, codec, conn);
-            chroniDump.dump();
+            long total = chroniDump.dump();
+            logger.info("Added " + total + " total");
         }
     }
 
@@ -61,17 +64,18 @@ public class ChroniDump {
         this.conn = conn;
     }
 
-    public void dump() throws SQLException {
+    public long dump() throws SQLException {
         createTable();
 
         EntryReader reader = new EntryReader();
         ChronicleLogProcessor logProcessor = this::insert;
         logProcessor.processLogs(cq, reader, false);
+        return counter;
     }
 
     protected void createTable() throws SQLException {
         String createStatements = getCreateStatements();
-        addInfo("createTable: " + createStatements);
+        logger.info("createTable: " + createStatements);
         try (Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(createStatements);
         }
@@ -115,8 +119,11 @@ public class ChroniDump {
             // But this is from 2017, so things may have improved since then.
             // https://medium.com/@JasonWyatt/squeezing-performance-from-sqlite-insertions-971aff98eef2
             if (counter % 1000 == 0) {
-                counter = 0;
                 conn.commit();
+            }
+
+            if (counter % 100000 == 0) {
+                logger.info("Added " + counter + " rows");
             }
         } catch (SQLException ex) {
             // if the error message is "out of memory",
@@ -157,25 +164,4 @@ public class ChroniDump {
         adder.increment();
     }
 
-    private static void addInfo(String s) {
-        System.out.println("[INFO] " + s);
-    }
-
-    private static void addError(String error, Exception e) {
-        System.err.println("[ERROR] " + error);
-        e.printStackTrace();
-    }
-
-    private static void addError(String s) {
-        System.err.println("[ERROR] " + s);
-    }
-
-    private static void addWarn(String s) {
-        System.err.println("[WARN] " + s);
-    }
-
-    private static void addWarn(String s, SQLException e) {
-        System.err.println("[WARN] " + s);
-        e.printStackTrace();
-    }
 }
