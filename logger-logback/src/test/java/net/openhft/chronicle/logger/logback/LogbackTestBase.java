@@ -22,6 +22,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import net.openhft.chronicle.core.io.IOTools;
+import net.openhft.chronicle.logger.LogAppenderConfig;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
@@ -31,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Objects;
 
 import static ch.qos.logback.classic.Level.*;
@@ -60,11 +62,6 @@ public abstract class LogbackTestBase {
     }
 
     abstract String getResource();
-
-    @NotNull
-    protected static ChronicleQueue getChronicleQueue(String testId) {
-        return ChronicleQueue.singleBuilder(basePath(testId)).build();
-    }
 
     static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");

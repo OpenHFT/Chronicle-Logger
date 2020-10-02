@@ -21,7 +21,6 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
-import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -36,8 +35,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Plugin(
         name = "Chronicle",
@@ -48,22 +45,16 @@ public class ChronicleAppender extends AbstractChronicleAppender {
 
     private final Bytes<ByteBuffer> contentBytes;
 
-    private final ChronicleCfg config;
-
     public ChronicleAppender(final String name,
                              final Filter filter,
                              final Layout<? extends Serializable> layout,
                              final boolean ignoreExceptions,
                              final Property[] properties,
                              final String path,
-                             final String wireType,
-                             final ChronicleCfg config,
-                             final String contentType,
-                             final String contentEncoding) {
-        super(name, filter, layout, ignoreExceptions, properties, path, wireType, contentType, contentEncoding);
+                             final ChronicleCfg config) {
+        super(name, filter, layout, ignoreExceptions, properties, path, config);
 
         this.contentBytes = Bytes.elasticByteBuffer();
-        this.config = config != null ? config : new ChronicleCfg();
     }
 
     // *************************************************************************
@@ -74,9 +65,6 @@ public class ChronicleAppender extends AbstractChronicleAppender {
     public static ChronicleAppender createAppender(
             @PluginAttribute("name") final String name,
             @PluginAttribute("path") final String path,
-            @PluginAttribute("wireType") final String wireType,
-            @PluginAttribute("contentType") final String contentType,
-            @PluginAttribute("contentEncoding") final String contentEncoding,
             @PluginElement("layout") final Layout<? extends Serializable> layout,
             @PluginElement("chronicleCfg") final ChronicleCfg chronicleConfig,
             @PluginElement("filter") final Filter filter) {
@@ -92,7 +80,7 @@ public class ChronicleAppender extends AbstractChronicleAppender {
 
         boolean ignoreExceptions = true;
         Property[] properties = {};
-        return new ChronicleAppender(name, filter, layout, ignoreExceptions, properties, path, wireType, chronicleConfig, contentType, contentEncoding);
+        return new ChronicleAppender(name, filter, layout, ignoreExceptions, properties, path, chronicleConfig);
     }
 
     @Override
@@ -106,7 +94,6 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         // on the other hand, it looks like encode just calls toByteArray under the
         // hood anyway.
         // layout.encode(event, byteBufferDestination);
-
         Instant instant = event.getInstant();
         int level = event.getLevel().intLevel();
 
@@ -127,7 +114,7 @@ public class ChronicleAppender extends AbstractChronicleAppender {
     }
 
     protected ChronicleQueue createQueue() {
-        return config.build(getPath());
+        return getChronicleConfig().build(getPath());
     }
 
     @Override
@@ -139,7 +126,4 @@ public class ChronicleAppender extends AbstractChronicleAppender {
     //
     // *************************************************************************
 
-    protected LogAppenderConfig getChronicleConfig() {
-        return this.config;
-    }
 }

@@ -18,7 +18,6 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -49,6 +48,6 @@ public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
         assertTrue(appender instanceof BlockingChronicleAppender);
 
         BlockingChronicleAppender ba = (BlockingChronicleAppender) appender;
-        assertEquals(128, ba.getChronicleConfig().getBlockSize());
+        assertEquals(128, ba.getChronicleConfig().blockSize);
     }
 }

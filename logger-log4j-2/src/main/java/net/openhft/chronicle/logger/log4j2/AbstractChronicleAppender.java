@@ -31,13 +31,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Paths;
 
 public abstract class AbstractChronicleAppender extends AbstractAppender {
 
-    private String contentType;
-    private String contentEncoding;
+    private final ChronicleCfg config;
     private String path;
-    private String wireType;
 
     private ChronicleLogWriter writer;
 
@@ -47,15 +46,11 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
                               boolean ignoreExceptions,
                               Property[] properties,
                               String path,
-                              String wireType,
-                              String contentType,
-                              String contentEncoding) {
+                              ChronicleCfg config) {
         super(name, filter, layout, ignoreExceptions, properties);
 
         this.path = path;
-        this.wireType = wireType;
-        this.contentType = contentType;
-        this.contentEncoding = contentEncoding;
+        this.config = config;
         this.writer = null;
     }
 
@@ -67,32 +62,8 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         this.path = path;
     }
 
-    public String getWireType() {
-        return wireType;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public String getContentEncoding() {
-        return contentEncoding;
-    }
-
-    public void setContentEncoding(String contentEncoding) {
-        this.contentEncoding = contentEncoding;
-    }
-
-    // *************************************************************************
-    // Chronicle implementation
-    // *************************************************************************
-
-    public void setWireType(String wireType) {
-        this.wireType = wireType;
+    protected LogAppenderConfig getChronicleConfig() {
+        return this.config;
     }
 
     protected abstract ChronicleLogWriter createWriter() throws IOException;
@@ -111,6 +82,7 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         } else {
             try {
                 this.writer = createWriter();
+                LogAppenderConfig.write(config, Paths.get(this.getPath()));
             } catch (IOException e) {
                 this.writer = null;
                 LOGGER.error("Appender " + getName() + " " + e.getMessage());
@@ -162,15 +134,21 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         public static ChronicleCfg create(
                 @PluginAttribute("blockSize") final String blockSize,
                 @PluginAttribute("bufferCapacity") final String bufferCapacity,
-                @PluginAttribute("rollCycle") final String rollCycle) {
+                @PluginAttribute("rollCycle") final String rollCycle,
+                @PluginAttribute("contentType") final String contentType,
+                @PluginAttribute("contentEncoding") final String contentEncoding) {
 
             final ChronicleCfg cfg = new ChronicleCfg();
             if (blockSize != null)
-                cfg.setProperty("blockSize", blockSize);
+                cfg.blockSize = Integer.parseInt(blockSize);
             if (bufferCapacity != null)
-                cfg.setProperty("bufferCapacity", bufferCapacity);
+                cfg.bufferCapacity = Long.parseLong(bufferCapacity);
             if (rollCycle != null)
-                cfg.setProperty("rollCycle", rollCycle);
+                cfg.rollCycle = rollCycle;
+            if (contentType != null)
+                cfg.contentType = contentType;
+            if (contentEncoding != null)
+                cfg.contentEncoding = contentEncoding;
 
             return cfg;
         }

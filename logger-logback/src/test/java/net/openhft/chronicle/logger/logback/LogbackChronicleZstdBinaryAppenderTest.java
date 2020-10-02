@@ -21,12 +21,14 @@ import ch.qos.logback.classic.Level;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.EntryProcessor;
+import net.openhft.chronicle.logger.LogAppenderConfig;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.entry.Entry;
 import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.logger.DefaultEntryProcessor;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import org.junit.Test;
@@ -66,12 +68,13 @@ public class LogbackChronicleZstdBinaryAppenderTest extends LogbackTestBase {
         }
 
         EntryReader eventReader = new EntryReader();
+        LogAppenderConfig config = LogAppenderConfig.parse(path);
         CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
-        Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+        Codec codec = registry.find(config.contentEncoding);
         EntryProcessor<String> processor = new DefaultEntryProcessor(codec);
 
-        try (final ChronicleQueue cq = getChronicleQueue(testId)) {
-            net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
+        try (final ChronicleQueue cq = config.build(path)) {
+            ExcerptTailer tailer = cq.createTailer();
             for (Level level: levels) {
                 Bytes<ByteBuffer> bytes = Bytes.elasticHeapByteBuffer();
                 tailer.readBytes(bytes);

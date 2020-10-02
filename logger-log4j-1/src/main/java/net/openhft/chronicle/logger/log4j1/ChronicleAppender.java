@@ -20,12 +20,9 @@ package net.openhft.chronicle.logger.log4j1;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
-import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public final class ChronicleAppender extends AbstractChronicleAppender {
 
@@ -40,19 +37,19 @@ public final class ChronicleAppender extends AbstractChronicleAppender {
     // *************************************************************************
 
     public void setBlockSize(int blockSize) {
-        config.setBlockSize(blockSize);
+        config.blockSize = blockSize;
     }
 
     public void setBufferCapacity(int bufferCapacity) {
-        config.setBufferCapacity(bufferCapacity);
+        config.bufferCapacity = bufferCapacity;
     }
 
     public String rollCycle() {
-        return config.getRollCycle();
+        return config.rollCycle;
     }
 
     public void rollCycle(String rollCycle) {
-        config.setRollCycle(rollCycle);
+        config.rollCycle = rollCycle;
     }
 
     protected ChronicleQueue createQueue() {

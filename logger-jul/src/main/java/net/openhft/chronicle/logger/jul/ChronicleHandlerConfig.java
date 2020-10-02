@@ -51,12 +51,13 @@ public class ChronicleHandlerConfig {
 
     public LogAppenderConfig getAppenderConfig() {
         LogAppenderConfig cfg = new LogAppenderConfig();
-        for (final String key : cfg.keys()) {
-            cfg.setProperty(
-                    key,
-                    getStringProperty(this.prefix + ".cfg." + key, "")
-            );
-        }
+
+        String s = this.prefix + ".cfg.";
+        cfg.bufferCapacity = getIntProperty(s + "bufferCapacity", 128);
+        cfg.blockSize = getIntProperty(s + "blockSize", 256);
+        cfg.rollCycle = getStringProperty(s + "rollCycle", "");
+        cfg.contentType = getStringProperty(s + "contentType", "");
+        cfg.contentEncoding = getStringProperty(s + "contentEncoding", "");
 
         return cfg;
     }

@@ -97,7 +97,7 @@ public class CodecRegistry implements Closeable {
                     .withInitialDelay(initialDelay)
                     .withDefaults(path)
                     .build();
-            return withCodec("zstd", codec);
+            return withCodec(ZSTANDARD, codec);
         }
 
         public Builder withInitialDelay(Duration initialDelay) {

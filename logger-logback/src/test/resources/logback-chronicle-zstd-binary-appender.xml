@@ -34,8 +34,10 @@
     <appender name  = "BINARY-ZSTD-CHRONICLE"
               class = "net.openhft.chronicle.logger.logback.BlockingChronicleAppender">
         <path>${java.io.tmpdir}/chronicle-logback/binary-zstd-chronicle</path>
-        <contentType>text/plain</contentType>
-        <contentEncoding>zstd</contentEncoding>
+        <chronicleConfig>
+            <contentType>text/plain; charset=utf-8</contentType>
+            <contentEncoding>zstd</contentEncoding>
+        </chronicleConfig>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%msg</pattern>
         </encoder>

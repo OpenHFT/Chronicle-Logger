@@ -20,21 +20,14 @@ package net.openhft.chronicle.logger.logback;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.core.status.OnConsoleStatusListener;
 import net.openhft.chronicle.bytes.Bytes;
-import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
-import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.wire.Wire;
-import net.openhft.chronicle.wire.WireType;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.nio.charset.StandardCharsets.UTF_8;

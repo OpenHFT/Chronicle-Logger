@@ -19,15 +19,9 @@ package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.encoder.Encoder;
-import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.joran.spi.DefaultClass;
-import ch.qos.logback.core.spi.ContextAware;
-import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.spi.FilterAttachableImpl;
-import ch.qos.logback.core.spi.FilterReply;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.logger.LogAppenderConfig;
@@ -36,10 +30,7 @@ import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.util.List;
 
 public abstract class ChronicleAppenderBase
         extends UnsynchronizedAppenderBase<ILoggingEvent>
@@ -50,7 +41,6 @@ public abstract class ChronicleAppenderBase
 
     protected LogAppenderConfig config;
     protected Encoder<ILoggingEvent> encoder;
-    protected String contentEncoding = CodecRegistry.IDENTITY;
     protected Codec codec;
 
     protected ChronicleAppenderBase() {
@@ -76,14 +66,6 @@ public abstract class ChronicleAppenderBase
         this.encoder = encoder;
     }
 
-    public String getContentEncoding() {
-        return contentEncoding;
-    }
-
-    public void setContentEncoding(String contentEncoding) {
-        this.contentEncoding = contentEncoding;
-    }
-
     public String getPath() {
         return this.path;
     }
@@ -102,7 +84,9 @@ public abstract class ChronicleAppenderBase
         } else {
             try {
                 this.writer = createWriter();
-                this.codec = createCodecRegistry().find(getContentEncoding());
+                this.codec = createCodecRegistry().find(config.contentEncoding);
+
+                LogAppenderConfig.write(config, Paths.get(this.getPath()));
                 this.started = true;
             } catch (Exception e) {
                 this.writer = null;
