@@ -1,26 +1,19 @@
-package net.openhft.chronicle.logger.codec;
+package net.openhft.chronicle.logger.codec.zstd;
 
 import com.github.luben.zstd.*;
 import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.logger.codec.Codec;
+import net.openhft.chronicle.logger.codec.CodecException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
-import java.util.function.Supplier;
-
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 /**
  * ZStandard compression.
@@ -29,14 +22,6 @@ public class ZStandardCodec implements Codec, AutoCloseable {
 
     private ZStandardDictCodec zstdDictCodec;
     private ZStandardTrainerCodec zstdTrainerCodec;
-
-    // Dictionary size can be up to 10 MeB in bytes.  This is the output from training.
-    public static final int DEFAULT_DICT_SIZE = 10485760;
-
-    // The sample size is the sum of the individual samples,
-    // i.e. if you have 1000 messages that are all 26 bytes each,
-    // then the sample size is 26000 bytes.
-    public static final int DEFAULT_SAMPLE_SIZE = 100_000 * 1024;
 
     public ZStandardCodec(byte[] dictionary, int level) {
         this.zstdDictCodec = new ZStandardDictCodec(dictionary, level);
@@ -50,8 +35,9 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         this.zstdTrainerCodec = new ZStandardTrainerCodec(sampleSize, dictSize, trainingSleep, level, trainingHook);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    @Override
+    public String getName() {
+        return ZStandardCodecFactory.NAME;
     }
 
     @Override
@@ -111,7 +97,6 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         }
     }
 
-
     @Override
     public void close() {
         if (zstdDictCodec != null) {
@@ -124,7 +109,7 @@ public class ZStandardCodec implements Codec, AutoCloseable {
 
     @Override
     public long compressBounds(int length) {
-        return zsdCompressBounds(length);
+        return zstdCompressBounds(length);
     }
 
     @Override
@@ -132,7 +117,7 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         return zstdUncompressedSize(buf);
     }
 
-    private static long zsdCompressBounds(int length) {
+    private static long zstdCompressBounds(int length) {
         return Zstd.compressBound(length);
     }
 
@@ -169,6 +154,11 @@ public class ZStandardCodec implements Codec, AutoCloseable {
 
         public boolean isTraining() {
             return Instant.now().isAfter(trainingDeadline);
+        }
+
+        @Override
+        public String getName() {
+            return ZStandardCodec.this.getName();
         }
 
         public int compress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> destBytes) {
@@ -221,7 +211,7 @@ public class ZStandardCodec implements Codec, AutoCloseable {
 
         @Override
         public long compressBounds(int length) {
-            return zsdCompressBounds(length);
+            return zstdCompressBounds(length);
         }
 
         @Override
@@ -247,12 +237,17 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         }
         @Override
         public long compressBounds(int length) {
-            return zsdCompressBounds(length);
+            return zstdCompressBounds(length);
         }
 
         @Override
         public long uncompressedSize(ByteBuffer buf) {
             return zstdUncompressedSize(buf);
+        }
+
+        @Override
+        public String getName() {
+            return ZStandardCodecFactory.NAME;
         }
 
         @Override
@@ -288,136 +283,4 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         }
     }
 
-    public static class Builder {
-        private int sampleSize = ZStandardCodec.DEFAULT_SAMPLE_SIZE;
-        private int dictSize = ZStandardCodec.DEFAULT_DICT_SIZE;
-        private Duration initialDelay = Duration.ZERO;
-        private int compressionLevel = 3;
-        private Supplier<ZStandardCodec> codecSupplier;
-
-        Builder() {
-        }
-
-        public Builder withSampleSize(int sampleSize) {
-            this.sampleSize = sampleSize;
-            return this;
-        }
-
-        public Builder withDictionarySize(int dictSize) {
-            this.dictSize = dictSize;
-            return this;
-        }
-
-        public Builder withCompressionLevel(int level) {
-            this.compressionLevel = level;
-            return this;
-        }
-
-        /**
-         * Adds training hook.  This calls withCodec.  You may call withSampleSize/withDictionarySize before this.
-         *
-         * @param trainingHook
-         * @return
-         */
-        public Builder withTrainingHook(Function<ZstdDictTrainer, CompletionStage<byte[]>> trainingHook) {
-            ZStandardCodec codecWithTrainer = new ZStandardCodec(sampleSize, dictSize, compressionLevel, trainingHook);
-            return this.withCodec(codecWithTrainer);
-        }
-
-        /**
-         * Adds a dictionary.  This calls withCodec.
-         *
-         * @param dictBytes
-         * @return
-         */
-        public Builder withDictionary(byte[] dictBytes) {
-            ZStandardCodec codecWithDict = new ZStandardCodec(dictBytes, compressionLevel);
-            return this.withCodec(codecWithDict);
-        }
-
-        public Builder withDefaults(String path) {
-            return withDefaults(Paths.get(path));
-        }
-
-        public Builder withInitialDelay(Duration initialDelay) {
-            this.initialDelay = initialDelay;
-            return this;
-        }
-
-        public Builder withDefaults(Path dictionaryPath) {
-            this.codecSupplier = () -> {
-                try {
-                    byte[] dictBytes = ZStandardDictionary.readFromFile(dictionaryPath);
-                    return new ZStandardCodec(dictBytes, compressionLevel);
-                } catch (NoSuchFileException | FileNotFoundException e) {
-                    Function<ZstdDictTrainer, CompletionStage<byte[]>> trainingHook =
-                            ZStandardDictionary.writeToFile(dictionaryPath);
-                    return new ZStandardCodec(sampleSize, dictSize, initialDelay, compressionLevel, trainingHook);
-                } catch (IOException e) {
-                    throw new CodecException(e);
-                }
-            };
-            return this;
-        }
-
-        private Builder withCodec(ZStandardCodec codec) {
-            this.codecSupplier = () -> codec;
-            return this;
-        }
-
-        public ZStandardCodec build() throws CodecException {
-            return this.codecSupplier.get();
-        }
-    }
-}
-
-class ZStandardDictionary {
-
-    private static final Logger logger = LoggerFactory.getLogger(ZStandardDictionary.class);
-
-    public static final String DEFAULT_DICT_FILENAME = "dictionary";
-
-    public static Function<ZstdDictTrainer, CompletionStage<byte[]>> writeToFile(Path path) {
-        // Run this as a future so it's off the current thread (we don't
-        // care when it completes)
-        return trainer -> CompletableFuture.supplyAsync(() -> {
-            Path filename = Files.isDirectory(path) ? path.resolve(DEFAULT_DICT_FILENAME) : path;
-            try {
-                logger.info("Training zstd dictionary samples...");
-                byte[] dictBytes = trainer.trainSamples();
-                logger.info("Writing zstd dictionary of {} bytes to {}", dictBytes.length, filename);
-                Files.write(filename, dictBytes, CREATE_NEW);
-                return dictBytes;
-            } catch (IOException e) {
-                throw new CompletionException(new CodecException(e));
-            } catch (ZstdException e) {
-                // XXX throws ZstdException (should use a try / catch)
-                // https://github.com/facebook/zstd/issues/1735
-                // I think "Src size is incorrect" means that there's not enough unique info in the
-                // messages to create a dictionary.  So keep going?  Or throw out the
-                // trainer and start from scratch?
-                throw new CompletionException(new CodecException("Cannot create dictionary: probably not enough unique data", e));
-            }
-        }, ForkJoinPool.commonPool());
-
-    }
-
-    /**
-     * Utility for reading bytes from a file.
-     *
-     * @param path a path to a regular readable file
-     * @return the bytes of the file.
-     * @throws IOException if the bytes cannot be read.
-     */
-    public static byte[] readFromFile(Path path) throws IOException {
-        if (!Files.exists(path)) {
-            String msg = String.format("Dictionary %s does not exist!", path);
-            throw new FileNotFoundException(msg);
-        }
-        if (Files.isDirectory(path)) {
-            Path dictPath = path.resolve(DEFAULT_DICT_FILENAME);
-            return Files.readAllBytes(dictPath);
-        }
-        return Files.readAllBytes(path);
-    }
 }

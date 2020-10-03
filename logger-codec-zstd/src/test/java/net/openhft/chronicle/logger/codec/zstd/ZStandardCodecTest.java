@@ -1,13 +1,13 @@
-package net.openhft.chronicle.logger.codec;
+package net.openhft.chronicle.logger.codec.zstd;
 
 import com.github.luben.zstd.Zstd;
 import com.github.luben.zstd.ZstdDictTrainer;
 import com.github.luben.zstd.ZstdException;
 import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.logger.codec.CodecException;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -15,7 +15,6 @@ import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.StampedLock;
 import java.util.function.Function;
 
 import static org.junit.Assert.*;

@@ -1,7 +1,7 @@
 package net.openhft.chronicle.logger.tools;
 
-import net.openhft.chronicle.logger.EntryProcessor;
-import net.openhft.chronicle.logger.DefaultEntryProcessor;
+import net.openhft.chronicle.logger.EntryTransformer;
+import net.openhft.chronicle.logger.DefaultEntryTransformer;
 import net.openhft.chronicle.logger.LogAppenderConfig;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
@@ -25,9 +25,9 @@ public class ChronicleOutput {
         CodecRegistry registry = CodecRegistry.builder().withDefaults(directory).build();
         LogAppenderConfig config = LogAppenderConfig.parse(directory);
         Codec codec = registry.find(config.contentEncoding);
-        EntryProcessor<String> entryProcessor = new DefaultEntryProcessor(codec);
+        EntryTransformer<String> entryTransformer = new DefaultEntryTransformer(codec);
         ChronicleLogProcessor logProcessor = e -> {
-            String content = entryProcessor.apply(e);
+            String content = entryTransformer.apply(e);
             System.out.println(content);
         };
         EntryReader reader = new EntryReader();

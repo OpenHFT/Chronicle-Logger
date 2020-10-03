@@ -13,18 +13,18 @@ import java.nio.charset.StandardCharsets;
  * Turns a log entry into a String with the appropriate, passing it through a decompression
  * codec depending on the event's encoding.
  */
-public class DefaultEntryProcessor implements EntryProcessor<String>, AutoCloseable {
+public class DefaultEntryTransformer implements EntryTransformer<String>, AutoCloseable {
 
     private final Bytes<ByteBuffer> sourceBytes;
     private final Bytes<ByteBuffer> destBytes;
     private final Codec codec;
     private final Charset charset;
 
-    public DefaultEntryProcessor(Codec codec) {
+    public DefaultEntryTransformer(Codec codec) {
         this(codec, StandardCharsets.UTF_8);
     }
 
-    public DefaultEntryProcessor(Codec codec, Charset charset) {
+    public DefaultEntryTransformer(Codec codec, Charset charset) {
         this.sourceBytes = Bytes.elasticByteBuffer(1024);
         this.destBytes = Bytes.elasticByteBuffer(1024);
         this.codec = codec;

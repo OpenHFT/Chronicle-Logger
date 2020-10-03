@@ -6,6 +6,8 @@ import java.nio.ByteBuffer;
 
 public interface Codec extends AutoCloseable {
 
+    String getName();
+
     int compress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException;
 
     int decompress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException;

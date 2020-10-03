@@ -33,7 +33,7 @@
 
     <name>OpenHFT/Chronicle-Logger</name>
     <description>OpenHFT :: High Performance Logging</description>
-
+    
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -111,6 +111,8 @@
         <module>logger-log4j-1</module>
         <module>logger-log4j-2</module>
         <module>logger-tools</module>
+        <module>logger-codec-zstd</module>
+        <module>logger-codec-lz4</module>
         <module>benchmark</module>
     </modules>
 
@@ -152,4 +154,3 @@
     </scm>
 
 </project>
-

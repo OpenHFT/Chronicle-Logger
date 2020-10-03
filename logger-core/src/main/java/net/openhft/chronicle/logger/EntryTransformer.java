@@ -11,5 +11,5 @@ import java.util.function.Function;
  * @param <T> the type.
  */
 @FunctionalInterface
-public interface EntryProcessor<T> extends Function<Entry, T> {
+public interface EntryTransformer<T> extends Function<Entry, T> {
 }

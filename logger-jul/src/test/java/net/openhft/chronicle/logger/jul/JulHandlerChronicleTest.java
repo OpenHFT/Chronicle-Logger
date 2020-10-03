@@ -19,8 +19,8 @@ package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.IOTools;
-import net.openhft.chronicle.logger.EntryProcessor;
-import net.openhft.chronicle.logger.DefaultEntryProcessor;
+import net.openhft.chronicle.logger.EntryTransformer;
+import net.openhft.chronicle.logger.DefaultEntryTransformer;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.Entry;
@@ -87,7 +87,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
         EntryReader entryReader = new EntryReader();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(basePath(testId)).build();
         Codec codec = registry.find(CodecRegistry.ZSTANDARD);
-        EntryProcessor<String> processor = new DefaultEntryProcessor(codec);
+        EntryTransformer<String> processor = new DefaultEntryTransformer(codec);
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();

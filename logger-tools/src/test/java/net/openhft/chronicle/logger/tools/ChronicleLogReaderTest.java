@@ -1,9 +1,9 @@
 package net.openhft.chronicle.logger.tools;
 
-import net.openhft.chronicle.logger.EntryProcessor;
+import net.openhft.chronicle.logger.EntryTransformer;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.entry.EntryReader;
-import net.openhft.chronicle.logger.DefaultEntryProcessor;
+import net.openhft.chronicle.logger.DefaultEntryTransformer;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.WireType;
@@ -36,9 +36,9 @@ public class ChronicleLogReaderTest {
         EntryReader reader = new EntryReader();
         Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-        Codec codec = registry.find(CodecRegistry.ZSTANDARD);
-        EntryProcessor<String> entryProcessor = new DefaultEntryProcessor(codec);
-        ChronicleLogProcessor logProcessor = e -> System.out.println(entryProcessor.apply(e));
+        Codec codec = registry.find("zstd");
+        EntryTransformer<String> entryTransformer = new DefaultEntryTransformer(codec);
+        ChronicleLogProcessor logProcessor = e -> System.out.println(entryTransformer.apply(e));
         logProcessor.processLogs(cq, reader, false);
 
         //ChroniCat.main(new String[] {System.getProperty("java.io.tmpdir") + "/chronicle-logback/binary-chronicle"});
