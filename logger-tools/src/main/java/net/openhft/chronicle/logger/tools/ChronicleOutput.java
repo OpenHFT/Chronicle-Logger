@@ -2,6 +2,7 @@ package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.logger.EntryProcessor;
 import net.openhft.chronicle.logger.DefaultEntryProcessor;
+import net.openhft.chronicle.logger.LogAppenderConfig;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.EntryReader;
@@ -12,23 +13,24 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 public class ChronicleOutput {
-    private final Path parent;
+    private final Path directory;
     private final ChronicleQueue cq;
 
-    public ChronicleOutput(ChronicleQueue cq, Path parent) {
+    public ChronicleOutput(ChronicleQueue cq, Path directory) {
         this.cq = cq;
-        this.parent = parent;
+        this.directory = directory;
     }
 
     public void process(boolean waitForIt) {
-        EntryReader reader = new EntryReader();
-        CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-        Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+        CodecRegistry registry = CodecRegistry.builder().withDefaults(directory).build();
+        LogAppenderConfig config = LogAppenderConfig.parse(directory);
+        Codec codec = registry.find(config.contentEncoding);
         EntryProcessor<String> entryProcessor = new DefaultEntryProcessor(codec);
         ChronicleLogProcessor logProcessor = e -> {
             String content = entryProcessor.apply(e);
             System.out.println(content);
         };
+        EntryReader reader = new EntryReader();
         logProcessor.processLogs(cq, reader, waitForIt);
     }
 

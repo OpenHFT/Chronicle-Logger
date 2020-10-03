@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class BlockingChronicleAppender extends ChronicleAppenderBase {
 
-    private final Bytes<ByteBuffer> contentBytes = Bytes.elasticByteBuffer(1024);
+    private final Bytes<ByteBuffer> sourceBytes = Bytes.elasticByteBuffer(1024);
     private final Bytes<ByteBuffer> destBytes = Bytes.elasticByteBuffer(1024);
 
     /**
@@ -32,8 +32,8 @@ public class BlockingChronicleAppender extends ChronicleAppenderBase {
         try {
             lock.lock();
             byte[] content = encoder.encode(event);
-            contentBytes.write(content);
-            codec.compress(contentBytes, destBytes);
+            sourceBytes.write(content);
+            codec.compress(sourceBytes, destBytes);
             writer.write(
                     second,
                     nanos,
@@ -43,9 +43,16 @@ public class BlockingChronicleAppender extends ChronicleAppenderBase {
                     destBytes
             );
         } finally {
-            contentBytes.clear();
+            sourceBytes.clear();
             destBytes.clear();
             lock.unlock();
         }
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        sourceBytes.releaseLast();
+        destBytes.releaseLast();
     }
 }

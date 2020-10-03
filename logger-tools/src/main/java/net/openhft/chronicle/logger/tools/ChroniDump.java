@@ -1,6 +1,7 @@
 package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.logger.LogAppenderConfig;
 import net.openhft.chronicle.logger.codec.Codec;
 import net.openhft.chronicle.logger.codec.CodecRegistry;
 import net.openhft.chronicle.logger.entry.Entry;
@@ -44,7 +45,8 @@ public class ChroniDump {
         logger.info(String.format("Reading from path %s", directory));
         CodecRegistry registry = CodecRegistry.builder().withDefaults(directory).build();
         // XXX Pull this from a configuration file
-        Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+        LogAppenderConfig config = LogAppenderConfig.parse(directory);
+        Codec codec = registry.find(config.contentEncoding);
 
         String databaseName = "dump.db";
         try (Connection conn = createDatabaseConnection(databaseName);) {

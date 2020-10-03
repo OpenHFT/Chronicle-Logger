@@ -59,4 +59,10 @@ public class UnsynchronizedChronicleAppender extends ChronicleAppenderBase {
         }
     }
 
+    @Override
+    public void stop() {
+        super.stop();
+        sourceBytes.releaseLast();
+        destBytes.releaseLast();
+    }
 }

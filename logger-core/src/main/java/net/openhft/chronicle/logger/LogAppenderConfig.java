@@ -46,6 +46,46 @@ public class LogAppenderConfig {
      */
     public String rollCycle = RollCycles.DAILY.toString();
 
+    public String getContentEncoding() {
+        return contentEncoding;
+    }
+
+    public void setContentEncoding(String contentEncoding) {
+        this.contentEncoding = contentEncoding;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public int getBlockSize() {
+        return blockSize;
+    }
+
+    public void setBlockSize(int blockSize) {
+        this.blockSize = blockSize;
+    }
+
+    public long getBufferCapacity() {
+        return bufferCapacity;
+    }
+
+    public void setBufferCapacity(long bufferCapacity) {
+        this.bufferCapacity = bufferCapacity;
+    }
+
+    public String getRollCycle() {
+        return rollCycle;
+    }
+
+    public void setRollCycle(String rollCycle) {
+        this.rollCycle = rollCycle;
+    }
+
     /**
      * Writes the configuration to a file on the filesystem.
      *
