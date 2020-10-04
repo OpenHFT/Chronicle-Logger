@@ -36,7 +36,7 @@ public class ChronicleLogReaderTest {
         EntryReader reader = new EntryReader();
         Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-        Codec codec = registry.find("zstd");
+        Codec codec = registry.find("identity");
         EntryTransformer<String> entryTransformer = new DefaultEntryTransformer(codec);
         ChronicleLogProcessor logProcessor = e -> System.out.println(entryTransformer.apply(e));
         logProcessor.processLogs(cq, reader, false);

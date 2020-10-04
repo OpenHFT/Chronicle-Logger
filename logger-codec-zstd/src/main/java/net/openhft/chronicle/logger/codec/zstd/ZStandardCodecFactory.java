@@ -18,27 +18,15 @@ import java.util.function.Supplier;
 public class ZStandardCodecFactory implements CodecFactory {
     public static final String NAME = "zstd";
 
-    private Codec codec;
-
     @Override
     public Codec find(CodecRegistry registry, String encodingName) {
         if (NAME.equalsIgnoreCase(encodingName)) {
-            // XXX move this to a singleton holder
-            if (codec == null) {
-                codec = builder()
+               return builder()
                         .withInitialDelay(registry.getInitialDelay())
                         .withDefaults(registry.getPath())
                         .build();
-            }
-            return codec;
-        }
-        return null;
-    }
-
-    @Override
-    public void close() {
-        if (codec != null) {
-            codec.close();
+        } else {
+            return null;
         }
     }
 

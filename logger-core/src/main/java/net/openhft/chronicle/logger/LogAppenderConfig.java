@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 public class LogAppenderConfig {
 
     /** The file name containing configuration */
-    public static final String CONFIG_TOML = "config.toml";
+    public static final String TOML_FILENAME = "chronicle-logger.toml";
 
     /**
      * The content encoding, similar to Content-Encoding HTTP header.
@@ -96,7 +96,7 @@ public class LogAppenderConfig {
     public static void write(LogAppenderConfig config, Path path) {
         try {
             TomlWriter tomlWriter = new TomlWriter();
-            Path filePath = Files.isDirectory(path) ? path.resolve("config.toml") : path;
+            Path filePath = Files.isDirectory(path) ? path.resolve(TOML_FILENAME) : path;
             tomlWriter.write(config, filePath.toFile());
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -110,7 +110,7 @@ public class LogAppenderConfig {
      * @return the configuration object.
      */
     public static LogAppenderConfig parse(Path path) {
-        Path filePath = Files.isDirectory(path) ? path.resolve(CONFIG_TOML) : path;
+        Path filePath = Files.isDirectory(path) ? path.resolve(TOML_FILENAME) : path;
         Toml toml = new Toml().read(filePath.toFile());
         return toml.to(LogAppenderConfig.class);
     }

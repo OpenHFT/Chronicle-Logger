@@ -41,39 +41,39 @@ public class ZStandardCodec implements Codec, AutoCloseable {
     }
 
     @Override
-    public int compress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> dstBytes) throws CodecException {
+    public int compress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> destBytes) throws CodecException {
         ByteBuffer src = sourceBytes.underlyingObject();
         src.position((int) sourceBytes.readPosition());
         src.limit((int) sourceBytes.readLimit());
 
-        dstBytes.ensureCapacity(compressBounds(sourceBytes.length()));
-        ByteBuffer dst = dstBytes.underlyingObject();
+        destBytes.ensureCapacity(compressBounds(sourceBytes.length()));
+        ByteBuffer dst = destBytes.underlyingObject();
         dst.clear();
 
         int actualSize = compress(src, dst);
         dst.flip();
 
-        dstBytes.readPosition(dst.position());
-        dstBytes.readLimit(dst.limit());
-        assert dstBytes.length() > 0;
+        destBytes.readPosition(dst.position());
+        destBytes.readLimit(dst.limit());
+        assert destBytes.length() > 0;
 
         return actualSize;
     }
 
     @Override
-    public int decompress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> dstBytes) throws CodecException {
+    public int decompress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> destBytes) throws CodecException {
         ByteBuffer src = sourceBytes.underlyingObject();
         src.position((int) sourceBytes.readPosition());
         src.limit((int) sourceBytes.readLimit());
 
-        dstBytes.ensureCapacity(uncompressedSize(src));
-        ByteBuffer dst = dstBytes.underlyingObject();
+        destBytes.ensureCapacity(uncompressedSize(src));
+        ByteBuffer dst = destBytes.underlyingObject();
         dst.clear();
 
         int retvalue = decompress(src, dst);
         dst.flip();
-        dstBytes.readPosition(dst.position());
-        dstBytes.readLimit(dst.limit());
+        destBytes.readPosition(dst.position());
+        destBytes.readLimit(dst.limit());
 
         return retvalue;
     }
@@ -182,9 +182,9 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         }
 
         @Override
-        public int decompress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException {
+        public int decompress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> destBytes) throws CodecException {
 
-            return decompress(src.underlyingObject(), dst.underlyingObject());
+            return decompress(sourceBytes.underlyingObject(), destBytes.underlyingObject());
         }
 
         protected int compress(ByteBuffer src, ByteBuffer dst) throws CodecException {
@@ -251,13 +251,13 @@ public class ZStandardCodec implements Codec, AutoCloseable {
         }
 
         @Override
-        public int compress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException {
-            return compress(src.underlyingObject(), dst.underlyingObject());
+        public int compress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> destBytes) throws CodecException {
+            return compress(sourceBytes.underlyingObject(), destBytes.underlyingObject());
         }
 
         @Override
-        public int decompress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException {
-            return decompress(src.underlyingObject(), dst.underlyingObject());
+        public int decompress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> destBytes) throws CodecException {
+            return decompress(sourceBytes.underlyingObject(), destBytes.underlyingObject());
         }
 
         protected int compress(ByteBuffer src, ByteBuffer dst) throws CodecException {

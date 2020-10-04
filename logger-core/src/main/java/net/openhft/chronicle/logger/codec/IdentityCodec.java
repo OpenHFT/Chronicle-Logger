@@ -13,15 +13,15 @@ public class IdentityCodec implements Codec {
     }
 
     @Override
-    public int compress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException {
-        dst.write(src);
-        return (int) dst.readLimit();
+    public int compress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> destBytes) throws CodecException {
+        destBytes.write(sourceBytes);
+        return (int) destBytes.readLimit();
     }
 
     @Override
-    public int decompress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException {
-        dst.write(src);
-        return (int) dst.readLimit();
+    public int decompress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> destBytes) throws CodecException {
+        destBytes.write(sourceBytes);
+        return (int) destBytes.readLimit();
     }
 
     @Override

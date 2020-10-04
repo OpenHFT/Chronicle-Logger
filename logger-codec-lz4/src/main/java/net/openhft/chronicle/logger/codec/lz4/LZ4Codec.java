@@ -24,38 +24,40 @@ public class LZ4Codec implements Codec {
     }
 
     @Override
-    public int compress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> dstBytes) throws CodecException {
+    public int compress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> destBytes) throws CodecException {
         ByteBuffer src = sourceBytes.underlyingObject();
         src.position((int) sourceBytes.readPosition());
         src.limit((int) sourceBytes.readLimit());
 
-        dstBytes.ensureCapacity(uncompressedSize(src));
-        ByteBuffer dst = dstBytes.underlyingObject();
+        destBytes.ensureCapacity(sourceBytes.readLimit());
+        ByteBuffer dst = destBytes.underlyingObject();
         dst.clear();
 
         compressor.compress(src, dst);
         dst.flip();
-        dstBytes.readPosition(dst.position());
-        dstBytes.readLimit(dst.limit());
+        destBytes.readPosition(dst.position());
+        destBytes.readLimit(dst.limit());
 
-        return (int) dstBytes.readLimit();
+        return (int) destBytes.readLimit();
     }
 
     @Override
-    public int decompress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> dstBytes) throws CodecException {
+    public int decompress(Bytes<ByteBuffer> sourceBytes, Bytes<ByteBuffer> destBytes) throws CodecException {
         ByteBuffer src = sourceBytes.underlyingObject();
-        src.position((int) sourceBytes.readPosition());
-        src.limit((int) sourceBytes.readLimit());
 
-        dstBytes.ensureCapacity(uncompressedSize(src));
-        ByteBuffer dst = dstBytes.underlyingObject();
+        int srcLimit = (int) sourceBytes.readLimit();
+        src.position((int) sourceBytes.readPosition());
+        src.limit(srcLimit);
+
+        destBytes.ensureCapacity(sourceBytes.readLimit() * 3);
+        ByteBuffer dst = destBytes.underlyingObject();
         dst.clear();
 
         // safe compressor doesn't require knowing the exact uncompressedSize.
-        int actual = decompressor.decompress(src, 0, src.limit(), dst, 0, dst.capacity());
+        int actual = decompressor.decompress(src, src.position(), srcLimit, dst, dst.position(), dst.remaining());
         dst.flip();
-        dstBytes.readPosition(dst.position());
-        dstBytes.readLimit(actual);
+        destBytes.readPosition(dst.position());
+        destBytes.readLimit(actual);
         return actual;
     }
 
@@ -66,6 +68,6 @@ public class LZ4Codec implements Codec {
 
     @Override
     public long uncompressedSize(ByteBuffer buf) {
-        return -1;
+        return UNSUPPORTED_SIZE;
     }
 }

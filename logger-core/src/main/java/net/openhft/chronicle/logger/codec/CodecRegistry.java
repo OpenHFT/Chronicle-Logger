@@ -1,13 +1,26 @@
 package net.openhft.chronicle.logger.codec;
 
-import java.io.Closeable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ServiceLoader;
 
-public class CodecRegistry implements Closeable {
+/**
+ * A codec registry that can return specific codecs.
+ *
+ * Codecs are loaded using the CodecFactory using ServiceLoader.
+ *
+ * There are two implementations provided, "zstd" and "lz4".  You can
+ * add your own fairly easily using those two as examples, for example
+ * you could add <a href="https://github.com/Blosc/JBlosc">blosc</a> as
+ * a "faster than memcpy" compression algorithm.
+ */
+public class CodecRegistry {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Duration initialDelay;
     private final Path path;
@@ -18,6 +31,10 @@ public class CodecRegistry implements Closeable {
     }
 
     public Codec find(String encoding) throws CodecException {
+        return find(encoding, Thread.currentThread().getContextClassLoader());
+    }
+
+    public Codec find(String encoding, ClassLoader classLoader) throws CodecException {
         if (encoding == null || encoding.isEmpty()) {
             throw new IllegalArgumentException("Null or empty encoding!");
         }
@@ -26,24 +43,21 @@ public class CodecRegistry implements Closeable {
             return new IdentityCodec();
         }
 
-        ServiceLoader<CodecFactory> loader = ServiceLoader.load(CodecFactory.class);
+        ServiceLoader<CodecFactory> loader = ServiceLoader.load(CodecFactory.class, classLoader);
+        if (! loader.iterator().hasNext()) {
+            String msg = "No codec factories found!  Please add library dependencies to classpath!";
+            throw new CodecException(msg);
+        }
+
         for (CodecFactory factory: loader) {
+            logger.debug("Using factory {} to look for encoding {}", factory, encoding);
             Codec codec = factory.find(this, encoding);
             if (codec != null) {
                 return codec;
             }
-            break;
         }
         String msg = String.format("No codec found for encoding \"%s\"", encoding);
         throw new CodecException(msg);
-    }
-
-    @Override
-    public void close() {
-        ServiceLoader<CodecFactory> loader = ServiceLoader.load(CodecFactory.class);
-        for (CodecFactory factory : loader) {
-            factory.close();
-        }
     }
 
     public Path getPath() {
