@@ -68,7 +68,7 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
         EntryReader eventReader = new EntryReader();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
         LogAppenderConfig config = LogAppenderConfig.parse(path);
-        Codec codec = registry.find(config.contentEncoding);
+        Codec codec = registry.find(config.getContentEncoding());
         EntryTransformer<String> processor = new DefaultEntryTransformer(codec);
 
         try (final ChronicleQueue cq = config.build(path)) {

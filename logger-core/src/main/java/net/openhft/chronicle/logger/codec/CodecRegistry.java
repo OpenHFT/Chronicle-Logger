@@ -8,7 +8,6 @@ import java.util.ServiceLoader;
 
 public class CodecRegistry implements Closeable {
 
-    public static final String IDENTITY = "identity";
 
     private final Duration initialDelay;
     private final Path path;
@@ -19,11 +18,11 @@ public class CodecRegistry implements Closeable {
     }
 
     public Codec find(String encoding) throws CodecException {
-        if (encoding == null) {
-            throw new IllegalArgumentException("Null encoding!");
+        if (encoding == null || encoding.isEmpty()) {
+            throw new IllegalArgumentException("Null or empty encoding!");
         }
 
-        if (IDENTITY.equalsIgnoreCase(encoding)) {
+        if (IdentityCodec.NAME.equalsIgnoreCase(encoding)) {
             return new IdentityCodec();
         }
 
@@ -35,7 +34,8 @@ public class CodecRegistry implements Closeable {
             }
             break;
         }
-        throw new CodecException("No codec found for encoding " + encoding);
+        String msg = String.format("No codec found for encoding \"%s\"", encoding);
+        throw new CodecException(msg);
     }
 
     @Override

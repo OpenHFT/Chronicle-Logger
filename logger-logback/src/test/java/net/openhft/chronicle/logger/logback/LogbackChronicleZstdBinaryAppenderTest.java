@@ -70,7 +70,7 @@ public class LogbackChronicleZstdBinaryAppenderTest extends LogbackTestBase {
         EntryReader eventReader = new EntryReader();
         LogAppenderConfig config = LogAppenderConfig.parse(path);
         CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
-        Codec codec = registry.find(config.contentEncoding);
+        Codec codec = registry.find(config.getContentEncoding());
         EntryTransformer<String> processor = new DefaultEntryTransformer(codec);
 
         try (final ChronicleQueue cq = config.build(path)) {

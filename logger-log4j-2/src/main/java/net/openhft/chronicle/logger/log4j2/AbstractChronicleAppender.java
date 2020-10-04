@@ -140,15 +140,15 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
 
             final ChronicleCfg cfg = new ChronicleCfg();
             if (blockSize != null)
-                cfg.blockSize = Integer.parseInt(blockSize);
+                cfg.setBlockSize(Integer.parseInt(blockSize));
             if (bufferCapacity != null)
-                cfg.bufferCapacity = Long.parseLong(bufferCapacity);
+                cfg.setBufferCapacity(Long.parseLong(bufferCapacity));
             if (rollCycle != null)
-                cfg.rollCycle = rollCycle;
+                cfg.setRollCycle(rollCycle);
             if (contentType != null)
-                cfg.contentType = contentType;
+                cfg.setContentType(contentType);
             if (contentEncoding != null)
-                cfg.contentEncoding = contentEncoding;
+                cfg.setContentEncoding(contentEncoding);
 
             return cfg;
         }

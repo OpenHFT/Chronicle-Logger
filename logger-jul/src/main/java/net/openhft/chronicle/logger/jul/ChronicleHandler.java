@@ -63,9 +63,11 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         DefaultChronicleLogWriter chronicleLogWriter = new DefaultChronicleLogWriter(cq);
         setWriter(chronicleLogWriter);
 
-        this.codec = registry.find(CodecRegistry.ZSTANDARD);
+        this.codec = registry.find(appenderCfg.getContentEncoding());
         String encoding = getEncoding();
         this.charset = (encoding == null) ? StandardCharsets.UTF_8 : Charset.forName(encoding);
+
+        LogAppenderConfig.write(appenderCfg, Paths.get(appenderPath));
 
         this.contentBytes = Bytes.elasticByteBuffer(1024);
         this.compressedBytes = Bytes.elasticByteBuffer(1024);
@@ -83,8 +85,6 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         try {
             byte[] content = format.getBytes(this.charset);
             contentBytes.write(content);
-
-
             codec.compress(contentBytes, compressedBytes);
             writer.write(
                     instant.getEpochSecond(),

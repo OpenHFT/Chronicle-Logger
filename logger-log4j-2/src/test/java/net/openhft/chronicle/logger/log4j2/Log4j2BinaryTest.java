@@ -22,6 +22,7 @@ import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.EntryTransformer;
 import net.openhft.chronicle.logger.codec.Codec;
+import net.openhft.chronicle.logger.codec.IdentityCodec;
 import net.openhft.chronicle.logger.entry.Entry;
 import net.openhft.chronicle.logger.entry.EntryReader;
 import net.openhft.chronicle.logger.DefaultEntryTransformer;
@@ -74,8 +75,8 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
         assertTrue(appender instanceof ChronicleAppender);
 
         final ChronicleAppender ba = (ChronicleAppender) appender;
-        assertEquals(128, ba.getChronicleConfig().blockSize);
-        assertEquals(256, ba.getChronicleConfig().bufferCapacity);
+        assertEquals(128, ba.getChronicleConfig().getBlockSize());
+        assertEquals(256, ba.getChronicleConfig().getBufferCapacity());
     }
 
     @Test
@@ -94,7 +95,7 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
         }
         EntryReader eventReader = new EntryReader();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
-        Codec codec = registry.find(CodecRegistry.IDENTITY);
+        Codec codec = registry.find(IdentityCodec.NAME);
         EntryTransformer<String> processor = new DefaultEntryTransformer(codec);
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {

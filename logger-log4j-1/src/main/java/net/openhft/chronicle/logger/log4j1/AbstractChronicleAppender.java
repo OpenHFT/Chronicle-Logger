@@ -82,7 +82,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
                 this.writer = createWriter();
                 LogAppenderConfig.write(config, Paths.get(path));
                 CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
-                this.codec = registry.find(config.contentEncoding);
+                this.codec = registry.find(config.getContentEncoding());
             } catch (IOException e) {
                 LogLog.warn("Exception [" + name + "].", e);
             }
@@ -104,22 +104,6 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     // *************************************************************************
     // Custom logging options
     // *************************************************************************
-
-    public void setBlockSize(int blockSize) {
-        config.blockSize = blockSize;
-    }
-
-    public void setBufferCapacity(int bufferCapacity) {
-        config.bufferCapacity = bufferCapacity;
-    }
-
-    public String rollCycle() {
-        return config.rollCycle;
-    }
-
-    public void rollCycle(String rollCycle) {
-        config.rollCycle = rollCycle;
-    }
 
     protected ChronicleQueue createQueue() {
         return this.config.build(this.getPath());

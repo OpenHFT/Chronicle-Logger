@@ -76,7 +76,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
         try (final ChronicleQueue cq = getChronicleQueue(config, path)) {
             Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
             CodecRegistry registry = CodecRegistry.builder().withDefaults(parent).build();
-            Codec codec = registry.find(config.contentEncoding);
+            Codec codec = registry.find(config.getContentEncoding());
             EntryTransformer<String> processor = new DefaultEntryTransformer(codec);
             EntryReader entryReader = new EntryReader();
 
@@ -118,7 +118,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
         try (final ChronicleQueue cq = getChronicleQueue(config, path)) {
             Path parent = Paths.get(cq.fileAbsolutePath()).getParent();
             CodecRegistry registry = CodecRegistry.builder().withDefaults(path).build();
-            Codec codec = registry.find(config.contentEncoding);
+            Codec codec = registry.find(config.getContentEncoding());
             EntryTransformer<String> processor = new DefaultEntryTransformer(codec);
 
             ExcerptTailer tailer = cq.createTailer();

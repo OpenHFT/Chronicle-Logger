@@ -46,7 +46,7 @@ public class ChroniDump {
         CodecRegistry registry = CodecRegistry.builder().withDefaults(directory).build();
         // XXX Pull this from a configuration file
         LogAppenderConfig config = LogAppenderConfig.parse(directory);
-        Codec codec = registry.find(config.contentEncoding);
+        Codec codec = registry.find(config.getContentEncoding());
 
         String databaseName = "dump.db";
         try (Connection conn = createDatabaseConnection(databaseName);) {

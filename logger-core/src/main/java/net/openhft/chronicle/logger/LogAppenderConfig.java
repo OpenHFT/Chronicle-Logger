@@ -24,27 +24,27 @@ public class LogAppenderConfig {
      * A content encoding may use dictionary compression, which must be included as
      * a file local to the chronicle queue.
      */
-    public String contentEncoding = "identity";
+    private String contentEncoding = "identity";
 
     /**
      * The content type of the data, in MIME type format.
      */
-    public String contentType = "application/octet-stream";
+    private String contentType = "application/octet-stream";
 
     /**
      * The block size of the chronicle queue
      */
-    public int blockSize = 128;
+    private int blockSize = 128;
 
     /**
      * The buffer capacity of the chronicle queue.
      */
-    public long bufferCapacity = 256;
+    private long bufferCapacity = 256;
 
     /**
      * The roll cycle of the chronicle queue.
      */
-    public String rollCycle = RollCycles.DAILY.toString();
+    private String rollCycle = RollCycles.DAILY.toString();
 
     public String getContentEncoding() {
         return contentEncoding;

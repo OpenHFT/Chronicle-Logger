@@ -5,6 +5,12 @@ import net.openhft.chronicle.bytes.Bytes;
 import java.nio.ByteBuffer;
 
 public class IdentityCodec implements Codec {
+    public static final String NAME = "identity";
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
 
     @Override
     public int compress(Bytes<ByteBuffer> src, Bytes<ByteBuffer> dst) throws CodecException {

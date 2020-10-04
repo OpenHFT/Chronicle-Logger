@@ -24,7 +24,7 @@ public class ChronicleOutput {
     public void process(boolean waitForIt) {
         CodecRegistry registry = CodecRegistry.builder().withDefaults(directory).build();
         LogAppenderConfig config = LogAppenderConfig.parse(directory);
-        Codec codec = registry.find(config.contentEncoding);
+        Codec codec = registry.find(config.getContentEncoding());
         EntryTransformer<String> entryTransformer = new DefaultEntryTransformer(codec);
         ChronicleLogProcessor logProcessor = e -> {
             String content = entryTransformer.apply(e);

@@ -84,9 +84,9 @@ public abstract class ChronicleAppenderBase
         } else {
             try {
                 this.writer = createWriter();
-                this.codec = createCodecRegistry().find(config.contentEncoding);
-
+                this.codec = createCodecRegistry().find(config.getContentEncoding());
                 LogAppenderConfig.write(config, Paths.get(this.getPath()));
+
                 this.started = true;
             } catch (Exception e) {
                 this.writer = null;

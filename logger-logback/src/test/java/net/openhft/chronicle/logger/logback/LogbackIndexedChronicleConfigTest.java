@@ -48,6 +48,6 @@ public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
         assertTrue(appender instanceof BlockingChronicleAppender);
 
         BlockingChronicleAppender ba = (BlockingChronicleAppender) appender;
-        assertEquals(128, ba.getChronicleConfig().blockSize);
+        assertEquals(128, ba.getChronicleConfig().getBlockSize());
     }
 }

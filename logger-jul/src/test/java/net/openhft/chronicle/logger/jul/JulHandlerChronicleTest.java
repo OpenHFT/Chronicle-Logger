@@ -86,7 +86,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
         }
         EntryReader entryReader = new EntryReader();
         CodecRegistry registry = CodecRegistry.builder().withDefaults(basePath(testId)).build();
-        Codec codec = registry.find(CodecRegistry.ZSTANDARD);
+        Codec codec = registry.find("identity");
         EntryTransformer<String> processor = new DefaultEntryTransformer(codec);
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
