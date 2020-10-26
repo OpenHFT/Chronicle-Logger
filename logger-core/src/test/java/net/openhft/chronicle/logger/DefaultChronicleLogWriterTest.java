@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 Chronicle Software
+ * Copyright 2014-2020 chronicle.software
  *
  * http://www.chronicle.software
  *
@@ -26,7 +26,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;

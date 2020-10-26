@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 Chronicle Software
+ * Copyright 2014-2020 chronicle.software
  *
  * http://www.chronicle.software
  *
@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
