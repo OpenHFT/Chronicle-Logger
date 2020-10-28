@@ -106,25 +106,26 @@ public class LogAppenderConfig {
         }
     }
 
-    public void setProperty(@NotNull final String propName, @NotNull final String propValue) {
+    public void setProperty(@NotNull final String propName, final String propValue) {
         try {
             final PropertyDescriptor property = new PropertyDescriptor(propName, this.getClass());
             final Method method = property.getWriteMethod();
             final Class<?> type = method.getParameterTypes()[0];
 
-            if (type != null && propValue != null && !propValue.isEmpty()) {
-                if (type == int.class) {
-                    method.invoke(this, Integer.parseInt(propValue));
+            if (type == null || propValue == null || propValue.isEmpty()) {
+                return;
+            }
+            if (type == int.class) {
+                method.invoke(this, Integer.parseInt(propValue));
 
-                } else if (type == long.class) {
-                    method.invoke(this, Long.parseLong(propValue));
+            } else if (type == long.class) {
+                method.invoke(this, Long.parseLong(propValue));
 
-                } else if (type == boolean.class) {
-                    method.invoke(this, Boolean.parseBoolean(propValue));
+            } else if (type == boolean.class) {
+                method.invoke(this, Boolean.parseBoolean(propValue));
 
-                } else if (type == String.class) {
-                    method.invoke(this, propValue);
-                }
+            } else if (type == String.class) {
+                method.invoke(this, propValue);
             }
         } catch (Exception e) {
         }
