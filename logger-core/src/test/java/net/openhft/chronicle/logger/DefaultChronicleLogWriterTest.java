@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,19 +39,23 @@ import static org.junit.Assert.*;
 
 public class DefaultChronicleLogWriterTest {
 
+    String baseBath;
+
     @After
     public void cleanup() {
-        IOTools.deleteDirWithFiles(basePath());
+        IOTools.deleteDirWithFiles(this.baseBath);
     }
 
     @Before
     public void setUp() throws Exception {
-        Files.createDirectories(Paths.get(basePath()));
+        Path path = Paths.get(OS.getTarget(), "chronicle-logger-" + Time.uniqueId());
+        Files.createDirectories(path);
+        this.baseBath = path.toString();
     }
 
     @Test
     public void testWrite() {
-        try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(basePath()).build()) {
+        try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(this.baseBath).build()) {
             ChronicleLogWriter lw = new DefaultChronicleLogWriter(cq);
             lw.write(
                     ChronicleLogLevel.ERROR,
@@ -73,7 +78,7 @@ public class DefaultChronicleLogWriterTest {
 
         }
 
-        try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(basePath()).build()) {
+        try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(this.baseBath).build()) {
             ExcerptTailer tailer = cq.createTailer();
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
@@ -109,16 +114,5 @@ public class DefaultChronicleLogWriterTest {
                 assertNull(wire);
             }
         }
-    }
-
-    private String basePath() {
-        String path = OS.getTarget();
-        String sep = System.getProperty("file.separator");
-
-        if (!path.endsWith(sep)) {
-            path += sep;
-        }
-
-        return path + "chronicle-logger-" + Time.uniqueId() + sep;
     }
 }
