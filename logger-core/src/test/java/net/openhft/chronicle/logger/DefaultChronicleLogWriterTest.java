@@ -17,7 +17,9 @@
  */
 package net.openhft.chronicle.logger;
 
+import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.core.io.IOTools;
+import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
@@ -110,13 +112,13 @@ public class DefaultChronicleLogWriterTest {
     }
 
     private String basePath() {
-        String path = System.getProperty("java.io.tmpdir");
+        String path = OS.getTarget();
         String sep = System.getProperty("file.separator");
 
         if (!path.endsWith(sep)) {
             path += sep;
         }
 
-        return path + "chronicle-logger" + sep;
+        return path + "chronicle-logger-" + Time.uniqueId() + sep;
     }
 }

@@ -17,6 +17,8 @@
  */
 package net.openhft.chronicle.logger.jcl;
 
+import net.openhft.chronicle.core.OS;
+import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.apache.commons.logging.Log;
 
@@ -29,14 +31,14 @@ class JclTestBase {
     static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     static String basePath() {
-        String path = System.getProperty("java.io.tmpdir");
+        String path = OS.getTarget();
         String sep = System.getProperty("file.separator");
 
         if (!path.endsWith(sep)) {
             path += sep;
         }
 
-        return path + "chronicle-jcl";
+        return path + "chronicle-jcl-" + Time.uniqueId();
     }
 
     static String basePath(String loggerName) {

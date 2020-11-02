@@ -18,6 +18,8 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.LoggerContext;
+import net.openhft.chronicle.core.OS;
+import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,14 +33,14 @@ public class LogbackTestBase {
     static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     static String rootPath() {
-        String path = System.getProperty("java.io.tmpdir");
+        String path = OS.getTarget();
         String sep = System.getProperty("file.separator");
 
         if (!path.endsWith(sep)) {
             path += sep;
         }
 
-        return path + "chronicle-logback";
+        return path + "chronicle-logback" + Time.uniqueId();
     }
 
     static String basePath(String type) {

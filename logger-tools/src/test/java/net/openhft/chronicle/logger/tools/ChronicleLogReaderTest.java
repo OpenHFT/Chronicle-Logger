@@ -1,5 +1,7 @@
 package net.openhft.chronicle.logger.tools;
 
+import net.openhft.chronicle.core.OS;
+import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.wire.WireType;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,9 +24,9 @@ public class ChronicleLogReaderTest {
         logger.info("test {} {} {}", 2, 100L, 100.123D);
         logger.info("test {} {} {}", 3, 100L, 100.123D);
 
-        ChronicleLogReader reader = new ChronicleLogReader(System.getProperty("java.io.tmpdir") + "/chronicle-logback/binary-chronicle", WireType.BINARY_LIGHT);
+        ChronicleLogReader reader = new ChronicleLogReader(OS.getTarget() + "/chronicle-logback/binary-chronicle" + Time.uniqueId(), WireType.BINARY_LIGHT);
         reader.processLogs(ChronicleLogReader::printf, false);
 
-        //ChroniCat.main(new String[] {System.getProperty("java.io.tmpdir") + "/chronicle-logback/binary-chronicle"});
+        //ChroniCat.main(new String[] {OS.getTarget() + "/chronicle-logback/binary-chronicle"});
     }
 }

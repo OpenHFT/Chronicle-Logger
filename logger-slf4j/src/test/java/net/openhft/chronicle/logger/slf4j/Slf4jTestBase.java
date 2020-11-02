@@ -17,6 +17,8 @@
  */
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.core.OS;
+import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -32,14 +34,14 @@ class Slf4jTestBase {
     static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     static String basePath() {
-        String path = System.getProperty("java.io.tmpdir");
+        String path = OS.getTarget();
         String sep = System.getProperty("file.separator");
 
         if (!path.endsWith(sep)) {
             path += sep;
         }
 
-        return path + "chronicle-slf4j";
+        return path + "chronicle-slf4j" + Time.uniqueId();
     }
 
     static String basePath(String loggerName) {

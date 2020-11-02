@@ -17,6 +17,9 @@
  */
 package net.openhft.chronicle.logger.jul;
 
+import net.openhft.chronicle.core.OS;
+import net.openhft.chronicle.core.util.Time;
+
 import java.util.logging.LogManager;
 
 class JulLoggerTestBase extends JulTestBase {
@@ -26,14 +29,14 @@ class JulLoggerTestBase extends JulTestBase {
     // *************************************************************************
 
     static String basePath() {
-        String path = System.getProperty("java.io.tmpdir");
+        String path = OS.getTarget();
         String sep = System.getProperty("file.separator");
 
         if (!path.endsWith(sep)) {
             path += sep;
         }
 
-        return path + "chronicle-jul-api";
+        return path + "chronicle-jul-api" + Time.uniqueId();
     }
 
     static String basePath(String loggerName) {
