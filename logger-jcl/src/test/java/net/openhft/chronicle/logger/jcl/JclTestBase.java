@@ -31,14 +31,14 @@ class JclTestBase {
     static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     static String basePath() {
-        String path = OS.getTarget();
+        String path = System.getProperty("java.io.tmpdir");
         String sep = System.getProperty("file.separator");
 
         if (!path.endsWith(sep)) {
             path += sep;
         }
 
-        return path + "chronicle-jcl-" + Time.uniqueId();
+        return path + "chronicle-jcl";
     }
 
     static String basePath(String loggerName) {

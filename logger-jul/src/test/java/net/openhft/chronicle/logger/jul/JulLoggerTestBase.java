@@ -29,14 +29,14 @@ class JulLoggerTestBase extends JulTestBase {
     // *************************************************************************
 
     static String basePath() {
-        String path = OS.getTarget();
+        String path = System.getProperty("java.io.tmpdir");
         String sep = System.getProperty("file.separator");
 
         if (!path.endsWith(sep)) {
             path += sep;
         }
 
-        return path + "chronicle-jul-api" + Time.uniqueId();
+        return path + "chronicle-jul-api";
     }
 
     static String basePath(String loggerName) {

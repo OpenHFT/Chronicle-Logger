@@ -35,14 +35,14 @@ public class JulHandlerTestBase extends JulTestBase {
     // *************************************************************************
 
     protected static String rootPath() {
-        String path = OS.getTarget();
+        String path = System.getProperty("java.io.tmpdir");
         String sep = System.getProperty("file.separator");
 
         if (!path.endsWith(sep)) {
             path += sep;
         }
 
-        return path + "chronicle-jul" + Time.uniqueId();
+        return path + "chronicle-jul";
     }
 
     protected static String basePath(String type) {

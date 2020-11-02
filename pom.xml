@@ -114,9 +114,8 @@
 
     <modules>
         <module>logger-core</module>
-        <!-- TODO FIX? -->
-        <!--        <module>logger-jul</module>-->
-<!--        <module>logger-jcl</module>-->
+        <module>logger-jul</module>
+        <module>logger-jcl</module>
         <module>logger-slf4j</module>
         <module>logger-logback</module>
         <module>logger-log4j-1</module>

@@ -34,14 +34,14 @@ public class Log4j2TestBase {
     static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     static String rootPath() {
-        String path = OS.getTarget();
+        String path = System.getProperty("java.io.tmpdir");
         String sep = System.getProperty("file.separator");
 
         if (!path.endsWith(sep)) {
             path += sep;
         }
 
-        return path + "chronicle-log4j2" + Time.uniqueId();
+        return path + "chronicle-log4j2";
     }
 
     static String basePath(String type) {
