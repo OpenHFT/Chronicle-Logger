@@ -22,9 +22,8 @@ import net.openhft.chronicle.logger.ChronicleLogWriter;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.helpers.NOPLogger;
-import org.slf4j.impl.SimpleLoggerFactory;
+import org.slf4j.impl.SimpleLogger;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -49,8 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ChronicleLoggerFactory implements ILoggerFactory {
     private final Map<String, Logger> loggers;
-    private final SimpleLoggerFactory fallback = new SimpleLoggerFactory();
-    private ChronicleLogManager manager;
+    private final ChronicleLogManager manager;
 
     // *************************************************************************
     //
@@ -77,6 +75,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
             return doGetLogger(name);
         } catch (Exception e) {
             System.err.println("Unable to initialize chronicle-logger-slf4j (" + name + ")\n  " + e.getMessage());
+            e.printStackTrace();
         }
 
         return NOPLogger.NOP_LOGGER;
@@ -91,11 +90,12 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
         this.manager.reload();
     }
 
-    private synchronized Logger doGetLogger(String name) throws IOException {
+    private synchronized Logger doGetLogger(String name) {
         Logger logger = loggers.get(name);
         if (logger == null) {
             if (name != null && name.startsWith("net.openhft")) {
-                logger = fallback.getLogger(name);
+                SimpleLogger.lazyInit();
+                logger = new SimpleLogger(name);
             } else {
                 final ChronicleLogWriter writer = manager.getWriter(name);
                 logger = new ChronicleLogger(writer, name, manager.cfg().getLevel(name));
