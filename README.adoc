@@ -2,6 +2,9 @@
 :toc: manual
 :toc-placement: preamble
 
+image:https://javadoc.io/badge2/net.openhft/chronicle-logger/javadoc.svg[link="https://www.javadoc.io/doc/net.openhft/chronicle-logger/latest/index.html"]
+
+
 An extremely fast java logger, using https://github.com/OpenHFT/Chronicle-Queue[Chronicle Queue] 
 as persistence engine. We feel the logging should not slow down your system.
 
