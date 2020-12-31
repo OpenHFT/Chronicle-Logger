@@ -18,7 +18,8 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -33,10 +34,30 @@
     <artifactId>chronicle-logger-tools</artifactId>
     <packaging>bundle</packaging>
 
+
+    <dependencyManagement>
+        <dependencies>
+
+
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>chronicle-bom</artifactId>
+                <version>2.21ea-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-logger-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-wire</artifactId>
         </dependency>
 
         <!-- slf4j -->
@@ -45,11 +66,13 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
+
         <!-- for tests -->
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-logger-logback</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>

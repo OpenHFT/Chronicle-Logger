@@ -120,12 +120,23 @@
         <module>logger-logback</module>
         <module>logger-log4j-1</module>
         <module>logger-log4j-2</module>
-        <module>logger-tools</module>
+        <!--  <module>logger-tools</module> -->
         <module>benchmark</module>
     </modules>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgument>-Xlint:deprecation</compilerArgument>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                    <useIncrementalCompilation>false</useIncrementalCompilation>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
