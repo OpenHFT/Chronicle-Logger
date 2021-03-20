@@ -140,5 +140,4 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
         IOTools.deleteDirWithFiles(basePath(testId));
     }
-
 }

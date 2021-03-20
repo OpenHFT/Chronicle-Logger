@@ -34,10 +34,8 @@
     <artifactId>chronicle-logger-tools</artifactId>
     <packaging>bundle</packaging>
 
-
     <dependencyManagement>
         <dependencies>
-
 
             <dependency>
                 <groupId>net.openhft</groupId>
@@ -65,7 +63,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-
 
         <!-- for tests -->
         <dependency>

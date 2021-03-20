@@ -168,5 +168,4 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
             return cfg;
         }
     }
-
 }

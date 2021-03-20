@@ -184,5 +184,4 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
 
         IOTools.deleteDirWithFiles(basePath(testId));
     }
-
 }

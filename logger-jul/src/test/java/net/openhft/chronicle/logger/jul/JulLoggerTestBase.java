@@ -66,5 +66,4 @@ class JulLoggerTestBase extends JulTestBase {
 
         LogManager.getLogManager().reset();
     }
-
 }

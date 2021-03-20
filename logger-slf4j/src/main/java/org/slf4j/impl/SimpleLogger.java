@@ -598,5 +598,4 @@ public class SimpleLogger extends MarkerIgnoringBase {
         FormattingTuple tp = MessageFormatter.arrayFormat(event.getMessage(), event.getArgumentArray(), event.getThrowable());
         log(levelInt, tp.getMessage(), event.getThrowable());
     }
-
 }
