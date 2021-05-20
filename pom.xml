@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>chronicle-logger</artifactId>
-    <version>4.21ea41-SNAPSHOT</version>
+    <version>4.21ea60-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>OpenHFT/Chronicle-Logger</name>
