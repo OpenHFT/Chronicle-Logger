@@ -7,7 +7,7 @@ image:https://javadoc.io/badge2/net.openhft/chronicle-logger/javadoc.svg[link="h
 An extremely fast java logger, using https://github.com/OpenHFT/Chronicle-Queue[Chronicle Queue]
 as persistence engine. We feel the logging should not slow down your system.
 
-image::images/Logger_line.png[width=20%]
+image::docs/images/Logger_line.png[width=20%]
 
 === Version
 
