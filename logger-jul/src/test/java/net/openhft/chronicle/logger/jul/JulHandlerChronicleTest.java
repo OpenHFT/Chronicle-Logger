@@ -20,10 +20,12 @@ package net.openhft.chronicle.logger.jul;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.threads.DiskSpaceMonitor;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,6 +42,12 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        // DiskSpaceMonitor interferes with this test
+        DiskSpaceMonitor.INSTANCE.close();
     }
 
     @After
