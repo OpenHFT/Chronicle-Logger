@@ -26,7 +26,7 @@
     <parent>
         <groupId>net.openhft</groupId>
         <artifactId>chronicle-logger</artifactId>
-        <version>4.21ea60-SNAPSHOT</version>
+        <version>4.21ea80-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
