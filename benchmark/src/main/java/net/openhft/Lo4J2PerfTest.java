@@ -72,7 +72,7 @@ public class Lo4J2PerfTest {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void testChronicle() {
-        chronicleLogger.debug("Test {} {} {}", 1, 2, 3);
+        chronicleLogger.debug("Test {} {} " + 1, 2, 3);
     }
 
     @Benchmark
@@ -86,7 +86,7 @@ public class Lo4J2PerfTest {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void testFile() {
-        fileLogger.debug("Test {} {} {}", 1, 2, 3);
+        fileLogger.debug("Test {} {} " + 1, 2, 3);
     }
 
     @Benchmark
