@@ -136,7 +136,8 @@ public class SimpleLoggerConfiguration {
         String prop = null;
         try {
             prop = System.getProperty(name);
-        } catch (SecurityException e) {; // Ignore
+        } catch (SecurityException e) {
+    ; // none // Ignore
         }
         return (prop == null) ? properties.getProperty(name) : prop;
     }
