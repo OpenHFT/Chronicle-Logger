@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>chronicle-logger</artifactId>
-    <version>4.21ea81-SNAPSHOT</version>
+    <version>4.21.81-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>OpenHFT/Chronicle-Logger</name>
@@ -47,7 +47,7 @@
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-bom</artifactId>
-                <version>2.21ea-SNAPSHOT</version>
+                <version>2.21-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -166,7 +166,7 @@
         <url>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</url>
         <connection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</connection>
         <developerConnection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</developerConnection>
-        <tag>master</tag>
+        <tag>21-release</tag>
     </scm>
 
 </project>
