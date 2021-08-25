@@ -39,7 +39,7 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
     private ChronicleLogWriter writer;
 
     AbstractChronicleAppender(String name, Filter filter, String path, String wireType) {
-        super(name, filter, null, true);
+        super(name, filter, null, true, null);
 
         this.path = path;
         this.wireType = wireType;

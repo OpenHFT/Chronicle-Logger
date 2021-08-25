@@ -33,9 +33,9 @@ class ChronicleLogger extends Logger {
     /**
      * c-tor
      *
-     * @param writer
-     * @param name
-     * @param level
+     * @param writer to use
+     * @param name of the logger
+     * @param level of the logger
      */
     ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
         super(name, null);
@@ -50,7 +50,7 @@ class ChronicleLogger extends Logger {
         setLevel(level);
     }
 
-    private final void setLevel(final ChronicleLogLevel level) {
+    private void setLevel(final ChronicleLogLevel level) {
         super.setLevel(ChronicleHelper.getLogLevel(level));
     }
 
