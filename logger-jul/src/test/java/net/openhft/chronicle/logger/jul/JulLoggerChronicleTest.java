@@ -52,7 +52,8 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
 
         assertNotNull(logger);
         assertTrue(logger instanceof ChronicleLogger);
-        assertEquals(expectedLoggerType, logger.getClass());
+        if (!(logger instanceof ChronicleLogger.Null))
+            assertEquals(expectedLoggerType, logger.getClass());
         assertEquals(loggerId, logger.getName());
         assertNotNull(((ChronicleLogger) logger).writer());
         assertEquals(level, logger.getLevel());
