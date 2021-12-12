@@ -46,6 +46,8 @@ lose messages.
 At the moment, Chronicle Logger only supports binary logs, which is beneficial for write speed but requires extra tools
 to read them. We provide some basic #tools[tools] for that and an API to develop your own.
 
+NOTE: `chronicle-logger-log4j-2` does not suffer from the log4shell vulnerability as it does not reuse the Log4J2 message formatting machinery
+
 == How it works
 
 Chronicle Logger is built on top of Chronicle Queue. It provides multiple logging frameworks' adapters and is a low latency,
