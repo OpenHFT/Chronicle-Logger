@@ -86,7 +86,6 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
     //
     // *************************************************************************
 
-    @Ignore("see https://teamcity.chronicle.software/viewLog.html?buildId=639593&tab=buildResultsDiv&buildTypeId=OpenHFT_BuildAll_BuildJava11compileJava11")
     @Test
     public void testChronicleConfig() {
         testChronicleConfiguration(
