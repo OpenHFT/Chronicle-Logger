@@ -65,14 +65,8 @@ public class ChronicleLogManager {
 
         final String path = cfg.getString(name, ChronicleLogConfig.KEY_PATH);
         if (path != null) {
-            ChronicleLogWriter logWriter = writers.get(path);
-            if (logWriter == null) {
-                logWriter = new DefaultChronicleLogWriter(newChronicle(path, name));
-                this.writers.put(path, logWriter);
-            }
-
-            return logWriter;
-
+            // Creating a Queue takes some time. Other threads might be blocked for longer periods.
+            return writers.computeIfAbsent(path, p-> new DefaultChronicleLogWriter(newChronicle(p, name)));
         } else {
             throw new IllegalArgumentException(
                     "chronicle.logger.root.path is not defined, chronicle.logger." + name + ".path is not defined"
