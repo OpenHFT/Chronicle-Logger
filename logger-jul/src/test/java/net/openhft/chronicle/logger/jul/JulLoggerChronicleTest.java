@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
+@Ignore("see https://github.com/OpenHFT/Chronicle-Logger/issues/99")
 public class JulLoggerChronicleTest extends JulLoggerTestBase {
 
     private static void testChronicleConfiguration(
