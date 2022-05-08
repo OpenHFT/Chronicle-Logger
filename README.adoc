@@ -18,7 +18,6 @@ toc::[]
 
 == About
 
-
 === Version
 
 [#image-maven]
