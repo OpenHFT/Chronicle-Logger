@@ -93,11 +93,6 @@
 
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>chronicle-network</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.openhft</groupId>
             <artifactId>chronicle-queue</artifactId>
         </dependency>
 
