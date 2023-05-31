@@ -88,11 +88,6 @@
 
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>chronicle-wire</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.openhft</groupId>
             <artifactId>chronicle-queue</artifactId>
         </dependency>
 
@@ -135,7 +130,7 @@
         <module>logger-logback</module>
         <module>logger-log4j-1</module>
         <module>logger-log4j-2</module>
-        <!--  <module>logger-tools</module> -->
+        <module>logger-tools</module>
         <module>benchmark</module>
     </modules>
 

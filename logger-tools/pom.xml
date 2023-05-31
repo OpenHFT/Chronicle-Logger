@@ -26,26 +26,13 @@
     <parent>
         <groupId>net.openhft</groupId>
         <artifactId>chronicle-logger</artifactId>
-        <version>4.22ea0-SNAPSHOT</version>
+        <version>4.22ea4-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <name>OpenHFT/Chronicle-Logger/logger-tools</name>
     <artifactId>chronicle-logger-tools</artifactId>
     <packaging>bundle</packaging>
-
-    <dependencyManagement>
-        <dependencies>
-
-            <dependency>
-                <groupId>net.openhft</groupId>
-                <artifactId>chronicle-bom</artifactId>
-                <version>2.24ea-SNAPSHOT</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
