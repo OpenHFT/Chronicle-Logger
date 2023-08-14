@@ -38,10 +38,6 @@ questions.
 
     <name>JMH Benchmark for Log4J2</name>
 
-    <prerequisites>
-        <maven>3.0</maven>
-    </prerequisites>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
