@@ -18,6 +18,7 @@
 package net.openhft.chronicle.logger;
 
 import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
@@ -81,7 +82,8 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             return;
         }
         REENTRANCY_FLAG.set(true);
-        try (final DocumentContext dc = cq.acquireAppender().writingDocument()) {
+        try (ExcerptAppender appender = cq.createAppender();
+             final DocumentContext dc = appender.writingDocument()) {
             Wire wire = dc.wire();
             assert wire != null;
             wire
