@@ -132,24 +132,28 @@ class ChronicleLogger extends Logger {
         append(level, msg, thrown);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
                       final String msg) {
         append(level, msg);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
                       final String msg, final Object param1) {
         append(level, msg, param1);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
                       final String msg, final Object[] params) {
         append(level, msg, params);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
                       final String msg, final Throwable thrown) {
@@ -234,6 +238,7 @@ class ChronicleLogger extends Logger {
         return level.isHigherOrEqualTo(this.level);
     }
 
+    @SuppressWarnings("deprecation")
     protected void append(final LogRecord record) {
         final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(record);
         if (isLoggable(clevel)) {

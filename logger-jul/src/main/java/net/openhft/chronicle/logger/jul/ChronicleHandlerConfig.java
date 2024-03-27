@@ -115,7 +115,7 @@ public class ChronicleHandlerConfig {
         try {
             if (val != null) {
                 Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(val);
-                return (Filter) clz.newInstance();
+                return (Filter) clz.getConstructor().newInstance();
             }
         } catch (Exception ex) {
             // We got one of a variety of exceptions in creating the
