@@ -397,7 +397,9 @@ public class SimpleLogger extends LegacyAbstractLogger {
 
         if (CONFIG_PARAMS.showThreadId) {
             buf.append(TID_PREFIX);
-            buf.append(Thread.currentThread().getId());
+            @SuppressWarnings("deprecation")
+            long id = Thread.currentThread().getId();
+            buf.append(id);
             buf.append(SP);
         }
 

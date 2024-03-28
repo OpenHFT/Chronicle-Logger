@@ -113,6 +113,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         this.wireType = wireType;
     }
 
+    @SuppressWarnings("removal")
     @Override
     protected void finalize() {
         // An appender might be closed then garbage collected. There is no

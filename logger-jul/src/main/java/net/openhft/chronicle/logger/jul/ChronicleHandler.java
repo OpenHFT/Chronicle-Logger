@@ -43,6 +43,7 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         ));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void doPublish(final LogRecord record, final ChronicleLogWriter writer) {
         writer.write(
