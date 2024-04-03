@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.openhft.chronicle.core.Jvm;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
@@ -397,8 +398,7 @@ public class SimpleLogger extends LegacyAbstractLogger {
 
         if (CONFIG_PARAMS.showThreadId) {
             buf.append(TID_PREFIX);
-            @SuppressWarnings("deprecation")
-            long id = Thread.currentThread().getId();
+            long id = Jvm.currentThreadId();
             buf.append(id);
             buf.append(SP);
         }
