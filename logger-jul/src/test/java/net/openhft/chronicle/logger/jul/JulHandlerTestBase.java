@@ -52,8 +52,8 @@ public class JulHandlerTestBase extends JulTestBase {
     }
 
     /**
-     * @param id
-     * @throws IOException
+     * @param id the id of the logger
+     * @throws IOException if an I/O error occurs
      */
     protected void setupLogManager(String id) throws IOException {
         String cfgPath = System.getProperty("resources.path");
