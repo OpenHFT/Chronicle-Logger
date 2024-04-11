@@ -21,6 +21,7 @@ import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import org.slf4j.helpers.MarkerIgnoringBase;
 
+@SuppressWarnings("serial")
 public final class ChronicleLogger extends MarkerIgnoringBase {
 
     private static final long serialVersionUID = 1L;
