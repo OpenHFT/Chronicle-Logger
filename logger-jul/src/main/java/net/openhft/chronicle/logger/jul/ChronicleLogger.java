@@ -308,7 +308,7 @@ class ChronicleLogger extends Logger {
         }
 
         @Override
-        protected void append(final Level level, String msg, Object[] params) {
+        protected void append(final Level level, String msg, Object... params) {
         }
 
         @Override

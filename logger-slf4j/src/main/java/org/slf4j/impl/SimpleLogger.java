@@ -202,6 +202,7 @@ public class SimpleLogger extends MarkerIgnoringBase {
 
     public static final String DEFAULT_LOG_LEVEL_KEY = SimpleLogger.SYSTEM_PREFIX + "defaultLogLevel";
 
+    @SuppressWarnings("this-escape")
     public SimpleLogger(String name) {
         this.name = name;
 

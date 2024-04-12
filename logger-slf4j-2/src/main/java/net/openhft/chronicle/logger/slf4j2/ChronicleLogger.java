@@ -20,7 +20,7 @@ package net.openhft.chronicle.logger.slf4j2;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation","serial"})
 public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase {
 
     private static final long serialVersionUID = 1L;
