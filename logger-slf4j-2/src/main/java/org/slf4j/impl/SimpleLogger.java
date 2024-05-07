@@ -163,7 +163,6 @@ public class SimpleLogger extends LegacyAbstractLogger {
     static char SP = ' ';
     static final String TID_PREFIX = "tid=";
 
-
     // The OFF level can only be used in configuration files to disable logging.
     // It has
     // no printing method associated with it in o.s.Logger interface.
@@ -257,7 +256,6 @@ public class SimpleLogger extends LegacyAbstractLogger {
             writeThrowable(t, targetStream);
             targetStream.flush();
         }
-
     }
 
     protected void writeThrowable(Throwable t, PrintStream targetStream) {
@@ -451,5 +449,4 @@ public class SimpleLogger extends LegacyAbstractLogger {
     protected String getFullyQualifiedCallerName() {
         return null;
     }
-
 }

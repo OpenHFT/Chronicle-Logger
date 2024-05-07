@@ -103,4 +103,3 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
         return logger;
     }
 }
-

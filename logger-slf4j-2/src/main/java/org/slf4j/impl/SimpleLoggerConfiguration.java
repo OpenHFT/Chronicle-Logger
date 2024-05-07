@@ -12,7 +12,6 @@ import java.util.Properties;
 import org.slf4j.helpers.Util;
 import org.slf4j.impl.OutputChoice.OutputChoiceType;
 
-
 /**
  * This class holds configuration values for {@link SimpleLogger}. The
  * values are computed at runtime. See {@link SimpleLogger} documentation for
@@ -189,5 +188,4 @@ public class SimpleLoggerConfiguration {
             }
         }
     }
-
 }
