@@ -104,7 +104,7 @@ public class SimpleLoggerConfiguration {
 
     private void loadProperties() {
         // Add props from the resource simplelogger.properties
-        @SuppressWarnings("removal")
+        @SuppressWarnings({"deprecation", "removal"})
         InputStream in = java.security.AccessController.doPrivileged((PrivilegedAction<InputStream>) () -> {
             ClassLoader threadCL = Thread.currentThread().getContextClassLoader();
             if (threadCL != null) {
