@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2004-2022 QOS.ch Sarl (Switzerland)
  * All rights reserved.
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to  deal in  the Software without  restriction, including
@@ -9,10 +9,10 @@
  * distribute,  sublicense, and/or sell  copies of  the Software,  and to
  * permit persons to whom the Software  is furnished to do so, subject to
  * the following conditions:
- *
+ * <p>
  * The  above  copyright  notice  and  this permission  notice  shall  be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
  * EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
  * MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.openhft.chronicle.core.Jvm;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
@@ -46,19 +47,19 @@ import org.slf4j.spi.LocationAwareLogger;
  *
  *
  * <ul>
- * <li><code>org.slf4j.simpleLogger.logFile</code> - The output target which can
+ * <li>{@code org.slf4j.simpleLogger.logFile} - The output target which can
  * be the <em>path</em> to a file, or the special values "System.out" and
  * "System.err". Default is "System.err".</li>
  *
- * <li><code>org.slf4j.simpleLogger.cacheOutputStream</code> - If the output
+ * <li>{@code org.slf4j.simpleLogger.cacheOutputStream} - If the output
  * target is set to "System.out" or "System.err" (see preceding entry), by
  * default, logs will be output to the latest value referenced by
- * <code>System.out/err</code> variables. By setting this parameter to true, the
+ * {@code System.out/err} variables. By setting this parameter to true, the
  * output stream will be cached, i.e. assigned once at initialization time and
  * re-used independently of the current value referenced by
- * <code>System.out/err</code>.</li>
+ * {@code System.out/err}.</li>
  *
- * <li><code>org.slf4j.simpleLogger.defaultLogLevel</code> - Default log level
+ * <li>{@code org.slf4j.simpleLogger.defaultLogLevel} - Default log level
  * for all instances of SimpleLogger. Must be one of ("trace", "debug", "info",
  * "warn", "error" or "off"). If not specified, defaults to "info".</li>
  *
@@ -68,47 +69,47 @@ import org.slf4j.spi.LocationAwareLogger;
  * named "a.b.c" is initialized, its level is assigned from this property. If
  * unspecified, the level of nearest parent logger will be used, and if none is
  * set, then the value specified by
- * <code>org.slf4j.simpleLogger.defaultLogLevel</code> will be used.</li>
+ * {@code org.slf4j.simpleLogger.defaultLogLevel} will be used.</li>
  *
- * <li><code>org.slf4j.simpleLogger.showDateTime</code> - Set to
- * <code>true</code> if you want the current date and time to be included in
- * output messages. Default is <code>false</code></li>
+ * <li>{@code org.slf4j.simpleLogger.showDateTime} - Set to
+ * {@code true} if you want the current date and time to be included in
+ * output messages. Default is {@code false}</li>
  *
- * <li><code>org.slf4j.simpleLogger.dateTimeFormat</code> - The date and time
+ * <li>{@code org.slf4j.simpleLogger.dateTimeFormat} - The date and time
  * format to be used in the output messages. The pattern describing the date and
  * time format is defined by <a href=
  * "http://docs.oracle.com/javase/1.5.0/docs/api/java/text/SimpleDateFormat.html">
- * <code>SimpleDateFormat</code></a>. If the format is not specified or is
+ * {@code SimpleDateFormat}</a>. If the format is not specified or is
  * invalid, the number of milliseconds since start up will be output.</li>
  *
- * <li><code>org.slf4j.simpleLogger.showThreadName</code> -Set to
- * <code>true</code> if you want to output the current thread name. Defaults to
- * <code>true</code>.</li>
+ * <li>{@code org.slf4j.simpleLogger.showThreadName} -Set to
+ * {@code true} if you want to output the current thread name. Defaults to
+ * {@code true}.</li>
  *
- * <li>(since version 1.7.33 and 2.0.0-alpha6) <code>org.slf4j.simpleLogger.showThreadId</code> -
+ * <li>(since version 1.7.33 and 2.0.0-alpha6) {@code org.slf4j.simpleLogger.showThreadId} -
  * If you would like to output the current thread id, then set to
- * <code>true</code>. Defaults to <code>false</code>.</li>
+ * {@code true}. Defaults to {@code false}.</li>
  *
- * <li><code>org.slf4j.simpleLogger.showLogName</code> - Set to
- * <code>true</code> if you want the Logger instance name to be included in
- * output messages. Defaults to <code>true</code>.</li>
+ * <li>{@code org.slf4j.simpleLogger.showLogName} - Set to
+ * {@code true} if you want the Logger instance name to be included in
+ * output messages. Defaults to {@code true}.</li>
  *
- * <li><code>org.slf4j.simpleLogger.showShortLogName</code> - Set to
- * <code>true</code> if you want the last component of the name to be included
- * in output messages. Defaults to <code>false</code>.</li>
+ * <li>{@code org.slf4j.simpleLogger.showShortLogName} - Set to
+ * {@code true} if you want the last component of the name to be included
+ * in output messages. Defaults to {@code false}.</li>
  *
- * <li><code>org.slf4j.simpleLogger.levelInBrackets</code> - Should the level
- * string be output in brackets? Defaults to <code>false</code>.</li>
+ * <li>{@code org.slf4j.simpleLogger.levelInBrackets} - Should the level
+ * string be output in brackets? Defaults to {@code false}.</li>
  *
- * <li><code>org.slf4j.simpleLogger.warnLevelString</code> - The string value
- * output for the warn level. Defaults to <code>WARN</code>.</li>
+ * <li>{@code org.slf4j.simpleLogger.warnLevelString} - The string value
+ * output for the warn level. Defaults to {@code WARN}.</li>
  *
  * </ul>
  *
  * <p>
  * In addition to looking for system properties with the names specified above,
  * this implementation also checks for a class loader resource named
- * <code>"simplelogger.properties"</code>, and includes any matching definitions
+ * {@code "simplelogger.properties"}, and includes any matching definitions
  * from this resource (if it exists).
  *
  *
@@ -162,7 +163,6 @@ public class SimpleLogger extends LegacyAbstractLogger {
     static char SP = ' ';
     static final String TID_PREFIX = "tid=";
 
-
     // The OFF level can only be used in configuration files to disable logging.
     // It has
     // no printing method associated with it in o.s.Logger interface.
@@ -191,7 +191,7 @@ public class SimpleLogger extends LegacyAbstractLogger {
     private transient String shortLogName = null;
 
     /**
-     * All system properties used by <code>SimpleLogger</code> start with this
+     * All system properties used by {@code SimpleLogger} start with this
      * prefix
      */
     public static final String SYSTEM_PREFIX = "org.slf4j.simpleLogger.";
@@ -220,6 +220,7 @@ public class SimpleLogger extends LegacyAbstractLogger {
 
     public static final String DEFAULT_LOG_LEVEL_KEY = SimpleLogger.SYSTEM_PREFIX + "defaultLogLevel";
 
+    @SuppressWarnings("this-escape")
     public SimpleLogger(String name) {
         this.name = name;
 
@@ -246,9 +247,6 @@ public class SimpleLogger extends LegacyAbstractLogger {
     /**
      * To avoid intermingling of log messages and associated stack traces, the two
      * operations are done in a synchronized block.
-     *
-     * @param buf
-     * @param t
      */
     void write(StringBuilder buf, Throwable t) {
         PrintStream targetStream = CONFIG_PARAMS.outputChoice.getTargetPrintStream();
@@ -258,7 +256,6 @@ public class SimpleLogger extends LegacyAbstractLogger {
             writeThrowable(t, targetStream);
             targetStream.flush();
         }
-
     }
 
     protected void writeThrowable(Throwable t, PrintStream targetStream) {
@@ -397,7 +394,8 @@ public class SimpleLogger extends LegacyAbstractLogger {
 
         if (CONFIG_PARAMS.showThreadId) {
             buf.append(TID_PREFIX);
-            buf.append(Thread.currentThread().getId());
+            long id = Jvm.currentThreadId();
+            buf.append(id);
             buf.append(SP);
         }
 
@@ -451,5 +449,4 @@ public class SimpleLogger extends LegacyAbstractLogger {
     protected String getFullyQualifiedCallerName() {
         return null;
     }
-
 }

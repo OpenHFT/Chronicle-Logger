@@ -17,6 +17,7 @@
  */
 package net.openhft.chronicle.logger.jul;
 
+import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
@@ -112,7 +113,7 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
 
         Logger logger = Logger.getLogger(testId);
 
-        final String threadId = "thread-" + Thread.currentThread().getId();
+        final String threadId = "thread-" + Jvm.currentThreadId();
 
         Thread.currentThread().setName(threadId);
 

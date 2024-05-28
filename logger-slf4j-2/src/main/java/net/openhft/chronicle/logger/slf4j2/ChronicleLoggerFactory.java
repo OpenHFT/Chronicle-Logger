@@ -30,20 +30,17 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * <p>Simple implementation of Logger that sends all enabled slf4j messages,
  * for all defined loggers, to one or more VanillaChronicle..
- * </p>
  * <p>
  * To configure this sl4j binding you need to specify the location of a properties
  * files via system properties:
- * </p>
- * <code>-Dchronicle.logger.properties=${pathOfYourPropertiesFile}</code>
+ * {@code -Dchronicle.logger.properties=${pathOfYourPropertiesFile}}
  * <p>
  * The following system properties are supported to configure the behavior of this
  * logger:
- * </p>
  * <ul>
- * <li><code>chronicle.logger.root.path</code></li>
- * <li><code>chronicle.logger.root.level</code></li>
- * <li><code>chronicle.logger.root.append</code></li>
+ * <li>{@code chronicle.logger.root.path}</li>
+ * <li>{@code chronicle.logger.root.level}</li>
+ * <li>{@code chronicle.logger.root.append}</li>
  * </ul>
  */
 public class ChronicleLoggerFactory implements ILoggerFactory {
@@ -106,4 +103,3 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
         return logger;
     }
 }
-

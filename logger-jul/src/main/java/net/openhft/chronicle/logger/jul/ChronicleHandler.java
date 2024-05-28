@@ -29,6 +29,7 @@ import static net.openhft.chronicle.logger.ChronicleLogConfig.KEY_WIRETYPE;
 
 public class ChronicleHandler extends AbstractChronicleHandler {
 
+    @SuppressWarnings("this-escape")
     public ChronicleHandler() throws IOException {
         ChronicleHandlerConfig handlerCfg = new ChronicleHandlerConfig(getClass());
         String appenderPath = handlerCfg.getString("path", null);
@@ -43,6 +44,7 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         ));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void doPublish(final LogRecord record, final ChronicleLogWriter writer) {
         writer.write(

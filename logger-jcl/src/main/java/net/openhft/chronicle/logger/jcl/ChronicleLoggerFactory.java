@@ -68,6 +68,7 @@ public class ChronicleLoggerFactory extends LogFactory {
     public void removeAttribute(String s) {
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Log getInstance(Class type) throws LogConfigurationException {
         return getInstance(type.getName());

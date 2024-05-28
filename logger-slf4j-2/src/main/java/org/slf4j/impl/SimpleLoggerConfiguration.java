@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,7 +11,6 @@ import java.util.Properties;
 
 import org.slf4j.helpers.Util;
 import org.slf4j.impl.OutputChoice.OutputChoiceType;
-
 
 /**
  * This class holds configuration values for {@link SimpleLogger}. The
@@ -106,7 +104,8 @@ public class SimpleLoggerConfiguration {
 
     private void loadProperties() {
         // Add props from the resource simplelogger.properties
-        InputStream in = AccessController.doPrivileged((PrivilegedAction<InputStream>) () -> {
+        @SuppressWarnings({"deprecation", "removal"})
+        InputStream in = java.security.AccessController.doPrivileged((PrivilegedAction<InputStream>) () -> {
             ClassLoader threadCL = Thread.currentThread().getContextClassLoader();
             if (threadCL != null) {
                 return threadCL.getResourceAsStream(CONFIGURATION_FILE);
@@ -189,5 +188,4 @@ public class SimpleLoggerConfiguration {
             }
         }
     }
-
 }
