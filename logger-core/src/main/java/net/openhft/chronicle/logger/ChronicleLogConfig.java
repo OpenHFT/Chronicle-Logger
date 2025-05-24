@@ -28,20 +28,25 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * @author lburgazzoli
- * @author dpisklov
- * <p>
+ * Reads logger settings from a properties file.
+ *
+ * The loader checks the system property {@code chronicle.logger.properties} and
+ * then the files {@code chronicle-logger.properties} and
+ * {@code config/chronicle-logger.properties} on the class path. Each value may
+ * contain {@code ${name}} placeholders that reference other keys or system
+ * properties. The token {@code ${pid}} expands to the process id.
+ *
  * Configuration example:
- * <p>
+ *
  * # default
  * chronicle.logger.base = ${java.io.tmpdir}/chronicle/${pid}
- * <p>
+ *
  * # logger : root
  * chronicle.logger.root.path      = ${chronicle.logger.base}/root
  * chronicle.logger.root.level     = debug
  * chronicle.logger.root.shortName = false
  * chronicle.logger.root.append    = false
- * <p>
+ *
  * # logger : Logger1
  * chronicle.logger.Logger1.path = ${chronicle.logger.base}/logger_1
  * chronicle.logger.Logger1.level = info
@@ -76,6 +81,13 @@ public class ChronicleLogConfig {
         this.appenderConfig = appenderConfig;
     }
 
+    /**
+     * Builds a configuration from the supplied properties.
+     * Placeholders are resolved in the same manner as when reading from a file.
+     *
+     * @param properties key value pairs following the chronicle logger scheme
+     * @return parsed configuration
+     */
     public static ChronicleLogConfig load(final Properties properties) {
         return new ChronicleLogConfig(
                 properties,
@@ -84,8 +96,12 @@ public class ChronicleLogConfig {
     }
 
     /**
-     * @param cfgPath the configuration path
-     * @return the configuration object
+     * Loads configuration from the given path.
+     * The path may reference an absolute or relative file or a class path
+     * resource. If the file cannot be found the method returns {@code null}.
+     *
+     * @param cfgPath file path or resource name
+     * @return the configuration object or {@code null} when missing
      */
     public static ChronicleLogConfig load(String cfgPath) {
         try {
@@ -124,7 +140,13 @@ public class ChronicleLogConfig {
     }
 
     /**
-     * @return the configuration object
+     * Loads configuration using the default search order.
+     * It first checks the system property {@code chronicle.logger.properties}.
+     * If that is not set it looks for the files listed at class level in the
+     * working directory or on the class path. When no file can be read the
+     * method returns {@code null}.
+     *
+     * @return the configuration object or {@code null} if nothing is found
      */
     public static ChronicleLogConfig load() {
         try {
