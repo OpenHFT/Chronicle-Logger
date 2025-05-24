@@ -16,6 +16,7 @@
 package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
 import org.jetbrains.annotations.Nullable;
 
 /**
