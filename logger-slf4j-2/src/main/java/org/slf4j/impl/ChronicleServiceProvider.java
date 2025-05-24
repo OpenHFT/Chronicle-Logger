@@ -8,6 +8,16 @@ import org.slf4j.helpers.NOPMDCAdapter;
 import org.slf4j.spi.MDCAdapter;
 import org.slf4j.spi.SLF4JServiceProvider;
 
+/**
+ * SLF4J service provider that exposes Chronicle logging.
+ *
+ * <p>
+ * When this module is present on the classpath the service loader locates
+ * this class.  It supplies a {@link ChronicleLoggerFactory} as the logger
+ * factory together with basic marker and MDC support.  Applications using
+ * SLF4J&nbsp;2.x thereby obtain Chronicle backed loggers without further
+ * configuration.
+ */
 public class ChronicleServiceProvider implements SLF4JServiceProvider {
 
     /**
