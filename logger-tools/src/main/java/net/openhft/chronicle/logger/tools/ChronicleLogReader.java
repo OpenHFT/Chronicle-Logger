@@ -32,16 +32,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Generic tool allowing users to process Chronicle logs in their own way
+ * Utility class that sequentially reads log entries from a Chronicle Queue.
+ * Each entry is parsed and forwarded to a {@link ChronicleLogProcessor}.
+ * The reader forms the basis of tools that tail or print Chronicle logs.
  */
 public class ChronicleLogReader {
     private static final SimpleDateFormat tsFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private final ChronicleQueue cq;
 
     /**
-     * Create reader with default wire type
+     * Create a reader that expects the default wire type.
      *
-     * @param path the path to Chronicle Logs storage
+     * @param path base directory of the Chronicle log storage
      */
     public ChronicleLogReader(
             @NotNull String path) {
@@ -49,8 +51,10 @@ public class ChronicleLogReader {
     }
 
     /**
-     * @param path     the path to Chronicle Logs storage
-     * @param wireType Chronicle wire type. Must match the wire type specified in corresponding Chronicle Logger
+     * Create a reader for a specific wire type.
+     *
+     * @param path     base directory of the Chronicle log storage
+     * @param wireType wire format to read, must match the writer configuration
      */
     public ChronicleLogReader(
             @NotNull String path,
@@ -92,10 +96,10 @@ public class ChronicleLogReader {
     }
 
     /**
-     * Decode logs
+     * Read entries from the queue and pass them to the supplied processor.
      *
-     * @param processor user-provided processor called for each log message
-     * @param waitForIt whether to wait for more data or stop after EOF reached
+     * @param processor handler invoked for every decoded log entry
+     * @param waitForIt if {@code true} wait for new data when the end is reached
      */
     public void processLogs(@NotNull ChronicleLogProcessor processor, boolean waitForIt) {
         ExcerptTailer tailer = cq.createTailer();
