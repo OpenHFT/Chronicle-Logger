@@ -28,20 +28,21 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * <p>Simple implementation of Logger that sends all enabled slf4j messages,
- * for all defined loggers, to one or more VanillaChronicle..
- * <p>
- * To configure this sl4j binding you need to specify the location of a properties
- * files via system properties:
- * {@code -Dchronicle.logger.properties=${pathOfYourPropertiesFile}}
- * <p>
- * The following system properties are supported to configure the behavior of this
- * logger:
- * <ul>
- * <li>{@code chronicle.logger.root.path}</li>
- * <li>{@code chronicle.logger.root.level}</li>
- * <li>{@code chronicle.logger.root.append}</li>
- * </ul>
+ * Factory for {@link ChronicleLogger} instances used by the SLF4J binding.
+ *
+ * <p>The factory reads its settings from the properties file supplied via the
+ * system property {@code chronicle.logger.properties}. A minimal file looks
+ * like:
+ *
+ * <pre>{@code
+ * chronicle.logger.base       = ${java.io.tmpdir}/chronicle-logs/${pid}
+ * chronicle.logger.root.path  = ${chronicle.logger.base}/main
+ * chronicle.logger.root.level = debug
+ * chronicle.logger.root.append = false
+ * }</pre>
+ *
+ * <p>Per logger configuration can be added using the prefix
+ * {@code chronicle.logger.&lt;name&gt;.}.
  */
 public class ChronicleLoggerFactory implements ILoggerFactory {
     private final Map<String, Logger> loggers;
@@ -64,7 +65,11 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     // *************************************************************************
 
     /**
-     * Return an appropriate {@link ChronicleLogger} instance by name.
+     * Returns the logger identified by {@code name}. If the configuration
+     * cannot be read a {@link NOPLogger} is returned.
+     *
+     * @param name logical name of the logger
+     * @return logger instance or {@link NOPLogger} when disabled
      */
     @Override
     public Logger getLogger(String name) {
@@ -82,6 +87,10 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     //
     // *************************************************************************
 
+    /**
+     * Reloads the configuration and clears cached loggers. Used mainly by
+     * unit tests to reinitialise the factory.
+     */
     synchronized void reload() {
         this.loggers.clear();
         this.manager.reload();
