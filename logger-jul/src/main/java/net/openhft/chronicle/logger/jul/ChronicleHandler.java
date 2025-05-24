@@ -27,8 +27,26 @@ import java.util.logging.LogRecord;
 
 import static net.openhft.chronicle.logger.ChronicleLogConfig.KEY_WIRETYPE;
 
+/**
+ * Handler that writes log records to a Chronicle Queue.
+ *
+ * <p>Configuration is read via {@link ChronicleHandlerConfig} using the fully
+ * qualified class name as a prefix. Supported properties include:
+ * <ul>
+ *   <li>{@code path} - queue location</li>
+ *   <li>{@code level} - minimum level</li>
+ *   <li>{@code filter} - {@link java.util.logging.Filter} implementation</li>
+ *   <li>{@code cfg.*} - appender specific settings</li>
+ *   <li>{@code wireType} - Chronicle wire format</li>
+ * </ul>
+ */
 public class ChronicleHandler extends AbstractChronicleHandler {
 
+    /**
+     * Create the handler and initialise the writer from the LogManager.
+     *
+     * @throws IOException if the Chronicle queue cannot be opened
+     */
     @SuppressWarnings("this-escape")
     public ChronicleHandler() throws IOException {
         ChronicleHandlerConfig handlerCfg = new ChronicleHandlerConfig(getClass());
@@ -44,6 +62,12 @@ public class ChronicleHandler extends AbstractChronicleHandler {
         ));
     }
 
+    /**
+     * Forward the record to the Chronicle writer.
+     *
+     * @param record the JUL record
+     * @param writer target writer
+     */
     @SuppressWarnings("deprecation")
     @Override
     protected void doPublish(final LogRecord record, final ChronicleLogWriter writer) {
