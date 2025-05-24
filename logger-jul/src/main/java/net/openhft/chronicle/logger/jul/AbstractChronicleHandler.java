@@ -25,9 +25,26 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+/**
+ * Base implementation for Chronicle JUL handlers.
+ *
+ * <p>The class holds the Chronicle queue {@code path} and the
+ * {@link ChronicleLogWriter} that forwards log records. Subclasses are
+ * responsible for creating the writer and implementing {@link #doPublish}.</p>
+ *
+ * <p>The level and filter setters are final so that configuration cannot
+ * be altered once the handler is in use.</p>
+ */
 abstract class AbstractChronicleHandler extends Handler {
 
+    /**
+     * Filesystem location of the Chronicle queue.
+     */
     private String path;
+
+    /**
+     * Destination writer used to emit log events.
+     */
     private ChronicleLogWriter writer;
 
     protected AbstractChronicleHandler() {
