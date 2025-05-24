@@ -36,6 +36,17 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * JMH benchmark comparing Chronicle logging via Log4j 2 with
+ * ordinary file based logging.
+ *
+ * <p>Build the benchmark jar and run it with:
+ *
+ * <pre>{@code
+ * mvn -pl benchmark package
+ * java -jar benchmark/target/benchmarks.jar
+ * }</pre>
+ */
 @State(Scope.Thread)
 public class Lo4J2PerfTest {
     private final Logger chronicleLogger = LoggerFactory.getLogger("perf-chro");
