@@ -3,10 +3,18 @@ package org.slf4j.impl;
 import java.io.PrintStream;
 
 /**
- * This class encapsulates the user's choice of output target.
+ * Encapsulates the user's chosen output destination for
+ * {@link SimpleLogger}.  This class mirrors the SLF4J&nbsp;1.x
+ * implementation. The only difference from the SLF4J&nbsp;1.x source is
+ * the package name so that Chronicle can compile against the
+ * SLF4J&nbsp;2 APIs without behaviour change.
+ * <p>
+ * Instances are immutable and therefore thread-safe.  Be aware that
+ * {@link System#out} and {@link System#err} may be replaced at runtime,
+ * so {@link #getTargetPrintStream()} always resolves the stream on
+ * each call.
  *
  * @author Ceki G&uuml;lc&uuml;
- *
  */
 class OutputChoice {
 
