@@ -10,7 +10,7 @@
  *      <li>Explicit Serialize/deserialize</li>
  *  </ul>
  * <p>
- * The classes in this package and any sub-package are subject to
- * changes at any time for any reason.
+ * The classes in this package and any sub-package may change
+ * without notice and can differ between releases.
  */
 package net.openhft.chronicle.logger.jul.internal;
