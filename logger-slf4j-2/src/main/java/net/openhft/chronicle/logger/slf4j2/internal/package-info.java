@@ -12,5 +12,7 @@
  * <p>
  * The classes in this package and any sub-package are subject to
  * changes at any time for any reason.
+ * <p>
+ * Later versions may not remain compatible with the current API.
  */
 package net.openhft.chronicle.logger.slf4j2.internal;
