@@ -24,6 +24,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+/**
+ * Converts JUL {@link Level} values to Chronicle log levels and back.
+ * The maps hold the closest equivalents and fall back to DEBUG or FINE
+ * when a particular level is not recognised.
+ */
 class ChronicleHelper {
 
     private static final Map<Level, ChronicleLogLevel> julToCHronicleLevelMap;
@@ -56,11 +61,19 @@ class ChronicleHelper {
         return getLogLevel(julRecord.getLevel());
     }
 
+    /**
+     * Maps a JUL level to the closest Chronicle level.
+     * Defaults to {@link ChronicleLogLevel#DEBUG} when the mapping is missing.
+     */
     static ChronicleLogLevel getLogLevel(final Level julLevel) {
         ChronicleLogLevel level = julToCHronicleLevelMap.get(julLevel);
         return level != null ? level : ChronicleLogLevel.DEBUG;
     }
 
+    /**
+     * Maps a Chronicle level to the nearest JUL equivalent.
+     * Defaults to {@link Level#FINE} when no specific mapping exists.
+     */
     static Level getLogLevel(final ChronicleLogLevel chronicleLevel) {
         Level level = chronicleToJulLevelMap.get(chronicleLevel);
         return level != null ? level : Level.FINE;
