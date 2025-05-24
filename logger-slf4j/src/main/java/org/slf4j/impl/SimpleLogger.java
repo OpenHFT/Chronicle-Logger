@@ -35,99 +35,32 @@ import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
+ * Lightweight {@link Logger} writing to a single {@link PrintStream}. The
+ * logger initialises its configuration once, then each call checks the level,
+ * formats the line as "time thread level logger - message" and writes it to the
+ * chosen stream.
  * <p>
- * Simple implementation of {@link Logger} that sends all enabled log messages,
- * for all defined loggers, to the console ({@code System.err}). The following
- * system properties are supported to configure the behavior of this logger:
- *
+ * Settings are read from system properties or the classpath resource
+ * {@code simplelogger.properties}. Keys start with
+ * {@code org.slf4j.simpleLogger.} and include:
  * <ul>
- * <li>{@code org.slf4j.simpleLogger.logFile} - The output target which can
- * be the <em>path</em> to a file, or the special values "System.out" and
- * "System.err". Default is "System.err".</li>
- *
- * <li>{@code org.slf4j.simpleLogger.cacheOutputStream} - If the output
- * target is set to "System.out" or "System.err" (see preceding entry), by
- * default, logs will be output to the latest value referenced by
- * {@code System.out/err} variables. By setting this
- * parameter to true, the output stream will be cached, i.e. assigned once at
- * initialization time and re-used independently of the current value referenced by
- *  {@code System.out/err}.
- * </li>
- *
- * <li>{@code org.slf4j.simpleLogger.defaultLogLevel} - Default log level
- * for all instances of SimpleLogger. Must be one of ("trace", "debug", "info",
- * "warn", "error" or "off"). If not specified, defaults to "info".</li>
- *
- * <li><code>org.slf4j.simpleLogger.log.<em>a.b.c</em></code> - Logging detail
- * level for a SimpleLogger instance named "a.b.c". Right-side value must be one
- * of "trace", "debug", "info", "warn", "error" or "off". When a SimpleLogger
- * named "a.b.c" is initialized, its level is assigned from this property. If
- * unspecified, the level of nearest parent logger will be used, and if none is
- * set, then the value specified by
- * {@code org.slf4j.simpleLogger.defaultLogLevel} will be used.</li>
- *
- * <li>{@code org.slf4j.simpleLogger.showDateTime} - Set to
- * {@code true} if you want the current date and time to be included in
- * output messages. Default is {@code false}</li>
- *
- * <li>{@code org.slf4j.simpleLogger.dateTimeFormat} - The date and time
- * format to be used in the output messages. The pattern describing the date and
- * time format is defined by <a href=
- * "http://docs.oracle.com/javase/1.5.0/docs/api/java/text/SimpleDateFormat.html">
- * {@code SimpleDateFormat}</a>. If the format is not specified or is
- * invalid, the number of milliseconds since start up will be output.</li>
- *
- * <li>{@code org.slf4j.simpleLogger.showThreadName} -Set to
- * {@code true} if you want to output the current thread name. Defaults to
- * {@code true}.</li>
- *
- * <li>{@code org.slf4j.simpleLogger.showLogName} - Set to
- * {@code true} if you want the Logger instance name to be included in
- * output messages. Defaults to {@code true}.</li>
- *
- * <li>{@code org.slf4j.simpleLogger.showShortLogName} - Set to
- * {@code true} if you want the last component of the name to be included
- * in output messages. Defaults to {@code false}.</li>
- *
- * <li>{@code org.slf4j.simpleLogger.levelInBrackets} - Should the level
- * string be output in brackets? Defaults to {@code false}.</li>
- *
- * <li>{@code org.slf4j.simpleLogger.warnLevelString} - The string value
- * output for the warn level. Defaults to {@code WARN}.</li>
- *
+ *   <li>{@code logFile} - output target</li>
+ *   <li>{@code cacheOutputStream}</li>
+ *   <li>{@code defaultLogLevel}</li>
+ *   <li>{@code log.&lt;name&gt;}</li>
+ *   <li>{@code showDateTime}</li>
+ *   <li>{@code dateTimeFormat}</li>
+ *   <li>{@code showThreadName}</li>
+ *   <li>{@code showLogName}</li>
+ *   <li>{@code showShortLogName}</li>
+ *   <li>{@code levelInBrackets}</li>
+ *   <li>{@code warnLevelString}</li>
  * </ul>
- *
+ * Enabled events are formatted and passed to the output stream selected by
+ * {@code logFile}.
  * <p>
- * In addition to looking for system properties with the names specified above,
- * this implementation also checks for a class loader resource named
- * {@code "simplelogger.properties"}, and includes any matching definitions
- * from this resource (if it exists).
- *
- * <p>
- * With no configuration, the default output includes the relative time in
- * milliseconds, thread name, the level, logger name, and the message followed
- * by the line separator for the host. In log4j terms it amounts to the "%r [%t]
- * %level %logger - %m%n" pattern.
- * <p>
- * Sample output follows.
- *
- * <pre>
- * 176 [main] INFO examples.Sort - Populating an array of 2 elements in reverse order.
- * 225 [main] INFO examples.SortAlgo - Entered the sort method.
- * 304 [main] INFO examples.SortAlgo - Dump of integer array:
- * 317 [main] INFO examples.SortAlgo - Element [0] = 0
- * 331 [main] INFO examples.SortAlgo - Element [1] = 1
- * 343 [main] INFO examples.Sort - The next log statement should be an error message.
- * 346 [main] ERROR examples.SortAlgo - Tried to dump an uninitialized array.
- *   at org.log4j.examples.SortAlgo.dump(SortAlgo.java:58)
- *   at org.log4j.examples.Sort.main(Sort.java:64)
- * 467 [main] INFO  examples.Sort - Exiting main method.
- * </pre>
- *
- * <p>
- * This implementation is heavily inspired by
- * <a href="http://commons.apache.org/logging/">Apache Commons Logging</a>'s
- * SimpleLog.
+ * This implementation is inspired by Apache Commons Logging's
+ * {@code SimpleLog}.
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author Scott Sanders
