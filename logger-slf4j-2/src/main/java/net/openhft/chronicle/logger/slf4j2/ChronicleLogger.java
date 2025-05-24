@@ -17,6 +17,15 @@
  */
 package net.openhft.chronicle.logger.slf4j2;
 
+/**
+ * Implementation of Chronicle logging for the SLF4J 2.x API.
+ * <p>
+ * This class mirrors {@code net.openhft.chronicle.logger.slf4j.ChronicleLogger}
+ * but is compiled against SLF4J&nbsp;2 and therefore lives in a different
+ * package.  The logging semantics and configuration remain the same as the
+ * original SLF4J&nbsp;1.x implementation.
+ */
+
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 
@@ -269,10 +278,20 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
     // HELPERS
     // *************************************************************************
 
+    /**
+     * Check whether a log event with the supplied level would be written.
+     *
+     * @param level the level to test
+     * @return {@code true} if {@code level} is at least the configured level
+     */
     private boolean isLevelEnabled(ChronicleLogLevel level) {
         return level.isHigherOrEqualTo(this.level);
     }
 
+    /**
+     * Log a message if the logger is enabled for the given level.
+     * The current time and thread name are captured here.
+     */
     protected void append(ChronicleLogLevel level, String message) {
         if (isLevelEnabled(level)) {
             writer.write(
@@ -285,6 +304,9 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
         }
     }
 
+    /**
+     * Log a message along with a throwable.
+     */
     protected void append(ChronicleLogLevel level, String message, Throwable throwable) {
         if (isLevelEnabled(level)) {
             writer.write(
@@ -297,6 +319,9 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
         }
     }
 
+    /**
+     * Log a message with optional arguments and an optional throwable.
+     */
     protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object... args) {
         if (isLevelEnabled(level)) {
             writer.write(
