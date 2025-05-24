@@ -28,20 +28,26 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * <p>Simple implementation of Logger that sends all enabled slf4j messages,
- * for all defined loggers, to one or more VanillaChronicle..
+ * Factory for {@link ChronicleLogger} instances used by the SLF4J 2.x API.
  * <p>
- * To configure this sl4j binding you need to specify the location of a properties
- * files via system properties:
- * {@code -Dchronicle.logger.properties=${pathOfYourPropertiesFile}}
+ * It forwards all enabled log events to Chronicle Queue writers.  The factory
+ * is discovered via the SLF4J service provider mechanism, so including the
+ * {@code chronicle-logger-slf4j-2} jar on the classpath is normally enough to
+ * activate it.
  * <p>
- * The following system properties are supported to configure the behavior of this
- * logger:
+ * To customise logging, specify a properties file with the system property
+ * {@code chronicle.logger.properties}.  The following keys affect the default
+ * logger configuration:
  * <ul>
  * <li>{@code chronicle.logger.root.path}</li>
  * <li>{@code chronicle.logger.root.level}</li>
  * <li>{@code chronicle.logger.root.append}</li>
  * </ul>
+ * Example usage:
+ * <pre>
+ *     Logger log = LoggerFactory.getLogger("my.app");
+ *     log.info("Started");
+ * </pre>
  */
 public class ChronicleLoggerFactory implements ILoggerFactory {
     private final Map<String, Logger> loggers;
@@ -64,7 +70,11 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     // *************************************************************************
 
     /**
-     * Return an appropriate {@link ChronicleLogger} instance by name.
+     * Return the {@link ChronicleLogger} associated with the supplied name.
+     * <p>
+     * Instances are cached.  Names starting with {@code net.openhft} fall back
+     * to {@link SimpleLogger} to avoid recursive use of Chronicle loggers.  If
+     * a logger cannot be created this method returns {@link NOPLogger#NOP_LOGGER}.
      */
     @Override
     public Logger getLogger(String name) {
@@ -82,6 +92,11 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     //
     // *************************************************************************
 
+    /**
+     * Clear cached loggers and reload the manager configuration.
+     * <p>
+     * Primarily used by tests when the properties file has changed.
+     */
     synchronized void reload() {
         this.loggers.clear();
         this.manager.reload();
