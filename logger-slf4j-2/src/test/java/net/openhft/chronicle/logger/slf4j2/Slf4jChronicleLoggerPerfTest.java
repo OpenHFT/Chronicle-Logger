@@ -30,6 +30,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Runs timing tests for the Chronicle logger.
+ *
+ * <p>The tests print:
+ * <ul>
+ * <li>wall-clock time in milli-seconds for one million entries;</li>
+ * <li>average micro-second cost per entry; and</li>
+ * <li>multi-thread throughput across ten threads.</li>
+ * </ul>
+ */
 @Ignore
 public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
 
