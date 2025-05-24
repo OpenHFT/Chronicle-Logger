@@ -12,5 +12,6 @@
  * <p>
  * The classes in this package and any sub-package are subject to
  * changes at any time for any reason.
+ * Applications must not depend on them.
  */
 package net.openhft.chronicle.logger.slf4j.internal;
