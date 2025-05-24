@@ -22,8 +22,10 @@ import org.slf4j.helpers.BasicMarkerFactory;
 import org.slf4j.spi.MarkerFactoryBinder;
 
 /**
- * The binding of {@link org.slf4j.MarkerFactory} class with an actual instance of
- * {@link IMarkerFactory} is performed using information returned by this class.
+ * Supplies the singleton {@link IMarkerFactory} used by SLF4J.
+ *
+ * <p>SLF4J looks up this binder at run time to obtain a
+ * {@link BasicMarkerFactory} instance for marker creation.</p>
  *
  * @author Ceki G&uuml;lc&uuml;
  */
