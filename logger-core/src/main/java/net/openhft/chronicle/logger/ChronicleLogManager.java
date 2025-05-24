@@ -23,6 +23,12 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Manages {@link ChronicleLogWriter} instances using a shared configuration.
+ * <p>
+ * The manager loads {@link ChronicleLogConfig} once and returns cached writers
+ * so that loggers may be shared safely between threads.
+ */
 public class ChronicleLogManager {
     private ChronicleLogConfig cfg;
     private Map<String, ChronicleLogWriter> writers;
@@ -32,14 +38,27 @@ public class ChronicleLogManager {
         this.writers = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Return the singleton manager.
+     *
+     * @return the global instance
+     */
     public static ChronicleLogManager getInstance() {
         return Holder.INSTANCE;
     }
 
+    /**
+     * Provide the current configuration.
+     *
+     * @return configuration in use, or {@code null} if loading failed
+     */
     public ChronicleLogConfig cfg() {
         return this.cfg;
     }
 
+    /**
+     * Close all cached writers and forget them.
+     */
     public void clear() {
         for (final ChronicleLogWriter writer : writers.values()) {
             try {
@@ -51,6 +70,9 @@ public class ChronicleLogManager {
         writers.clear();
     }
 
+    /**
+     * Reload the configuration and remove all writers.
+     */
     public void reload() {
         clear();
 
@@ -58,6 +80,13 @@ public class ChronicleLogManager {
         this.writers = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Obtain a writer for the supplied logger name.
+     *
+     * @param name configuration entry to read
+     * @return cached writer instance
+     * @throws IllegalArgumentException if the configuration is missing or does not define a path
+     */
     public ChronicleLogWriter getWriter(String name) {
         if (this.cfg == null) {
             throw new IllegalArgumentException("ChronicleLogManager is not configured");
