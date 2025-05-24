@@ -28,6 +28,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+/**
+ * {@link LogManager} implementation that creates and caches JUL loggers backed
+ * by Chronicle.  Each call to {@link #getLogger(String)} returns the same
+ * {@link ChronicleLogger} instance for a given name.  Loggers are backed by
+ * {@link ChronicleLogWriter} instances supplied by {@link ChronicleLogManager}.
+ */
 public class ChronicleLoggerManager extends LogManager {
 
     private final Map<String, Logger> loggers;
@@ -38,11 +44,20 @@ public class ChronicleLoggerManager extends LogManager {
         this.manager = ChronicleLogManager.getInstance();
     }
 
+    /**
+     * Rejects attempts to add loggers externally.  The manager creates loggers
+     * on demand so this method always returns {@code false}.
+     */
     @Override
     public boolean addLogger(final Logger logger) {
         return false;
     }
 
+    /**
+     * Return the named logger.  A new {@link ChronicleLogger} is created if one
+     * has not already been cached.  If creation fails a null logger instance is
+     * returned so logging continues without throwing an exception.
+     */
     @Override
     public Logger getLogger(final String name) {
         try {
@@ -59,6 +74,10 @@ public class ChronicleLoggerManager extends LogManager {
         return Collections.enumeration(this.loggers.keySet());
     }
 
+    /**
+     * Remove all cached loggers and close their writers via the underlying
+     * {@link ChronicleLogManager}.
+     */
     @Override
     public void reset() throws SecurityException {
         this.loggers.clear();
@@ -69,6 +88,11 @@ public class ChronicleLoggerManager extends LogManager {
     //
     // *************************************************************************
 
+    /**
+     * Internal helper that creates or retrieves the logger for the supplied
+     * name.  The method is synchronised to avoid duplicate creation when many
+     * threads request the same logger concurrently.
+     */
     private synchronized Logger doGetLogger(String name) throws IOException {
         Logger logger = loggers.get(name);
         if (logger == null) {
