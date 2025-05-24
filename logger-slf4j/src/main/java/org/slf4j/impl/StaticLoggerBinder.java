@@ -21,6 +21,12 @@ import net.openhft.chronicle.logger.slf4j.ChronicleLoggerFactory;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
+/**
+ * Binds the SLF4J API to the Chronicle logger factory.
+ *
+ * <p>This binder installs {@link ChronicleLoggerFactory} as the SLF4J provider.
+ */
+
 public class StaticLoggerBinder implements LoggerFactoryBinder {
 
     private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
