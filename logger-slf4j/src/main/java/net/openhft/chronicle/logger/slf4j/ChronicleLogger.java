@@ -21,6 +21,14 @@ import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 import org.slf4j.helpers.MarkerIgnoringBase;
 
+/**
+ * SLF4J {@link org.slf4j.Logger} implementation backed by a
+ * {@link ChronicleLogWriter}.
+ *
+ * <p>The writer is obtained from {@link ChronicleLoggerFactory} and
+ * messages are forwarded when the requested {@link ChronicleLogLevel}
+ * is enabled.</p>
+ */
 @SuppressWarnings("serial")
 public final class ChronicleLogger extends MarkerIgnoringBase {
 
@@ -28,6 +36,13 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
     protected final ChronicleLogLevel level;
     private final ChronicleLogWriter writer;
 
+    /**
+     * Package-private constructor used by the factory.
+     *
+     * @param writer backing Chronicle writer
+     * @param name   logger name
+     * @param level  minimum log level
+     */
     ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
         this.writer = writer;
         this.name = name;
@@ -50,16 +65,29 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
     // TRACE
     // *************************************************************************
 
+    /**
+     * Tests whether {@code TRACE} level messages will be logged.
+     *
+     * @return {@code true} if the level is enabled
+     */
     @Override
     public boolean isTraceEnabled() {
         return isLevelEnabled(ChronicleLogLevel.TRACE);
     }
 
+    /**
+     * Log a message at {@code TRACE} level.
+     *
+     * @param s message text
+     */
     @Override
     public void trace(String s) {
         append(ChronicleLogLevel.TRACE, s);
     }
 
+    /**
+     * Log a message with one argument or {@link Throwable}.
+     */
     @Override
     public void trace(String s, Object o1) {
         if (o1 instanceof Throwable) {
@@ -70,6 +98,10 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Log a message with two arguments or one argument and a
+     * {@link Throwable}.
+     */
     @Override
     public void trace(String s, Object o1, Object o2) {
         if (o2 instanceof Throwable) {
@@ -80,11 +112,17 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Log a message with optional arguments.
+     */
     @Override
     public void trace(String s, Object... objects) {
         append(ChronicleLogLevel.TRACE, s, null, objects);
     }
 
+    /**
+     * Log a message with a {@link Throwable}.
+     */
     @Override
     public void trace(String s, Throwable throwable) {
         append(ChronicleLogLevel.TRACE, s, throwable);
@@ -94,16 +132,29 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
     // DEBUG
     // *************************************************************************
 
+    /**
+     * Tests whether {@code DEBUG} level messages will be logged.
+     *
+     * @return {@code true} if the level is enabled
+     */
     @Override
     public boolean isDebugEnabled() {
         return isLevelEnabled(ChronicleLogLevel.DEBUG);
     }
 
+    /**
+     * Log a message at {@code DEBUG} level.
+     *
+     * @param s message text
+     */
     @Override
     public void debug(String s) {
         append(ChronicleLogLevel.DEBUG, s);
     }
 
+    /**
+     * Log a message with one argument or {@link Throwable}.
+     */
     @Override
     public void debug(String s, Object o1) {
         if (o1 instanceof Throwable) {
@@ -114,6 +165,10 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Log a message with two arguments or one argument and a
+     * {@link Throwable}.
+     */
     @Override
     public void debug(String s, Object o1, Object o2) {
         if (o2 instanceof Throwable) {
@@ -124,11 +179,17 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Log a message with optional arguments.
+     */
     @Override
     public void debug(String s, Object... objects) {
         append(ChronicleLogLevel.DEBUG, s, null, objects);
     }
 
+    /**
+     * Log a message with a {@link Throwable}.
+     */
     @Override
     public void debug(String s, Throwable throwable) {
         append(ChronicleLogLevel.DEBUG, s, throwable);
@@ -138,16 +199,29 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
     // INFO
     // *************************************************************************
 
+    /**
+     * Tests whether {@code INFO} level messages will be logged.
+     *
+     * @return {@code true} if the level is enabled
+     */
     @Override
     public boolean isInfoEnabled() {
         return isLevelEnabled(ChronicleLogLevel.INFO);
     }
 
+    /**
+     * Log a message at {@code INFO} level.
+     *
+     * @param s message text
+     */
     @Override
     public void info(String s) {
         append(ChronicleLogLevel.INFO, s);
     }
 
+    /**
+     * Log a message with one argument or {@link Throwable}.
+     */
     @Override
     public void info(String s, Object o1) {
         if (o1 instanceof Throwable) {
@@ -158,6 +232,10 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Log a message with two arguments or one argument and a
+     * {@link Throwable}.
+     */
     @Override
     public void info(String s, Object o1, Object o2) {
         if (o2 instanceof Throwable) {
@@ -168,11 +246,17 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Log a message with optional arguments.
+     */
     @Override
     public void info(String s, Object... objects) {
         append(ChronicleLogLevel.INFO, s, null, objects);
     }
 
+    /**
+     * Log a message with a {@link Throwable}.
+     */
     @Override
     public void info(String s, Throwable throwable) {
         append(ChronicleLogLevel.INFO, s, throwable);
@@ -182,16 +266,29 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
     // WARN
     // *************************************************************************
 
+    /**
+     * Tests whether {@code WARN} level messages will be logged.
+     *
+     * @return {@code true} if the level is enabled
+     */
     @Override
     public boolean isWarnEnabled() {
         return isLevelEnabled(ChronicleLogLevel.WARN);
     }
 
+    /**
+     * Log a message at {@code WARN} level.
+     *
+     * @param s message text
+     */
     @Override
     public void warn(String s) {
         append(ChronicleLogLevel.WARN, s);
     }
 
+    /**
+     * Log a message with one argument or {@link Throwable}.
+     */
     @Override
     public void warn(String s, Object o1) {
         if (o1 instanceof Throwable) {
@@ -202,6 +299,10 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Log a message with two arguments or one argument and a
+     * {@link Throwable}.
+     */
     @Override
     public void warn(String s, Object o1, Object o2) {
         if (o2 instanceof Throwable) {
@@ -212,11 +313,17 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Log a message with optional arguments.
+     */
     @Override
     public void warn(String s, Object... objects) {
         append(ChronicleLogLevel.WARN, s, null, objects);
     }
 
+    /**
+     * Log a message with a {@link Throwable}.
+     */
     @Override
     public void warn(String s, Throwable throwable) {
         append(ChronicleLogLevel.WARN, s, throwable);
@@ -226,16 +333,29 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
     // ERROR
     // *************************************************************************
 
+    /**
+     * Tests whether {@code ERROR} level messages will be logged.
+     *
+     * @return {@code true} if the level is enabled
+     */
     @Override
     public boolean isErrorEnabled() {
         return isLevelEnabled(ChronicleLogLevel.ERROR);
     }
 
+    /**
+     * Log a message at {@code ERROR} level.
+     *
+     * @param s message text
+     */
     @Override
     public void error(String s) {
         append(ChronicleLogLevel.ERROR, s);
     }
 
+    /**
+     * Log a message with one argument or {@link Throwable}.
+     */
     @Override
     public void error(String s, Object o1) {
         if (o1 instanceof Throwable) {
@@ -246,6 +366,10 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Log a message with two arguments or one argument and a
+     * {@link Throwable}.
+     */
     @Override
     public void error(String s, Object o1, Object o2) {
         if (o2 instanceof Throwable) {
@@ -256,11 +380,17 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Log a message with optional arguments.
+     */
     @Override
     public void error(String s, Object... objects) {
         append(ChronicleLogLevel.ERROR, s, null, objects);
     }
 
+    /**
+     * Log a message with a {@link Throwable}.
+     */
     @Override
     public void error(String s, Throwable throwable) {
         append(ChronicleLogLevel.ERROR, s, throwable);
@@ -270,10 +400,17 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
     // HELPERS
     // *************************************************************************
 
+    /**
+     * Return {@code true} if the supplied level is at or above the
+     * configured level for this logger.
+     */
     private boolean isLevelEnabled(ChronicleLogLevel level) {
         return level.isHigherOrEqualTo(this.level);
     }
 
+    /**
+     * Write a log entry without arguments.
+     */
     protected void append(ChronicleLogLevel level, String message) {
         if (isLevelEnabled(level)) {
             writer.write(
@@ -286,6 +423,9 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Write a log entry with a {@link Throwable}.
+     */
     protected void append(ChronicleLogLevel level, String message, Throwable throwable) {
         if (isLevelEnabled(level)) {
             writer.write(
@@ -298,6 +438,9 @@ public final class ChronicleLogger extends MarkerIgnoringBase {
         }
     }
 
+    /**
+     * Write a log entry with optional arguments.
+     */
     protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object... args) {
         if (isLevelEnabled(level)) {
             writer.write(
