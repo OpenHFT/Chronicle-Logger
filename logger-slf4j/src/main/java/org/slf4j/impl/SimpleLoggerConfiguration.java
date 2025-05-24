@@ -28,41 +28,71 @@ import org.slf4j.impl.OutputChoice.OutputChoiceType;
  */
 public class SimpleLoggerConfiguration {
 
+    /** Name of the properties file searched on the class path. */
     private static final String CONFIGURATION_FILE = "simplelogger.properties";
 
+    /** Default level used when no property is set (INFO). */
     static int DEFAULT_LOG_LEVEL_DEFAULT = SimpleLogger.LOG_LEVEL_INFO;
+    /**
+     * Runtime default log level as configured by
+     * {@code org.slf4j.simpleLogger.defaultLogLevel}.
+     */
     int defaultLogLevel = DEFAULT_LOG_LEVEL_DEFAULT;
 
+    /** Default for {@code org.slf4j.simpleLogger.showDateTime} (false). */
     private static final boolean SHOW_DATE_TIME_DEFAULT = false;
+    /** Whether to include a time stamp in log lines. */
     boolean showDateTime = SHOW_DATE_TIME_DEFAULT;
 
+    /** Default for {@code org.slf4j.simpleLogger.dateTimeFormat}. */
     private static final String DATE_TIME_FORMAT_STR_DEFAULT = null;
+    /** Format string used to render the date, or {@code null} for relative time. */
     private static String dateTimeFormatStr = DATE_TIME_FORMAT_STR_DEFAULT;
 
+    /** Formatter built from {@link #dateTimeFormatStr} when initialised. */
     DateFormat dateFormatter = null;
 
+    /** Default for {@code org.slf4j.simpleLogger.showThreadName} (true). */
     private static final boolean SHOW_THREAD_NAME_DEFAULT = true;
+    /** Whether the thread name should appear in output. */
     boolean showThreadName = SHOW_THREAD_NAME_DEFAULT;
 
+    /** Default for {@code org.slf4j.simpleLogger.showLogName} (true). */
     final static boolean SHOW_LOG_NAME_DEFAULT = true;
+    /** Whether the logger name should appear in output. */
     boolean showLogName = SHOW_LOG_NAME_DEFAULT;
 
+    /** Default for {@code org.slf4j.simpleLogger.showShortLogName} (false). */
     private static final boolean SHOW_SHORT_LOG_NAME_DEFAULT = false;
+    /** If true only the last logger name component is printed. */
     boolean showShortLogName = SHOW_SHORT_LOG_NAME_DEFAULT;
 
+    /** Default for {@code org.slf4j.simpleLogger.levelInBrackets} (false). */
     private static final boolean LEVEL_IN_BRACKETS_DEFAULT = false;
+    /** Print the level surrounded by brackets. */
     boolean levelInBrackets = LEVEL_IN_BRACKETS_DEFAULT;
 
+    /** Default for {@code org.slf4j.simpleLogger.logFile} (System.err). */
     private static String LOG_FILE_DEFAULT = "System.err";
+    /** Destination for log output. */
     private String logFile = LOG_FILE_DEFAULT;
+    /** Actual output target decided after initialisation. */
     OutputChoice outputChoice = null;
 
+    /** Default for {@code org.slf4j.simpleLogger.cacheOutputStream} (false). */
     private static final boolean CACHE_OUTPUT_STREAM_DEFAULT = false;
+    /**
+     * When true the {@code System.out/err} stream is cached on start up rather
+     * than looked up for every log entry.
+     */
     private boolean cacheOutputStream = CACHE_OUTPUT_STREAM_DEFAULT;
 
+    /** Default text used for the WARN level. */
     private static final String WARN_LEVELS_STRING_DEFAULT = "WARN";
+    /** String to write for the warn level. Configured via {@code org.slf4j.simpleLogger.warnLevelString}. */
     String warnLevelString = WARN_LEVELS_STRING_DEFAULT;
 
+    /** Properties loaded from {@link #CONFIGURATION_FILE}. */
     private final Properties properties = new Properties();
 
     void init() {
