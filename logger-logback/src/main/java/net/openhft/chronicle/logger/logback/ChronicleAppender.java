@@ -26,6 +26,15 @@ import net.openhft.chronicle.logger.LogAppenderConfig;
 
 import java.io.IOException;
 
+/**
+ * Appender that forwards Logback events to Chronicle storage.
+ * <p>
+ * Caller data and the mapped diagnostic context (MDC) may be recorded when
+ * writing events. Both options are enabled by default and can be toggled via
+ * {@link #setIncludeCallerData(boolean)} and
+ * {@link #setIncludeMappedDiagnosticContext(boolean)}. Chronicle specific
+ * parameters are provided through {@link #setChronicleConfig(LogAppenderConfig)}.
+ */
 public class ChronicleAppender extends AbstractChronicleAppender {
 
     private boolean includeCallerData;
@@ -41,6 +50,11 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         this.config = new LogAppenderConfig();
     }
 
+    /**
+     * Exposes the configuration used when initialising the Chronicle writer.
+     *
+     * @return the current writer configuration
+     */
     public LogAppenderConfig getChronicleConfig() {
         return this.config;
     }
@@ -79,6 +93,14 @@ public class ChronicleAppender extends AbstractChronicleAppender {
     //
     // *************************************************************************
 
+    /**
+     * Writes the supplied event to the Chronicle writer.
+     * The throwable is extracted from the {@link ThrowableProxy}
+     * so that its type is preserved in the log.
+     *
+     * @param event  the event to log
+     * @param writer the target writer
+     */
     @Override
     public void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer) {
         final ThrowableProxy tp = (ThrowableProxy) event.getThrowableProxy();
