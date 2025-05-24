@@ -29,12 +29,27 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Commons Logging {@link LogFactory} that creates and caches
+ * {@link ChronicleLogger} instances.
+ * <p>
+ * Loggers are looked up by name and backed by a
+ * {@link net.openhft.chronicle.logger.ChronicleLogWriter} obtained from
+ * {@link ChronicleLogManager}. Configuration is read once by the manager from
+ * {@code chronicle.logger.properties} or one of the default locations. If
+ * the configuration cannot be resolved a no-op logger is returned.
+ */
 public class ChronicleLoggerFactory extends LogFactory {
     private static final Log NOP_LOGGER = new NoOpLog();
 
     private final Map<String, ChronicleLogger> loggers;
     private final ChronicleLogManager manager;
 
+    /**
+     * Builds the factory and initialises the {@link ChronicleLogManager} used
+     * to configure log writers. The manager loads its configuration from the
+     * standard properties file on first use.
+     */
     public ChronicleLoggerFactory() {
         logRawDiagnostic("[CHRONICLE] Initialize ChronicleLoggerFactory");
 
@@ -68,12 +83,21 @@ public class ChronicleLoggerFactory extends LogFactory {
     public void removeAttribute(String s) {
     }
 
+    /**
+     * Obtain a logger using the class name.
+     */
     @SuppressWarnings("rawtypes")
     @Override
     public Log getInstance(Class type) throws LogConfigurationException {
+        // Delegate to the name based variant
         return getInstance(type.getName());
     }
 
+    /**
+     * Returns a cached {@link ChronicleLogger} configured for the supplied
+     * name. The writer and level are resolved from the manager configuration.
+     * A {@link NoOpLog} is returned when configuration fails.
+     */
     @Override
     public Log getInstance(String name) throws LogConfigurationException {
         try {
@@ -89,6 +113,10 @@ public class ChronicleLoggerFactory extends LogFactory {
     //
     // *************************************************************************
 
+    /**
+     * Create or return a cached logger for the given name. The method is
+     * synchronised so that only one instance per name is created.
+     */
     private synchronized Log getLogger(String name) throws IOException {
         ChronicleLogger logger = loggers.get(name);
         if (logger == null) {
