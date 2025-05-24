@@ -141,6 +141,13 @@ import org.slf4j.spi.LocationAwareLogger;
  * <a href="http://commons.apache.org/logging/">Apache Commons Logging</a>'s
  * SimpleLog.
  *
+ * <p>
+ * This version also deals with structured arguments and markers. Structured
+ * parameters are expanded using
+ * {@link MessageFormatter#basicArrayFormat(String, Object[])} and appended to
+ * the log text. Markers supplied with the event are emitted as separate words
+ * before the formatted message.
+ * </p>
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author Scott Sanders
