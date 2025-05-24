@@ -38,6 +38,14 @@ import java.util.logging.Logger;
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
+/**
+ * Tests that {@link ChronicleHandler} writes JUL events to a Chronicle Queue.
+ *
+ * The LogManager loads a properties file to register the handler. The global
+ * {@link DiskSpaceMonitor} is closed before the tests run and the temporary
+ * queue directory is removed after each test.
+ */
+
 public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
     @NotNull
