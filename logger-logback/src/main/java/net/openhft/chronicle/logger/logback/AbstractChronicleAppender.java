@@ -30,11 +30,20 @@ import net.openhft.chronicle.logger.ChronicleLogWriter;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Base appender that writes Logback events to Chronicle queues.
+ * Sub-classes provide the concrete queue configuration.
+ */
 public abstract class AbstractChronicleAppender
         extends ContextAwareBase
         implements Appender<ILoggingEvent> {
 
     private final FilterAttachableImpl<ILoggingEvent> filterAttachable;
+
+    /**
+     * Writer used to publish events to the Chronicle queue.
+     * Created in {@link #start()} via {@link #createWriter()}.
+     */
     protected ChronicleLogWriter writer;
     private String name;
     private boolean started;
@@ -91,12 +100,24 @@ public abstract class AbstractChronicleAppender
         this.wireType = wireType;
     }
 
+    /**
+     * Creates the Chronicle writer used to store events.
+     *
+     * @return a log writer bound to the configured queue
+     * @throws IOException if the writer cannot be created
+     */
     protected abstract ChronicleLogWriter createWriter() throws IOException;
 
     // *************************************************************************
     //
     // *************************************************************************
 
+    /**
+     * Logs a single event using the supplied writer.
+     *
+     * @param event  the event to log
+     * @param writer the target writer
+     */
     protected abstract void doAppend(final ILoggingEvent event, final ChronicleLogWriter writer);
 
     @Override
