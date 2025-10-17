@@ -16,6 +16,7 @@ import org.slf4j.impl.OutputChoice.OutputChoiceType;
  * This class holds configuration values for {@link SimpleLogger}. The
  * values are computed at runtime. See {@link SimpleLogger} documentation for
  * more information.
+ * <p>Properties are loaded from {@value #CONFIGURATION_FILE} on the classpath. The thread context class loader is tried first and the system class loader is used if needed. Missing or malformed entries fall back to the defaults defined in this class.</p>
  *
  *
  * @author Ceki G&uuml;lc&uuml;
@@ -101,6 +102,12 @@ public class SimpleLoggerConfiguration {
             }
         }
     }
+    /**
+     * Load optional properties from {@value #CONFIGURATION_FILE}.
+     * The thread context class loader is queried first and the system
+     * class loader is used if no resource is found. Missing files or
+     * errors result in an empty property set.
+     */
 
     private void loadProperties() {
         // Add props from the resource simplelogger.properties

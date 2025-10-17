@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +22,13 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+/**
+ * Bridge between {@code java.util.logging} and Chronicle.
+ *
+ * <p>Extends {@link Logger} so JUL applications can write to a
+ * {@link ChronicleLogWriter}. The active level is controlled by
+ * {@link ChronicleLogLevel}.</p>
+*/
 class ChronicleLogger extends Logger {
 
     protected final String name;
@@ -84,6 +89,12 @@ class ChronicleLogger extends Logger {
         throw new UnsupportedOperationException("Cannot set parent logger");
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The record is translated to Chronicle format via
+     * {@link #append(LogRecord)}.</p>
+     */
     @Override
     public void log(final LogRecord record) {
         append(record);
@@ -238,6 +249,9 @@ class ChronicleLogger extends Logger {
         return level.isHigherOrEqualTo(this.level);
     }
 
+    /**
+     * Convert a JUL record to Chronicle format if the level permits.
+     */
     @SuppressWarnings("deprecation")
     protected void append(final LogRecord record) {
         final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(record);
@@ -253,6 +267,9 @@ class ChronicleLogger extends Logger {
         }
     }
 
+    /**
+     * Write a message without parameters if the level is enabled.
+     */
     protected void append(final Level level, String msg) {
         final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(level);
         if (isLoggable(clevel)) {
@@ -265,6 +282,9 @@ class ChronicleLogger extends Logger {
         }
     }
 
+    /**
+     * Write a message with parameters if the level is enabled.
+     */
     protected void append(final Level level, String msg, Object... params) {
         final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(level);
         if (isLoggable(clevel)) {
@@ -279,6 +299,9 @@ class ChronicleLogger extends Logger {
         }
     }
 
+    /**
+     * Write a message with a throwable if the level is enabled.
+     */
     protected void append(final Level level, String msg, Throwable thrown) {
         final ChronicleLogLevel clevel = ChronicleHelper.getLogLevel(level);
         if (isLoggable(clevel)) {
@@ -292,6 +315,9 @@ class ChronicleLogger extends Logger {
         }
     }
 
+    /**
+     * Logger implementation that ignores all messages.
+     */
     public static class Null extends ChronicleLogger {
         public static final ChronicleLogger INSTANCE = new Null();
 

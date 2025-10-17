@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +29,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+/**
+ * Base Log4j2 appender that writes events to a Chronicle queue.
+ *
+ * <p>The appender keeps the queue {@code path} and optional wire type
+ * supplied via plugin attributes. These values are used when the writer is
+ * created and must be set before the appender is started.</p>
+ *
+ * <p>Typical subclasses define the plugin attributes {@code name},
+ * {@code path}, {@code wireType} and an optional {@code chronicleCfg}
+ * element.</p>
+ *
+ * <p>Subclasses implement {@link #createWriter()} to provide the concrete
+ * {@link ChronicleLogWriter}. The {@link ChronicleCfg} plugin can be used by
+ * subclasses to expose extra queue configuration attributes.</p>
+ */
 public abstract class AbstractChronicleAppender extends AbstractAppender {
 
     private String path;
@@ -90,6 +103,12 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         this.wireType = wireType;
     }
 
+    /**
+     * Builds the {@link ChronicleLogWriter} for this appender.
+     *
+     * @return writer bound to the configured path and wire type
+     * @throws IOException if the Chronicle queue cannot be opened
+     */
     protected abstract ChronicleLogWriter createWriter() throws IOException;
 
     // *************************************************************************
@@ -146,11 +165,24 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
     @Plugin(
             name = "chronicleCfg",
             category = "Core")
+    /**
+     * Plugin helper used by subclasses to expose queue options.
+     *
+     * <p>The following attributes are supported:</p>
+     * <ul>
+     *     <li>{@code blockSize} - Chronicle queue block size</li>
+     *     <li>{@code bufferCapacity} - memory buffer size</li>
+     *     <li>{@code rollCycle} - queue roll cycle name</li>
+     * </ul>
+     */
     public static final class ChronicleCfg extends LogAppenderConfig {
 
         ChronicleCfg() {
         }
 
+        /**
+         * Builds a configuration from plugin attributes.
+         */
         @PluginFactory
         public static ChronicleCfg create(
                 @PluginAttribute("blockSize") final String blockSize,

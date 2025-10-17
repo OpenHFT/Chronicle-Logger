@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +23,26 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+/**
+ * Base implementation for Chronicle JUL handlers.
+ *
+ * <p>The class holds the Chronicle queue {@code path} and the
+ * {@link ChronicleLogWriter} that forwards log records. Subclasses are
+ * responsible for creating the writer and implementing {@link #doPublish}.</p>
+ *
+ * <p>The level and filter setters are final so that configuration cannot
+ * be altered once the handler is in use.</p>
+ */
 abstract class AbstractChronicleHandler extends Handler {
 
+    /**
+     * Filesystem location of the Chronicle queue.
+     */
     private String path;
+
+    /**
+     * Destination writer used to emit log events.
+     */
     private ChronicleLogWriter writer;
 
     protected AbstractChronicleHandler() {

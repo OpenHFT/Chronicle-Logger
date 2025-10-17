@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +21,14 @@ import net.openhft.chronicle.logger.LogAppenderConfig;
 
 import java.io.IOException;
 
+/**
+ * Log4j 1.x appender that writes events to a Chronicle Queue.
+ * <p>
+ * Configuration is delegated to {@link LogAppenderConfig}.  The setter
+ * methods on this class forward any options to that configuration object
+ * before the queue is created.  When {@link #activateOptions()} is called the
+ * queue is built using the values supplied via these setters.
+ */
 public final class ChronicleAppender extends AbstractChronicleAppender {
 
     private final LogAppenderConfig config;
@@ -35,10 +41,21 @@ public final class ChronicleAppender extends AbstractChronicleAppender {
     // Custom logging options
     // *************************************************************************
 
+    /**
+     * Set the Chronicle Queue block size in bytes.
+     * Call this before {@link #activateOptions()}.
+     *
+     * @param blockSize size of each block in bytes
+     */
     public void setBlockSize(int blockSize) {
         config.setBlockSize(blockSize);
     }
 
+    /**
+     * Configure the internal ring buffer size.
+     *
+     * @param bufferCapacity capacity in bytes
+     */
     public void setBufferCapacity(int bufferCapacity) {
         config.setBufferCapacity(bufferCapacity);
     }
@@ -47,6 +64,12 @@ public final class ChronicleAppender extends AbstractChronicleAppender {
         return config.getRollCycle();
     }
 
+    /**
+     * Select the roll cycle to apply when building the queue.
+     * The value must match an entry in {@code RollCycles}.
+     *
+     * @param rollCycle roll cycle name
+     */
     public void rollCycle(String rollCycle) {
         config.setRollCycle(rollCycle);
     }

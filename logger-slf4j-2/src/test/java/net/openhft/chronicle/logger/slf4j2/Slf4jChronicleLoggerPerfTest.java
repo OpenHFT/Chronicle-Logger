@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +28,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Runs timing tests for the Chronicle logger.
+ *
+ * <p>The tests print:
+ * <ul>
+ * <li>wall-clock time in milli-seconds for one million entries;</li>
+ * <li>average micro-second cost per entry; and</li>
+ * <li>multi-thread throughput across ten threads.</li>
+ * </ul>
+ */
 @Ignore
 public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
 

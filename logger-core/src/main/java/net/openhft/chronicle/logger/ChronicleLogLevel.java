@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +16,20 @@
 package net.openhft.chronicle.logger;
 
 import org.jetbrains.annotations.NotNull;
+
+/**
+ * Levels used by Chronicle Logger.
+ *
+ * <p>Each level has an integer value:
+ * <ul>
+ *     <li>ERROR = 50</li>
+ *     <li>WARN = 40</li>
+ *     <li>INFO = 30</li>
+ *     <li>DEBUG = 20</li>
+ *     <li>TRACE = 10</li>
+ * </ul>
+ * A higher value represents a more severe event.
+ */
 
 public enum ChronicleLogLevel {
     ERROR(50, "ERROR"),
@@ -41,6 +53,13 @@ public enum ChronicleLogLevel {
         this.levelStr = levelStr;
     }
 
+    /**
+     * Parses a textual level name.
+     *
+     * @param levelStr case-insensitive name such as {@code "INFO"}
+     * @return the matching level
+     * @throws IllegalArgumentException if the name is unknown
+     */
     public static ChronicleLogLevel fromStringLevel(final CharSequence levelStr) {
         if (levelStr != null) {
             for (ChronicleLogLevel cll : VALUES) {
@@ -76,6 +95,9 @@ public enum ChronicleLogLevel {
         return true;
     }
 
+    /**
+     * Tests whether this level is at least as severe as the given level.
+     */
     public boolean isHigherOrEqualTo(final ChronicleLogLevel presumablyLowerLevel) {
         return levelInt >= presumablyLowerLevel.levelInt;
     }

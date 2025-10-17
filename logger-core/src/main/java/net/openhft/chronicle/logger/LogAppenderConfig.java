@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +27,12 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Configuration for creating Chronicle Queues used by log appenders.
+ *
+ * <p>Options mirror the {@link SingleChronicleQueueBuilder} settings so that
+ * queues created by {@link #build(String, String)} have a predictable layout.</p>
+ */
 public class LogAppenderConfig {
 
     private static final String[] KEYS = new String[]{
@@ -37,8 +41,13 @@ public class LogAppenderConfig {
             "rollCycle"
     };
 
+    /** Size in bytes of each queue data block. */
     private int blockSize;
+
+    /** Capacity in bytes of the queue write buffer. */
     private long bufferCapacity;
+
+    /** Name of the {@link RollCycles} to use when rolling files. */
     private String rollCycle;
 
     public LogAppenderConfig() {
@@ -80,6 +89,13 @@ public class LogAppenderConfig {
         return KEYS;
     }
 
+    /**
+     * Builds a queue at {@code path} using this configuration.
+     *
+     * @param path directory for the queue
+     * @param wireType name of the wire format or {@code null} for binary
+     * @return the configured queue
+     */
     public ChronicleQueue build(String path, String wireType) {
         WireType wireTypeEnum = wireType != null ? WireType.valueOf(wireType.toUpperCase()) : WireType.BINARY_LIGHT;
         SingleChronicleQueueBuilder builder = ChronicleQueue.singleBuilder(path)
@@ -91,6 +107,10 @@ public class LogAppenderConfig {
         return builder.build();
     }
 
+    /**
+     * Reads configuration values from a {@link Properties} object.
+     * Only keys starting with {@code prefix}, when supplied, are considered.
+     */
     public void setProperties(@NotNull final Properties properties, @Nullable final String prefix) {
         for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
             final String name = entry.getKey().toString();
@@ -106,6 +126,9 @@ public class LogAppenderConfig {
         }
     }
 
+    /**
+     * Sets a single property by reflection. Unknown properties are ignored.
+     */
     public void setProperty(@NotNull final String propName, final String propValue) {
         try {
             final PropertyDescriptor property = new PropertyDescriptor(propName, this.getClass());

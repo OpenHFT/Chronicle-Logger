@@ -12,5 +12,9 @@
  * <p>
  * The classes in this package and any sub-package are subject to
  * changes at any time for any reason.
+ * <p>
+ * Chronicle offers no binary or source compatibility for these
+ * internal types. They may be renamed, removed or altered without
+ * notice, even in a patch release.
  */
 package net.openhft.chronicle.logger.internal;

@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +26,13 @@ import org.apache.log4j.spi.*;
 
 import java.io.IOException;
 
+/**
+ * Base Log4j 1.x appender for Chronicle.
+ *
+ * The class manages filter handling and delegates the actual write
+ * operation to a {@link ChronicleLogWriter} created by
+ * {@link #createWriter()}.
+ */
 public abstract class AbstractChronicleAppender implements Appender, OptionHandler {
 
     protected ChronicleLogWriter writer;
@@ -65,6 +70,10 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         }
     }
 
+    /**
+     * Initialises the writer once the configuration is complete.
+     * The writer is only created when a path has been set.
+     */
     @Override
     public void activateOptions() {
         if (path != null) {
@@ -113,6 +122,9 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         this.wireType = wireType;
     }
 
+    /**
+     * Ensures the writer is closed when the object is collected.
+     */
     @SuppressWarnings({"deprecation", "removal"})
     @Override
     protected void finalize() {
@@ -169,6 +181,9 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     // Chronicle implementation
     // *************************************************************************
 
+    /**
+     * Writes the event to the Chronicle queue after filter evaluation.
+     */
     @Override
     public void doAppend(LoggingEvent event) {
         if (this.writer != null) {
@@ -206,8 +221,17 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     //
     // *************************************************************************
 
+    /**
+     * Creates the {@link ChronicleLogWriter} used by this appender.
+     *
+     * @return the writer instance
+     * @throws IOException if the queue cannot be opened
+     */
     protected abstract ChronicleLogWriter createWriter() throws IOException;
 
+    /**
+     * Closes the writer when the appender is stopped.
+     */
     @Override
     public void close() {
         if (this.writer != null) {

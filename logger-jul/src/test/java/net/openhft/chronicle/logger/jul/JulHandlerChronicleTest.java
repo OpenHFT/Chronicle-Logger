@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +35,14 @@ import java.util.logging.Logger;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
+
+/**
+ * Tests that {@link ChronicleHandler} writes JUL events to a Chronicle Queue.
+ *
+ * The LogManager loads a properties file to register the handler. The global
+ * {@link DiskSpaceMonitor} is closed before the tests run and the temporary
+ * queue directory is removed after each test.
+ */
 
 public class JulHandlerChronicleTest extends JulHandlerTestBase {
 

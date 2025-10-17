@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +24,11 @@ import java.util.logging.LogManager;
 import static net.openhft.chronicle.logger.ChronicleLogConfig.PLACEHOLDER_END;
 import static net.openhft.chronicle.logger.ChronicleLogConfig.PLACEHOLDER_START;
 
+/**
+ * Reads handler specific properties from the {@link LogManager} using the
+ * handler's class name as the property prefix. Values may contain
+ * {@code ${key}} placeholders which are resolved from system properties.
+ */
 public class ChronicleHandlerConfig {
     private final LogManager manager;
     private final String prefix;
@@ -71,6 +74,13 @@ public class ChronicleHandlerConfig {
     //
     // *************************************************************************
 
+    /**
+     * Look up a property by name.
+     *
+     * @param name         full property key
+     * @param defaultValue value to return when the key is absent
+     * @return trimmed value with placeholders resolved
+     */
     String getStringProperty(String name, String defaultValue) {
         String val = this.manager.getProperty(name);
         if (val == null) {
@@ -80,6 +90,13 @@ public class ChronicleHandlerConfig {
         return resolvePlaceholder(val.trim());
     }
 
+    /**
+     * Parse an integer property.
+     *
+     * @param name         full property key
+     * @param defaultValue value to return on error
+     * @return parsed number or {@code defaultValue}
+     */
     int getIntProperty(String name, int defaultValue) {
         String val = getStringProperty(name, null);
         if (val == null) {
@@ -92,6 +109,13 @@ public class ChronicleHandlerConfig {
         }
     }
 
+    /**
+     * Parse a boolean property. Recognises "true", "false", "1" and "0".
+     *
+     * @param name         full property key
+     * @param defaultValue value to return on error
+     * @return parsed flag or {@code defaultValue}
+     */
     boolean getBooleanProperty(String name, boolean defaultValue) {
         String val = getStringProperty(name, null);
         if (val == null) {
@@ -109,6 +133,13 @@ public class ChronicleHandlerConfig {
         return defaultValue;
     }
 
+    /**
+     * Instantiate a {@link Filter} from a class name.
+     *
+     * @param name         full property key returning the class name
+     * @param defaultValue filter to use when instantiation fails
+     * @return new filter or {@code defaultValue}
+     */
     Filter getFilterProperty(String name, Filter defaultValue) {
         String val = getStringProperty(name, null);
 
@@ -118,14 +149,18 @@ public class ChronicleHandlerConfig {
                 return (Filter) clz.getConstructor().newInstance();
             }
         } catch (Exception ex) {
-            // We got one of a variety of exceptions in creating the
-            // class or creating an instance.
-            // Drop through.
+            // ignore and return default
         }
-        // We got an exception.  Return the defaultValue.
         return defaultValue;
     }
 
+    /**
+     * Parse a {@link Level} from configuration.
+     *
+     * @param name         full property key
+     * @param defaultValue value to return on error
+     * @return parsed level or {@code defaultValue}
+     */
     Level getLevelProperty(String name, Level defaultValue) {
         String val = getStringProperty(name, null);
 
@@ -136,6 +171,12 @@ public class ChronicleHandlerConfig {
         return l != null ? l : defaultValue;
     }
 
+    /**
+     * Replace {@code ${key}} tokens with matching system properties.
+     *
+     * @param placeholder raw value possibly containing tokens
+     * @return value with substitutions applied
+     */
     private String resolvePlaceholder(String placeholder) {
         int startIndex = 0;
         int endIndex = 0;

@@ -11,6 +11,6 @@
  *  </ul>
  * <p>
  * The classes in this package and any sub-package are subject to
- * changes at any time for any reason.
+ * changes at any time for any reason. API stability is not guaranteed.
  */
 package net.openhft.chronicle.logger.log4j2.internal;

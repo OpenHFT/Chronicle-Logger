@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +24,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 
+/**
+ * Writes log entries to a {@link ChronicleQueue}.
+ * Each log event is serialised to the queue using the configured wire type.
+ */
 public class DefaultChronicleLogWriter implements ChronicleLogWriter {
 
     private static final ThreadLocal<Boolean> REENTRANCY_FLAG = ThreadLocal.withInitial(() -> false);
@@ -33,6 +35,11 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
 
     private final ChronicleQueue cq;
 
+    /**
+     * Creates a writer that appends log entries to the supplied queue.
+     *
+     * @param cq the target queue, not {@code null}
+     */
     public DefaultChronicleLogWriter(@NotNull ChronicleQueue cq) {
         this.cq = cq;
     }
@@ -42,6 +49,15 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
         cq.close();
     }
 
+    /**
+     * Records a log event without a throwable or arguments.
+     *
+     * @param level      the severity level
+     * @param timestamp  epoch time in milliseconds
+     * @param threadName name of the emitting thread
+     * @param loggerName name of the logger
+     * @param message    formatted message text
+     */
     @Override
     public void write(
             final ChronicleLogLevel level,
@@ -52,6 +68,17 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
         write(level, timestamp, threadName, loggerName, message, null);
     }
 
+    /**
+     * Records a log event with optional throwable and arguments.
+     *
+     * @param level      the severity level
+     * @param timestamp  epoch time in milliseconds
+     * @param threadName name of the emitting thread
+     * @param loggerName name of the logger
+     * @param message    formatted message text
+     * @param throwable  associated exception, may be {@code null}
+     * @param args       application-specific values to serialise
+     */
     @Override
     public void write(
             final ChronicleLogLevel level,

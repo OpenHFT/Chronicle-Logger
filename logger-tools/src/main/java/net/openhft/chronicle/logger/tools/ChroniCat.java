@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +17,22 @@ package net.openhft.chronicle.logger.tools;
 
 import net.openhft.chronicle.wire.WireType;
 
+/**
+ * Command line tool that prints the contents of a Chronicle log and exits.
+ *
+ * <p>Usage: {@code ChroniCat [-w <wireType>] <path>}.</p>
+ * <p>Example: {@code ChroniCat -w TEXT /var/log/myApp}</p>
+ */
 public final class ChroniCat {
 
     private ChroniCat() {
     }
 
+    /**
+     * Start the tool.
+     *
+     * @param args optional {@code -w <wireType>} then the path to the log directory
+     */
     public static void main(String[] args) {
         try {
 

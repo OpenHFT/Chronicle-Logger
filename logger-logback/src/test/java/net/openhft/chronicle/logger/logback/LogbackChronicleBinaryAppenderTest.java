@@ -1,7 +1,5 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
+ *  Copyright 2014-2025 chronicle.software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +36,10 @@ import java.util.List;
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
+/**
+ * Validates that the Logback binary appender records each field in the
+ * chronicle queue and handles exceptions correctly.
+ */
 public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
@@ -57,6 +59,12 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
         IOTools.deleteDirWithFiles(rootPath());
     }
 
+    /**
+     * Writes log events and confirms that each queue entry contains the
+     * expected fields and throwable data.
+     *
+     * @throws IOException if the queue directory cannot be created
+     */
     @Test
     public void testBinaryAppender() throws IOException {
         final String testId = "binary-chronicle";
