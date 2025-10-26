@@ -1,0 +1,53 @@
+=== CLG-DOC-001 Adopt Nine-Box Requirements Catalogue
+
+Date:: 2025-10-17
+Context::
+* Peer Chronicle projects now maintain structured requirement catalogues with Nine-Box identifiers.
+* Chronicle Logger previously relied on an unstructured bullet list, making cross-repo traceability difficult.
+Decision Statement::
+* Chronicle Logger adopts the Nine-Box schema (FN, NF-P, NF-S, NF-O, DOC, OPS, TEST, RISK) with scope prefix `CLG` for all requirements and decisions.
+Alternatives Considered::
+* Free-form numbering – low effort, but tooling and audits cannot map entries consistently.
+* Per-module numbering – splits visibility across bindings and complicates shared obligations.
+Rationale for Decision::
+* Aligns Chronicle Logger with company-wide guidance and enables cross-linking with test and benchmark artefacts.
+* Simplifies audit checks for requirement coverage.
+Impact & Consequences::
+* Requirements catalogue rewritten with tagged tables; future edits must preserve identifier uniqueness.
+Notes/Links::
+* link:project-requirements.adoc[Requirements Catalogue]
+
+=== CLG-OPS-002 Enforce Explicit Queue Path Configuration
+
+Date:: 2025-10-17
+Context::
+* Legacy bindings silently created queue directories under the JVM working folder when configuration was missing.
+* Operators requested fail-fast behaviour to avoid log loss and unpredictable disk usage.
+Decision Statement::
+* All bindings must require an explicit Chronicle Queue path from configuration and fail fast with a warning if the directory is absent or unwritable.
+Alternatives Considered::
+* Auto-create directories – masks configuration errors and may violate deployment policies.
+* Fallback to in-memory logging – deviates from Chronicle Logger’s persistence contract.
+Rationale for Decision::
+* Prevents silent data loss, aligns with operational expectations in regulated environments.
+Impact & Consequences::
+* Tests updated to expect exceptions on missing paths.
+* Deployment run-books must provision directories before service start.
+Notes/Links::
+* link:project-requirements.adoc#clg-nf-o-002[CLG-NF-O-002]
+
+=== CLG-NF-P-003 Chronicle Log Reader Allocation Budget
+
+Date:: 2025-10-17
+Context::
+* Field users reported GC spikes when tailing high-volume logs using older reader implementations.
+Decision Statement::
+* `ChronicleLogReader` must remain allocation-neutral during steady-state reads and expose benchmarks that enforce the constraint.
+Alternatives Considered::
+* Accept sporadic allocations – risks latency regressions and contradicts Chronicle low-GC ethos.
+Rationale for Decision::
+* Sustains deterministic behaviour for monitoring tools and aligns with performance requirements.
+Impact & Consequences::
+* Reader implementation audited; benchmarks now gate memory usage.
+Notes/Links::
+* link:project-requirements.adoc#clg-nf-p-003[CLG-NF-P-003]

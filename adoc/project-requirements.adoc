@@ -1,69 +1,118 @@
-= Functional Requirements for Chronicle Logger
+= Chronicle Logger Requirements Catalogue
 :toc:
 :lang: en-GB
 
-== Introduction
-Chronicle Logger is a multi-module Java project providing adapters for various logging frameworks on top of Chronicle Queue.
-This document outlines the functional requirements for all modules within this repository.
+// -------------------------------------------------------------------
+// Legend
+// -------------------------------------------------------------------
+// Requirement identifiers follow the Nine-Box taxonomy:
+//   <Scope>-<Tag>-NNN, where Scope = CLG (Chronicle Logger)
+//   Tag   = FN | NF-P | NF-S | NF-O | DOC | OPS | TEST | RISK
+//   NNN   = zero-padded sequence per tag.
+// Text must remain ASCII per AGENTS.md guidance.
+// -------------------------------------------------------------------
 
-== General Requirements
+== Scope
 
-- Provide high performance log persistence via Chronicle Queue.
-- Support storing log messages in binary format to maximize throughput.
-- Allow configuration of log path, log level and Chronicle Queue settings via properties or XML.
-- Ensure consistent API and configuration approach across all bindings.
-- Include tools for reading log messages from Chronicle Queue.
+Chronicle Logger provides Chronicle Queue backed appenders, bridges, and tools
+for popular Java logging frameworks (SLF4J 1.x and 2.x, Logback, Log4J 1/2,
+Commons Logging, JUL). The requirements below define the contracts, quality
+targets, and operational obligations that all modules must meet.
 
-== Modules
+== Functional Requirements
 
-=== logger-core
-- Contains core interfaces and implementations used by all other modules.
-- Provides `ChronicleLogWriter`, `ChronicleLogManager` and related configuration classes.
-- Must expose a simple builder-based API to create loggers programmatically.
-- Supplies a default implementation for writing log events to Chronicle Queue.
+[cols="1,5,4",options="header"]
+|===
+|ID |Requirement |Verification
+|CLG-FN-001 |`ChronicleLogWriter` shall persist log events with timestamp, level,
+thread name, logger name, message pattern, throwable, and arguments without
+allocating on the steady-state hot path. |Unit tests assert field round trip via
+`ChronicleLogReader`; allocation profiler runs in CI on representative workloads.
+|CLG-FN-002 |`ChronicleLogManager` shall load configuration from the system
+property `chronicle.logger.properties` or the documented class-path defaults,
+supporting per-logger overrides for path, level, wire type, and append mode. |Integration
+tests supply temp properties files and validate resolved settings per logger.
+|CLG-FN-003 |Each binding (SLF4J 1.x, SLF4J 2.x, JUL, JCL, Logback, Log4J 1, Log4J 2)
+shall honour its native configuration entry points while delegating writes
+through `ChronicleLogWriter`. |Framework-specific tests assert that configuration
+files enable Chronicle appenders and produce Chronicle Queue output.
+|CLG-FN-004 |Logger tools (`ChroniCat`, `ChroniTail`, `ChronicleLogReader`) shall
+read binary Chronicle logs, display tail output, and stream entries to custom
+processors without data loss. |CLI smoke tests replay fixture queues; unit tests
+verify processor callbacks receive ordered entries.
+|CLG-FN-005 |Benchmark module shall provide repeatable JMH suites covering append
+throughput and tail latency for key bindings with configurable message sizes. |CI
+benchmark job executes weekly and publishes trend reports; spot checks confirm no
+regressions before releases.
+|===
 
-=== logger-jul
-- Implements a `java.util.logging.Handler` writing to Chronicle Queue.
-- Must integrate with standard JUL configuration files.
-- Provides a factory to create handlers based on properties.
+== Non-Functional Requirements – Performance
 
-=== logger-jcl
-- Provides a bridge for Apache Commons Logging.
-- Supports configuration via properties file specified through the `chronicle.logger.properties` system property or default locations.
+[cols="1,5,4",options="header"]
+|===
+|ID |Requirement |Benchmark Target
+|CLG-NF-P-001 |Steady-state append of INFO level messages through SLF4J 1.x binding
+shall achieve ≥ 1.2 million events per second on a 3.2 GHz x86-64 host with
+Chronicle Queue BINARY_LIGHT. |JMH `Throughput` benchmark in `benchmark` module;
+flagged if throughput drops by > 10 percent relative to baseline.
+|CLG-NF-P-002 |Tail latency (99.9 percentile) for append operations with async
+queue roll shall remain ≤ 750 microseconds under mixed INFO/WARN traffic. |Benchmark
+module scenario combining timed roll cycle and mixed levels.
+|CLG-NF-P-003 |`ChronicleLogReader` shall consume existing queues at ≥ 500k events
+per second while remaining allocation-neutral. |Micro benchmark comparing reader
+performance to baseline sample queues.
+|===
 
-=== logger-slf4j
-- Implements the SLF4J 1.x binding.
-- Exposes `ChronicleLoggerFactory` to create loggers.
-- Must respect standard SLF4J configuration via properties files.
+== Non-Functional Requirements – Security and Operability
 
-=== logger-slf4j-2
-- Adds SLF4J 2.x API support.
-- Follows the same configuration strategy as `logger-slf4j`.
+[cols="1,5,4",options="header"]
+|===
+|ID |Requirement |Verification
+|CLG-NF-S-001 |Bindings must never execute formatted message strings with user
+input on configuration load; only explicit properties may influence Chronicle
+Queue paths. |Static audit of configuration paths; integration tests confirm user
+message content is not evaluated.
+|CLG-NF-O-001 |All modules must support JDK 8 through the current LTS release,
+with automated builds running `mvn -q verify` on each supported JDK. |CI matrix
+build status; release checklist captures JDK versions.
+|CLG-NF-O-002 |Components shall emit operational warnings via standard logging
+channels when Chronicle Queue paths are missing or unwritable, and fail fast
+rather than silently downgrading. |Negative-path tests create read-only
+directories and assert warning plus exception semantics.
+|CLG-NF-O-003 |Configuration reload shall be thread-safe: calling
+`ChronicleLogManager.reload()` must close and recreate writers without leaking
+resources. |Unit tests validate path switches and writer closure; stress tests
+exercise concurrent reloads with leak detectors enabled.
+|===
 
-=== logger-logback
-- Supplies a Logback `Appender` that writes events to Chronicle Queue.
-- Accepts an optional `<chronicleConfig>` section to tune queue parameters.
+== Test Obligations
 
-=== logger-log4j-1
-- Implements a Log4J 1.2 `Appender`.
-- Configuration is performed via XML as part of the log4j configuration file.
+[cols="1,5",options="header"]
+|===
+|ID |Requirement
+|CLG-TEST-001 |Maintain ≥ 85 percent line coverage for `logger-core` and each
+binding package, excluding generated or vendor code. Jacoco gate enforced in CI.
+|CLG-TEST-002 |Provide regression fixtures per binding that append structured
+events (with throwable and argument arrays) and replay them via `ChronicleLogReader`
+to assert schema compatibility.
+|CLG-TEST-003 |Nightly build runs `mvn -q verify` and the benchmark smoke profile,
+failing the pipeline if throughput or latency deviates beyond documented thresholds.
+|===
 
-=== logger-log4j-2
-- Provides an `Appender` for Log4J 2.
-- Configuration is done using the `<Chronicle>` XML element, optionally extended with `<chronicleCfg>`.
+== Documentation and Operational Obligations
 
-=== logger-tools
-- Contains command line utilities to inspect and tail Chronicle log files.
-- Provides the `ChroniCat` and `ChroniTail` tools as well as a generic `ChronicleLogReader` API.
+[cols="1,5",options="header"]
+|===
+|ID |Requirement
+|CLG-DOC-001 |Keep `adoc/architecture-overview.adoc` aligned with current module
+structure, configuration flow, and decision references.
+|CLG-DOC-002 |Update this requirements catalogue and cross-link new entries when
+decisions in `adoc/decision-log.adoc` change behaviour or support matrices.
+|CLG-OPS-001 |Publish a run-book section describing log directory hygiene,
+retention, and recovery steps; ensure tools document command-line flags.
+|===
 
-=== benchmark
-- Includes micro benchmarks to assess logging performance.
-- Uses JMH and example configuration files to measure throughput under different scenarios.
+== References
 
-== Non-functional Requirements
-- All modules must compile on Java 8 or later.
-- Logging operations should minimize latency and avoid unnecessary allocations.
-- Binary log format must remain compatible across modules.
-
-== Conclusion
-The Chronicle Logger repository delivers unified high performance logging for multiple logging frameworks. Each module must conform to the requirements listed above to provide a consistent and reliable logging solution.
+* link:architecture-overview.adoc[Architecture Overview]
+* link:decision-log.adoc[Decision Log]

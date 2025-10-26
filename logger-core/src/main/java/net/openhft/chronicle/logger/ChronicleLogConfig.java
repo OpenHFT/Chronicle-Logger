@@ -81,7 +81,7 @@ public class ChronicleLogConfig {
 
     /**
      * Builds a configuration from the supplied properties.
-     * Placeholders are resolved in the same manner as when reading from a file.
+     * Callers are responsible for resolving any placeholders in advance.
      *
      * @param properties key value pairs following the chronicle logger scheme
      * @return parsed configuration

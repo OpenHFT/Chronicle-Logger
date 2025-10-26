@@ -31,7 +31,7 @@ public interface ChronicleLogWriter extends Closeable {
      * @param timestamp  epoch time in milliseconds
      * @param threadName name of the calling thread
      * @param loggerName name of the logger
-     * @param message    formatted message text
+     * @param message    message text or pattern without arguments
      */
     void write(
             ChronicleLogLevel level,
@@ -49,7 +49,7 @@ public interface ChronicleLogWriter extends Closeable {
      * @param timestamp  epoch time in milliseconds
      * @param threadName name of the calling thread
      * @param loggerName name of the logger
-     * @param message    formatted message text
+     * @param message    message pattern that may contain "{}" placeholders
      * @param throwable  optional stack trace to record, may be {@code null}
      * @param args       optional argument objects, may be empty
      */
