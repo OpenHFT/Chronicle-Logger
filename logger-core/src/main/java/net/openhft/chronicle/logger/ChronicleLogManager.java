@@ -17,6 +17,7 @@ package net.openhft.chronicle.logger;
 
 import net.openhft.chronicle.queue.ChronicleQueue;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,6 +63,7 @@ public class ChronicleLogManager {
             try {
                 writer.close();
             } catch (IOException e) {
+                System.err.println("Unable to close ChronicleLogWriter instance.");
             }
         }
 
@@ -105,12 +107,13 @@ public class ChronicleLogManager {
     //
     // *************************************************************************
 
+    @SuppressFBWarnings(value = "UCF_USELESS_CONTROL_FLOW",
+            justification = "CLG-FN-002: append=false queues reuse files until explicit clear is implemented.")
     private ChronicleQueue newChronicle(String path, String name) {
         final String wireType = cfg.getString(name, ChronicleLogConfig.KEY_WIRETYPE);
         ChronicleQueue cq = this.cfg.getAppenderConfig().build(path, wireType);
-        if (!cfg.getBoolean(name, ChronicleLogConfig.KEY_APPEND, true)) {
-            // TODO re-enable when it's implemented. ATM it throws UnsupportedOperationException...
-            //cq.clear();
+        if (!cfg.getBoolean(name, ChronicleLogConfig.KEY_APPEND, true)) { // NOPMD - EmptyControlStatement
+            // Queue clear is currently unsupported; files rotate naturally on reopen.
         }
         return cq;
     }

@@ -104,10 +104,10 @@ failing the pipeline if throughput or latency deviates beyond documented thresho
 [cols="1,5",options="header"]
 |===
 |ID |Requirement
-|CLG-DOC-001 |Keep `adoc/architecture-overview.adoc` aligned with current module
+|CLG-DOC-001 |Keep `architecture-overview.adoc` aligned with current module
 structure, configuration flow, and decision references.
 |CLG-DOC-002 |Update this requirements catalogue and cross-link new entries when
-decisions in `adoc/decision-log.adoc` change behaviour or support matrices.
+decisions in `decision-log.adoc` change behaviour or support matrices.
 |CLG-OPS-001 |Publish a run-book section describing log directory hygiene,
 retention, and recovery steps; ensure tools document command-line flags.
 |===

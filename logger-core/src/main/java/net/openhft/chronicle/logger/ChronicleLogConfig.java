@@ -15,6 +15,9 @@
  */
 package net.openhft.chronicle.logger;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -104,23 +107,20 @@ public class ChronicleLogConfig {
     public static ChronicleLogConfig load(String cfgPath) {
         try {
             return load(getConfigurationStream(cfgPath));
-        } catch (Exception e) {
-            // is printing stack trace and falling through really the right thing
-            // to do here, or should it throw out?
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("Unable to load chronicle-logger configuration.");
+            return null;
         }
-
-        return null;
     }
 
     private static ChronicleLogConfig load(InputStream in) {
         if (in != null) {
             Properties properties = new Properties();
 
-            try {
-                properties.load(in);
-                in.close();
+            try (InputStream input = in) {
+                properties.load(input);
             } catch (IOException ignored) {
+                System.err.println("Unable to load chronicle-logger configuration.");
             }
 
             return load(interpolate(properties));
@@ -128,10 +128,7 @@ public class ChronicleLogConfig {
         } else {
             System.err.printf(
                     "Unable to configure chronicle-logger:"
-                            + " configuration file not found in default locations (%s)"
-                            + " or System property (%s) is not defined \n",
-                    DEFAULT_CFG_LOCATIONS.toString(),
-                    KEY_PROPERTIES_FILE);
+                            + " configuration file not found in default locations or system property is not defined.%n");
         }
 
         return null;
@@ -161,15 +158,15 @@ public class ChronicleLogConfig {
             if (is != null) {
                 return load(is);
             }
-        } catch (Exception e) {
-            // is printing stack trace and falling through really the right thing
-            // to do here, or should it throw out?
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("Unable to load chronicle-logger configuration.");
         }
 
         return null;
     }
 
+    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+            justification = "CLG-FN-002 allows operators to point at explicit configuration files.")
     private static InputStream getConfigurationStream(String cfgPath) throws IOException {
         if (cfgPath != null) {
             final File cfgFile = new File(cfgPath);
@@ -239,7 +236,7 @@ public class ChronicleLogConfig {
     // *************************************************************************
 
     public LogAppenderConfig getAppenderConfig() {
-        return this.appenderConfig;
+        return this.appenderConfig.copy();
     }
 
     public String getString(final String shortName) {
@@ -258,23 +255,26 @@ public class ChronicleLogConfig {
         return val;
     }
 
+    @CheckForNull
     public Boolean getBoolean(final String shortName) {
-        return getBoolean(shortName, null);
+        String prop = getString(shortName);
+        return prop != null ? Boolean.valueOf(Boolean.parseBoolean(prop)) : null;
     }
 
     public Boolean getBoolean(final String shortName, boolean defval) {
         String prop = getString(shortName);
-        return (prop != null) ? "true".equalsIgnoreCase(prop) : defval;
+        return Boolean.valueOf(prop != null ? Boolean.parseBoolean(prop) : defval);
     }
 
+    @CheckForNull
     public Boolean getBoolean(final String loggerName, final String shortName) {
         String prop = getString(loggerName, shortName);
-        return (prop != null) ? "true".equalsIgnoreCase(prop) : null;
+        return prop != null ? Boolean.valueOf(Boolean.parseBoolean(prop)) : null;
     }
 
     public Boolean getBoolean(final String loggerName, final String shortName, boolean defval) {
         String prop = getString(loggerName, shortName);
-        return (prop != null) ? "true".equalsIgnoreCase(prop) : defval;
+        return Boolean.valueOf(prop != null ? Boolean.parseBoolean(prop) : defval);
     }
 
     public Integer getInteger(final String shortName) {

@@ -17,6 +17,7 @@ package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.logger.LogAppenderConfig;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Filter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -122,15 +123,15 @@ public class ChronicleHandlerConfig {
             return defaultValue;
         }
 
-        val = val.toLowerCase();
-        if (val.equals("true") || val.equals("1")) {
+        String trimmed = val.trim();
+        if ("1".equals(trimmed)) {
             return true;
-
-        } else if (val.equals("false") || val.equals("0")) {
+        }
+        if ("0".equals(trimmed)) {
             return false;
         }
 
-        return defaultValue;
+        return Boolean.parseBoolean(trimmed);
     }
 
     /**
@@ -143,15 +144,16 @@ public class ChronicleHandlerConfig {
     Filter getFilterProperty(String name, Filter defaultValue) {
         String val = getStringProperty(name, null);
 
-        try {
-            if (val != null) {
-                Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(val);
-                return (Filter) clz.getConstructor().newInstance();
-            }
-        } catch (Exception ex) {
-            // ignore and return default
+        if (val == null) {
+            return defaultValue;
         }
-        return defaultValue;
+        try {
+            Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(val);
+            return (Filter) clz.getDeclaredConstructor().newInstance();
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException
+                 | IllegalAccessException | InvocationTargetException e) {
+            return defaultValue;
+        }
     }
 
     /**
@@ -167,8 +169,11 @@ public class ChronicleHandlerConfig {
         if (val == null) {
             return defaultValue;
         }
-        Level l = Level.parse(val.trim());
-        return l != null ? l : defaultValue;
+        try {
+            return Level.parse(val.trim());
+        } catch (IllegalArgumentException e) {
+            return defaultValue;
+        }
     }
 
     /**

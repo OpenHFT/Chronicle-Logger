@@ -36,17 +36,11 @@ import java.util.logging.LogRecord;
 abstract class AbstractChronicleHandler extends Handler {
 
     /**
-     * Filesystem location of the Chronicle queue.
-     */
-    private String path;
-
-    /**
      * Destination writer used to emit log events.
      */
     private ChronicleLogWriter writer;
 
     protected AbstractChronicleHandler() {
-        this.path = null;
         this.writer = null;
     }
 
@@ -60,7 +54,7 @@ abstract class AbstractChronicleHandler extends Handler {
             try {
                 this.writer.close();
             } catch (IOException e) {
-                // Ignore
+                System.err.println("Unable to close Chronicle JUL handler writer.");
             }
         }
     }

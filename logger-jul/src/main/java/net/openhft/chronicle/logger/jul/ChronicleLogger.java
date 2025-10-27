@@ -15,9 +15,11 @@
  */
 package net.openhft.chronicle.logger.jul;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -42,12 +44,13 @@ class ChronicleLogger extends Logger {
      * @param name of the logger
      * @param level of the logger
      */
+    @SuppressFBWarnings(value = "CT_CONSTRUCTOR_THROW", justification = "CLG-FN-003: constructor fails fast when Chronicle level mapping is invalid.")
     ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
-        super(name, null);
+        super(Objects.requireNonNull(name, "logger name"), null);
 
-        this.writer = writer;
+        this.writer = Objects.requireNonNull(writer, "writer");
         this.name = name;
-        this.level = level;
+        this.level = Objects.requireNonNull(level, "level");
 
         /*
          * Set level of super class using final method
@@ -319,10 +322,27 @@ class ChronicleLogger extends Logger {
      * Logger implementation that ignores all messages.
      */
     public static class Null extends ChronicleLogger {
+        private static final ChronicleLogWriter NOOP_WRITER = new ChronicleLogWriter() {
+            @Override
+            public void write(ChronicleLogLevel level, long timestamp, String threadName, String loggerName, String message) {
+                // no-op
+            }
+
+            @Override
+            public void write(ChronicleLogLevel level, long timestamp, String threadName, String loggerName, String message, Throwable throwable, Object... args) {
+                // no-op
+            }
+
+            @Override
+            public void close() {
+                // no-op
+            }
+        };
+
         public static final ChronicleLogger INSTANCE = new Null();
 
         private Null() {
-            super(null, null, null);
+            super(NOOP_WRITER, "chronicle.null", ChronicleLogLevel.DEBUG);
         }
 
         @Override

@@ -12,7 +12,7 @@ image:https://img.shields.io/github/license/OpenHFT/Chronicle-Logger[GitHub]
 image:https://img.shields.io/badge/release%20notes-subscribe-brightgreen[link="https://chronicle.software/release-notes/"]
 image:https://sonarcloud.io/api/project_badges/measure?project=OpenHFT_Chronicle-Logger&metric=alert_status[link="https://sonarcloud.io/dashboard?id=OpenHFT_Chronicle-Logger"]
 
-image::docs/images/Logger_line.png[width=20%]
+image::src/main/docs/images/Logger_line.png[width=20%]
 
 toc::[]
 
@@ -359,4 +359,3 @@ mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniTail" -
 
 * We also provide generic interface to interact with logs, `net.openhft.chronicle.logger.tools.ChronicleLogReader`,
 allowing arbitrary operations with decoded log lines. Please refer to javadocs.
-

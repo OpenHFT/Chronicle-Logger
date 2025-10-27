@@ -23,8 +23,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.beans.PropertyDescriptor;
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -86,7 +89,7 @@ public class LogAppenderConfig {
     // *************************************************************************
 
     public String[] keys() {
-        return KEYS;
+        return KEYS.clone();
     }
 
     /**
@@ -97,14 +100,25 @@ public class LogAppenderConfig {
      * @return the configured queue
      */
     public ChronicleQueue build(String path, String wireType) {
-        WireType wireTypeEnum = wireType != null ? WireType.valueOf(wireType.toUpperCase()) : WireType.BINARY_LIGHT;
+        WireType wireTypeEnum = wireType != null
+                ? WireType.valueOf(wireType.toUpperCase(Locale.ROOT))
+                : WireType.BINARY_LIGHT;
         SingleChronicleQueueBuilder builder = ChronicleQueue.singleBuilder(path)
                 .wireType(wireTypeEnum)
                 .blockSize(blockSize)
                 .bufferCapacity(bufferCapacity);
-        if (rollCycle != null)
-            builder.rollCycle(RollCycles.valueOf(rollCycle));
+        if (rollCycle != null) {
+            builder.rollCycle(RollCycles.valueOf(rollCycle.toUpperCase(Locale.ROOT)));
+        }
         return builder.build();
+    }
+
+    LogAppenderConfig copy() {
+        LogAppenderConfig clone = new LogAppenderConfig();
+        clone.setBlockSize(this.blockSize);
+        clone.setBufferCapacity(this.bufferCapacity);
+        clone.setRollCycle(this.rollCycle);
+        return clone;
     }
 
     /**
@@ -150,7 +164,10 @@ public class LogAppenderConfig {
             } else if (type == String.class) {
                 method.invoke(this, propValue);
             }
-        } catch (Exception e) {
+        } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
+            throw new IllegalArgumentException("Unable to set Chronicle Logger property '" + propName + "'", e);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid numeric value for '" + propName + "': " + propValue, e);
         }
     }
 }
