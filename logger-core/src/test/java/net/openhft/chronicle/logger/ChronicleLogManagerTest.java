@@ -5,20 +5,25 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
+import net.openhft.chronicle.wire.WireType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Covers configuration loading and reload semantics for {@link ChronicleLogManager}.
@@ -102,13 +107,86 @@ public class ChronicleLogManagerTest {
         assertQueueContainsOnlyMessage(firstPath, "first-message");
     }
 
-    private void reloadWithConfig(Path rootPath, Path loggerPath) throws IOException {
-        writeConfig(rootPath, loggerPath);
-        System.setProperty("chronicle.logger.properties", configFile.toString());
-        manager.reload();
+    @Test
+    public void appliesAppenderSettingsIncludingRollCycle() throws Exception {
+        Path rootPath = Files.createDirectories(tempDir.resolve("root"));
+        Path loggerPath = Files.createDirectories(tempDir.resolve("json-app"));
+
+        Properties props = defaultConfig(rootPath, loggerPath);
+        props.setProperty("chronicle.logger.root.cfg.rollCycle", "FAST_DAILY");
+        props.setProperty("chronicle.logger.root.cfg.blockSize", "4096");
+        props.setProperty("chronicle.logger.root.cfg.bufferCapacity", "8192");
+        props.setProperty("chronicle.logger.app.append", "false");
+        props.setProperty("chronicle.logger.app.wireType", "JSON");
+
+        reloadWithProperties(props);
+
+        ChronicleLogWriter writer = manager.getWriter("app");
+        assertTrue("Expected default writer implementation", writer instanceof DefaultChronicleLogWriter);
+        DefaultChronicleLogWriter defaultWriter = (DefaultChronicleLogWriter) writer;
+        assertEquals(WireType.JSON, defaultWriter.getWireType());
+        writer.close();
+
+        LogAppenderConfig appenderConfig = manager.cfg().getAppenderConfig();
+        assertEquals("FAST_DAILY", appenderConfig.getRollCycle());
+        assertEquals(4096, appenderConfig.getBlockSize());
+        assertEquals(8192L, appenderConfig.getBufferCapacity());
     }
 
-    private void writeConfig(Path rootPath, Path loggerPath) throws IOException {
+    @Test
+    public void throwsWhenNoPathConfigured() throws Exception {
+        Properties props = new Properties();
+        props.setProperty("chronicle.logger.root.level", "info");
+        props.setProperty("chronicle.logger.app.level", "info");
+
+        reloadWithProperties(props);
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> manager.getWriter("app"));
+        assertTrue(ex.getMessage().contains("chronicle.logger.root.path"));
+    }
+
+    @Test
+    public void clearHandlesIOExceptionFromWriter() throws Exception {
+        Path rootPath = Files.createDirectories(tempDir.resolve("root"));
+        Path loggerPath = Files.createDirectories(tempDir.resolve("closing"));
+
+        Properties props = defaultConfig(rootPath, loggerPath);
+        reloadWithProperties(props);
+
+        ChronicleLogWriter writer = manager.getWriter("app");
+        writer.close();
+
+        Field writersField = ChronicleLogManager.class.getDeclaredField("writers");
+        writersField.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        Map<String, ChronicleLogWriter> writers = (Map<String, ChronicleLogWriter>) writersField.get(manager);
+        writers.put("failing", new ChronicleLogWriter() {
+            @Override
+            public void write(ChronicleLogLevel level, long timestamp, String threadName, String loggerName, String message) {
+                // not used
+            }
+
+            @Override
+            public void write(ChronicleLogLevel level, long timestamp, String threadName, String loggerName, String message, Throwable throwable, Object... args) {
+                // not used
+            }
+
+            @Override
+            public void close() throws IOException {
+                throw new IOException("simulated failure");
+            }
+        });
+
+        manager.clear();
+        assertTrue("all writers should be cleared despite close failure", writers.isEmpty());
+    }
+
+    private void reloadWithConfig(Path rootPath, Path loggerPath) throws IOException {
+        Properties props = defaultConfig(rootPath, loggerPath);
+        reloadWithProperties(props);
+    }
+
+    private Properties defaultConfig(Path rootPath, Path loggerPath) throws IOException {
         Files.createDirectories(rootPath);
         Files.createDirectories(loggerPath);
 
@@ -118,9 +196,15 @@ public class ChronicleLogManagerTest {
         props.setProperty("chronicle.logger.app.path", loggerPath.toString());
         props.setProperty("chronicle.logger.app.level", "info");
 
+        return props;
+    }
+
+    private void reloadWithProperties(Properties props) throws IOException {
         try (Writer out = Files.newBufferedWriter(configFile, StandardCharsets.ISO_8859_1)) {
             props.store(out, "test configuration");
         }
+        System.setProperty("chronicle.logger.properties", configFile.toString());
+        manager.reload();
     }
 
     private static void assertQueueContainsOnlyMessage(Path queuePath, String expectedMessage) {

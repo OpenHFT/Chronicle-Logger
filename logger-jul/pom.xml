@@ -39,6 +39,11 @@
             <artifactId>chronicle-logger-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>${spotbugs.annotations.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
             <scope>test</scope>
@@ -124,8 +129,8 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jacoco.line.coverage>0.0</jacoco.line.coverage>
-                <jacoco.branch.coverage>0.0</jacoco.branch.coverage>
+                <jacoco.line.coverage>0.7656</jacoco.line.coverage>
+                <jacoco.branch.coverage>0.6600</jacoco.branch.coverage>
             </properties>
             <build>
                 <plugins>

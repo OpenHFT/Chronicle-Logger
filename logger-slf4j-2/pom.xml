@@ -124,8 +124,8 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jacoco.line.coverage>0.0</jacoco.line.coverage>
-                <jacoco.branch.coverage>0.0</jacoco.branch.coverage>
+                <jacoco.line.coverage>0.6350</jacoco.line.coverage>
+                <jacoco.branch.coverage>0.4122</jacoco.branch.coverage>
             </properties>
             <build>
                 <plugins>
