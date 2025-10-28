@@ -57,7 +57,8 @@ public class ChronicleHandlerConfigurationTest extends JulHandlerTestBase {
     public void loadsConfigurationAndPersistsLogEntries() throws Exception {
         ChronicleHandlerConfig config = new ChronicleHandlerConfig(ChronicleHandler.class);
 
-        assertEquals("path placeholder should resolve", tempDir.resolve("config-test").toString(), config.getString("path", null));
+        String expectedPath = tempDir.resolve("config-test").toAbsolutePath().normalize().toString();
+        assertEquals("path placeholder should resolve", expectedPath, config.getString("path", null));
         assertEquals(Level.FINE, config.getLevel("level", Level.INFO));
         assertTrue("boolean value of 1 should map to true", config.getBoolean("enabled", false));
         assertEquals("TEXT", config.getString("wireType", "BINARY_LIGHT"));
