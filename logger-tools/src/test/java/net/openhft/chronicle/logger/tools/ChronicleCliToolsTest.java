@@ -9,8 +9,9 @@ import net.openhft.chronicle.wire.WireType;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -22,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 public class ChronicleCliToolsTest {
 
     @Test
-    public void chroniCatPrintsUsageWhenNoArgumentsProvided() {
+    public void chroniCatPrintsUsageWhenNoArgumentsProvided() throws UnsupportedEncodingException {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -36,7 +37,7 @@ public class ChronicleCliToolsTest {
     }
 
     @Test
-    public void chroniCatPrintsRecordsFromQueue() throws Exception {
+    public void chroniCatPrintsRecordsFromQueue() throws IOException {
         Path queuePath = Files.createTempDirectory("chroni-cat");
         try {
             try (ChronicleQueue queue = ChronicleQueue.singleBuilder(queuePath).wireType(WireType.BINARY_LIGHT).build()) {
@@ -69,7 +70,7 @@ public class ChronicleCliToolsTest {
     }
 
     @Test
-    public void chroniCatPrintsStackTraceWhenWireTypeMissing() {
+    public void chroniCatPrintsStackTraceWhenWireTypeMissing() throws UnsupportedEncodingException {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -83,7 +84,7 @@ public class ChronicleCliToolsTest {
     }
 
     @Test
-    public void chroniTailPrintsUsageWhenNoArgumentsProvided() {
+    public void chroniTailPrintsUsageWhenNoArgumentsProvided() throws UnsupportedEncodingException {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
