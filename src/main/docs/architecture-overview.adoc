@@ -32,11 +32,12 @@ link:decision-log.adoc#clg-ops-002[CLG-OPS-002]).
 
 == Chronicle Queue Write Path
 
-1. Framework binding receives a log call and checks the requested level against its cached minimum.
-2. When enabled, the binding forwards the event to `ChronicleLogWriter`, supplying timestamp, thread name, logger name, message pattern, optional throwable, and argument array (link:project-requirements.adoc#clg-fn-001[CLG-FN-001]).
-3. `ChronicleLogWriter` serialises the data into a Chronicle Queue using the configured wire type, avoiding heap allocation on the hot path (link:project-requirements.adoc#clg-nf-p-001[CLG-NF-P-001]).
+. Framework binding receives a log call and checks the requested level against its cached minimum.
+. When enabled, the binding forwards the event to `ChronicleLogWriter`, supplying timestamp, thread name, logger name, message pattern, optional throwable, and argument array (link:project-requirements.adoc#clg-fn-001[CLG-FN-001]).
+. `ChronicleLogWriter` serialises the data into a Chronicle Queue using the configured wire type, avoiding heap allocation on the hot path (link:project-requirements.adoc#clg-nf-p-001[CLG-NF-P-001]).
 
-Tailers and readers consume the queue either within the same JVM or from external processes. `ChronicleLogReader` provides a stable record schema and zero-garbage consumption (link:project-requirements.adoc#clg-nf-p-003[CLG-NF-P-003]).
+Tailers and readers consume the queue either within the same JVM or from external processes.
+`ChronicleLogReader` provides a stable record schema and zero-garbage consumption (link:project-requirements.adoc#clg-nf-p-003[CLG-NF-P-003]).
 
 == Tooling and Observability
 

@@ -89,7 +89,8 @@ exercise concurrent reloads with leak detectors enabled.
 |===
 |ID |Requirement
 |CLG-TEST-001 |Maintain ≥ 80 percent line coverage for `logger-core` and each
-binding package, excluding generated or vendor code. Jacoco gate enforced in CI.
+binding package, excluding generated or vendor code.
+Jacoco gate enforced in CI.
 |CLG-TEST-002 |Provide regression fixtures per binding that append structured
 events (with throwable and argument arrays) and replay them via `ChronicleLogReader`
 to assert schema compatibility.

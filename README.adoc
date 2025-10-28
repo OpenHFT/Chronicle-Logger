@@ -7,7 +7,7 @@ Chronicle Software
 
 image:https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger/badge.svg[caption="",link=https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger]
 image:https://javadoc.io/badge2/net.openhft/chronicle-logger/javadoc.svg[link="https://www.javadoc.io/doc/net.openhft/chronicle-logger/latest/index.html"]
-//image:https://javadoc-badge.appspot.com/net.openhft/chronicle-wire.svg?label=javadoc[JavaDoc, link=https://www.javadoc.io/doc/net.openhft/chronicle-logger]
+// image:https://javadoc-badge.appspot.com/net.openhft/chronicle-wire.svg?label=javadoc[JavaDoc, link=https://www.javadoc.io/doc/net.openhft/chronicle-logger]
 image:https://img.shields.io/github/license/OpenHFT/Chronicle-Logger[GitHub]
 image:https://img.shields.io/badge/release%20notes-subscribe-brightgreen[link="https://chronicle.software/release-notes/"]
 image:https://sonarcloud.io/api/project_badges/measure?project=OpenHFT_Chronicle-Logger&metric=alert_status[link="https://sonarcloud.io/dashboard?id=OpenHFT_Chronicle-Logger"]
@@ -97,7 +97,8 @@ Additionally, underlying Chronicle Queue can be tweaked by providing the followi
 * `blockSize`
 * `rollCycle`
 
-If set, these will override the default Chronicle Queue configuration. _Use with caution!_
+If set, these will override the default Chronicle Queue configuration.
+_Use with caution!_
 
 *Please Note*
 
@@ -337,7 +338,7 @@ chronicle.logger.logger_1.level   = info
 * `net.openhft.chronicle.logger.tools.ChroniCat` - tool to dump log contents to STDOUT
 
 [source]
----
+'''
 ChroniCat [-w <wireType>] <path>
     <wireType> - wire format, default BINARY_LIGHT
     <path>     - base path of Chronicle Logs storage
