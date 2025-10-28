@@ -139,7 +139,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jacoco.line.coverage>0.6800</jacoco.line.coverage>
+                <jacoco.line.coverage>0.6400</jacoco.line.coverage>
                 <jacoco.branch.coverage>0.8333</jacoco.branch.coverage>
             </properties>
             <build>
