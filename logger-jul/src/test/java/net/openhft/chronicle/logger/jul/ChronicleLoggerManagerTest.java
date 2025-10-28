@@ -2,7 +2,6 @@ package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogManager;
-import net.openhft.chronicle.logger.ChronicleLogWriter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

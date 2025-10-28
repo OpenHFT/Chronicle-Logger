@@ -20,14 +20,14 @@
 
 <configuration>
 
-    <appender name  = "STDOUT"
-              class = "ch.qos.logback.core.ConsoleAppender">
+    <appender name="STDOUT"
+              class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <Pattern>%d %contextName [%t] %level %logger{36} - %msg%n</Pattern>
         </encoder>
     </appender>
-    <appender name  = "BINARY-CHRONICLE"
-              class = "net.openhft.chronicle.logger.logback.ChronicleAppender">
+    <appender name="BINARY-CHRONICLE"
+              class="net.openhft.chronicle.logger.logback.ChronicleAppender">
         <path>${java.io.tmpdir}/chronicle-logback/binary-chronicle</path>
         <includeCallerData>false</includeCallerData>
         <includeMappedDiagnosticContext>false</includeMappedDiagnosticContext>
@@ -45,11 +45,11 @@
     <!-- ******************************************************************* -->
 
     <logger name="net.openhft" level="WARN" additivity="false">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <root level="DEBUG">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </root>
 
 </configuration>

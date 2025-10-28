@@ -24,15 +24,15 @@
  */
 package org.slf4j.impl;
 
-import java.io.PrintStream;
-import java.util.Date;
-
 import org.slf4j.Logger;
 import org.slf4j.event.LoggingEvent;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MarkerIgnoringBase;
 import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.spi.LocationAwareLogger;
+
+import java.io.PrintStream;
+import java.util.Date;
 
 /**
  * Lightweight {@link Logger} writing to a single {@link PrintStream}. The
@@ -102,9 +102,13 @@ public class SimpleLogger extends MarkerIgnoringBase {
         CONFIG_PARAMS.init();
     }
 
-    /** The current log level */
+    /**
+     * The current log level
+     */
     protected int currentLogLevel = LOG_LEVEL_INFO;
-    /** The short name of this simple log instance */
+    /**
+     * The short name of this simple log instance
+     */
     private transient String shortLogName = null;
 
     /**
@@ -163,12 +167,9 @@ public class SimpleLogger extends MarkerIgnoringBase {
      * This is our internal implementation for logging regular
      * (non-parameterized) log messages.
      *
-     * @param level
-     *            One of the LOG_LEVEL_XXX constants defining the log level
-     * @param message
-     *            The message itself
-     * @param t
-     *            The exception whose stack trace should be logged
+     * @param level   One of the LOG_LEVEL_XXX constants defining the log level
+     * @param message The message itself
+     * @param t       The exception whose stack trace should be logged
      */
     private void log(int level, String message, Throwable t) {
         if (!isLevelEnabled(level)) {
@@ -223,16 +224,16 @@ public class SimpleLogger extends MarkerIgnoringBase {
 
     protected String renderLevel(int level) {
         switch (level) {
-        case LOG_LEVEL_TRACE:
-            return "TRACE";
-        case LOG_LEVEL_DEBUG:
-            return ("DEBUG");
-        case LOG_LEVEL_INFO:
-            return "INFO";
-        case LOG_LEVEL_WARN:
-            return CONFIG_PARAMS.warnLevelString;
-        case LOG_LEVEL_ERROR:
-            return "ERROR";
+            case LOG_LEVEL_TRACE:
+                return "TRACE";
+            case LOG_LEVEL_DEBUG:
+                return ("DEBUG");
+            case LOG_LEVEL_INFO:
+                return "INFO";
+            case LOG_LEVEL_WARN:
+                return CONFIG_PARAMS.warnLevelString;
+            case LOG_LEVEL_ERROR:
+                return "ERROR";
         }
         throw new IllegalStateException("Unrecognized level [" + level + "]");
     }
@@ -289,8 +290,7 @@ public class SimpleLogger extends MarkerIgnoringBase {
     /**
      * Is the given log level currently enabled?
      *
-     * @param logLevel
-     *            is this level enabled?
+     * @param logLevel is this level enabled?
      */
     protected boolean isLevelEnabled(int logLevel) {
         // log level are numerically ordered so can use simple numeric
@@ -298,7 +298,9 @@ public class SimpleLogger extends MarkerIgnoringBase {
         return (logLevel >= currentLogLevel);
     }
 
-    /** Are {@code trace} messages currently enabled? */
+    /**
+     * Are {@code trace} messages currently enabled?
+     */
     public boolean isTraceEnabled() {
         return isLevelEnabled(LOG_LEVEL_TRACE);
     }
@@ -335,12 +337,16 @@ public class SimpleLogger extends MarkerIgnoringBase {
         formatAndLog(LOG_LEVEL_TRACE, format, argArray);
     }
 
-    /** Log a message of level TRACE, including an exception. */
+    /**
+     * Log a message of level TRACE, including an exception.
+     */
     public void trace(String msg, Throwable t) {
         log(LOG_LEVEL_TRACE, msg, t);
     }
 
-    /** Are {@code debug} messages currently enabled? */
+    /**
+     * Are {@code debug} messages currently enabled?
+     */
     public boolean isDebugEnabled() {
         return isLevelEnabled(LOG_LEVEL_DEBUG);
     }
@@ -377,12 +383,16 @@ public class SimpleLogger extends MarkerIgnoringBase {
         formatAndLog(LOG_LEVEL_DEBUG, format, argArray);
     }
 
-    /** Log a message of level DEBUG, including an exception. */
+    /**
+     * Log a message of level DEBUG, including an exception.
+     */
     public void debug(String msg, Throwable t) {
         log(LOG_LEVEL_DEBUG, msg, t);
     }
 
-    /** Are {@code info} messages currently enabled? */
+    /**
+     * Are {@code info} messages currently enabled?
+     */
     public boolean isInfoEnabled() {
         return isLevelEnabled(LOG_LEVEL_INFO);
     }
@@ -419,12 +429,16 @@ public class SimpleLogger extends MarkerIgnoringBase {
         formatAndLog(LOG_LEVEL_INFO, format, argArray);
     }
 
-    /** Log a message of level INFO, including an exception. */
+    /**
+     * Log a message of level INFO, including an exception.
+     */
     public void info(String msg, Throwable t) {
         log(LOG_LEVEL_INFO, msg, t);
     }
 
-    /** Are {@code warn} messages currently enabled? */
+    /**
+     * Are {@code warn} messages currently enabled?
+     */
     public boolean isWarnEnabled() {
         return isLevelEnabled(LOG_LEVEL_WARN);
     }
@@ -461,12 +475,16 @@ public class SimpleLogger extends MarkerIgnoringBase {
         formatAndLog(LOG_LEVEL_WARN, format, argArray);
     }
 
-    /** Log a message of level WARN, including an exception. */
+    /**
+     * Log a message of level WARN, including an exception.
+     */
     public void warn(String msg, Throwable t) {
         log(LOG_LEVEL_WARN, msg, t);
     }
 
-    /** Are {@code error} messages currently enabled? */
+    /**
+     * Are {@code error} messages currently enabled?
+     */
     public boolean isErrorEnabled() {
         return isLevelEnabled(LOG_LEVEL_ERROR);
     }
@@ -503,7 +521,9 @@ public class SimpleLogger extends MarkerIgnoringBase {
         formatAndLog(LOG_LEVEL_ERROR, format, argArray);
     }
 
-    /** Log a message of level ERROR, including an exception. */
+    /**
+     * Log a message of level ERROR, including an exception.
+     */
     public void error(String msg, Throwable t) {
         log(LOG_LEVEL_ERROR, msg, t);
     }

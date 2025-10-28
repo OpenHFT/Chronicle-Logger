@@ -30,24 +30,24 @@ import java.util.Properties;
 
 /**
  * Reads logger settings from a properties file.
- *
+ * <p>
  * The loader checks the system property {@code chronicle.logger.properties} and
  * then the files {@code chronicle-logger.properties} and
  * {@code config/chronicle-logger.properties} on the class path. Each value may
  * contain {@code ${name}} placeholders that reference other keys or system
  * properties. The token {@code ${pid}} expands to the process id.
- *
+ * <p>
  * Configuration example:
- *
+ * <p>
  * # default
  * chronicle.logger.base = ${java.io.tmpdir}/chronicle/${pid}
- *
+ * <p>
  * # logger : root
  * chronicle.logger.root.path      = ${chronicle.logger.base}/root
  * chronicle.logger.root.level     = debug
  * chronicle.logger.root.shortName = false
  * chronicle.logger.root.append    = false
- *
+ * <p>
  * # logger : Logger1
  * chronicle.logger.Logger1.path = ${chronicle.logger.base}/logger_1
  * chronicle.logger.Logger1.level = info

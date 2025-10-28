@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 
 /**
  * Tests that {@link ChronicleHandler} writes JUL events to a Chronicle Queue.
- *
+ * <p>
  * The LogManager loads a properties file to register the handler. The global
  * {@link DiskSpaceMonitor} is closed before the tests run and the temporary
  * queue directory is removed after each test.

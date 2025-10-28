@@ -22,12 +22,12 @@ import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.beans.PropertyDescriptor;
 import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -44,13 +44,19 @@ public class LogAppenderConfig {
             "rollCycle"
     };
 
-    /** Size in bytes of each queue data block. */
+    /**
+     * Size in bytes of each queue data block.
+     */
     private int blockSize;
 
-    /** Capacity in bytes of the queue write buffer. */
+    /**
+     * Capacity in bytes of the queue write buffer.
+     */
     private long bufferCapacity;
 
-    /** Name of the {@link RollCycles} to use when rolling files. */
+    /**
+     * Name of the {@link RollCycles} to use when rolling files.
+     */
     private String rollCycle;
 
     public LogAppenderConfig() {
@@ -95,7 +101,7 @@ public class LogAppenderConfig {
     /**
      * Builds a queue at {@code path} using this configuration.
      *
-     * @param path directory for the queue
+     * @param path     directory for the queue
      * @param wireType name of the wire format or {@code null} for binary
      * @return the configured queue
      */

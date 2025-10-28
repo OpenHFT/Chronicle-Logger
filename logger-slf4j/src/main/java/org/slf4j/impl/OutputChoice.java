@@ -47,16 +47,16 @@ class OutputChoice {
 
     PrintStream getTargetPrintStream() {
         switch (outputChoiceType) {
-        case SYS_OUT:
-            return System.out;
-        case SYS_ERR:
-            return System.err;
-        case CACHED_SYS_ERR:
-        case CACHED_SYS_OUT:
-        case FILE:
-            return targetPrintStream;
-        default:
-            throw new IllegalArgumentException();
+            case SYS_OUT:
+                return System.out;
+            case SYS_ERR:
+                return System.err;
+            case CACHED_SYS_ERR:
+            case CACHED_SYS_OUT:
+            case FILE:
+                return targetPrintStream;
+            default:
+                throw new IllegalArgumentException();
         }
     }
 }

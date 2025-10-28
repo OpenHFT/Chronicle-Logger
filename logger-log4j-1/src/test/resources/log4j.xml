@@ -25,8 +25,8 @@
     <!--                                                                     -->
     <!-- ******************************************************************* -->
 
-    <appender name  = "CHRONICLE"
-              class = "net.openhft.chronicle.logger.log4j1.ChronicleAppender">
+    <appender name="CHRONICLE"
+              class="net.openhft.chronicle.logger.log4j1.ChronicleAppender">
         <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/chronicle"/>
     </appender>
 
@@ -34,10 +34,10 @@
     <!-- STDOUT                                                              -->
     <!-- ******************************************************************* -->
 
-    <appender name  = "STDOUT"
-              class = "org.apache.log4j.ConsoleAppender">
+    <appender name="STDOUT"
+              class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
+            <param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n"/>
         </layout>
     </appender>
 
@@ -56,8 +56,8 @@
     </logger>
 
     <root>
-        <level value="debug" />
-        <appender-ref ref="STDOUT" />
+        <level value="debug"/>
+        <appender-ref ref="STDOUT"/>
     </root>
 
 </log4j:configuration>

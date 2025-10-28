@@ -15,9 +15,9 @@
  */
 package net.openhft.chronicle.logger;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,7 +95,7 @@ public class ChronicleLogManager {
         final String path = cfg.getString(name, ChronicleLogConfig.KEY_PATH);
         if (path != null) {
             // Creating a Queue takes some time. Other threads might be blocked for longer periods.
-            return writers.computeIfAbsent(path, p-> new DefaultChronicleLogWriter(newChronicle(p, name)));
+            return writers.computeIfAbsent(path, p -> new DefaultChronicleLogWriter(newChronicle(p, name)));
         } else {
             throw new IllegalArgumentException(
                     "chronicle.logger.root.path is not defined, chronicle.logger." + name + ".path is not defined"

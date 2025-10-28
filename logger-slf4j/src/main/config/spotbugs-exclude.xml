@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter
-    xmlns="https://github.com/spotbugs/filter/3.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/4.8.0/spotbugs/etc/findbugsfilter.xsd">
+        xmlns="https://github.com/spotbugs/filter/3.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/4.8.0/spotbugs/etc/findbugsfilter.xsd">
 
 
     <Match>
@@ -17,7 +17,9 @@
             <Bug pattern="CT_CONSTRUCTOR_THROW"/>
         </Or>
         <Or>
-            <Comment>SLF4J upstream implementation retained verbatim (CLG-FN-003); behaviour changes must be coordinated upstream.</Comment>
+            <Comment>SLF4J upstream implementation retained verbatim (CLG-FN-003); behaviour changes must be coordinated
+                upstream.
+            </Comment>
         </Or>
     </Match>
 
@@ -31,7 +33,9 @@
             <Bug pattern="PATH_TRAVERSAL_IN"/>
         </Or>
         <Or>
-            <Comment>SLF4J upstream implementation retained verbatim (CLG-FN-003); behaviour changes must be coordinated upstream.</Comment>
+            <Comment>SLF4J upstream implementation retained verbatim (CLG-FN-003); behaviour changes must be coordinated
+                upstream.
+            </Comment>
         </Or>
     </Match>
 
@@ -42,7 +46,9 @@
             <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
         </Or>
         <Or>
-            <Comment>SLF4J upstream implementation retained verbatim (CLG-FN-003); behaviour changes must be coordinated upstream.</Comment>
+            <Comment>SLF4J upstream implementation retained verbatim (CLG-FN-003); behaviour changes must be coordinated
+                upstream.
+            </Comment>
         </Or>
     </Match>
 

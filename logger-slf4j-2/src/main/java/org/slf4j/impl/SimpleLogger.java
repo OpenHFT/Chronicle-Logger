@@ -24,11 +24,6 @@
  */
 package org.slf4j.impl;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import net.openhft.chronicle.core.Jvm;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -38,6 +33,11 @@ import org.slf4j.helpers.LegacyAbstractLogger;
 import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.helpers.NormalizedParameters;
 import org.slf4j.spi.LocationAwareLogger;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -192,9 +192,13 @@ public class SimpleLogger extends LegacyAbstractLogger {
         CONFIG_PARAMS.init();
     }
 
-    /** The current log level */
+    /**
+     * The current log level
+     */
     protected int currentLogLevel = LOG_LEVEL_INFO;
-    /** The short name of this simple log instance */
+    /**
+     * The short name of this simple log instance
+     */
     private transient String shortLogName = null;
 
     /**
@@ -328,27 +332,37 @@ public class SimpleLogger extends LegacyAbstractLogger {
         return (logLevel >= currentLogLevel);
     }
 
-    /** Are {@code trace} messages currently enabled? */
+    /**
+     * Are {@code trace} messages currently enabled?
+     */
     public boolean isTraceEnabled() {
         return isLevelEnabled(LOG_LEVEL_TRACE);
     }
 
-    /** Are {@code debug} messages currently enabled? */
+    /**
+     * Are {@code debug} messages currently enabled?
+     */
     public boolean isDebugEnabled() {
         return isLevelEnabled(LOG_LEVEL_DEBUG);
     }
 
-    /** Are {@code info} messages currently enabled? */
+    /**
+     * Are {@code info} messages currently enabled?
+     */
     public boolean isInfoEnabled() {
         return isLevelEnabled(LOG_LEVEL_INFO);
     }
 
-    /** Are {@code warn} messages currently enabled? */
+    /**
+     * Are {@code warn} messages currently enabled?
+     */
     public boolean isWarnEnabled() {
         return isLevelEnabled(LOG_LEVEL_WARN);
     }
 
-    /** Are {@code error} messages currently enabled? */
+    /**
+     * Are {@code error} messages currently enabled?
+     */
     public boolean isErrorEnabled() {
         return isLevelEnabled(LOG_LEVEL_ERROR);
     }
@@ -358,11 +372,11 @@ public class SimpleLogger extends LegacyAbstractLogger {
      * {@link org.slf4j.helpers.AbstractLogger#handleNormalizedLoggingCall(Level, Marker, String, Object[], Throwable) AbstractLogger#handleNormalizedLoggingCall}
      * }
      *
-     * @param level the SLF4J level for this event
-     * @param marker  The marker to be used for this event, may be null.
+     * @param level          the SLF4J level for this event
+     * @param marker         The marker to be used for this event, may be null.
      * @param messagePattern The message pattern which will be parsed and formatted
-     * @param arguments  the array of arguments to be formatted, may be null
-     * @param throwable  The exception whose stack trace should be logged, may be null
+     * @param arguments      the array of arguments to be formatted, may be null
+     * @param throwable      The exception whose stack trace should be logged, may be null
      */
     @Override
     protected void handleNormalizedLoggingCall(Level level, Marker marker, String messagePattern, Object[] arguments, Throwable throwable) {

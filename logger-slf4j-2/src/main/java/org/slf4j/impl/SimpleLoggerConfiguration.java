@@ -1,5 +1,8 @@
 package org.slf4j.impl;
 
+import org.slf4j.helpers.Util;
+import org.slf4j.impl.OutputChoice.OutputChoiceType;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -9,22 +12,17 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
-import org.slf4j.helpers.Util;
-import org.slf4j.impl.OutputChoice.OutputChoiceType;
-
 /**
  * This class holds configuration values for {@link SimpleLogger}. The
  * values are computed at runtime. See {@link SimpleLogger} documentation for
  * more information.
  * <p>Properties are loaded from {@value #CONFIGURATION_FILE} on the classpath. The thread context class loader is tried first and the system class loader is used if needed. Missing or malformed entries fall back to the defaults defined in this class.</p>
  *
- *
  * @author Ceki G&uuml;lc&uuml;
  * @author Scott Sanders
  * @author Rod Waldhoff
  * @author Robert Burrell Donkin
  * @author C&eacute;drik LIME
- *
  * @since 1.7.25
  */
 public class SimpleLoggerConfiguration {
@@ -47,6 +45,7 @@ public class SimpleLoggerConfiguration {
 
     /**
      * See https://jira.qos.ch/browse/SLF4J-499
+     *
      * @since 1.7.33 and 2.0.0-alpha6
      */
     private static final boolean SHOW_THREAD_ID_DEFAULT = false;
@@ -102,6 +101,7 @@ public class SimpleLoggerConfiguration {
             }
         }
     }
+
     /**
      * Load optional properties from {@value #CONFIGURATION_FILE}.
      * The thread context class loader is queried first and the system

@@ -14,10 +14,8 @@
 
 == Scope
 
-Chronicle Logger provides Chronicle Queue backed appenders, bridges, and tools
-for popular Java logging frameworks (SLF4J 1.x and 2.x, Logback, Log4J 1/2,
-Commons Logging, JUL). The requirements below define the contracts, quality
-targets, and operational obligations that all modules must meet.
+Chronicle Logger provides Chronicle Queue backed appenders, bridges, and tools for popular Java logging frameworks (SLF4J 1.x and 2.x, Logback, Log4J 1/2, Commons Logging, JUL).
+The requirements below define the contracts, quality targets, and operational obligations that all modules must meet.
 
 == Functional Requirements
 

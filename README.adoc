@@ -21,16 +21,16 @@ toc::[]
 === Version
 
 [#image-maven]
-[caption="", link=https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger]
+[caption="",link=https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger]
 image::https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger/badge.svg[]
 
 == Overview
 
-Today most programs require the logging of large amounts of data, especially in trading systems where this is a 
-regulatory requirement. Loggers can affect your system performance, therefore logging is sometimes kept to a minimum.
+Today most programs require the logging of large amounts of data, especially in trading systems where this is a regulatory requirement.
+Loggers can affect your system performance, therefore logging is sometimes kept to a minimum.
 With Chronicle Logger we aim to minimize logging overhead, freeing your system to focus on the business logic.
 
-Chronicle logger supports most of the standard logging API’s including: 
+Chronicle logger supports most of the standard logging API’s including:
 
 * <<chronicle-logger-slf4j, SLF4J>>
 * <<chronicle-logger-logback, Logback>>
@@ -39,24 +39,24 @@ Chronicle logger supports most of the standard logging API’s including:
 * <<chronicle-logger-jul, Java Util Logging>>
 * <<chronicle-logger-jcl, Apache Common Logging>>
 
-Chronicle Logger is able to aggregate all your logs to a central store. It has built-in resilience, so you will never
-lose messages.
+Chronicle Logger is able to aggregate all your logs to a central store.
+It has built-in resilience, so you will never lose messages.
 
-At the moment, Chronicle Logger only supports binary logs, which is beneficial for write speed but requires extra tools
-to read them. We provide some basic #tools[tools] for that and an API to develop your own.
+At the moment, Chronicle Logger only supports binary logs, which is beneficial for write speed but requires extra tools to read them.
+We provide some basic #tools[tools] for that and an API to develop your own.
 
 NOTE: `chronicle-logger-log4j-2` does not suffer from the log4shell vulnerability as it does not reuse the Log4J2 message formatting machinery
 
 == How it works
 
-Chronicle Logger is built on top of Chronicle Queue. It provides multiple logging frameworks' adapters and is a low latency,
-high throughput synchronous writer. Unlike asynchronous writers, you will always see the last message before
-the application dies, as usually it is the last message that is the most valuable.
+Chronicle Logger is built on top of Chronicle Queue.
+It provides multiple logging frameworks' adapters and is a low latency, high throughput synchronous writer.
+Unlike asynchronous writers, you will always see the last message before the application dies, as usually it is the last message that is the most valuable.
 
 == Performance
 
-We have run a benchmark to compare Chronicle Logger with normal file appender of Log4J2 (the quickest of mainstream
-logging frameworks). Results below:
+We have run a benchmark to compare Chronicle Logger with normal file appender of Log4J2 (the quickest of mainstream logging frameworks).
+Results below:
 
 |===
 |*Benchmark*                           |*Mode*|*Samples*|*Score*|*Score error*|*Units*
@@ -68,6 +68,7 @@ logging frameworks). Results below:
 |===
 
 Test Hardware:
+
 [source]
 ----
 Intel Core i7-6700K
@@ -77,10 +78,9 @@ Intel Core i7-6700K
 
 == Bindings
 
-All config files for bindings support limited variable interpolation where the variables are replaced with the 
-corresponding values from the same configuration file or the system properties. We have one predefined variable, `pid`,
-so `${pid}`  will replaced by current process id. System properties have the precedence in placeholder replacement 
-so they can be overriden.
+All config files for bindings support limited variable interpolation where the variables are replaced with the corresponding values from the same configuration file or the system properties.
+We have one predefined variable, `pid`, so `${pid}`  will replaced by current process id.
+System properties have the precedence in placeholder replacement so they can be overriden.
 
 The following can be configured for each logger:
 
@@ -101,30 +101,28 @@ If set, these will override the default Chronicle Queue configuration. _Use with
 
 *Please Note*
 
-  * Loggers are not hierarchically grouped so `my.domain.package.MyClass1` and `my.domain` are two distinct entities.
-  * The `path` is used to track the underlying Chronicle Queue so having two loggers configured with the same `path` is unsupported
+* Loggers are not hierarchically grouped so `my.domain.package.MyClass1` and `my.domain` are two distinct entities.
+* The `path` is used to track the underlying Chronicle Queue so having two loggers configured with the same `path` is unsupported
 
 === chronicle-logger-slf4j
 
 The chronicle-logger-slf4j is an implementation of SLF4J API > 1.7.x.
 
-To configure this sl4j binding you need to specify the location of a properties files (file-system or classpath) 
-via system properties:
+To configure this sl4j binding you need to specify the location of a properties files (file-system or classpath) via system properties:
 
 [source]
 ----
 -Dchronicle.logger.properties=${pathToYourPropertiesFile}
 ----
 
-Alternatively, you could use one of the default locations: `chronicle-logger.properties` 
+Alternatively, you could use one of the default locations: `chronicle-logger.properties`
 or `config/chronicle-logger.properties` located in the classpath.
 
-The default configuration is build using properties with `chronicle.logger.root` as prefix but you can also set 
-per-logger settings i.e. `chronicle.logger.L1.*`
+The default configuration is build using properties with `chronicle.logger.root` as prefix but you can also set per-logger settings i.e. `chronicle.logger.L1.*`
 
 ==== Config Example
 
-[source, properties]
+[source,properties]
 ----
 # shared properties
 chronicle.base                        = ${java.io.tmpdir}/chronicle-logs/${pid}
@@ -147,8 +145,8 @@ chronicle.logger.L1.level             = info
 The chronicle-logger-logback module provides appender for Logback: `net.openhft.chronicle.logger.logback.ChronicleAppender`
 
 ==== Config Example
-  
-[source, xml]
+
+[source,xml]
 ----
 <appender name  = "ChronicleAppender"
         class = "net.openhft.chronicle.logger.logback.ChronicleAppender">
@@ -171,7 +169,7 @@ We provide log4j1 appender `net.openhft.chronicle.logger.log4j1.ChronicleAppende
 
 ==== Config Example
 
-[source, xml]
+[source,xml]
 ----
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
@@ -228,12 +226,12 @@ We provide log4j1 appender `net.openhft.chronicle.logger.log4j1.ChronicleAppende
 
 === chronicle-logger-log4j-2
 
-Use `<Chronicle/>` element in `<appenders/>` to create Chronicle appender. Optional `<chronicleCfg/>` element can be
-used to tweak underlying Chronicle Queue.
+Use `<Chronicle/>` element in `<appenders/>` to create Chronicle appender.
+Optional `<chronicleCfg/>` element can be used to tweak underlying Chronicle Queue.
 
 ==== Config Example
 
-[source, xml]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration packages="net.openhft.chronicle.logger,net.openhft.chronicle.logger.log4j2">
@@ -289,7 +287,7 @@ Use `net.openhft.chronicle.logger.jul.ChronicleHandler` as a handler
 
 ==== Config Example
 
-[source, properties]
+[source,properties]
 ----
 handlers=java.util.logging.ConsoleHandler, net.openhft.chronicle.logger.jul.ChronicleHandler
 
@@ -311,19 +309,19 @@ chronicle.useParentHandlers=false
 
 === chronicle-logger-jcl
 
-Similar to slf4j, to configure this binding you need to specify the location of a properties files (file-system or classpath) 
-via system properties:
+Similar to slf4j, to configure this binding you need to specify the location of a properties files (file-system or classpath) via system properties:
+
 [source]
 ----
 -Dchronicle.logger.properties=${pathToYourPropertiesFile}
 ----
 
-Alternatively, you could use one of the default locations: `chronicle-logger.properties` 
+Alternatively, you could use one of the default locations: `chronicle-logger.properties`
 or `config/chronicle-logger.properties` located in the classpath.
 
 ==== Config Example
 
-[source, properties]
+[source,properties]
 ----
 chronicle.logger.base             = ${java.io.tmpdir}/chronicle-jcl
 chronicle.logger.root.path        = ${chronicle.logger.base}/root
@@ -337,14 +335,14 @@ chronicle.logger.logger_1.level   = info
 === Tools
 
 * `net.openhft.chronicle.logger.tools.ChroniCat` - tool to dump log contents to STDOUT
+
 [source]
 ---
 ChroniCat [-w <wireType>] <path>
     <wireType> - wire format, default BINARY_LIGHT
     <path>     - base path of Chronicle Logs storage
 
-mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniCat" -Dexec.args="..."
----
+mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniCat" -Dexec.args="..." ---
 
 * `net.openhft.chronicle.logger.tools.ChroniTail` - same as ChroniCat but waits for more data, similar to *nix `tail` utility
 
@@ -357,5 +355,5 @@ ChroniTail [-w <wireType>] <path>
 mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniTail" -Dexec.args="..."
 ----
 
-* We also provide generic interface to interact with logs, `net.openhft.chronicle.logger.tools.ChronicleLogReader`,
-allowing arbitrary operations with decoded log lines. Please refer to javadocs.
+* We also provide generic interface to interact with logs, `net.openhft.chronicle.logger.tools.ChronicleLogReader`, allowing arbitrary operations with decoded log lines.
+Please refer to javadocs.

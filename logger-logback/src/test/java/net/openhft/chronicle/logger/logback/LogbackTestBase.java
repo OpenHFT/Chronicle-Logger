@@ -16,8 +16,6 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.LoggerContext;
-import net.openhft.chronicle.core.OS;
-import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

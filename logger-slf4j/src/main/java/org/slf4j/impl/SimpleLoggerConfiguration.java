@@ -1,5 +1,8 @@
 package org.slf4j.impl;
 
+import org.slf4j.helpers.Util;
+import org.slf4j.impl.OutputChoice.OutputChoiceType;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -9,29 +12,28 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
-import org.slf4j.helpers.Util;
-import org.slf4j.impl.OutputChoice.OutputChoiceType;
-
 /**
  * This class holds configuration values for {@link SimpleLogger}. The
  * values are computed at runtime. See {@link SimpleLogger} documentation for
  * more information.
- *
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author Scott Sanders
  * @author Rod Waldhoff
  * @author Robert Burrell Donkin
  * @author C&eacute;drik LIME
- *
  * @since 1.7.25
  */
 public class SimpleLoggerConfiguration {
 
-    /** Name of the properties file searched on the class path. */
+    /**
+     * Name of the properties file searched on the class path.
+     */
     private static final String CONFIGURATION_FILE = "simplelogger.properties";
 
-    /** Default level used when no property is set (INFO). */
+    /**
+     * Default level used when no property is set (INFO).
+     */
     static int DEFAULT_LOG_LEVEL_DEFAULT = SimpleLogger.LOG_LEVEL_INFO;
     /**
      * Runtime default log level as configured by
@@ -39,47 +41,81 @@ public class SimpleLoggerConfiguration {
      */
     int defaultLogLevel = DEFAULT_LOG_LEVEL_DEFAULT;
 
-    /** Default for {@code org.slf4j.simpleLogger.showDateTime} (false). */
+    /**
+     * Default for {@code org.slf4j.simpleLogger.showDateTime} (false).
+     */
     private static final boolean SHOW_DATE_TIME_DEFAULT = false;
-    /** Whether to include a time stamp in log lines. */
+    /**
+     * Whether to include a time stamp in log lines.
+     */
     boolean showDateTime = SHOW_DATE_TIME_DEFAULT;
 
-    /** Default for {@code org.slf4j.simpleLogger.dateTimeFormat}. */
+    /**
+     * Default for {@code org.slf4j.simpleLogger.dateTimeFormat}.
+     */
     private static final String DATE_TIME_FORMAT_STR_DEFAULT = null;
-    /** Format string used to render the date, or {@code null} for relative time. */
+    /**
+     * Format string used to render the date, or {@code null} for relative time.
+     */
     private static String dateTimeFormatStr = DATE_TIME_FORMAT_STR_DEFAULT;
 
-    /** Formatter built from {@link #dateTimeFormatStr} when initialised. */
+    /**
+     * Formatter built from {@link #dateTimeFormatStr} when initialised.
+     */
     DateFormat dateFormatter = null;
 
-    /** Default for {@code org.slf4j.simpleLogger.showThreadName} (true). */
+    /**
+     * Default for {@code org.slf4j.simpleLogger.showThreadName} (true).
+     */
     private static final boolean SHOW_THREAD_NAME_DEFAULT = true;
-    /** Whether the thread name should appear in output. */
+    /**
+     * Whether the thread name should appear in output.
+     */
     boolean showThreadName = SHOW_THREAD_NAME_DEFAULT;
 
-    /** Default for {@code org.slf4j.simpleLogger.showLogName} (true). */
+    /**
+     * Default for {@code org.slf4j.simpleLogger.showLogName} (true).
+     */
     final static boolean SHOW_LOG_NAME_DEFAULT = true;
-    /** Whether the logger name should appear in output. */
+    /**
+     * Whether the logger name should appear in output.
+     */
     boolean showLogName = SHOW_LOG_NAME_DEFAULT;
 
-    /** Default for {@code org.slf4j.simpleLogger.showShortLogName} (false). */
+    /**
+     * Default for {@code org.slf4j.simpleLogger.showShortLogName} (false).
+     */
     private static final boolean SHOW_SHORT_LOG_NAME_DEFAULT = false;
-    /** If true only the last logger name component is printed. */
+    /**
+     * If true only the last logger name component is printed.
+     */
     boolean showShortLogName = SHOW_SHORT_LOG_NAME_DEFAULT;
 
-    /** Default for {@code org.slf4j.simpleLogger.levelInBrackets} (false). */
+    /**
+     * Default for {@code org.slf4j.simpleLogger.levelInBrackets} (false).
+     */
     private static final boolean LEVEL_IN_BRACKETS_DEFAULT = false;
-    /** Print the level surrounded by brackets. */
+    /**
+     * Print the level surrounded by brackets.
+     */
     boolean levelInBrackets = LEVEL_IN_BRACKETS_DEFAULT;
 
-    /** Default for {@code org.slf4j.simpleLogger.logFile} (System.err). */
+    /**
+     * Default for {@code org.slf4j.simpleLogger.logFile} (System.err).
+     */
     private static String LOG_FILE_DEFAULT = "System.err";
-    /** Destination for log output. */
+    /**
+     * Destination for log output.
+     */
     private String logFile = LOG_FILE_DEFAULT;
-    /** Actual output target decided after initialisation. */
+    /**
+     * Actual output target decided after initialisation.
+     */
     OutputChoice outputChoice = null;
 
-    /** Default for {@code org.slf4j.simpleLogger.cacheOutputStream} (false). */
+    /**
+     * Default for {@code org.slf4j.simpleLogger.cacheOutputStream} (false).
+     */
     private static final boolean CACHE_OUTPUT_STREAM_DEFAULT = false;
     /**
      * When true the {@code System.out/err} stream is cached on start up rather
@@ -87,12 +123,18 @@ public class SimpleLoggerConfiguration {
      */
     private boolean cacheOutputStream = CACHE_OUTPUT_STREAM_DEFAULT;
 
-    /** Default text used for the WARN level. */
+    /**
+     * Default text used for the WARN level.
+     */
     private static final String WARN_LEVELS_STRING_DEFAULT = "WARN";
-    /** String to write for the warn level. Configured via {@code org.slf4j.simpleLogger.warnLevelString}. */
+    /**
+     * String to write for the warn level. Configured via {@code org.slf4j.simpleLogger.warnLevelString}.
+     */
     String warnLevelString = WARN_LEVELS_STRING_DEFAULT;
 
-    /** Properties loaded from {@link #CONFIGURATION_FILE}. */
+    /**
+     * Properties loaded from {@link #CONFIGURATION_FILE}.
+     */
     private final Properties properties = new Properties();
 
     void init() {
@@ -165,7 +207,7 @@ public class SimpleLoggerConfiguration {
         try {
             prop = System.getProperty(name);
         } catch (SecurityException e) {
-    ; // none // Ignore
+            ; // none // Ignore
         }
         return (prop == null) ? properties.getProperty(name) : prop;
     }

@@ -28,7 +28,7 @@ import java.io.IOException;
 
 /**
  * Base Log4j 1.x appender for Chronicle.
- *
+ * <p>
  * The class manages filter handling and delegates the actual write
  * operation to a {@link ChronicleLogWriter} created by
  * {@link #createWriter()}.

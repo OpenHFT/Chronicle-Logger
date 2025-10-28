@@ -15,9 +15,6 @@
  */
 package net.openhft.chronicle.logger.jul;
 
-import net.openhft.chronicle.core.OS;
-import net.openhft.chronicle.core.util.Time;
-
 import java.util.logging.LogManager;
 
 class JulLoggerTestBase extends JulTestBase {

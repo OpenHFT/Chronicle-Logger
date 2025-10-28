@@ -27,7 +27,9 @@ public class ChronicleServiceProvider implements SLF4JServiceProvider {
     // to avoid constant folding by the compiler, this field must *not* be final
     public static String REQUESTED_API_VERSION = "2.0.99"; // !final
 
-    public ChronicleServiceProvider() {}
+    public ChronicleServiceProvider() {
+    }
+
     /**
      * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
      * method should always be the same object

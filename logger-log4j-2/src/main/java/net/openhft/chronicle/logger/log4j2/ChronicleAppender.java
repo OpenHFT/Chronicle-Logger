@@ -59,11 +59,11 @@ public class ChronicleAppender extends AbstractChronicleAppender {
     /**
      * Factory used by the plugin framework to create the appender.
      *
-     * @param name mandatory appender name
-     * @param path Chronicle Queue path
-     * @param wireType optional queue wire type
+     * @param name            mandatory appender name
+     * @param path            Chronicle Queue path
+     * @param wireType        optional queue wire type
      * @param chronicleConfig optional queue configuration
-     * @param filter optional filter
+     * @param filter          optional filter
      * @return the configured appender or {@code null} when name or path are missing
      */
     @PluginFactory

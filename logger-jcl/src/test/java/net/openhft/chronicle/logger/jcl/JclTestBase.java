@@ -15,8 +15,6 @@
  */
 package net.openhft.chronicle.logger.jcl;
 
-import net.openhft.chronicle.core.OS;
-import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.apache.commons.logging.Log;
 

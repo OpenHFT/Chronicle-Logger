@@ -15,8 +15,6 @@
  */
 package net.openhft.chronicle.logger.slf4j;
 
-import net.openhft.chronicle.core.OS;
-import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

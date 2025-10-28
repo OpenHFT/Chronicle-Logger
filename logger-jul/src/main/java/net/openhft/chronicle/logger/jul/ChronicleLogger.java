@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * <p>Extends {@link Logger} so JUL applications can write to a
  * {@link ChronicleLogWriter}. The active level is controlled by
  * {@link ChronicleLogLevel}.</p>
-*/
+ */
 class ChronicleLogger extends Logger {
 
     protected final String name;
@@ -41,8 +41,8 @@ class ChronicleLogger extends Logger {
      * c-tor
      *
      * @param writer to use
-     * @param name of the logger
-     * @param level of the logger
+     * @param name   of the logger
+     * @param level  of the logger
      */
     @SuppressFBWarnings(value = "CT_CONSTRUCTOR_THROW", justification = "CLG-FN-003: constructor fails fast when Chronicle level mapping is invalid.")
     ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
