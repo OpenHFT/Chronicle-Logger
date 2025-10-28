@@ -31,7 +31,7 @@ public class ChronicleCliToolsTest {
         } finally {
             System.setErr(originalErr);
         }
-        String output = err.toString(StandardCharsets.UTF_8.name());
+        String output = err.toString("UTF-8");
         assertTrue(output.contains("Usage: ChroniCat"));
     }
 
@@ -61,7 +61,7 @@ public class ChronicleCliToolsTest {
             } finally {
                 System.setOut(originalOut);
             }
-            String output = out.toString(StandardCharsets.UTF_8.name());
+            String output = out.toString("UTF-8");
             assertTrue("expected formatted message in ChroniCat output", output.contains("test event lhs rhs"));
         } finally {
             IOTools.deleteDirWithFiles(queuePath.toString());
@@ -78,7 +78,7 @@ public class ChronicleCliToolsTest {
         } finally {
             System.setErr(originalErr);
         }
-        String output = err.toString(StandardCharsets.UTF_8.name());
+        String output = err.toString("UTF-8");
         assertTrue(output.contains("ArrayIndexOutOfBoundsException"));
     }
 
@@ -92,7 +92,7 @@ public class ChronicleCliToolsTest {
         } finally {
             System.setErr(originalErr);
         }
-        String output = err.toString(StandardCharsets.UTF_8.name());
+        String output = err.toString("UTF-8");
         assertTrue(output.contains("Usage: ChroniTail"));
     }
 }
