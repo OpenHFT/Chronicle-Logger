@@ -116,3 +116,4 @@ retention, and recovery steps; ensure tools document command-line flags.
 
 * link:architecture-overview.adoc[Architecture Overview]
 * link:decision-log.adoc[Decision Log]
+* link:code-review-playbook.adoc[Code Review Playbook]
