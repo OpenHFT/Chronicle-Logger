@@ -16,6 +16,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -57,8 +58,9 @@ public class ChronicleHandlerConfigurationTest extends JulHandlerTestBase {
     public void loadsConfigurationAndPersistsLogEntries() throws Exception {
         ChronicleHandlerConfig config = new ChronicleHandlerConfig(ChronicleHandler.class);
 
-        String expectedPath = tempDir.resolve("config-test").toAbsolutePath().normalize().toString();
-        assertEquals("path placeholder should resolve", expectedPath, config.getString("path", null));
+        Path expectedPath = tempDir.resolve("config-test").toAbsolutePath().normalize();
+        Path actualPath = Paths.get(config.getString("path", null)).toAbsolutePath().normalize();
+        assertEquals("path placeholder should resolve", expectedPath, actualPath);
         assertEquals(Level.FINE, config.getLevel("level", Level.INFO));
         assertTrue("boolean value of 1 should map to true", config.getBoolean("enabled", false));
         assertEquals("TEXT", config.getString("wireType", "BINARY_LIGHT"));
