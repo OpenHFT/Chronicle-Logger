@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.openhft.chronicle.logger.jul;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
 
@@ -44,7 +42,6 @@ class ChronicleLogger extends Logger {
      * @param name   of the logger
      * @param level  of the logger
      */
-    @SuppressFBWarnings(value = "CT_CONSTRUCTOR_THROW", justification = "CLG-FN-003: constructor fails fast when Chronicle level mapping is invalid.")
     ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
         super(Objects.requireNonNull(name, "logger name"), null);
 

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.openhft.chronicle.logger;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 import java.io.IOException;
@@ -107,8 +105,6 @@ public class ChronicleLogManager {
     //
     // *************************************************************************
 
-    @SuppressFBWarnings(value = "UCF_USELESS_CONTROL_FLOW",
-            justification = "CLG-FN-002: append=false queues reuse files until explicit clear is implemented.")
     private ChronicleQueue newChronicle(String path, String name) {
         final String wireType = cfg.getString(name, ChronicleLogConfig.KEY_WIRETYPE);
         ChronicleQueue cq = this.cfg.getAppenderConfig().build(path, wireType);

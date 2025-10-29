@@ -4,6 +4,28 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/4.8.0/spotbugs/etc/findbugsfilter.xsd">
 
-    <!-- Chronicle Logger logger-core module defaults to no SpotBugs exclusions. Document requirement IDs alongside any future suppressions. -->
+    <!-- CLG-FN-002: Queue creation retains empty branch until append=false clear logic is implemented. -->
+    <Match>
+        <Class name="net.openhft.chronicle.logger.ChronicleLogManager"/>
+        <Method name="newChronicle"/>
+        <Bug pattern="UCF_USELESS_CONTROL_FLOW"/>
+        <Comment>CLG-FN-002: append=false queues reuse files until explicit clear is implemented.</Comment>
+    </Match>
+
+    <!-- CLG-FN-002: Operators point the loader at explicit config files on disk or classpath. -->
+    <Match>
+        <Class name="net.openhft.chronicle.logger.ChronicleLogConfig"/>
+        <Method name="getConfigurationStream"/>
+        <Bug pattern="PATH_TRAVERSAL_IN"/>
+        <Comment>CLG-FN-002 allows operators to point at explicit configuration files.</Comment>
+    </Match>
+
+    <!-- CLG-FN-003: ChronicleQueue lifecycle stays with the caller; writer holds the supplied instance. -->
+    <Match>
+        <Class name="net.openhft.chronicle.logger.DefaultChronicleLogWriter"/>
+        <Method name="&lt;init&gt;"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+        <Comment>CLG-FN-003: ChronicleQueue lifecycle is intentionally managed by the caller.</Comment>
+    </Match>
 
 </FindBugsFilter>

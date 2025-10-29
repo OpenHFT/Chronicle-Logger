@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.openhft.chronicle.logger;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.wire.DocumentContext;
@@ -41,8 +39,6 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
      *
      * @param cq the target queue, not {@code null}
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
-            justification = "CLG-FN-003: ChronicleQueue lifecycle is intentionally managed by the caller.")
     public DefaultChronicleLogWriter(@NotNull ChronicleQueue cq) {
         this.cq = cq;
     }

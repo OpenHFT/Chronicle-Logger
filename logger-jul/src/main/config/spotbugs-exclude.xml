@@ -4,6 +4,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/4.8.0/spotbugs/etc/findbugsfilter.xsd">
 
-    <!-- Chronicle Logger logger-jul module defaults to no SpotBugs exclusions. Document requirement IDs alongside any future suppressions. -->
+    <!-- CLG-FN-003: Chronicle JUL bridge fails fast when level mapping is invalid. -->
+    <Match>
+        <Class name="net.openhft.chronicle.logger.jul.ChronicleLogger"/>
+        <Method name="&lt;init&gt;"/>
+        <Bug pattern="CT_CONSTRUCTOR_THROW"/>
+        <Comment>CLG-FN-003: constructor fails fast when Chronicle level mapping is invalid.</Comment>
+    </Match>
 
 </FindBugsFilter>

@@ -16,7 +16,6 @@
 package net.openhft.chronicle.logger;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -165,8 +164,6 @@ public class ChronicleLogConfig {
         return null;
     }
 
-    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
-            justification = "CLG-FN-002 allows operators to point at explicit configuration files.")
     private static InputStream getConfigurationStream(String cfgPath) throws IOException {
         if (cfgPath != null) {
             final File cfgFile = new File(cfgPath);
