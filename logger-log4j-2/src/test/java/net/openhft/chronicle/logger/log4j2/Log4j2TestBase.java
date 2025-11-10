@@ -1,3 +1,7 @@
+//
+// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+//
+
 /*
  *  Copyright 2014-2025 chronicle.software
  *
@@ -21,7 +25,7 @@ import org.slf4j.Logger;
 
 import java.io.File;
 
-public class Log4j2TestBase {
+class Log4j2TestBase {
 
     // *************************************************************************
     //

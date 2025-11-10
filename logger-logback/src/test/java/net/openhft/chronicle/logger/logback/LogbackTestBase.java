@@ -1,3 +1,7 @@
+//
+// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+//
+
 /*
  *  Copyright 2014-2025 chronicle.software
  *
@@ -22,7 +26,7 @@ import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LogbackTestBase {
+class LogbackTestBase {
 
     // *************************************************************************
     //

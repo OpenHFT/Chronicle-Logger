@@ -1,3 +1,7 @@
+//
+// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+//
+
 /*
  *  Copyright 2014-2025 chronicle.software
  *
@@ -20,15 +24,15 @@ import net.openhft.chronicle.logger.ChronicleLogLevel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class JulTestBase {
+class JulTestBase {
 
-    protected static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
+    static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     // *************************************************************************
     //
     // *************************************************************************
 
-    protected static void log(Logger logger, ChronicleLogLevel level, String fmt, Object... args) {
+    static void log(Logger logger, ChronicleLogLevel level, String fmt, Object... args) {
         switch (level) {
             case TRACE:
                 logger.log(Level.FINER, fmt, args);

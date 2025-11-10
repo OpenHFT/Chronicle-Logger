@@ -1,3 +1,7 @@
+//
+// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+//
+
 /*
  *  Copyright 2014-2025 chronicle.software
  *
@@ -37,7 +41,7 @@ import static org.junit.Assert.*;
 
 public class DefaultChronicleLogWriterTest {
 
-    String baseBath;
+    private String baseBath;
 
     @After
     public void cleanup() {

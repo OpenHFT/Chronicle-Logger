@@ -1,3 +1,7 @@
+//
+// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+//
+
 /*
  *  Copyright 2014-2025 chronicle.software
  *
@@ -26,13 +30,13 @@ import java.util.logging.LogManager;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class JulHandlerTestBase extends JulTestBase {
+class JulHandlerTestBase extends JulTestBase {
 
     // *************************************************************************
     //
     // *************************************************************************
 
-    protected static String rootPath() {
+    static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");
         String sep = System.getProperty("file.separator");
 
@@ -43,7 +47,7 @@ public class JulHandlerTestBase extends JulTestBase {
         return path + "chronicle-jul";
     }
 
-    protected static String basePath(String type) {
+    static String basePath(String type) {
         return rootPath()
                 + System.getProperty("file.separator")
                 + type;
@@ -53,7 +57,7 @@ public class JulHandlerTestBase extends JulTestBase {
      * @param id the id of the logger
      * @throws IOException if an I/O error occurs
      */
-    protected void setupLogManager(String id) throws IOException {
+    void setupLogManager(String id) throws IOException {
         String cfgPath = System.getProperty("resources.path");
         File cfgFile = new File(cfgPath, id + ".properties");
 

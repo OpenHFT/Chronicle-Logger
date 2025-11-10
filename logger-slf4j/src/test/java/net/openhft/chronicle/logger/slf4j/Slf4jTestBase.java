@@ -1,3 +1,7 @@
+//
+// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+//
+
 /*
  *  Copyright 2014-2025 chronicle.software
  *
@@ -95,13 +99,13 @@ class Slf4jTestBase {
     //
     // *************************************************************************
 
-    protected final class RunnableLogger implements Runnable {
+    final class RunnableLogger implements Runnable {
         private final Logger logger;
         private final int runs;
         private final String fmt;
         private final String fmtBase = " > val1={}, val2={}, val3={}";
 
-        public RunnableLogger(int runs, int pad, String loggerName) {
+        RunnableLogger(int runs, int pad, String loggerName) {
             this.logger = LoggerFactory.getLogger(loggerName);
             this.runs = runs;
             this.fmt = StringUtils.rightPad(fmtBase, pad + fmtBase.length() - (4 + 8 + 8), "X");

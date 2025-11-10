@@ -1,3 +1,7 @@
+//
+// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+//
+
 /**
  * This package and any sub-package contain classes strictly for internal use by this Chronicle library.
  * Internal classes shall <em>never</em> be used directly.
