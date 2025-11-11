@@ -150,9 +150,6 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
     //
     // *************************************************************************
 
-    @Plugin(
-            name = "chronicleCfg",
-            category = "Core")
     /**
      * Plugin helper used by subclasses to expose queue options.
      *
@@ -163,6 +160,9 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
      *     <li>{@code rollCycle} - queue roll cycle name</li>
      * </ul>
      */
+    @Plugin(
+            name = "chronicleCfg",
+            category = "Core")
     public static final class ChronicleCfg extends LogAppenderConfig {
 
         ChronicleCfg() {
