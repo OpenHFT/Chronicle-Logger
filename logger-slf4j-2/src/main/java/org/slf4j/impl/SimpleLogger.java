@@ -1,8 +1,7 @@
-//
-// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
-//
-
-/**
+/*
+ * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+ */
+/*
  * Copyright (c) 2004-2022 QOS.ch Sarl (Switzerland)
  * All rights reserved.
  * <p>
@@ -82,7 +81,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * <li>{@code org.slf4j.simpleLogger.dateTimeFormat} - The date and time
  * format to be used in the output messages. The pattern describing the date and
  * time format is defined by <a href=
- * "http://docs.oracle.com/javase/1.5.0/docs/api/java/text/SimpleDateFormat.html">
+ * "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/text/SimpleDateFormat.html">
  * {@code SimpleDateFormat}</a>. If the format is not specified or is
  * invalid, the number of milliseconds since start up will be output.</li>
  *
