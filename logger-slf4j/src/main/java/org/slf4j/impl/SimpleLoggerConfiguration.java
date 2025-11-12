@@ -61,7 +61,7 @@ public class SimpleLoggerConfiguration {
     boolean showThreadName = SHOW_THREAD_NAME_DEFAULT;
 
     /** Default for {@code org.slf4j.simpleLogger.showLogName} (true). */
-    final static boolean SHOW_LOG_NAME_DEFAULT = true;
+    static final boolean SHOW_LOG_NAME_DEFAULT = true;
     /** Whether the logger name should appear in output. */
     boolean showLogName = SHOW_LOG_NAME_DEFAULT;
 

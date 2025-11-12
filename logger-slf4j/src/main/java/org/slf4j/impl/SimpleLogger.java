@@ -226,18 +226,19 @@ public class SimpleLogger extends MarkerIgnoringBase {
 
     protected String renderLevel(int level) {
         switch (level) {
-        case LOG_LEVEL_TRACE:
-            return "TRACE";
-        case LOG_LEVEL_DEBUG:
-            return ("DEBUG");
-        case LOG_LEVEL_INFO:
-            return "INFO";
-        case LOG_LEVEL_WARN:
-            return CONFIG_PARAMS.warnLevelString;
-        case LOG_LEVEL_ERROR:
-            return "ERROR";
+            case LOG_LEVEL_TRACE:
+                return "TRACE";
+            case LOG_LEVEL_DEBUG:
+                return "DEBUG";
+            case LOG_LEVEL_INFO:
+                return "INFO";
+            case LOG_LEVEL_WARN:
+                return CONFIG_PARAMS.warnLevelString;
+            case LOG_LEVEL_ERROR:
+                return "ERROR";
+            default:
+                throw new IllegalStateException("Unrecognized level [" + level + "]");
         }
-        throw new IllegalStateException("Unrecognized level [" + level + "]");
     }
 
     void write(StringBuilder buf, Throwable t) {

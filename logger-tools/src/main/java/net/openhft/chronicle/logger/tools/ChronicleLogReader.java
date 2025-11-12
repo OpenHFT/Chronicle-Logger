@@ -97,8 +97,9 @@ public class ChronicleLogReader {
                     if (waitForIt) {
                         try {
                             Thread.sleep(50L);
-                        } catch (InterruptedException ignored) {
-
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            break;
                         }
                         continue;
                     } else {

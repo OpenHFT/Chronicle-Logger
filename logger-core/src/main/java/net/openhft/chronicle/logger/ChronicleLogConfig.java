@@ -105,10 +105,12 @@ public class ChronicleLogConfig {
         if (in != null) {
             Properties properties = new Properties();
 
-            try {
-                properties.load(in);
-                in.close();
-            } catch (IOException ignored) {
+            try (InputStream input = in) {
+                properties.load(input);
+            } catch (IOException e) {
+                System.err.printf("Failed to load Chronicle logger configuration: %s%n",
+                        e.getMessage());
+                return null;
             }
 
             return load(interpolate(properties));

@@ -50,12 +50,13 @@ public class SimpleLoggerConfiguration {
 
     /**
      * See https://jira.qos.ch/browse/SLF4J-499
+     *
      * @since 1.7.33 and 2.0.0-alpha6
      */
     private static final boolean SHOW_THREAD_ID_DEFAULT = false;
     boolean showThreadId = SHOW_THREAD_ID_DEFAULT;
 
-    final static boolean SHOW_LOG_NAME_DEFAULT = true;
+    static final boolean SHOW_LOG_NAME_DEFAULT = true;
     boolean showLogName = SHOW_LOG_NAME_DEFAULT;
 
     private static final boolean SHOW_SHORT_LOG_NAME_DEFAULT = false;
