@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2004-2012 QOS.ch
  * All rights reserved.
  * <p>

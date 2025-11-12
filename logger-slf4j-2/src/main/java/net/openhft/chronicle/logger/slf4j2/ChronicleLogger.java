@@ -1,19 +1,10 @@
 /*
- *  Copyright 2014-2025 chronicle.software
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 package net.openhft.chronicle.logger.slf4j2;
+
+import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.ChronicleLogWriter;
 
 /**
  * Implementation of Chronicle logging for the SLF4J 2.x API.
@@ -23,10 +14,6 @@ package net.openhft.chronicle.logger.slf4j2;
  * package.  The logging semantics and configuration remain the same as the
  * original SLF4J&nbsp;1.x implementation.
  */
-
-import net.openhft.chronicle.logger.ChronicleLogLevel;
-import net.openhft.chronicle.logger.ChronicleLogWriter;
-
 @SuppressWarnings({"deprecation","serial"})
 public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase {
 
@@ -40,10 +27,6 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
         this.level = level;
     }
 
-    // *************************************************************************
-    //
-    // *************************************************************************
-
     ChronicleLogLevel getLevel() {
         return this.level;
     }
@@ -52,10 +35,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
         return this.writer;
     }
 
-    // *************************************************************************
     // TRACE
-    // *************************************************************************
-
     @Override
     public boolean isTraceEnabled() {
         return isLevelEnabled(ChronicleLogLevel.TRACE);
@@ -96,10 +76,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
         append(ChronicleLogLevel.TRACE, s, throwable);
     }
 
-    // *************************************************************************
     // DEBUG
-    // *************************************************************************
-
     @Override
     public boolean isDebugEnabled() {
         return isLevelEnabled(ChronicleLogLevel.DEBUG);
@@ -140,10 +117,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
         append(ChronicleLogLevel.DEBUG, s, throwable);
     }
 
-    // *************************************************************************
     // INFO
-    // *************************************************************************
-
     @Override
     public boolean isInfoEnabled() {
         return isLevelEnabled(ChronicleLogLevel.INFO);
@@ -184,10 +158,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
         append(ChronicleLogLevel.INFO, s, throwable);
     }
 
-    // *************************************************************************
     // WARN
-    // *************************************************************************
-
     @Override
     public boolean isWarnEnabled() {
         return isLevelEnabled(ChronicleLogLevel.WARN);
@@ -228,10 +199,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
         append(ChronicleLogLevel.WARN, s, throwable);
     }
 
-    // *************************************************************************
     // ERROR
-    // *************************************************************************
-
     @Override
     public boolean isErrorEnabled() {
         return isLevelEnabled(ChronicleLogLevel.ERROR);
@@ -272,10 +240,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
         append(ChronicleLogLevel.ERROR, s, throwable);
     }
 
-    // *************************************************************************
     // HELPERS
-    // *************************************************************************
-
     /**
      * Check whether a log event with the supplied level would be written.
      *

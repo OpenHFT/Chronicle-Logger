@@ -125,6 +125,4 @@
         <developerConnection>scm:git:git@github.com:OpenHFT/Chronicle-Logger.git</developerConnection>
         <tag>master</tag>
     </scm>
-
 </project>
-

@@ -147,12 +147,12 @@ chronicle.logger.L1.level             = info
 The chronicle-logger-logback module provides appender for Logback: `net.openhft.chronicle.logger.logback.ChronicleAppender`
 
 ==== Config Example
-  
+
 [source, xml]
 ----
 <appender name  = "ChronicleAppender"
         class = "net.openhft.chronicle.logger.logback.ChronicleAppender">
-  
+
   <!-- Path used by the underlying ChronicleQueue -->
   <path>${java.io.tmpdir}/ChronicleAppender</path>
 

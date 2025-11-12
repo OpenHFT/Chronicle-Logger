@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2004-2022 QOS.ch Sarl (Switzerland)
  * All rights reserved.
  * <p>

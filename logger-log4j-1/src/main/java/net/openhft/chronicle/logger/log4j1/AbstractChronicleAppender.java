@@ -1,17 +1,5 @@
 /*
- *  Copyright 2014-2025 chronicle.software
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 package net.openhft.chronicle.logger.log4j1;
 
@@ -49,10 +37,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         this.errorHandler = new OnlyOnceErrorHandler();
     }
 
-    // *************************************************************************
     // Custom logging options
-    // *************************************************************************
-
     public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
         switch (level.toInt()) {
             case Level.DEBUG_INT:
@@ -97,10 +82,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         }
     }
 
-    // *************************************************************************
     // Custom logging options
-    // *************************************************************************
-
     @Override
     public void clearFilters() {
         filter = null;
@@ -177,10 +159,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         this.name = name;
     }
 
-    // *************************************************************************
     // Chronicle implementation
-    // *************************************************************************
-
     /**
      * Writes the event to the Chronicle queue after filter evaluation.
      */
@@ -217,10 +196,6 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         }
     }
 
-    // *************************************************************************
-    //
-    // *************************************************************************
-
     /**
      * Creates the {@link ChronicleLogWriter} used by this appender.
      *
@@ -242,10 +217,6 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
             }
         }
     }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
 
     @Override
     public boolean requiresLayout() {

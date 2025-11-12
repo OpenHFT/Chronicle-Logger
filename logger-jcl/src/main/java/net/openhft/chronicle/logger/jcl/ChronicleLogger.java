@@ -1,17 +1,5 @@
 /*
- *  Copyright 2014-2025 chronicle.software
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 package net.openhft.chronicle.logger.jcl;
 
@@ -38,10 +26,6 @@ class ChronicleLogger implements Log {
         this.level = level;
     }
 
-    // *************************************************************************
-    //
-    // *************************************************************************
-
     String name() {
         return this.name;
     }
@@ -54,10 +38,7 @@ class ChronicleLogger implements Log {
         return this.level;
     }
 
-    // *************************************************************************
     // DEBUG
-    // *************************************************************************
-
     @Override
     public boolean isDebugEnabled() {
         return isLevelEnabled(ChronicleLogLevel.DEBUG);
@@ -81,10 +62,7 @@ class ChronicleLogger implements Log {
         append(ChronicleLogLevel.DEBUG, String.valueOf(o), throwable);
     }
 
-    // *************************************************************************
     // TRACE
-    // *************************************************************************
-
     @Override
     public boolean isTraceEnabled() {
         return isLevelEnabled(ChronicleLogLevel.TRACE);
@@ -108,10 +86,7 @@ class ChronicleLogger implements Log {
         append(ChronicleLogLevel.TRACE, String.valueOf(o), throwable);
     }
 
-    // *************************************************************************
     // INFO
-    // *************************************************************************
-
     @Override
     public boolean isInfoEnabled() {
         return isLevelEnabled(ChronicleLogLevel.INFO);
@@ -135,10 +110,7 @@ class ChronicleLogger implements Log {
         append(ChronicleLogLevel.INFO, String.valueOf(o), throwable);
     }
 
-    // *************************************************************************
     // WARN
-    // *************************************************************************
-
     @Override
     public boolean isWarnEnabled() {
         return isLevelEnabled(ChronicleLogLevel.WARN);
@@ -162,10 +134,7 @@ class ChronicleLogger implements Log {
         append(ChronicleLogLevel.WARN, String.valueOf(o), throwable);
     }
 
-    // *************************************************************************
     // ERROR
-    // *************************************************************************
-
     @Override
     public boolean isErrorEnabled() {
         return isLevelEnabled(ChronicleLogLevel.ERROR);
@@ -189,10 +158,7 @@ class ChronicleLogger implements Log {
         append(ChronicleLogLevel.ERROR, String.valueOf(o), throwable);
     }
 
-    // *************************************************************************
     // FATAL
-    // *************************************************************************
-
     @Override
     public boolean isFatalEnabled() {
         return isLevelEnabled(ChronicleLogLevel.ERROR);
@@ -216,10 +182,7 @@ class ChronicleLogger implements Log {
         append(ChronicleLogLevel.ERROR, String.valueOf(o), throwable);
     }
 
-    // *************************************************************************
     // HELPERS
-    // *************************************************************************
-
     private boolean isLevelEnabled(ChronicleLogLevel level) {
         return level.isHigherOrEqualTo(this.level);
     }
