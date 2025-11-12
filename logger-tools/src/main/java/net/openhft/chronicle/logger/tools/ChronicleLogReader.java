@@ -7,6 +7,7 @@ import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
+import net.openhft.chronicle.wire.ValueIn;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
@@ -109,14 +110,22 @@ public class ChronicleLogReader {
                 String threadName = wire.read("threadName").text();
                 String loggerName = wire.read("loggerName").text();
                 String message = wire.read("message").text();
-                Throwable th = wire.hasMore() ? wire.read("throwable").throwable(false) : null;
+                Throwable th = null;
                 List<Object> argsL = new ArrayList<>();
-                if (wire.hasMore()) {
-                    wire.read("args").sequence(argsL, (l, vi) -> {
-                        while (vi.hasNextSequenceItem()) {
-                            l.add(vi.object(Object.class));
-                        }
-                    });
+                while (wire.hasMore()) {
+                    StringBuilder eventName = new StringBuilder();
+                    ValueIn valueIn = wire.readEventName(eventName);
+                    if ("throwable".contentEquals(eventName)) {
+                        th = valueIn.throwable(false);
+                    } else if ("args".contentEquals(eventName)) {
+                        valueIn.sequence(argsL, (l, vi) -> {
+                            while (vi.hasNextSequenceItem()) {
+                                l.add(vi.object(Object.class));
+                            }
+                        });
+                    } else {
+                        valueIn.skipValue();
+                    }
                 }
                 Object[] args = argsL.toArray(new Object[argsL.size()]);
                 processor.process(timestamp, level, threadName, loggerName, message, th, args);

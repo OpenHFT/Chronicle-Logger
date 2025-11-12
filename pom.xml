@@ -18,12 +18,13 @@
     <version>4.27ea3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <jacoco.line.coverage>0.80</jacoco.line.coverage>
+        <jacoco.branch.coverage>0.70</jacoco.branch.coverage>
+    </properties>
+
     <name>OpenHFT/Chronicle-Logger</name>
     <description>OpenHFT :: High Performance Logging</description>
-
-    <properties>
-        <license.skip>true</license.skip>
-    </properties>
 
     <dependencyManagement>
         <dependencies>

@@ -1,0 +1,28 @@
+= Chronicle Logger Code Review Playbook
+:lang: en-GB
+
+== Purpose
+
+This playbook lists the static-analysis and coverage checks executed by the
+`code-review` Maven profile so reviewers can reproduce the pipeline locally on the project’s supported JDKs.
+
+== Supported JDKs
+
+Chronicle Logger honours link:project-requirements.adoc#clg-nf-o-001[CLG-NF-O-001]
+and the `code-review` profile now runs on Java 8, 11, and 17 without enforcing a Java 21 runtime.
+Use the same JDK matrix that regular `mvn -q verify` builds exercise when validating a change.
+
+== How to Run
+
+. Use the module or aggregator root as the working directory.
+. Execute `mvn -Pcode-review verify`.
+. Address any failures reported by the plugins listed below before sharing the change for review.
+
+== Checks Included
+
+* `maven-checkstyle-plugin` with the Chronicle Quality Ruleset.
+* `spotbugs-maven-plugin` with the FindSecBugs extensions.
+* `maven-pmd-plugin` honouring the module-specific exclusion list.
+* `jacoco-maven-plugin` to publish coverage reports and enforce agreed limits.
+
+The profile no longer enforces a minimum Java version, so reviewers can execute these checks in the same environments that production builds must support.
