@@ -1,9 +1,11 @@
 = Chronicle Logger
 Chronicle Software
 :css-signature: demo
-:toc: macro
+:toc:
 :toclevels: 2
 :icons: font
+:lang: en-GB
+:source-highlighter: rouge
 
 image:https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger/badge.svg[caption="",link=https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger]
 image:https://javadoc.io/badge2/net.openhft/chronicle-logger/javadoc.svg[link="https://www.javadoc.io/doc/net.openhft/chronicle-logger/latest/index.html"]
@@ -28,9 +30,9 @@ image::https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-lo
 
 Today most programs require the logging of large amounts of data, especially in trading systems where this is a 
 regulatory requirement. Loggers can affect your system performance, therefore logging is sometimes kept to a minimum.
-With Chronicle Logger we aim to minimize logging overhead, freeing your system to focus on the business logic.
+With Chronicle Logger we aim to minimise logging overhead, freeing your system to focus on the business logic.
 
-Chronicle logger supports most of the standard logging API’s including: 
+Chronicle logger supports most of the standard logging APIs including: 
 
 * <<chronicle-logger-slf4j, SLF4J>>
 * <<chronicle-logger-logback, Logback>>
@@ -360,3 +362,9 @@ mvn exec:java -Dexec.mainClass="net.openhft.chronicle.logger.tools.ChroniTail" -
 * We also provide generic interface to interact with logs, `net.openhft.chronicle.logger.tools.ChronicleLogReader`,
 allowing arbitrary operations with decoded log lines. Please refer to javadocs.
 
+== Further reading
+
+* link:src/main/docs/architecture-overview.adoc[Architecture overview]
+* link:src/main/docs/project-requirements.adoc[Requirements catalogue]
+* link:src/main/docs/decision-log.adoc[Decision log]
+* link:src/main/docs/code-review-playbook.adoc[Code review playbook]

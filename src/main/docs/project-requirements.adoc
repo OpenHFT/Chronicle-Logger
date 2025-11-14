@@ -1,6 +1,7 @@
 = Chronicle Logger Requirements Catalogue
 :toc:
 :lang: en-GB
+:source-highlighter: rouge
 
 // -------------------------------------------------------------------
 // Legend
@@ -44,24 +45,24 @@ benchmark job executes weekly and publishes trend reports; spot checks confirm n
 regressions before releases.
 |===
 
-== Non-Functional Requirements – Performance
+== Non-Functional Requirements - Performance
 
 [cols="1,5,4",options="header"]
 |===
 |ID |Requirement |Benchmark Target
 |CLG-NF-P-001 |Steady-state append of INFO level messages through SLF4J 1.x binding
-shall achieve ≥ 1.2 million events per second on a 3.2 GHz x86-64 host with
+shall achieve >= 1.2 million events per second on a 3.2 GHz x86-64 host with
 Chronicle Queue BINARY_LIGHT. |JMH `Throughput` benchmark in `benchmark` module;
 flagged if throughput drops by > 10 percent relative to baseline.
 |CLG-NF-P-002 |Tail latency (99.9 percentile) for append operations with async
-queue roll shall remain ≤ 750 microseconds under mixed INFO/WARN traffic. |Benchmark
+queue roll shall remain <= 750 microseconds under mixed INFO/WARN traffic. |Benchmark
 module scenario combining timed roll cycle and mixed levels.
-|CLG-NF-P-003 |`ChronicleLogReader` shall consume existing queues at ≥ 500k events
+|link:decision-log.adoc#CLG-NF-P-003[CLG-NF-P-003] |`ChronicleLogReader` shall consume existing queues at >= 500k events
 per second while remaining allocation-neutral. |Micro benchmark comparing reader
 performance to baseline sample queues.
 |===
 
-== Non-Functional Requirements – Security and Operability
+== Non-Functional Requirements - Security and Operability
 
 [cols="1,5,4",options="header"]
 |===
@@ -73,7 +74,7 @@ message content is not evaluated.
 |CLG-NF-O-001 |All modules must support JDK 8 through the current LTS release,
 with automated builds running `mvn -q verify` on each supported JDK. |CI matrix
 build status; release checklist captures JDK versions.
-|CLG-NF-O-002 |Components shall emit operational warnings via standard logging
+|link:decision-log.adoc#CLG-OPS-002[CLG-NF-O-002] |Components shall emit operational warnings via standard logging
 channels when Chronicle Queue paths are missing or unwritable, and fail fast
 rather than silently downgrading. |Negative-path tests create read-only
 directories and assert warning plus exception semantics.
@@ -88,7 +89,7 @@ exercise concurrent reloads with leak detectors enabled.
 [cols="1,5",options="header"]
 |===
 |ID |Requirement
-|CLG-TEST-001 |Maintain ≥ 80 percent line coverage for `logger-core` and each
+|CLG-TEST-001 |Maintain >= 80 percent line coverage for `logger-core` and each
 binding package, excluding generated or vendor code.
 Jacoco gate enforced in CI.
 |CLG-TEST-002 |Provide regression fixtures per binding that append structured
@@ -103,7 +104,7 @@ failing the pipeline if throughput or latency deviates beyond documented thresho
 [cols="1,5",options="header"]
 |===
 |ID |Requirement
-|CLG-DOC-001 |Keep `architecture-overview.adoc` aligned with current module
+|link:decision-log.adoc#CLG-DOC-001[CLG-DOC-001] |Keep `architecture-overview.adoc` aligned with current module
 structure, configuration flow, and decision references.
 |CLG-DOC-002 |Update this requirements catalogue and cross-link new entries when
 decisions in `decision-log.adoc` change behaviour or support matrices.
