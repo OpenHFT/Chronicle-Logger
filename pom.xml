@@ -57,6 +57,21 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- Logback versions - Java 8 compatible (1.3.x series) -->
+            <!-- Version 1.3.16 addresses CVE-2025-11226 -->
+            <!-- Requires SLF4J 2.0.x -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>1.3.16</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.3.16</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
