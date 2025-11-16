@@ -55,7 +55,7 @@ shall achieve >= 1.2 million events per second on a 3.2 GHz x86-64 host with
 Chronicle Queue BINARY_LIGHT. |JMH `Throughput` benchmark in `benchmark` module;
 flagged if throughput drops by > 10 percent relative to baseline.
 |CLG-NF-P-002 |Tail latency (99.9 percentile) for append operations with async
-queue roll shall remain <= 750 microseconds under mixed INFO/WARN traffic. |Benchmark
+queue roll shall remain <= 750 µs under mixed INFO/WARN traffic. |Benchmark
 module scenario combining timed roll cycle and mixed levels.
 |link:decision-log.adoc#CLG-NF-P-003[CLG-NF-P-003] |`ChronicleLogReader` shall consume existing queues at >= 500k events
 per second while remaining allocation-neutral. |Micro benchmark comparing reader

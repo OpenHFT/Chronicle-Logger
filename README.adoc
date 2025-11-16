@@ -82,7 +82,7 @@ Intel Core i7-6700K
 All config files for bindings support limited variable interpolation where the variables are replaced with the 
 corresponding values from the same configuration file or the system properties. We have one predefined variable, `pid`,
 so `${pid}`  will replaced by current process id. System properties have the precedence in placeholder replacement 
-so they can be overriden.
+so they can be overridden.
 
 The following can be configured for each logger:
 
