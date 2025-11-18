@@ -37,6 +37,9 @@ public class ChronicleHandler extends AbstractChronicleHandler {
     public ChronicleHandler() throws IOException {
         ChronicleHandlerConfig handlerCfg = new ChronicleHandlerConfig(getClass());
         String appenderPath = handlerCfg.getString("path", null);
+
+        setPath(appenderPath);
+
         LogAppenderConfig appenderCfg = handlerCfg.getAppenderConfig();
 
         setLevel(handlerCfg.getLevel("level", Level.ALL));

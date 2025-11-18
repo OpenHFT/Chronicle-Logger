@@ -33,7 +33,6 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.event.LoggingEvent;
 import org.slf4j.helpers.FormattingTuple;
-import org.slf4j.helpers.MarkerIgnoringBase;
 import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.spi.LocationAwareLogger;
 
@@ -71,7 +70,12 @@ import org.slf4j.spi.LocationAwareLogger;
  * @author Robert Burrell Donkin
  * @author C&eacute;drik LIME
  */
-public class SimpleLogger extends MarkerIgnoringBase {
+// Retains the SLF4J 1.x style base class for compatibility with existing
+// configuration and behaviour. MarkerIgnoringBase is deprecated in SLF4J 2.x
+// but still functions, so we suppress the deprecation warning rather than
+// risk diverging from the upstream SimpleLogger semantics.
+@SuppressWarnings("deprecation")
+public class SimpleLogger extends org.slf4j.helpers.MarkerIgnoringBase {
 
     private static final long serialVersionUID = -632788891211436180L;
 

@@ -5,15 +5,18 @@ package org.slf4j.impl;
 
 import net.openhft.chronicle.logger.slf4j.ChronicleLoggerFactory;
 import org.slf4j.ILoggerFactory;
-import org.slf4j.spi.LoggerFactoryBinder;
 
 /**
  * Binds the SLF4J API to the Chronicle logger factory.
  *
  * <p>This binder installs {@link ChronicleLoggerFactory} as the SLF4J provider.
  */
-
-public class StaticLoggerBinder implements LoggerFactoryBinder {
+// SLF4J 1.x SPI retained so this artefact can still act as a classic
+// StaticLoggerBinder for applications that expect that contract. The
+// LoggerFactoryBinder interface is deprecated in SLF4J 2.x but remains
+// supported, so we suppress the deprecation warning here.
+@SuppressWarnings("deprecation")
+public class StaticLoggerBinder implements org.slf4j.spi.LoggerFactoryBinder {
 
     private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
     private static final String loggerFactoryClassStr = ChronicleLoggerFactory.class.getName();

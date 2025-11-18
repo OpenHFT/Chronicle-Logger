@@ -5,7 +5,6 @@ package org.slf4j.impl;
 
 import org.slf4j.IMarkerFactory;
 import org.slf4j.helpers.BasicMarkerFactory;
-import org.slf4j.spi.MarkerFactoryBinder;
 
 /**
  * Supplies the singleton {@link IMarkerFactory} used by SLF4J.
@@ -15,7 +14,11 @@ import org.slf4j.spi.MarkerFactoryBinder;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class StaticMarkerBinder implements MarkerFactoryBinder {
+// SLF4J 1.x marker SPI retained for backwards compatibility. The
+// MarkerFactoryBinder interface is deprecated in SLF4J 2.x but still
+// recognised by the runtime, so we suppress the deprecation warning here.
+@SuppressWarnings("deprecation")
+public class StaticMarkerBinder implements org.slf4j.spi.MarkerFactoryBinder {
 
     /**
      * The unique instance of this class.

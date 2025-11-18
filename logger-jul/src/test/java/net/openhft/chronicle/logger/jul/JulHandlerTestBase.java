@@ -43,6 +43,8 @@ public class JulHandlerTestBase extends JulTestBase {
 
         LogManager manager = LogManager.getLogManager();
         manager.reset();
-        manager.readConfiguration(new FileInputStream(cfgFile));
+        try (FileInputStream in = new FileInputStream(cfgFile)) {
+            manager.readConfiguration(in);
+        }
     }
 }

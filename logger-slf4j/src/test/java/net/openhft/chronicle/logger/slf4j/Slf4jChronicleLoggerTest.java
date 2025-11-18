@@ -61,7 +61,6 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         Logger l1 = LoggerFactory.getLogger("slf4j-chronicle");
         Logger l2 = LoggerFactory.getLogger("slf4j-chronicle");
         Logger l3 = LoggerFactory.getLogger("logger_1");
-        Logger l4 = LoggerFactory.getLogger("readwrite");
 
         assertNotNull(l1);
         assertTrue(l1 instanceof ChronicleLogger);
@@ -71,6 +70,8 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
 
         assertNotNull(l3);
         assertTrue(l3 instanceof ChronicleLogger);
+
+        Logger l4 = LoggerFactory.getLogger("readwrite");
 
         assertNotNull(l4);
         assertTrue(l4 instanceof ChronicleLogger);

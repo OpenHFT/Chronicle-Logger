@@ -5,7 +5,6 @@ package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
-import org.slf4j.helpers.MarkerIgnoringBase;
 
 /**
  * SLF4J {@link org.slf4j.Logger} implementation backed by a
@@ -15,8 +14,11 @@ import org.slf4j.helpers.MarkerIgnoringBase;
  * messages are forwarded when the requested {@link ChronicleLogLevel}
  * is enabled.</p>
  */
-@SuppressWarnings("serial")
-public final class ChronicleLogger extends MarkerIgnoringBase {
+// SLF4J 1.x base retained for backwards compatibility with existing deployments.
+// The type is deprecated in SLF4J 2.x but still supported, so we suppress the
+// deprecation warning here to keep the binder usable without breaking callers.
+@SuppressWarnings({ "serial", "deprecation" })
+public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase {
 
     private static final long serialVersionUID = 1L;
     protected final ChronicleLogLevel level;

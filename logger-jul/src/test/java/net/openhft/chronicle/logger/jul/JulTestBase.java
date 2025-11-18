@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class JulTestBase {
 
-    protected static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
+    static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     protected static void log(Logger logger, ChronicleLogLevel level, String fmt, Object... args) {
         switch (level) {

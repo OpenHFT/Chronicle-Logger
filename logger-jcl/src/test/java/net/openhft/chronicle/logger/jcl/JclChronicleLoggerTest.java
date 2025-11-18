@@ -58,7 +58,6 @@ public class JclChronicleLoggerTest extends JclTestBase {
         Log l1 = LogFactory.getLog("jcl-chronicle");
         Log l2 = LogFactory.getLog("jcl-chronicle");
         Log l3 = LogFactory.getLog("logger_1");
-        Log l4 = LogFactory.getLog("readwrite");
 
         assertNotNull(l1);
         assertEquals(ChronicleLogger.class, l1.getClass());
@@ -68,6 +67,8 @@ public class JclChronicleLoggerTest extends JclTestBase {
 
         assertNotNull(l3);
         assertEquals(ChronicleLogger.class, l3.getClass());
+
+        Log l4 = LogFactory.getLog("readwrite");
 
         assertNotNull(l4);
         assertEquals(ChronicleLogger.class, l4.getClass());
