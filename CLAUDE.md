@@ -140,7 +140,10 @@ Documentation follows Chronicle standards:
 * Key files:
   - `architecture-overview.adoc` - High-level architecture
   - `project-requirements.adoc` - Requirements catalogue with Nine-Box tags (e.g., `CLG-FN-001`)
+  - `functional-requirements.adoc` - Functional requirements summary
   - `decision-log.adoc` - Architecture Decision Records
+  - `testing-strategy.adoc` - Testing approach and traceability
+  - `code-review-playbook.adoc` - Code review guidelines
 * Format: British English, ISO-8859-1 character set
 * Requirements use Nine-Box taxonomy: `FN` (Functional), `NF-P` (Performance), `NF-S` (Security), `NF-O` (Operability), etc.
 
