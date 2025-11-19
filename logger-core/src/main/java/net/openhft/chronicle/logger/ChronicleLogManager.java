@@ -50,6 +50,8 @@ public class ChronicleLogManager {
             try {
                 writer.close();
             } catch (IOException e) {
+                System.err.printf("Unable to close ChronicleLogWriter %s: %s%n",
+                        writer, e.getMessage());
             }
         }
 
@@ -94,7 +96,7 @@ public class ChronicleLogManager {
         ChronicleQueue cq = this.cfg.getAppenderConfig().build(path, wireType);
         if (!cfg.getBoolean(name, ChronicleLogConfig.KEY_APPEND, true)) {
             // TODO re-enable when it's implemented. ATM it throws UnsupportedOperationException...
-            //cq.clear();
+            System.err.printf("Clearing Chronicle logger queue for '%s' is not supported yet.%n", name);
         }
         return cq;
     }

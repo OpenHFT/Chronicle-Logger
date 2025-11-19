@@ -72,7 +72,7 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
      * <p>
      * Primarily used by tests when the properties file has changed.
      */
-    synchronized void reload() {
+    public synchronized void reload() {
         this.loggers.clear();
         this.manager.reload();
     }

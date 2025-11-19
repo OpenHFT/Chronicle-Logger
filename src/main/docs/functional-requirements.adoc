@@ -1,0 +1,36 @@
+= Chronicle Logger - Functional Requirements
+:toc:
+:lang: en-GB
+:source-highlighter: rouge
+
+== Purpose
+
+This document summarises the core functional behaviours for Chronicle Logger and its bindings.
+It organises the `CLG-FN-*` entries from `project-requirements.adoc` into domains and links them to verification and supporting documentation.
+The full catalogue, including performance, security, test, documentation and operational requirements, remains in `project-requirements.adoc`.
+
+== Domain Overview
+
+[cols="1,3,3",options="header"]
+|===
+| Tag range | Domain | Notes
+| CLG-FN-001 .. CLG-FN-005 | Core logging API, bindings, tools and benchmarks | Chronicle Queue-backed logging, framework integration and measurement.
+|===
+
+== Core Logging and Binding Behaviour (CLG-FN-001 .. CLG-FN-005)
+
+[cols="1,4,3",options="header"]
+|===
+| ID | Requirement (summary) | Verification and references
+| CLG-FN-001 | `ChronicleLogWriter` shall persist log events with timestamp, level, thread name, logger name, message pattern, throwable and arguments without allocating on the steady-state hot path. | Core writer behaviour is exercised by `logger-core` tests such as `DefaultChronicleLogWriterTest` together with binding tests (for example `ChronicleLoggerBehaviourTest`, `Slf4jChronicleLoggerTest` and `Slf4jChronicleLoggerPerfTest`) that round-trip events via `ChronicleLogReader`; allocation characteristics are checked via benchmarks in the `benchmark` module as described in `project-requirements.adoc`.
+| CLG-FN-002 | `ChronicleLogManager` shall load configuration from the `chronicle.logger.properties` system property or class-path defaults, supporting per-logger overrides for path, level, wire type and append mode. | Configuration flow is covered by tests such as `ChronicleLoggingConfigTest` (SLF4J bindings), `ChronicleLoggingConfigTest` under `logger-slf4j-2`, and the various `*ConfigurationTest` classes, which supply temporary properties files or framework-specific configuration and assert resolved settings; the overall configuration path is documented in `architecture-overview.adoc`.
+| CLG-FN-003 | Each binding (SLF4J 1.x, SLF4J 2.x, JUL, JCL, Logback, Log4J 1 and Log4J 2) shall honour its native configuration entry points while delegating writes through `ChronicleLogWriter`. | Framework-specific tests such as `Slf4jChronicleLoggerTest`, `JulLoggerChronicleTest`, `JclChronicleLoggerTest`, `LogbackChronicleBinaryAppenderTest`, `LogbackChronicleProgrammaticConfigTest`, `Log4j1ChronicleLogTest` and `Log4j2BinaryTest` configure Chronicle appenders using each technology's standard mechanisms and verify Chronicle Queue output; binding responsibilities are summarised in `architecture-overview.adoc`.
+| CLG-FN-004 | Logger tools (`ChroniCat`, `ChroniTail`, `ChronicleLogReader`) shall read binary Chronicle logs, display tail output and stream entries to custom processors without data loss. | `logger-tools` tests such as `ChronicleLogReaderTest` and `ChronicleCliToolsTest` replay fixture queues, assert correct decoding of structured events and verify that processor callbacks receive ordered entries; tool behaviour is described in `project-requirements.adoc` and user-facing documentation.
+| CLG-FN-005 | The benchmark module shall provide repeatable JMH suites covering append throughput and tail latency for key bindings with configurable message sizes. | Performance behaviour is validated by JMH benchmarks in the `benchmark` module together with binding-specific performance tests such as `Slf4jChronicleLoggerPerfTest` and its SLF4J 2.x equivalent; these scenarios are used to enforce `CLG-NF-P-*` targets from `project-requirements.adoc`.
+|===
+
+== Traceability
+
+- `src/main/docs/project-requirements.adoc` remains the authoritative source for all `CLG-*` requirements, including non-functional and operational entries.
+- Design decisions in `src/main/docs/decision-log.adoc` (for example `CLG-DOC-001`, `CLG-OPS-002`, `CLG-NF-P-003`) explain the rationale behind the functional contracts listed here.
+- Tests and benchmarks in the logger modules should reference the appropriate `CLG-FN-*` identifiers to make coverage and performance obligations easy to audit; the test classes named in the table above serve as canonical examples for each requirement.

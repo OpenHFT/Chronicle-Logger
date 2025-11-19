@@ -1,10 +1,11 @@
 = Chronicle Logger Code Review Playbook
 :lang: en-GB
+:source-highlighter: rouge
 
 == Purpose
 
 This playbook lists the static-analysis and coverage checks executed by the
-`code-review` Maven profile so reviewers can reproduce the pipeline locally on the project’s supported JDKs.
+`code-review` Maven profile so reviewers can reproduce the pipeline locally on the project's supported JDKs.
 
 == Supported JDKs
 

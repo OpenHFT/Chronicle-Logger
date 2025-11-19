@@ -36,10 +36,11 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
-        <!-- for tests -->
+        <!-- Logback for test console output only -->
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-logger-logback</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

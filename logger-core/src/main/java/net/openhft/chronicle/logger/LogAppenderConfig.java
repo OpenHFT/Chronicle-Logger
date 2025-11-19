@@ -131,6 +131,8 @@ public class LogAppenderConfig {
                 method.invoke(this, propValue);
             }
         } catch (Exception e) {
+            System.err.printf("Unable to set property '%s' to '%s': %s%n",
+                    propName, propValue, e.getMessage());
         }
     }
 }

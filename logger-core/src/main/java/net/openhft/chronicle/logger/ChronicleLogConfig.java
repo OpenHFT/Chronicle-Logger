@@ -105,10 +105,12 @@ public class ChronicleLogConfig {
         if (in != null) {
             Properties properties = new Properties();
 
-            try {
-                properties.load(in);
-                in.close();
-            } catch (IOException ignored) {
+            try (InputStream input = in) {
+                properties.load(input);
+            } catch (IOException e) {
+                System.err.printf("Failed to load Chronicle logger configuration: %s%n",
+                        e.getMessage());
+                return null;
             }
 
             return load(interpolate(properties));
@@ -117,7 +119,7 @@ public class ChronicleLogConfig {
             System.err.printf(
                     "Unable to configure chronicle-logger:"
                             + " configuration file not found in default locations (%s)"
-                            + " or System property (%s) is not defined \n",
+                            + " or System property (%s) is not defined%n",
                     DEFAULT_CFG_LOCATIONS.toString(),
                     KEY_PROPERTIES_FILE);
         }
@@ -243,7 +245,8 @@ public class ChronicleLogConfig {
     }
 
     public Boolean getBoolean(final String shortName) {
-        return getBoolean(shortName, null);
+        String prop = getString(shortName);
+        return Boolean.valueOf("true".equalsIgnoreCase(prop));
     }
 
     public Boolean getBoolean(final String shortName, boolean defval) {
@@ -253,7 +256,7 @@ public class ChronicleLogConfig {
 
     public Boolean getBoolean(final String loggerName, final String shortName) {
         String prop = getString(loggerName, shortName);
-        return (prop != null) ? "true".equalsIgnoreCase(prop) : null;
+        return Boolean.valueOf("true".equalsIgnoreCase(prop));
     }
 
     public Boolean getBoolean(final String loggerName, final String shortName, boolean defval) {

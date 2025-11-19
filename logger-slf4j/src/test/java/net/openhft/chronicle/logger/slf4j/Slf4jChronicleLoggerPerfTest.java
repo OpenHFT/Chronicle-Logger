@@ -20,12 +20,14 @@ import java.util.concurrent.TimeUnit;
 public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         System.setProperty(
                 "chronicle.logger.properties",
                 "chronicle.logger.perf.properties");
 
-        getChronicleLoggerFactory().reload();
+        // Call reload() via reflection (works with both slf4j and slf4j2 factory)
+        Object factory = getChronicleLoggerFactory();
+        factory.getClass().getMethod("reload").invoke(factory);
     }
 
     @After

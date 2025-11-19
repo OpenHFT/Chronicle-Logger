@@ -12,8 +12,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
-import org.slf4j.helpers.Reporter;
-import org.slf4j.helpers.Util;
 import org.slf4j.impl.OutputChoice.OutputChoiceType;
 
 /**
@@ -62,7 +60,7 @@ public class SimpleLoggerConfiguration {
     boolean showThreadName = SHOW_THREAD_NAME_DEFAULT;
 
     /** Default for {@code org.slf4j.simpleLogger.showLogName} (true). */
-    final static boolean SHOW_LOG_NAME_DEFAULT = true;
+    static final boolean SHOW_LOG_NAME_DEFAULT = true;
     /** Whether the logger name should appear in output. */
     boolean showLogName = SHOW_LOG_NAME_DEFAULT;
 
@@ -123,7 +121,8 @@ public class SimpleLoggerConfiguration {
             try {
                 dateFormatter = new SimpleDateFormat(dateTimeFormatStr);
             } catch (IllegalArgumentException e) {
-                Reporter.error("Bad date format in " + CONFIGURATION_FILE + "; will output relative time", e);
+                System.err.println("Bad date format in " + CONFIGURATION_FILE + "; will output relative time");
+                e.printStackTrace();
             }
         }
     }
@@ -209,7 +208,8 @@ public class SimpleLoggerConfiguration {
                 PrintStream printStream = new PrintStream(fos);
                 return new OutputChoice(printStream);
             } catch (FileNotFoundException e) {
-                Reporter.error("Could not open [" + logFile + "]. Defaulting to System.err", e);
+                System.err.println("Could not open [" + logFile + "]. Defaulting to System.err");
+                e.printStackTrace();
                 return new OutputChoice(OutputChoiceType.SYS_ERR);
             }
         }

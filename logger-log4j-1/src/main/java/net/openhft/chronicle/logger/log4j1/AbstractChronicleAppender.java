@@ -173,6 +173,8 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
                     case Filter.ACCEPT:
                         f = null;
                         break;
+                    default:
+                        break;
                 }
             }
 

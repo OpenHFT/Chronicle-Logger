@@ -1,4 +1,25 @@
-=== CLG-DOC-001 Adopt Nine-Box Requirements Catalogue
+= Chronicle Logger Decision Log
+:toc:
+:lang: en-GB
+:source-highlighter: rouge
+:sectnums:
+
+= Chronicle Logger - Decision Log
+:toc:
+:lang: en-GB
+:source-highlighter: rouge
+
+This file captures component-specific architectural and operational decisions for the Chronicle Logger module.
+Identifiers follow the `<Scope>-<Tag>-NNN` pattern with scope `CLG` (Chronicle Logger).
+
+== Decision Index
+
+* link:#CLG-DOC-001[CLG-DOC-001 Adopt Nine-Box Requirements Catalogue]
+* link:#CLG-OPS-002[CLG-OPS-002 Enforce Explicit Queue Path Configuration]
+* link:#CLG-NF-P-003[CLG-NF-P-003 Chronicle Log Reader Allocation Budget]
+
+[[CLG-DOC-001]]
+== CLG-DOC-001 Adopt Nine-Box Requirements Catalogue
 
 Date:: 2025-10-17
 Context::
@@ -7,8 +28,8 @@ Context::
 Decision Statement::
 * Chronicle Logger adopts the Nine-Box schema (FN, NF-P, NF-S, NF-O, DOC, OPS, TEST, RISK) with scope prefix `CLG` for all requirements and decisions.
 Alternatives Considered::
-* Free-form numbering – low effort, but tooling and audits cannot map entries consistently.
-* Per-module numbering – splits visibility across bindings and complicates shared obligations.
+* Free-form numbering - low effort, but tooling and audits cannot map entries consistently.
+* Per-module numbering - splits visibility across bindings and complicates shared obligations.
 Rationale for Decision::
 * Aligns Chronicle Logger with company-wide guidance and enables cross-linking with test and benchmark artefacts.
 * Simplifies audit checks for requirement coverage.
@@ -17,7 +38,8 @@ Impact & Consequences::
 Notes/Links::
 * link:project-requirements.adoc[Requirements Catalogue]
 
-=== CLG-OPS-002 Enforce Explicit Queue Path Configuration
+[[CLG-OPS-002]]
+== CLG-OPS-002 Enforce Explicit Queue Path Configuration
 
 Date:: 2025-10-17
 Context::
@@ -26,8 +48,8 @@ Context::
 Decision Statement::
 * All bindings must require an explicit Chronicle Queue path from configuration and fail fast with a warning if the directory is absent or unwritable.
 Alternatives Considered::
-* Auto-create directories – masks configuration errors and may violate deployment policies.
-* Fallback to in-memory logging – deviates from Chronicle Logger’s persistence contract.
+* Auto-create directories - masks configuration errors and may violate deployment policies.
+* Fallback to in-memory logging - deviates from Chronicle Logger's persistence contract.
 Rationale for Decision::
 * Prevents silent data loss, aligns with operational expectations in regulated environments.
 Impact & Consequences::
@@ -36,7 +58,8 @@ Impact & Consequences::
 Notes/Links::
 * link:project-requirements.adoc#clg-nf-o-002[CLG-NF-O-002]
 
-=== CLG-NF-P-003 Chronicle Log Reader Allocation Budget
+[[CLG-NF-P-003]]
+== CLG-NF-P-003 Chronicle Log Reader Allocation Budget
 
 Date:: 2025-10-17
 Context::
@@ -44,7 +67,7 @@ Context::
 Decision Statement::
 * `ChronicleLogReader` must remain allocation-neutral during steady-state reads and expose benchmarks that enforce the constraint.
 Alternatives Considered::
-* Accept sporadic allocations – risks latency regressions and contradicts Chronicle low-GC ethos.
+* Accept sporadic allocations - risks latency regressions and contradicts Chronicle low-GC ethos.
 Rationale for Decision::
 * Sustains deterministic behaviour for monitoring tools and aligns with performance requirements.
 Impact & Consequences::

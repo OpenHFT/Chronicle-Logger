@@ -14,6 +14,9 @@ import net.openhft.chronicle.logger.ChronicleLogWriter;
  * messages are forwarded when the requested {@link ChronicleLogLevel}
  * is enabled.</p>
  */
+// SLF4J 1.x base retained for backwards compatibility with existing deployments.
+// The type is deprecated in SLF4J 2.x but still supported, so we suppress the
+// deprecation warning here to keep the binder usable without breaking callers.
 @SuppressWarnings({"serial", "deprecation"})
 public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase {
 

@@ -1,6 +1,7 @@
 = Chronicle Logger Architecture Overview
 :toc:
 :lang: en-GB
+:source-highlighter: rouge
 
 == Purpose
 
