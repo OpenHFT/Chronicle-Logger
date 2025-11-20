@@ -1,0 +1,27 @@
+/*
+ * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+ */
+package net.openhft.chronicle.logger.slf4j2;
+
+import org.junit.Test;
+import org.slf4j.spi.SLF4JServiceProvider;
+
+import java.util.ServiceLoader;
+
+import static org.junit.Assert.assertTrue;
+
+public class Slf4jProviderHealthCheckTest {
+
+    @Test
+    public void chronicleProviderIsOnClasspath() {
+        boolean found = false;
+        for (SLF4JServiceProvider provider : ServiceLoader.load(SLF4JServiceProvider.class)) {
+            provider.initialize();
+            if (provider.getLoggerFactory() instanceof ChronicleLoggerFactory) {
+                found = true;
+            }
+        }
+
+        assertTrue("Expected Chronicle SLF4J 2.x provider on the classpath", found);
+    }
+}
