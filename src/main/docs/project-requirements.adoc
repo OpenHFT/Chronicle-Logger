@@ -7,15 +7,17 @@
 // Legend
 // -------------------------------------------------------------------
 // Requirement identifiers follow the Nine-Box taxonomy:
-//   <Scope>-<Tag>-NNN, where Scope = CLG (Chronicle Logger)
-//   Tag   = FN | NF-P | NF-S | NF-O | DOC | OPS | TEST | RISK
-//   NNN   = zero-padded sequence per tag.
+// <Scope>-<Tag>-NNN, where Scope = CLG (Chronicle Logger)
+// Tag   = FN | NF-P | NF-S | NF-O | DOC | OPS | TEST | RISK
+// NNN   = zero-padded sequence per tag.
 // Text must remain ASCII per AGENTS.md guidance.
 // -------------------------------------------------------------------
 
 == Scope
 
 Chronicle Logger provides Chronicle Queue backed appenders, bridges, and tools for popular Java logging frameworks (SLF4J 1.x and 2.x, Logback, Log4J 1/2, Commons Logging, JUL).
+SLF4J 2.x is the default API; SLF4J 1.x remains supported via the legacy binding and explicit bridges (for example `slf4j-reload4j` for Log4J 1.x).
+Mixing API/provider versions is unsupported and must be prevented in tests and documentation.
 The requirements below define the contracts, quality targets, and operational obligations that all modules must meet.
 
 == Functional Requirements
@@ -33,8 +35,8 @@ supporting per-logger overrides for path, level, wire type, and append mode. |In
 tests supply temp properties files and validate resolved settings per logger.
 |CLG-FN-003 |Each binding (SLF4J 1.x, SLF4J 2.x, JUL, JCL, Logback, Log4J 1, Log4J 2)
 shall honour its native configuration entry points while delegating writes
-through `ChronicleLogWriter`. |Framework-specific tests assert that configuration
-files enable Chronicle appenders and produce Chronicle Queue output.
+through `ChronicleLogWriter`. Legacy SLF4J call sites shall be serviceable via documented bridges while `logger-slf4j-2` remains the default provider. |Framework-specific tests assert that configuration
+files enable Chronicle appenders and produce Chronicle Queue output; bridge tests assert SLF4J callers still reach Chronicle appenders.
 |CLG-FN-004 |Logger tools (`ChroniCat`, `ChroniTail`, `ChronicleLogReader`) shall
 read binary Chronicle logs, display tail output, and stream entries to custom
 processors without data loss. |CLI smoke tests replay fixture queues; unit tests

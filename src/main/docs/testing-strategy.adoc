@@ -20,8 +20,8 @@ Testing for Chronicle Logger aims to:
 Unit and integration tests live in the individual module subprojects:
 
 * `logger-core` – writer and manager behaviour (for example `DefaultChronicleLogWriterTest`);
-* `logger-slf4j` and `logger-slf4j-2` – SLF4J bindings (for example `ChronicleLoggerBehaviourTest`, `ChronicleLoggingConfigTest`, `Slf4jChronicleLoggerTest`);
-* `logger-logback`, `logger-log4j-1`, `logger-log4j-2` and `logger-jul`, `logger-jcl` – framework-specific bindings and configuration tests (for example `LogbackChronicleBinaryAppenderTest`, `LogbackChronicleProgrammaticConfigTest`, `Log4j1ChronicleLogTest`, `Log4j2BinaryTest`, `JulHandlerChronicleTest`);
+* `logger-slf4j` and `logger-slf4j-2` – SLF4J bindings (for example `ChronicleLoggerBehaviourTest`, `ChronicleLoggingConfigTest`, `Slf4jChronicleLoggerTest`), plus SLF4J provider health checks to fail fast on missing or conflicting providers;
+* `logger-logback`, `logger-log4j-1`, `logger-log4j-2` and `logger-jul`, `logger-jcl` – framework-specific bindings and configuration tests (for example `LogbackChronicleBinaryAppenderTest`, `LogbackChronicleProgrammaticConfigTest`, `Log4j1ChronicleLogTest`, `Slf4jBridgeChronicleLogTest`, `Log4j2BinaryTest`, `JulHandlerChronicleTest`);
 * `logger-tools` – CLI tools tests (for example `ChronicleLogReaderTest`, `ChronicleCliToolsTest`).
 
 These tests cover:
@@ -53,5 +53,7 @@ When new behaviours are added or existing ones change, keep the following in syn
 * extend `functional-requirements.adoc` with the relevant test classes;
 * add or update unit, integration or benchmark tests in the appropriate submodule.
 
-All tests should pass under the shared quality profiles (`mvn -P quality clean verify`) on the supported JDK matrix before shipping changes.
+Legacy SLF4J call sites are exercised via bridges (`slf4j-reload4j` for SLF4J→Log4j1, and Log4j2’s SLF4J binding for SLF4J→Log4j2) to keep unchanged code paths working while SLF4J 2.x is the default.
+Document the active bridge in each suite to avoid provider ambiguity.
 
+All tests should pass under the shared quality profiles (`mvn -P quality clean verify`) on the supported JDK matrix before shipping changes.

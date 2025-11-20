@@ -31,6 +31,6 @@ The full catalogue, including performance, security, test, documentation and ope
 
 == Traceability
 
-- `src/main/docs/project-requirements.adoc` remains the authoritative source for all `CLG-*` requirements, including non-functional and operational entries.
-- Design decisions in `src/main/docs/decision-log.adoc` (for example `CLG-DOC-001`, `CLG-OPS-002`, `CLG-NF-P-003`) explain the rationale behind the functional contracts listed here.
-- Tests and benchmarks in the logger modules should reference the appropriate `CLG-FN-*` identifiers to make coverage and performance obligations easy to audit; the test classes named in the table above serve as canonical examples for each requirement.
+* `src/main/docs/project-requirements.adoc` remains the authoritative source for all `CLG-*` requirements, including non-functional and operational entries.
+* Design decisions in `src/main/docs/decision-log.adoc` (for example `CLG-DOC-001`, `CLG-OPS-002`, `CLG-NF-P-003`) explain the rationale behind the functional contracts listed here.
+* Tests and benchmarks in the logger modules should reference the appropriate `CLG-FN-*` identifiers to make coverage and performance obligations easy to audit; the test classes named in the table above serve as canonical examples for each requirement.

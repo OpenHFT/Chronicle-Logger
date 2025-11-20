@@ -12,8 +12,8 @@ LLM-based agents can accelerate development only if they respect our house rules
 |--------------|-----------|
 | **British English** spelling (`organisation`, `licence`, *not* `organization`, `license`) except technical US spellings like `synchronized` | Keeps wording consistent with Chronicle's London HQ and existing docs. See the [University of Oxford style guide](https://www.ox.ac.uk/public-affairs/style-guide) for reference. |
 | **ISO-8859-1** (code-points 0-255). Avoid smart quotes, non-breaking spaces and accented characters. | ISO-8859-1 survives every toolchain Chronicle uses. |
-| If a symbol is not available in ISO-8859-1, use a textual form such as `>=`, `:alpha:`, `:yes:`. This is the preferred approach and Unicode must not be inserted. | Extended or '8-bit ASCII' variants are *not* portable and are therefore disallowed. |
-| Tools to check ASCII compliance include `iconv -f ascii -t ascii` and IDE settings that flag non-ASCII characters. | These help catch stray Unicode characters before code review. |
+| If a symbol is not available in ISO-8859-1, use a textual form such as `>=`, `:alpha:`, `:yes:`. This is the preferred approach and Unicode must not be inserted. | Non-ISO-8859-1 encodings (including other '8-bit ASCII' variants) are *not* portable and are therefore disallowed. |
+| Tools to check ISO-8859-1 compliance include `iconv -f ISO-8859-1 -t ISO-8859-1` and IDE settings that flag non-ISO-8859-1 characters. | These help catch stray Unicode or mis-encoded characters before code review. |
 
 ## Javadoc guidelines
 
@@ -107,6 +107,7 @@ This tight loop informs the AI accurately and creates immediate clarity for all 
 * **Doc-First for New Work**: For *new* features or requirements, aim to update documentation first, then use AI to help produce or refine corresponding code and tests. For refactoring or initial bootstrapping, updates might flow from code/tests back to documentation, which should then be reviewed and finalised.
 * **Small Commits**: Each commit should ideally relate to a single requirement or coherent change, making reviews easier for humans and AI analysis tools.
 - **Team Buy-In**: Encourage everyone to review AI outputs critically and contribute to maintaining the synchronicity of all artefacts.
+* SLF4J 2.x is the default API and provider via `logger-slf4j-2`; keep `logger-slf4j` for SLF4J 1.7.x only and use explicit bridges (for example `slf4j-reload4j`) when preserving old call sites.
 
 ## AI Agent Guidelines
 

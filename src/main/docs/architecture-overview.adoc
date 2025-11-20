@@ -14,7 +14,7 @@ The repository is split into focused modules that all depend on
 `logger-core`:
 
 * `logger-core` supplies `ChronicleLogWriter`, `ChronicleLogManager`, and configuration helpers (see link:project-requirements.adoc#clg-fn-001[CLG-FN-001]).
-* Binding modules (`logger-slf4j`, `logger-slf4j-2`, `logger-logback`,
+* Binding modules (`logger-slf4j` for SLF4J 1.7.x, `logger-slf4j-2` for SLF4J 2.x ServiceProvider, `logger-logback`,
 `logger-log4j-1`, `logger-log4j-2`, `logger-jcl`, `logger-jul`) translate framework-specific APIs into Chronicle writes (link:project-requirements.adoc#clg-fn-003[CLG-FN-003]).
 * `logger-tools` exposes reusable readers and CLI utilities (link:project-requirements.adoc#clg-fn-004[CLG-FN-004]).
 * `benchmark` packages JMH scenarios that observe the performance envelopes (link:project-requirements.adoc#clg-fn-005[CLG-FN-005]).
@@ -33,11 +33,14 @@ link:decision-log.adoc#clg-ops-002[CLG-OPS-002]).
 
 == Chronicle Queue Write Path
 
-1. Framework binding receives a log call and checks the requested level against its cached minimum.
-2. When enabled, the binding forwards the event to `ChronicleLogWriter`, supplying timestamp, thread name, logger name, message pattern, optional throwable, and argument array (link:project-requirements.adoc#clg-fn-001[CLG-FN-001]).
-3. `ChronicleLogWriter` serialises the data into a Chronicle Queue using the configured wire type, avoiding heap allocation on the hot path (link:project-requirements.adoc#clg-nf-p-001[CLG-NF-P-001]).
+. Framework binding receives a log call and checks the requested level against its cached minimum.
+. For SLF4J 2.x, discovery is via `SLF4JServiceProvider`; SLF4J 1.x bindings expose `StaticLoggerBinder`.
+Legacy SLF4J callers can be bridged to Log4j1 via `slf4j-reload4j` and to Log4j2 via `log4j-slf4j2-impl`, keeping old code paths functional while defaulting new usage to `logger-slf4j-2`.
+. When enabled, the binding forwards the event to `ChronicleLogWriter`, supplying timestamp, thread name, logger name, message pattern, optional throwable, and argument array (link:project-requirements.adoc#clg-fn-001[CLG-FN-001]).
+. `ChronicleLogWriter` serialises the data into a Chronicle Queue using the configured wire type, avoiding heap allocation on the hot path (link:project-requirements.adoc#clg-nf-p-001[CLG-NF-P-001]).
 
-Tailers and readers consume the queue either within the same JVM or from external processes. `ChronicleLogReader` provides a stable record schema and zero-garbage consumption (link:project-requirements.adoc#clg-nf-p-003[CLG-NF-P-003]).
+Tailers and readers consume the queue either within the same JVM or from external processes.
+`ChronicleLogReader` provides a stable record schema and zero-garbage consumption (link:project-requirements.adoc#clg-nf-p-003[CLG-NF-P-003]).
 
 == Tooling and Observability
 
