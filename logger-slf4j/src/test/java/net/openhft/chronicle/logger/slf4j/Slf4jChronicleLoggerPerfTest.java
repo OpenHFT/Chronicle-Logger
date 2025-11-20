@@ -25,9 +25,7 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
                 "chronicle.logger.properties",
                 "chronicle.logger.perf.properties");
 
-        // Call reload() via reflection (works with both slf4j and slf4j2 factory)
-        Object factory = getChronicleLoggerFactory();
-        factory.getClass().getMethod("reload").invoke(factory);
+        reloadChronicleLoggerFactory();
     }
 
     @After

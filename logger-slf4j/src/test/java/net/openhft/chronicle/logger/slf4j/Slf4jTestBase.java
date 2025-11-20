@@ -6,6 +6,7 @@ package net.openhft.chronicle.logger.slf4j;
 import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
+import net.openhft.chronicle.logger.ChronicleLoggerFactoryControl;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,15 @@ class Slf4jTestBase {
         for (int i = 0; i < 10; i++) {
             logger.info("warmup");
         }
+    }
+
+    void reloadChronicleLoggerFactory() {
+        Object factory = getChronicleLoggerFactory();
+        if (factory instanceof ChronicleLoggerFactoryControl) {
+            ((ChronicleLoggerFactoryControl) factory).reload();
+            return;
+        }
+        throw new IllegalStateException("Unsupported ChronicleLoggerFactory: " + factory.getClass());
     }
 
     /**

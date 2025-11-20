@@ -9,11 +9,11 @@ import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,7 +37,7 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
     @Test
     public void testConfig() {
         // needs to be initialised before trying to get the appender, otherwise we end up in a loop
-        final Logger logger = LoggerFactory.getLogger(OS.class);
+        final Logger logger = LogManager.getLogger(OS.class);
         final String appenderName = "CONF-CHRONICLE";
 
         final org.apache.logging.log4j.core.Appender appender = getAppender(appenderName);
@@ -55,7 +55,7 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
     public void testIndexedAppender() throws IOException {
         final String testId = "chronicle";
         final String threadId = testId + "-th";
-        final Logger logger = LoggerFactory.getLogger(testId);
+        final Logger logger = LogManager.getLogger(testId);
 
         Thread.currentThread().setName(threadId);
         Files.createDirectories(Paths.get(basePath(testId)));

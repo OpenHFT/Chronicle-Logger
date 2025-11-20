@@ -9,12 +9,11 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,12 +38,12 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
     public void testBinaryAppender() throws IOException {
         final String testId = "chronicle";
         final String threadId = testId + "-th";
-        final Logger logger = LoggerFactory.getLogger(testId);
+        final Logger logger = Logger.getLogger(testId);
         Files.createDirectories(Paths.get(basePath(testId)));
         Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger, level, "level is {}", level);
+            log(logger, level, "level is " + level);
         }
 
         try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.BINARY_LIGHT)) {
@@ -110,12 +109,12 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
     public void testJsonAppender() throws IOException {
         final String testId = "json-chronicle";
         final String threadId = testId + "-th";
-        final Logger logger = LoggerFactory.getLogger(testId);
+        final Logger logger = Logger.getLogger(testId);
 
         Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger, level, "level is {}", level);
+            log(logger, level, "level is " + level);
         }
 
         try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.TEXT)) {

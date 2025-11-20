@@ -4,7 +4,8 @@
 package net.openhft.chronicle.logger.log4j1;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
-import org.slf4j.Logger;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 
@@ -29,26 +30,26 @@ class Log4j1TestBase {
                 + type;
     }
 
-    static void log(Logger logger, ChronicleLogLevel level, String fmt, Object... args) {
+    static void log(Logger logger, ChronicleLogLevel level, String message) {
         switch (level) {
             case TRACE:
-                logger.trace(fmt, args);
+                logger.log(Level.TRACE, message);
                 break;
 
             case DEBUG:
-                logger.debug(fmt, args);
+                logger.log(Level.DEBUG, message);
                 break;
 
             case INFO:
-                logger.info(fmt, args);
+                logger.log(Level.INFO, message);
                 break;
 
             case WARN:
-                logger.warn(fmt, args);
+                logger.log(Level.WARN, message);
                 break;
 
             case ERROR:
-                logger.error(fmt, args);
+                logger.log(Level.ERROR, message);
                 break;
             default:
                 throw new UnsupportedOperationException();

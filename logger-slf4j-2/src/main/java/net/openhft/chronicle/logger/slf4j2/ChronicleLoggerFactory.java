@@ -5,6 +5,7 @@ package net.openhft.chronicle.logger.slf4j2;
 
 import net.openhft.chronicle.logger.ChronicleLogManager;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.ChronicleLoggerFactoryControl;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.helpers.NOPLogger;
@@ -35,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *     log.info("Started");
  * </pre>
  */
-public class ChronicleLoggerFactory implements ILoggerFactory {
+public class ChronicleLoggerFactory implements ILoggerFactory, ChronicleLoggerFactoryControl {
     private final Map<String, Logger> loggers;
     private final ChronicleLogManager manager;
 
@@ -70,8 +71,10 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     /**
      * Clear cached loggers and reload the manager configuration.
      * <p>
-     * Primarily used by tests when the properties file has changed.
+     * Primarily used by tests when the properties file has changed via
+     * {@link net.openhft.chronicle.logger.ChronicleLoggerFactoryControl}.
      */
+    @Override
     public synchronized void reload() {
         this.loggers.clear();
         this.manager.reload();
