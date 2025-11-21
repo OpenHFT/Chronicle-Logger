@@ -34,7 +34,7 @@ public class SimpleLoggerConfiguration {
     private static final String CONFIGURATION_FILE = "simplelogger.properties";
 
     /** Default level used when no property is set (INFO). */
-    static int DEFAULT_LOG_LEVEL_DEFAULT = SimpleLogger.LOG_LEVEL_INFO;
+    static final int DEFAULT_LOG_LEVEL_DEFAULT = SimpleLogger.LOG_LEVEL_INFO;
     /**
      * Runtime default log level as configured by
      * {@code org.slf4j.simpleLogger.defaultLogLevel}.
@@ -75,7 +75,7 @@ public class SimpleLoggerConfiguration {
     boolean levelInBrackets = LEVEL_IN_BRACKETS_DEFAULT;
 
     /** Default for {@code org.slf4j.simpleLogger.logFile} (System.err). */
-    private static String LOG_FILE_DEFAULT = "System.err";
+    private static final String LOG_FILE_DEFAULT = "System.err";
     /** Destination for log output. */
     private String logFile = LOG_FILE_DEFAULT;
     /** Actual output target decided after initialisation. */
@@ -83,11 +83,6 @@ public class SimpleLoggerConfiguration {
 
     /** Default for {@code org.slf4j.simpleLogger.cacheOutputStream} (false). */
     private static final boolean CACHE_OUTPUT_STREAM_DEFAULT = false;
-    /**
-     * When true the {@code System.out/err} stream is cached on start up rather
-     * than looked up for every log entry.
-     */
-    private boolean cacheOutputStream = CACHE_OUTPUT_STREAM_DEFAULT;
 
     /** Default text used for the WARN level. */
     private static final String WARN_LEVELS_STRING_DEFAULT = "WARN";
@@ -114,7 +109,11 @@ public class SimpleLoggerConfiguration {
 
         logFile = getStringProperty(SimpleLogger.LOG_FILE_KEY, logFile);
 
-        cacheOutputStream = getBooleanProperty(SimpleLogger.CACHE_OUTPUT_STREAM_STRING_KEY, CACHE_OUTPUT_STREAM_DEFAULT);
+        /*
+         * When true the {@code System.out/err} stream is cached on start up rather
+         * than looked up for every log entry.
+         */
+        boolean cacheOutputStream = getBooleanProperty(SimpleLogger.CACHE_OUTPUT_STREAM_STRING_KEY, CACHE_OUTPUT_STREAM_DEFAULT);
         outputChoice = computeOutputChoice(logFile, cacheOutputStream);
 
         if (dateTimeFormatStr != null) {
@@ -168,7 +167,7 @@ public class SimpleLoggerConfiguration {
         try {
             prop = System.getProperty(name);
         } catch (SecurityException e) {
-    ; // none // Ignore
+            // none // Ignore
         }
         return (prop == null) ? properties.getProperty(name) : prop;
     }

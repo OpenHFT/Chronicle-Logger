@@ -75,7 +75,7 @@ public class ChronicleLoggerManager extends LogManager {
      * name.  The method is synchronised to avoid duplicate creation when many
      * threads request the same logger concurrently.
      */
-    private synchronized Logger doGetLogger(String name) throws IOException {
+    private synchronized Logger doGetLogger(String name) {
         Logger logger = loggers.get(name);
         if (logger == null) {
             final ChronicleLogWriter writer = manager.getWriter(name);

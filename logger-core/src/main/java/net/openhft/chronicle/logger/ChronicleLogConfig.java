@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -15,24 +16,24 @@ import java.util.Properties;
 
 /**
  * Reads logger settings from a properties file.
- *
+ * <p>
  * The loader checks the system property {@code chronicle.logger.properties} and
  * then the files {@code chronicle-logger.properties} and
  * {@code config/chronicle-logger.properties} on the class path. Each value may
  * contain {@code ${name}} placeholders that reference other keys or system
  * properties. The token {@code ${pid}} expands to the process id.
- *
+ * <p>
  * Configuration example:
- *
+ * <p>
  * # default
  * chronicle.logger.base = ${java.io.tmpdir}/chronicle/${pid}
- *
+ * <p>
  * # logger : root
  * chronicle.logger.root.path      = ${chronicle.logger.base}/root
  * chronicle.logger.root.level     = debug
  * chronicle.logger.root.shortName = false
  * chronicle.logger.root.append    = false
- *
+ * <p>
  * # logger : Logger1
  * chronicle.logger.Logger1.path = ${chronicle.logger.base}/logger_1
  * chronicle.logger.Logger1.level = info
@@ -167,7 +168,7 @@ public class ChronicleLogConfig {
                 return Thread.currentThread().getContextClassLoader().getResourceAsStream(cfgPath);
 
             } else if (cfgFile.canRead()) {
-                return new FileInputStream(cfgFile);
+                return Files.newInputStream(cfgFile.toPath());
             }
         }
 
@@ -246,7 +247,7 @@ public class ChronicleLogConfig {
 
     public Boolean getBoolean(final String shortName) {
         String prop = getString(shortName);
-        return Boolean.valueOf("true".equalsIgnoreCase(prop));
+        return "true".equalsIgnoreCase(prop);
     }
 
     public Boolean getBoolean(final String shortName, boolean defval) {
@@ -256,7 +257,7 @@ public class ChronicleLogConfig {
 
     public Boolean getBoolean(final String loggerName, final String shortName) {
         String prop = getString(loggerName, shortName);
-        return Boolean.valueOf("true".equalsIgnoreCase(prop));
+        return "true".equalsIgnoreCase(prop);
     }
 
     public Boolean getBoolean(final String loggerName, final String shortName, boolean defval) {

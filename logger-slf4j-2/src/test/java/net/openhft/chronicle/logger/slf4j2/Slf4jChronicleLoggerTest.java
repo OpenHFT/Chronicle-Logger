@@ -51,8 +51,8 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
     @Test
     public void testLoggerFactory() {
         assertEquals(
-                getChronicleLoggerFactory().getClass(),
-                ChronicleLoggerFactory.class);
+                ChronicleLoggerFactory.class,
+                getChronicleLoggerFactory().getClass());
     }
 
     @Test
@@ -82,24 +82,24 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
 
         ChronicleLogger cl1 = (ChronicleLogger) l1;
 
-        assertEquals(cl1.getLevel(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl1.getName(), "slf4j-chronicle");
+        assertEquals(ChronicleLogLevel.DEBUG, cl1.getLevel());
+        assertEquals("slf4j-chronicle", cl1.getName());
         assertTrue(cl1.getWriter() instanceof DefaultChronicleLogWriter);
 
         ChronicleLogger cl2 = (ChronicleLogger) l2;
-        assertEquals(cl2.getLevel(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl2.getName(), "slf4j-chronicle");
+        assertEquals(ChronicleLogLevel.DEBUG, cl2.getLevel());
+        assertEquals("slf4j-chronicle", cl2.getName());
         assertTrue(cl2.getWriter() instanceof DefaultChronicleLogWriter);
 
         ChronicleLogger cl3 = (ChronicleLogger) l3;
-        assertEquals(cl3.getLevel(), ChronicleLogLevel.INFO);
+        assertEquals(ChronicleLogLevel.INFO, cl3.getLevel());
         assertTrue(cl3.getWriter() instanceof DefaultChronicleLogWriter);
-        assertEquals(cl3.getName(), "logger_1");
+        assertEquals("logger_1", cl3.getName());
 
         ChronicleLogger cl4 = (ChronicleLogger) l4;
-        assertEquals(cl4.getLevel(), ChronicleLogLevel.DEBUG);
+        assertEquals(ChronicleLogLevel.DEBUG, cl4.getLevel());
         assertTrue(cl4.getWriter() instanceof DefaultChronicleLogWriter);
-        assertEquals(cl4.getName(), "readwrite");
+        assertEquals("readwrite", cl4.getName());
     }
 
     @Test
@@ -184,6 +184,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
                 assertNull(wire);
             }
 
+            //noinspection LoggingPlaceholderCountMatchesArgumentCount
             logger.warn("Test object", new Object());
 
             try (DocumentContext dc = tailer.readingDocument()) {

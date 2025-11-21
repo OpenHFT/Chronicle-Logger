@@ -60,7 +60,7 @@ public final class ChronicleAppender extends AbstractChronicleAppender {
     }
 
     @Override
-    protected ChronicleLogWriter createWriter() throws IOException {
+    protected ChronicleLogWriter createWriter() {
         return new DefaultChronicleLogWriter(this.config.build(this.getPath(), this.getWireType()));
     }
 

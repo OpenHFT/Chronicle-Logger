@@ -82,7 +82,7 @@ public class DefaultChronicleLogWriterTest {
                         l.add(vi.object(Object.class));
                     }
                 });
-                assertArrayEquals(new Object[]{10, 12.1}, args.toArray(new Object[args.size()]));
+                assertArrayEquals(new Object[]{10, 12.1}, args.toArray(new Object[0]));
             }
 
             try (DocumentContext dc = tailer.readingDocument()) {

@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         System.setProperty(
                 "chronicle.logger.properties",
                 "chronicle.logger.perf.properties");

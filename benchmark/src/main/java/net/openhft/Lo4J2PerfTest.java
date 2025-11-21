@@ -12,6 +12,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.FileSystems;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,7 +49,7 @@ public class Lo4J2PerfTest {
         // Be careful if using /tmp - quite often it's mounted as TMPFS, e.g. as RAM disk.
         // This will nullify the benefits of Chronicle Logger
         String path = System.getenv("HOME");
-        String sep = System.getProperty("file.separator");
+        String sep = FileSystems.getDefault().getSeparator();
 
         if (!path.endsWith(sep)) {
             path += sep;

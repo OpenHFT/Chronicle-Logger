@@ -22,7 +22,7 @@ public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
     }
 
     @Test
-    public void testBinaryIndexedChronicleAppenderConfig() throws IOException {
+    public void testBinaryIndexedChronicleAppenderConfig() {
         final String loggerName = "config-binary-chronicle";
         final String appenderName = "CONFIG-BINARY-CHRONICLE";
 

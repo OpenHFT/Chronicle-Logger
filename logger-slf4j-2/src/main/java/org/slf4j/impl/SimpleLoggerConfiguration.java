@@ -34,14 +34,13 @@ public class SimpleLoggerConfiguration {
 
     private static final String CONFIGURATION_FILE = "simplelogger.properties";
 
-    static int DEFAULT_LOG_LEVEL_DEFAULT = SimpleLogger.LOG_LEVEL_INFO;
+    static final int DEFAULT_LOG_LEVEL_DEFAULT = SimpleLogger.LOG_LEVEL_INFO;
     int defaultLogLevel = DEFAULT_LOG_LEVEL_DEFAULT;
 
     private static final boolean SHOW_DATE_TIME_DEFAULT = false;
     boolean showDateTime = SHOW_DATE_TIME_DEFAULT;
 
     private static final String DATE_TIME_FORMAT_STR_DEFAULT = null;
-    private static String dateTimeFormatStr = DATE_TIME_FORMAT_STR_DEFAULT;
 
     DateFormat dateFormatter = null;
 
@@ -70,7 +69,6 @@ public class SimpleLoggerConfiguration {
     OutputChoice outputChoice = null;
 
     private static final boolean CACHE_OUTPUT_STREAM_DEFAULT = false;
-    private boolean cacheOutputStream = CACHE_OUTPUT_STREAM_DEFAULT;
 
     private static final String WARN_LEVELS_STRING_DEFAULT = "WARN";
     String warnLevelString = WARN_LEVELS_STRING_DEFAULT;
@@ -90,13 +88,13 @@ public class SimpleLoggerConfiguration {
         showDateTime = getBooleanProperty(SimpleLogger.SHOW_DATE_TIME_KEY, SHOW_DATE_TIME_DEFAULT);
         showThreadName = getBooleanProperty(SimpleLogger.SHOW_THREAD_NAME_KEY, SHOW_THREAD_NAME_DEFAULT);
         showThreadId = getBooleanProperty(SimpleLogger.SHOW_THREAD_ID_KEY, SHOW_THREAD_ID_DEFAULT);
-        dateTimeFormatStr = getStringProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, DATE_TIME_FORMAT_STR_DEFAULT);
+        String dateTimeFormatStr = getStringProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, DATE_TIME_FORMAT_STR_DEFAULT);
         levelInBrackets = getBooleanProperty(SimpleLogger.LEVEL_IN_BRACKETS_KEY, LEVEL_IN_BRACKETS_DEFAULT);
         warnLevelString = getStringProperty(SimpleLogger.WARN_LEVEL_STRING_KEY, WARN_LEVELS_STRING_DEFAULT);
 
         logFile = getStringProperty(SimpleLogger.LOG_FILE_KEY, logFile);
 
-        cacheOutputStream = getBooleanProperty(SimpleLogger.CACHE_OUTPUT_STREAM_STRING_KEY, CACHE_OUTPUT_STREAM_DEFAULT);
+        boolean cacheOutputStream = getBooleanProperty(SimpleLogger.CACHE_OUTPUT_STREAM_STRING_KEY, CACHE_OUTPUT_STREAM_DEFAULT);
         outputChoice = computeOutputChoice(logFile, cacheOutputStream);
 
         if (dateTimeFormatStr != null) {

@@ -79,7 +79,7 @@ public class SimpleLogger extends org.slf4j.helpers.MarkerIgnoringBase {
 
     private static final long serialVersionUID = -632788891211436180L;
 
-    private static long START_TIME = System.currentTimeMillis();
+    private static final long START_TIME = System.currentTimeMillis();
 
     protected static final int LOG_LEVEL_TRACE = LocationAwareLogger.TRACE_INT;
     protected static final int LOG_LEVEL_DEBUG = LocationAwareLogger.DEBUG_INT;
@@ -165,7 +165,7 @@ public class SimpleLogger extends org.slf4j.helpers.MarkerIgnoringBase {
         while ((levelString == null) && (indexOfLastDot > -1)) {
             tempName = tempName.substring(0, indexOfLastDot);
             levelString = CONFIG_PARAMS.getStringProperty(SimpleLogger.LOG_KEY_PREFIX + tempName, null);
-            indexOfLastDot = String.valueOf(tempName).lastIndexOf(".");
+            indexOfLastDot = tempName.lastIndexOf(".");
         }
         return levelString;
     }
@@ -217,9 +217,9 @@ public class SimpleLogger extends org.slf4j.helpers.MarkerIgnoringBase {
         if (CONFIG_PARAMS.showShortLogName) {
             if (shortLogName == null)
                 shortLogName = computeShortName();
-            buf.append(String.valueOf(shortLogName)).append(" - ");
+            buf.append(shortLogName).append(" - ");
         } else if (CONFIG_PARAMS.showLogName) {
-            buf.append(String.valueOf(name)).append(" - ");
+            buf.append(name).append(" - ");
         }
 
         // Append the message

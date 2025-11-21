@@ -106,7 +106,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
 
     @Test
     @Ignore
-    public void testJsonAppender() throws IOException {
+    public void testJsonAppender() {
         final String testId = "json-chronicle";
         final String threadId = testId + "-th";
         final Logger logger = Logger.getLogger(testId);

@@ -99,7 +99,7 @@ public class ChronicleLoggerFactory extends LogFactory {
      * Create or return a cached logger for the given name. The method is
      * synchronised so that only one instance per name is created.
      */
-    private synchronized Log getLogger(String name) throws IOException {
+    private synchronized Log getLogger(String name) {
         ChronicleLogger logger = loggers.get(name);
         if (logger == null) {
             loggers.put(

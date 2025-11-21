@@ -31,10 +31,9 @@ public class ChronicleHandler extends AbstractChronicleHandler {
     /**
      * Create the handler and initialise the writer from the LogManager.
      *
-     * @throws IOException if the Chronicle queue cannot be opened
      */
     @SuppressWarnings("this-escape")
-    public ChronicleHandler() throws IOException {
+    public ChronicleHandler() {
         ChronicleHandlerConfig handlerCfg = new ChronicleHandlerConfig(getClass());
         String appenderPath = handlerCfg.getString("path", null);
 

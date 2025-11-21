@@ -6,6 +6,7 @@ package net.openhft.chronicle.logger.jul;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.util.logging.LogManager;
 
 import static org.junit.Assert.assertNotNull;
@@ -15,7 +16,7 @@ public class JulHandlerTestBase extends JulTestBase {
 
     protected static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");
-        String sep = System.getProperty("file.separator");
+        String sep = FileSystems.getDefault().getSeparator();
 
         if (!path.endsWith(sep)) {
             path += sep;
@@ -26,7 +27,7 @@ public class JulHandlerTestBase extends JulTestBase {
 
     protected static String basePath(String type) {
         return rootPath()
-                + System.getProperty("file.separator")
+                + FileSystems.getDefault().getSeparator()
                 + type;
     }
 

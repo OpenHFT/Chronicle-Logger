@@ -89,24 +89,18 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
      * Builds the {@link ChronicleLogWriter} for this appender.
      *
      * @return writer bound to the configured path and wire type
-     * @throws IOException if the Chronicle queue cannot be opened
      */
-    protected abstract ChronicleLogWriter createWriter() throws IOException;
+    protected abstract ChronicleLogWriter createWriter();
 
     protected abstract void doAppend(@NotNull final LogEvent event, @NotNull final ChronicleLogWriter writer);
 
     @Override
     public void start() {
         if (getPath() == null) {
-            LOGGER.error("Appender " + getName() + " has configuration errors and is not started!");
+            LOGGER.error("Appender {} has configuration errors and is not started!", getName());
 
         } else {
-            try {
-                this.writer = createWriter();
-            } catch (IOException e) {
-                this.writer = null;
-                LOGGER.error("Appender " + getName() + " " + e.getMessage());
-            }
+            this.writer = createWriter();
 
             super.start();
         }
@@ -118,7 +112,7 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
             try {
                 this.writer.close();
             } catch (IOException e) {
-                LOGGER.error("Appender " + getName() + " " + e.getMessage());
+                LOGGER.error("Appender {} {}", getName(), e.getMessage());
             }
         }
 

@@ -3,13 +3,14 @@
  */
 package net.openhft.chronicle.logger.jul;
 
+import java.nio.file.FileSystems;
 import java.util.logging.LogManager;
 
 class JulLoggerTestBase extends JulTestBase {
 
     static String basePath() {
         String path = System.getProperty("java.io.tmpdir");
-        String sep = System.getProperty("file.separator");
+        String sep = FileSystems.getDefault().getSeparator();
 
         if (!path.endsWith(sep)) {
             path += sep;
@@ -20,7 +21,7 @@ class JulLoggerTestBase extends JulTestBase {
 
     static String basePath(String loggerName) {
         return basePath()
-                + System.getProperty("file.separator")
+                + FileSystems.getDefault().getSeparator()
                 + loggerName;
     }
 

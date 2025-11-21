@@ -78,7 +78,7 @@ public class ChronicleLogReader {
                     threadName,
                     loggerName,
                     message,
-                    throwable.toString());
+                    throwable);
         }
     }
 
@@ -128,7 +128,7 @@ public class ChronicleLogReader {
                         valueIn.skipValue();
                     }
                 }
-                Object[] args = argsL.toArray(new Object[argsL.size()]);
+                Object[] args = argsL.toArray(new Object[0]);
                 processor.process(timestamp, level, threadName, loggerName, message, th, args);
             }
         }

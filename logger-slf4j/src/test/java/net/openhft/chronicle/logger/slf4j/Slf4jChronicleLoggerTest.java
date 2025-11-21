@@ -5,7 +5,6 @@ package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
-import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
@@ -33,7 +32,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         System.setProperty(
                 "chronicle.logger.properties",
                 "chronicle.logger.properties"
@@ -57,28 +56,24 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
     }
 
     @Test
-    public void testLogger() throws Exception {
+    public void testLogger() {
         Logger l1 = LoggerFactory.getLogger("slf4j-chronicle");
         Logger l2 = LoggerFactory.getLogger("slf4j-chronicle");
         Logger l3 = LoggerFactory.getLogger("logger_1");
 
         assertNotNull(l1);
-        assertTrue("Expected ChronicleLogger but got " + l1.getClass(),
-                   l1.getClass().getSimpleName().equals("ChronicleLogger"));
+        assertEquals("Expected ChronicleLogger but got " + l1.getClass(), "ChronicleLogger", l1.getClass().getSimpleName());
 
         assertNotNull(l2);
-        assertTrue("Expected ChronicleLogger but got " + l2.getClass(),
-                   l2.getClass().getSimpleName().equals("ChronicleLogger"));
+        assertEquals("Expected ChronicleLogger but got " + l2.getClass(), "ChronicleLogger", l2.getClass().getSimpleName());
 
         assertNotNull(l3);
-        assertTrue("Expected ChronicleLogger but got " + l3.getClass(),
-                   l3.getClass().getSimpleName().equals("ChronicleLogger"));
+        assertEquals("Expected ChronicleLogger but got " + l3.getClass(), "ChronicleLogger", l3.getClass().getSimpleName());
 
         Logger l4 = LoggerFactory.getLogger("readwrite");
 
         assertNotNull(l4);
-        assertTrue("Expected ChronicleLogger but got " + l4.getClass(),
-                   l4.getClass().getSimpleName().equals("ChronicleLogger"));
+        assertEquals("Expected ChronicleLogger but got " + l4.getClass(), "ChronicleLogger", l4.getClass().getSimpleName());
 
         assertEquals(l1, l2);
         assertNotEquals(l1, l3);
@@ -184,6 +179,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
                 assertNull(wire);
             }
 
+            //noinspection LoggingPlaceholderCountMatchesArgumentCount
             logger.warn("Test object", new Object());
 
             try (DocumentContext dc = tailer.readingDocument()) {

@@ -92,7 +92,7 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
                         threadName,
                         loggerName,
                         message,
-                        throwable.toString());
+                        throwable);
             }
             return;
         }
