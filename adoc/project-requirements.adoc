@@ -1,6 +1,7 @@
 = Functional Requirements for Chronicle Logger
 :toc:
 :lang: en-GB
+:source-highlighter: rouge
 
 == Introduction
 Chronicle Logger is a multi-module Java project providing adapters for various logging frameworks on top of Chronicle Queue.

@@ -1,4 +1,5 @@
 = Chronicle Logger Code Review Playbook
+:toc:
 :lang: en-GB
 :source-highlighter: rouge
 

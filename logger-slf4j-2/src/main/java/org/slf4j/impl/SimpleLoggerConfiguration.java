@@ -111,7 +111,6 @@ public class SimpleLoggerConfiguration {
      * class loader is used if no resource is found. Missing files or
      * errors result in an empty property set.
      */
-
     private void loadProperties() {
         // Add props from the resource simplelogger.properties
         @SuppressWarnings({"deprecation", "removal"})

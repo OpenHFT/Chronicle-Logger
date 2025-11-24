@@ -24,7 +24,6 @@ import java.io.IOException;
  * {@code chronicleCfg} element allows Chronicle Queue settings such as block
  * size and roll cycle to be supplied.</p>
  */
-
 @Plugin(
         name = "Chronicle",
         category = "Core",

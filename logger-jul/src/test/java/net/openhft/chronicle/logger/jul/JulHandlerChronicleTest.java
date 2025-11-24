@@ -31,7 +31,6 @@ import static org.junit.Assert.*;
  * {@link DiskSpaceMonitor} is closed before the tests run and the temporary
  * queue directory is removed after each test.
  */
-
 public class JulHandlerChronicleTest extends JulHandlerTestBase {
 
     @NotNull
