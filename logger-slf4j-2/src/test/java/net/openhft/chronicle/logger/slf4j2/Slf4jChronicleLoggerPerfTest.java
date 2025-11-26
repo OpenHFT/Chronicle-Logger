@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * <li>multi-thread throughput across ten threads.</li>
  * </ul>
  */
-@Ignore
+@Ignore(/*Long running performance test*/)
 public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
 
     @Before

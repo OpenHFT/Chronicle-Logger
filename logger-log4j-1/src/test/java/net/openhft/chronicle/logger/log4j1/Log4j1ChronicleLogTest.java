@@ -105,7 +105,6 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
     }
 
     @Test
-    @Ignore
     public void testJsonAppender() {
         final String testId = "json-chronicle";
         final String threadId = testId + "-th";
@@ -117,7 +116,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
             log(logger, level, "level is " + level);
         }
 
-        try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.TEXT)) {
+        try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.BINARY_LIGHT)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
             for (ChronicleLogLevel level : LOG_LEVELS) {
                 try (DocumentContext dc = tailer.readingDocument()) {

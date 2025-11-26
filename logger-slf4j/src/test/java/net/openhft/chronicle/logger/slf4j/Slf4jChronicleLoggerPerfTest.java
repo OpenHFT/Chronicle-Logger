@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-@Ignore
+@Ignore(/*Long running performance test*/)
 public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
 
     @Before
