@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
@@ -58,7 +59,9 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
         final Logger logger = LogManager.getLogger(testId);
 
         Thread.currentThread().setName(threadId);
-        Files.createDirectories(Paths.get(basePath(testId)));
+        Path dir = Paths.get(basePath(testId));
+        IOTools.deleteDirWithFiles(dir.toFile());
+        Files.createDirectories(dir);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
             log(logger, level, "level is {}", level);

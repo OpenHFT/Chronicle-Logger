@@ -12,11 +12,11 @@ import net.openhft.chronicle.wire.WireType;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
@@ -39,7 +39,9 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
         final String testId = "chronicle";
         final String threadId = testId + "-th";
         final Logger logger = Logger.getLogger(testId);
-        Files.createDirectories(Paths.get(basePath(testId)));
+        Path dir = Paths.get(basePath(testId));
+        IOTools.deleteDirWithFiles(dir.toFile());
+        Files.createDirectories(dir);
         Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
@@ -61,8 +63,8 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
                 }
             }
             try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNull(wire);
+                if (dc.wire() != null)
+                    fail("Extra log: " + dc.wire());
             }
 
             logger.debug("Throwable test 1", new UnsupportedOperationException());

@@ -48,8 +48,6 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
         </dependency>
-
-        <!-- SLF4J bridge for legacy LoggerFactory callers -->
     </dependencies>
 
     <build>
