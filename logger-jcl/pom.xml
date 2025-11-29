@@ -45,7 +45,7 @@
             <artifactId>commons-logging</artifactId>
         </dependency>
 
-        <!-- test -->
+        <!-- test - console logger for test diagnostic output -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
+            <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
 
