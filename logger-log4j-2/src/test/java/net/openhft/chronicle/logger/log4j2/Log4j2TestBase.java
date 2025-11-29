@@ -4,8 +4,8 @@
 package net.openhft.chronicle.logger.log4j2;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.slf4j.Logger;
 
 import java.io.File;
 
