@@ -14,6 +14,9 @@ import org.slf4j.helpers.BasicMarkerFactory;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
+// SLF4J 1.x marker SPI retained for backwards compatibility. The
+// MarkerFactoryBinder interface is deprecated in SLF4J 2.x but still
+// recognised by the runtime, so we suppress the deprecation warning here.
 @SuppressWarnings("deprecation")
 public class StaticMarkerBinder implements org.slf4j.spi.MarkerFactoryBinder {
 

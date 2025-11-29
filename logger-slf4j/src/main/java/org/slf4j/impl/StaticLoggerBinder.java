@@ -11,6 +11,10 @@ import org.slf4j.ILoggerFactory;
  *
  * <p>This binder installs {@link ChronicleLoggerFactory} as the SLF4J provider.
  */
+// SLF4J 1.x SPI retained so this artefact can still act as a classic
+// StaticLoggerBinder for applications that expect that contract. The
+// LoggerFactoryBinder interface is deprecated in SLF4J 2.x but remains
+// supported, so we suppress the deprecation warning here.
 @SuppressWarnings("deprecation")
 public class StaticLoggerBinder implements org.slf4j.spi.LoggerFactoryBinder {
 
