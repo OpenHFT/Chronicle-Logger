@@ -6,7 +6,6 @@ package net.openhft.chronicle.logger;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.RollCycles;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
-import net.openhft.chronicle.threads.Pauser;
 import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,9 +77,6 @@ public class LogAppenderConfig {
      * @return the configured queue
      */
     public ChronicleQueue build(String path, String wireType) {
-        // trigger Pauser to load its classes
-        Pauser.getBalanced();
-
         WireType wireTypeEnum = wireType != null ? WireType.valueOf(wireType.toUpperCase()) : WireType.BINARY_LIGHT;
         SingleChronicleQueueBuilder builder = ChronicleQueue.singleBuilder(path)
                 .wireType(wireTypeEnum)
