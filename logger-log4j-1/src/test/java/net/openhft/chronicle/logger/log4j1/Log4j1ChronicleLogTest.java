@@ -9,15 +9,14 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
@@ -39,12 +38,14 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
     public void testBinaryAppender() throws IOException {
         final String testId = "chronicle";
         final String threadId = testId + "-th";
-        final Logger logger = LoggerFactory.getLogger(testId);
-        Files.createDirectories(Paths.get(basePath(testId)));
+        final Logger logger = Logger.getLogger(testId);
+        Path dir = Paths.get(basePath(testId));
+        IOTools.deleteDirWithFiles(dir.toFile());
+        Files.createDirectories(dir);
         Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger, level, "level is {}", level);
+            log(logger, level, "level is " + level);
         }
 
         try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.BINARY_LIGHT)) {
@@ -62,8 +63,8 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
                 }
             }
             try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNull(wire);
+                if (dc.wire() != null)
+                    fail("Extra log: " + dc.wire());
             }
 
             logger.debug("Throwable test 1", new UnsupportedOperationException());
@@ -106,19 +107,18 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
     }
 
     @Test
-    @Ignore
-    public void testJsonAppender() throws IOException {
+    public void testJsonAppender() {
         final String testId = "json-chronicle";
         final String threadId = testId + "-th";
-        final Logger logger = LoggerFactory.getLogger(testId);
+        final Logger logger = Logger.getLogger(testId);
 
         Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger, level, "level is {}", level);
+            log(logger, level, "level is " + level);
         }
 
-        try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.TEXT)) {
+        try (final ChronicleQueue cq = getChronicleQueue(testId, WireType.BINARY_LIGHT)) {
             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
             for (ChronicleLogLevel level : LOG_LEVELS) {
                 try (DocumentContext dc = tailer.readingDocument()) {
