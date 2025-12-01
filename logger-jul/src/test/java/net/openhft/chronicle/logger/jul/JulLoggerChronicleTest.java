@@ -50,7 +50,6 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
-
     }
 
     @Before
