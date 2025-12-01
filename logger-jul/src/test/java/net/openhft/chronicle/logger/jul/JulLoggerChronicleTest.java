@@ -14,7 +14,6 @@ import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -28,7 +27,6 @@ import java.util.logging.Logger;
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
-@Ignore("see https://github.com/OpenHFT/Chronicle-Logger/issues/99")
 public class JulLoggerChronicleTest extends JulLoggerTestBase {
 
     private static void testChronicleConfiguration(
@@ -52,7 +50,6 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
-
     }
 
     @Before

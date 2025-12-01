@@ -5,6 +5,7 @@ package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.logger.ChronicleLogManager;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
+import net.openhft.chronicle.logger.ChronicleLoggerFactoryControl;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.helpers.NOPLogger;
@@ -30,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>Per logger configuration can be added using the prefix
  * {@code chronicle.logger.&lt;name&gt;.}.
  */
-public class ChronicleLoggerFactory implements ILoggerFactory {
+public class ChronicleLoggerFactory implements ILoggerFactory, ChronicleLoggerFactoryControl {
     private final Map<String, Logger> loggers;
     private final ChronicleLogManager manager;
 
@@ -65,8 +66,12 @@ public class ChronicleLoggerFactory implements ILoggerFactory {
     /**
      * Reloads the configuration and clears cached loggers. Used mainly by
      * unit tests to reinitialise the factory.
+     * <p>
+     * Public so {@link ChronicleLoggerFactoryControl} consumers can reset state
+     * across SLF4J 1.x and 2.x bindings.
      */
-    synchronized void reload() {
+    @Override
+    public synchronized void reload() {
         this.loggers.clear();
         this.manager.reload();
     }

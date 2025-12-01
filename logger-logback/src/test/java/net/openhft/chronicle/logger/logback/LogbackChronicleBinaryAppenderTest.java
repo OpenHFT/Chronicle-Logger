@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,9 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
         final String threadId = testId + "-th";
 
         final Logger logger = LoggerFactory.getLogger(testId);
-        Files.createDirectories(Paths.get(basePath(testId)));
+        Path dir = Paths.get(basePath(testId));
+        IOTools.deleteDirWithFiles(dir.toFile());
+        Files.createDirectories(dir);
 
         Thread.currentThread().setName(threadId);
 
@@ -67,8 +70,8 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
             log(logger, level, "level is {}", level);
         }
 
-        try (final ChronicleQueue cq = getChronicleQueue(testId)) {
-            net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer();
+        try (final ChronicleQueue cq = getChronicleQueue(testId);
+            net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer()) {
             for (ChronicleLogLevel level : LOG_LEVELS) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
@@ -91,8 +94,8 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
                 }
             }
             try (DocumentContext dc = tailer.readingDocument()) {
-                Wire wire = dc.wire();
-                assertNull(wire);
+                if (dc.wire() != null)
+                    fail("No more log entries expected was found: " + dc.wire().toString());
             }
 
             logger.debug("Throwable test 1", new UnsupportedOperationException());

@@ -38,9 +38,16 @@
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-logger-core</artifactId>
         </dependency>
+
+        <!-- Console logger for test diagnostic output -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

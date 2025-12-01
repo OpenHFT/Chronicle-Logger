@@ -30,6 +30,11 @@
         <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/chronicle"/>
     </appender>
 
+    <appender name  = "JSON-CHRONICLE"
+              class = "net.openhft.chronicle.logger.log4j1.ChronicleAppender">
+        <param name="path" value="${java.io.tmpdir}/chronicle-log4j1/json-chronicle"/>
+    </appender>
+
     <!-- ******************************************************************* -->
     <!-- STDOUT                                                              -->
     <!-- ******************************************************************* -->
@@ -48,6 +53,11 @@
     <logger name="chronicle" additivity="false">
         <level value="trace"/>
         <appender-ref ref="CHRONICLE"/>
+    </logger>
+
+    <logger name="json-chronicle" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="JSON-CHRONICLE"/>
     </logger>
 
     <logger name="net.openhft" additivity="false">

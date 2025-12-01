@@ -45,6 +45,14 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
+        <!-- SLF4J 2.x provider for testing with newer SLF4J versions -->
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-logger-slf4j-2</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

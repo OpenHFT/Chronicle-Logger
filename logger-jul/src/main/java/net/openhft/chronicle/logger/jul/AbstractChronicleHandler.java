@@ -38,6 +38,14 @@ abstract class AbstractChronicleHandler extends Handler {
         this.writer = null;
     }
 
+    protected final void setPath(String path) {
+        this.path = path;
+    }
+
+    protected final String getPath() {
+        return path;
+    }
+
     @Override
     public void flush() {
     }
