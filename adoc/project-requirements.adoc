@@ -40,14 +40,6 @@ This document outlines the functional requirements for all modules within this r
 - Adds SLF4J 2.x API support.
 - Follows the same configuration strategy as `logger-slf4j`.
 
-=== logger-logback
-- Supplies a Logback `Appender` that writes events to Chronicle Queue.
-- Accepts an optional `<chronicleConfig>` section to tune queue parameters.
-
-=== logger-log4j-1
-- Implements a Log4J 1.2 `Appender`.
-- Configuration is performed via XML as part of the log4j configuration file.
-
 === logger-log4j-2
 - Provides an `Appender` for Log4J 2.
 - Configuration is done using the `<Chronicle>` XML element, optionally extended with `<chronicleCfg>`.

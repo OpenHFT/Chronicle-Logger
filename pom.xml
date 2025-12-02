@@ -50,13 +50,6 @@
                 <artifactId>chronicle-logger-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>net.openhft</groupId>
-                <artifactId>chronicle-logger-logback</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -113,8 +106,6 @@
         <module>logger-jcl</module>
         <module>logger-slf4j</module>
         <module>logger-slf4j-2</module>
-        <module>logger-logback</module>
-        <module>logger-log4j-1</module>
         <module>logger-log4j-2</module>
         <module>logger-tools</module>
         <module>benchmark</module>

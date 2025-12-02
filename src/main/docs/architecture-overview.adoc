@@ -13,8 +13,7 @@ The repository is split into focused modules that all depend on
 `logger-core`:
 
 * `logger-core` supplies `ChronicleLogWriter`, `ChronicleLogManager`, and configuration helpers (see link:project-requirements.adoc#clg-fn-001[CLG-FN-001]).
-* Binding modules (`logger-slf4j`, `logger-slf4j-2`, `logger-logback`,
-`logger-log4j-1`, `logger-log4j-2`, `logger-jcl`, `logger-jul`) translate framework-specific APIs into Chronicle writes (link:project-requirements.adoc#clg-fn-003[CLG-FN-003]).
+* Binding modules (`logger-slf4j`, `logger-slf4j-2`, `logger-log4j-2`, `logger-jcl`, `logger-jul`) translate framework-specific APIs into Chronicle writes (link:project-requirements.adoc#clg-fn-003[CLG-FN-003]).
 * `logger-tools` exposes reusable readers and CLI utilities (link:project-requirements.adoc#clg-fn-004[CLG-FN-004]).
 * `benchmark` packages JMH scenarios that observe the performance envelopes (link:project-requirements.adoc#clg-fn-005[CLG-FN-005]).
 
