@@ -49,6 +49,23 @@
             <artifactId>log4j-api</artifactId>
         </dependency>
 
+        <!-- optional compile-time annotations from Log4j META-INF -->
+        <dependency>
+            <groupId>biz.aQute.bnd</groupId>
+            <artifactId>biz.aQute.bnd.annotation</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.annotation</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- slf4j-simple.jar for testing -->
         <dependency>
             <groupId>org.slf4j</groupId>
