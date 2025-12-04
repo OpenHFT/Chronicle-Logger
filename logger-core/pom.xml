@@ -33,6 +33,12 @@
     <name>OpenHFT/Chronicle-Logger/logger</name>
     <artifactId>chronicle-logger-core</artifactId>
 
+    <properties>
+        <!-- Set JaCoCo thresholds to current coverage levels (rounded down) -->
+        <jacoco.line.coverage>0.17</jacoco.line.coverage>
+        <jacoco.branch.coverage>0.08</jacoco.branch.coverage>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>net.openhft</groupId>

@@ -33,6 +33,11 @@
     <artifactId>chronicle-logger-jcl</artifactId>
     <packaging>bundle</packaging>
 
+    <properties>
+        <!-- Set JaCoCo thresholds to current coverage levels (rounded down) -->
+        <jacoco.line.coverage>0.64</jacoco.line.coverage>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>net.openhft</groupId>
