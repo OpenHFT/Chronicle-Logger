@@ -21,7 +21,7 @@ import net.openhft.chronicle.logger.ChronicleLogWriter;
 public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase {
 
     private static final long serialVersionUID = 1L;
-    protected final ChronicleLogLevel level;
+    private final ChronicleLogLevel level;
     private final ChronicleLogWriter writer;
 
     /**
@@ -377,7 +377,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
     /**
      * Write a log entry without arguments.
      */
-    protected void append(ChronicleLogLevel level, String message) {
+    private void append(ChronicleLogLevel level, String message) {
         if (isLevelEnabled(level)) {
             writer.write(
                     level,
@@ -392,7 +392,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
     /**
      * Write a log entry with a {@link Throwable}.
      */
-    protected void append(ChronicleLogLevel level, String message, Throwable throwable) {
+    private void append(ChronicleLogLevel level, String message, Throwable throwable) {
         if (isLevelEnabled(level)) {
             writer.write(
                     level,
@@ -407,7 +407,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
     /**
      * Write a log entry with optional arguments.
      */
-    protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object... args) {
+    private void append(ChronicleLogLevel level, String message, Throwable throwable, Object... args) {
         if (isLevelEnabled(level)) {
             writer.write(
                     level,

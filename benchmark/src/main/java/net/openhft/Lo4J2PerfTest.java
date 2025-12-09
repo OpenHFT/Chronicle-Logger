@@ -27,9 +27,14 @@ import java.util.concurrent.TimeUnit;
  * }</pre>
  */
 @State(Scope.Thread)
+@SuppressWarnings("PMD.TestClassWithoutTestCases")
 public class Lo4J2PerfTest {
-    private final Logger chronicleLogger = LoggerFactory.getLogger("perf-chro");
-    private final Logger fileLogger = LoggerFactory.getLogger("perf-file");
+    private static final int CHRONICLE_INDEX = 0;
+    private static final int FILE_INDEX = 1;
+    private final Logger[] loggers = {
+            LoggerFactory.getLogger("perf-chro"),
+            LoggerFactory.getLogger("perf-file")
+    };
 
     public static void main(String[] args) throws RunnerException {
 
@@ -62,28 +67,28 @@ public class Lo4J2PerfTest {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void testChronicle() {
-        chronicleLogger.debug("Test {} {} " + 1, 2, 3);
+        loggers[CHRONICLE_INDEX].debug("Test {} {} " + 1, 2, 3);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void testChronicleException() {
-        chronicleLogger.debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
+        loggers[CHRONICLE_INDEX].debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void testFile() {
-        fileLogger.debug("Test {} {} " + 1, 2, 3);
+        loggers[FILE_INDEX].debug("Test {} {} " + 1, 2, 3);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void testFileException() {
-        fileLogger.debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
+        loggers[FILE_INDEX].debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
     }
 
     @TearDown

@@ -24,7 +24,7 @@ import java.util.Properties;
  */
 public class LogAppenderConfig {
 
-    private static final String[] KEYS = new String[]{
+    private static final String[] KEYS = {
             "blockSize",
             "bufferCapacity",
             "rollCycle"

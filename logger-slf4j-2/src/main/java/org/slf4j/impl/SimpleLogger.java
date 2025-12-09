@@ -246,10 +246,10 @@ public class SimpleLogger extends LegacyAbstractLogger {
         String tempName = name;
         String levelString = null;
         int indexOfLastDot = tempName.length();
-        while ((levelString == null) && (indexOfLastDot > -1)) {
+        while (levelString == null && indexOfLastDot > -1) {
             tempName = tempName.substring(0, indexOfLastDot);
             levelString = CONFIG_PARAMS.getStringProperty(SimpleLogger.LOG_KEY_PREFIX + tempName, null);
-            indexOfLastDot = tempName.lastIndexOf(".");
+            indexOfLastDot = tempName.lastIndexOf('.');
         }
         return levelString;
     }
@@ -284,7 +284,7 @@ public class SimpleLogger extends LegacyAbstractLogger {
     }
 
     private String computeShortName() {
-        return name.substring(name.lastIndexOf(".") + 1);
+        return name.substring(name.lastIndexOf('.') + 1);
     }
 
     // /**
@@ -332,26 +332,31 @@ public class SimpleLogger extends LegacyAbstractLogger {
     }
 
     /** Are {@code trace} messages currently enabled? */
+    @Override
     public boolean isTraceEnabled() {
         return isLevelEnabled(LOG_LEVEL_TRACE);
     }
 
     /** Are {@code debug} messages currently enabled? */
+    @Override
     public boolean isDebugEnabled() {
         return isLevelEnabled(LOG_LEVEL_DEBUG);
     }
 
     /** Are {@code info} messages currently enabled? */
+    @Override
     public boolean isInfoEnabled() {
         return isLevelEnabled(LOG_LEVEL_INFO);
     }
 
     /** Are {@code warn} messages currently enabled? */
+    @Override
     public boolean isWarnEnabled() {
         return isLevelEnabled(LOG_LEVEL_WARN);
     }
 
     /** Are {@code error} messages currently enabled? */
+    @Override
     public boolean isErrorEnabled() {
         return isLevelEnabled(LOG_LEVEL_ERROR);
     }
@@ -387,26 +392,23 @@ public class SimpleLogger extends LegacyAbstractLogger {
         // Append date-time if so configured
         if (CONFIG_PARAMS.showDateTime) {
             if (CONFIG_PARAMS.dateFormatter != null) {
-                buf.append(getFormattedDate());
-                buf.append(SP);
+                buf.append(getFormattedDate()).append(SP);
             } else {
-                buf.append(System.currentTimeMillis() - START_TIME);
-                buf.append(SP);
+                buf.append(System.currentTimeMillis() - START_TIME).append(SP);
             }
         }
 
         // Append current thread name if so configured
         if (CONFIG_PARAMS.showThreadName) {
-            buf.append('[');
-            buf.append(Thread.currentThread().getName());
-            buf.append("] ");
+            buf.append('[')
+                    .append(Thread.currentThread().getName())
+                    .append("] ");
         }
 
         if (CONFIG_PARAMS.showThreadId) {
-            buf.append(TID_PREFIX);
-            long id = Jvm.currentThreadId();
-            buf.append(id);
-            buf.append(SP);
+            buf.append(TID_PREFIX)
+                    .append(Jvm.currentThreadId())
+                    .append(SP);
         }
 
         if (CONFIG_PARAMS.levelInBrackets)

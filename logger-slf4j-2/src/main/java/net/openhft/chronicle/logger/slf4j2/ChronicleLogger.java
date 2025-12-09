@@ -18,7 +18,7 @@ import net.openhft.chronicle.logger.ChronicleLogWriter;
 public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase {
 
     private static final long serialVersionUID = 1L;
-    protected final ChronicleLogLevel level;
+    private final ChronicleLogLevel level;
     private final ChronicleLogWriter writer;
 
     ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {
@@ -255,7 +255,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
      * Log a message if the logger is enabled for the given level.
      * The current time and thread name are captured here.
      */
-    protected void append(ChronicleLogLevel level, String message) {
+    private void append(ChronicleLogLevel level, String message) {
         if (isLevelEnabled(level)) {
             writer.write(
                     level,
@@ -270,7 +270,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
     /**
      * Log a message along with a throwable.
      */
-    protected void append(ChronicleLogLevel level, String message, Throwable throwable) {
+    private void append(ChronicleLogLevel level, String message, Throwable throwable) {
         if (isLevelEnabled(level)) {
             writer.write(
                     level,
@@ -285,7 +285,7 @@ public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase 
     /**
      * Log a message with optional arguments and an optional throwable.
      */
-    protected void append(ChronicleLogLevel level, String message, Throwable throwable, Object... args) {
+    private void append(ChronicleLogLevel level, String message, Throwable throwable, Object... args) {
         if (isLevelEnabled(level)) {
             writer.write(
                     level,

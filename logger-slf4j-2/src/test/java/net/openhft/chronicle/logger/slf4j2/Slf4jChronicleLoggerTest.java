@@ -185,7 +185,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
             }
 
             //noinspection LoggingPlaceholderCountMatchesArgumentCount
-            logger.warn("Test object", new Object());
+            logger.warn("Test object {}", new Object());
 
             try (DocumentContext dc = tailer.readingDocument()) {
                 Wire wire = dc.wire();
@@ -194,7 +194,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
                 assertEquals(ChronicleLogLevel.WARN, wire.read("level").asEnum(ChronicleLogLevel.class));
                 assertEquals(threadId, wire.read("threadName").text());
                 assertEquals(testId, wire.read("loggerName").text());
-                assertEquals("Test object", wire.read("message").text());
+                assertEquals("Test object {}", wire.read("message").text());
                 assertTrue(wire.hasMore());
                 List<Object> args = new ArrayList<>();
                 assertTrue(wire.hasMore());

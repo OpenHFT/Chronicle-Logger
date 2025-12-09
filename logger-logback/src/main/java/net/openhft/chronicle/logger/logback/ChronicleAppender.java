@@ -45,7 +45,7 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         return this.config;
     }
 
-    @DefaultClass(value = LogAppenderConfig.class)
+    @DefaultClass(LogAppenderConfig.class)
     public void setChronicleConfig(final LogAppenderConfig config) {
         this.config = config;
     }
