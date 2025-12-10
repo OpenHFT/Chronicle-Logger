@@ -84,6 +84,9 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         );
     }
 
+    /**
+     * Builds the Chronicle writer backing this Log4j2 appender.
+     */
     @Override
     protected ChronicleLogWriter createWriter() {
         return new DefaultChronicleLogWriter(config.build(getPath(), getWireType()));

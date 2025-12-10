@@ -50,6 +50,9 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         this.config = config;
     }
 
+    /**
+     * Builds the concrete Chronicle writer for this appender using the configured path and wire type.
+     */
     @Override
     protected ChronicleLogWriter createWriter() {
         return new DefaultChronicleLogWriter(this.config.build(this.getPath(), getWireType()));

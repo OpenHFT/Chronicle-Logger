@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
+// CPD-OFF - duplicated log verification with Slf4jBridgeChronicleLogTest is intentional
 public class Log4j1ChronicleLogTest extends Log4j1TestBase {
 
     @NotNull

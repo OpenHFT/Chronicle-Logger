@@ -59,6 +59,9 @@ public final class ChronicleAppender extends AbstractChronicleAppender {
         config.setRollCycle(rollCycle);
     }
 
+    /**
+     * Builds the Chronicle writer backing this Log4j 1.x appender.
+     */
     @Override
     protected ChronicleLogWriter createWriter() {
         return new DefaultChronicleLogWriter(this.config.build(this.getPath(), this.getWireType()));

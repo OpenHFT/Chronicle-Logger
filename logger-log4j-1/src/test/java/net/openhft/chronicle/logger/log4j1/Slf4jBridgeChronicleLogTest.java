@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
+// CPD-OFF - mirrors Log4j1ChronicleLogTest to verify bridge behaviour
 public class Slf4jBridgeChronicleLogTest extends Log4j1TestBase {
 
     @NotNull
