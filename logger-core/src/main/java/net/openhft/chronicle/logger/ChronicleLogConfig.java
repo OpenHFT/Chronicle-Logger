@@ -40,11 +40,19 @@ import java.util.Properties;
  * chronicle.logger.Logger1.wireType = json
  */
 public class ChronicleLogConfig {
+    /**
+     * Key name used for log level entries.
+     */
     public static final String KEY_LEVEL = "level";
+    /** Key name used for queue path entries. */
     public static final String KEY_PATH = "path";
+    /** Key name used for wire type entries. */
     public static final String KEY_WIRETYPE = "wireType";
+    /** Key name indicating whether to append to existing files. */
     public static final String KEY_APPEND = "append";
+    /** Start token for property placeholders. */
     public static final String PLACEHOLDER_START = "${";
+    /** End token for property placeholders. */
     public static final String PLACEHOLDER_END = "}";
 
     private static final String KEY_PROPERTIES_FILE = "chronicle.logger.properties";
@@ -225,15 +233,33 @@ public class ChronicleLogConfig {
         return cfg;
     }
 
+    /**
+     * Returns the parsed appender configuration for building queues.
+     *
+     * @return the appender configuration
+     */
     public LogAppenderConfig getAppenderConfig() {
         return this.appenderConfig;
     }
 
+    /**
+     * Resolves a property under the root logger namespace.
+     *
+     * @param shortName suffix of the property (e.g. {@code path})
+     * @return value or {@code null} if undefined
+     */
     public String getString(final String shortName) {
         String name = KEY_PREFIX_ROOT + shortName;
         return this.properties.getProperty(name);
     }
 
+    /**
+     * Resolves a property for the named logger, falling back to the root logger value.
+     *
+     * @param loggerName logger identifier
+     * @param shortName  suffix of the property
+     * @return value or {@code null} if neither logger nor root contain the property
+     */
     public String getString(final String loggerName, final String shortName) {
         String name = KEY_PREFIX + loggerName + "." + shortName;
         String val = this.properties.getProperty(name);
@@ -245,50 +271,117 @@ public class ChronicleLogConfig {
         return val;
     }
 
+    /**
+     * Reads a boolean property under the root logger namespace.
+     *
+     * @param shortName suffix of the property
+     * @return {@code true} if explicitly set to true, otherwise {@code false}
+     */
     public Boolean getBoolean(final String shortName) {
         String prop = getString(shortName);
         return "true".equalsIgnoreCase(prop);
     }
 
+    /**
+     * Reads a boolean property under the root logger namespace, returning a default when absent.
+     *
+     * @param shortName suffix of the property
+     * @param defval    default value when unset
+     * @return parsed boolean or default
+     */
     public Boolean getBoolean(final String shortName, boolean defval) {
         String prop = getString(shortName);
         return (prop != null) ? "true".equalsIgnoreCase(prop) : defval;
     }
 
+    /**
+     * Reads a boolean property for the named logger, without defaulting.
+     *
+     * @param loggerName logger identifier
+     * @param shortName  suffix of the property
+     * @return {@code true} if explicitly set to true, otherwise {@code false}
+     */
     public Boolean getBoolean(final String loggerName, final String shortName) {
         String prop = getString(loggerName, shortName);
         return "true".equalsIgnoreCase(prop);
     }
 
+    /**
+     * Reads a boolean property for the named logger, falling back to a default.
+     *
+     * @param loggerName logger identifier
+     * @param shortName  suffix of the property
+     * @param defval     default value when unset
+     * @return parsed boolean or default
+     */
     public Boolean getBoolean(final String loggerName, final String shortName, boolean defval) {
         String prop = getString(loggerName, shortName);
         return (prop != null) ? "true".equalsIgnoreCase(prop) : defval;
     }
 
+    /**
+     * Reads an integer property under the root logger namespace.
+     *
+     * @param shortName suffix of the property
+     * @return parsed integer or {@code null} when unset
+     */
     public Integer getInteger(final String shortName) {
         String prop = getString(shortName);
         return (prop != null) ? Integer.parseInt(prop) : null;
     }
 
+    /**
+     * Reads an integer property for the named logger.
+     *
+     * @param loggerName logger identifier
+     * @param shortName  suffix of the property
+     * @return parsed integer or {@code null} when unset
+     */
     public Integer getInteger(final String loggerName, final String shortName) {
         String prop = getString(loggerName, shortName);
         return (prop != null) ? Integer.parseInt(prop) : null;
     }
 
+    /**
+     * Reads a long property under the root logger namespace.
+     *
+     * @param shortName suffix of the property
+     * @return parsed long or {@code null} when unset
+     */
     public Long getLong(final String shortName) {
         String prop = getString(shortName);
         return (prop != null) ? Long.parseLong(prop) : null;
     }
 
+    /**
+     * Reads a long property for the named logger.
+     *
+     * @param loggerName logger identifier
+     * @param shortName  suffix of the property
+     * @return parsed long or {@code null} when unset
+     */
     public Long getLong(final String loggerName, final String shortName) {
         String prop = getString(loggerName, shortName);
         return (prop != null) ? Long.parseLong(prop) : null;
     }
 
+    /**
+     * Resolves the log level for the named logger.
+     *
+     * @param loggerName logger identifier
+     * @return configured level or {@code null} when missing
+     */
     public ChronicleLogLevel getLevel(final String loggerName) {
         return getLevel(loggerName, null);
     }
 
+    /**
+     * Resolves the log level for the named logger with a default.
+     *
+     * @param loggerName logger identifier
+     * @param defVal     default level to return when unset
+     * @return configured level or the default
+     */
     public ChronicleLogLevel getLevel(final String loggerName, ChronicleLogLevel defVal) {
         String prop = getString(loggerName, KEY_LEVEL);
         return (prop != null) ? ChronicleLogLevel.fromStringLevel(prop) : defVal;

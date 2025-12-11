@@ -127,6 +127,11 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
         }
     }
 
+    /**
+     * Returns the wire type used by the backing queue.
+     *
+     * @return configured wire type
+     */
     public WireType getWireType() {
         return cq.wireType();
     }

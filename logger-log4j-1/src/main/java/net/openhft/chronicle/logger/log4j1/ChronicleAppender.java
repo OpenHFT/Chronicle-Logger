@@ -19,8 +19,14 @@ import java.io.IOException;
  */
 public final class ChronicleAppender extends AbstractChronicleAppender {
 
+    /**
+     * Chronicle configuration driving queue creation.
+     */
     private final LogAppenderConfig config;
 
+    /**
+     * Creates an appender with default Chronicle configuration.
+     */
     public ChronicleAppender() {
         this.config = new LogAppenderConfig();
     }
@@ -45,6 +51,11 @@ public final class ChronicleAppender extends AbstractChronicleAppender {
         config.setBufferCapacity(bufferCapacity);
     }
 
+    /**
+     * Returns the configured roll cycle name.
+     *
+     * @return roll cycle enum name
+     */
     public String rollCycle() {
         return config.getRollCycle();
     }

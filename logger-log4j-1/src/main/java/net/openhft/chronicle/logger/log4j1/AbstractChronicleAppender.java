@@ -23,13 +23,24 @@ import java.io.IOException;
  */
 public abstract class AbstractChronicleAppender implements Appender, OptionHandler {
 
+    /**
+     * Chronicle writer that records events.
+     */
     protected ChronicleLogWriter writer;
+    /** First filter in the chain. */
     private Filter filter;
+    /** Appender name used in Log4j configuration. */
     private String name;
+    /** Handler for errors during logging. */
     private ErrorHandler errorHandler;
+    /** Queue directory. */
     private String path;
+    /** Wire type for queue encoding. */
     private String wireType;
 
+    /**
+     * Creates an appender without an attached writer.
+     */
     protected AbstractChronicleAppender() {
         this.path = null;
         this.writer = null;
@@ -38,6 +49,13 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     }
 
     // Custom logging options
+
+    /**
+     * Converts a Log4j level to the corresponding Chronicle level.
+     *
+     * @param level Log4j level
+     * @return Chronicle log level
+     */
     public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
         switch (level.toInt()) {
             case Level.DEBUG_INT:
@@ -84,18 +102,38 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
         filter = null;
     }
 
+    /**
+     * Returns the queue path configured for this appender.
+     *
+     * @return queue path
+     */
     public String getPath() {
         return this.path;
     }
 
+    /**
+     * Sets the Chronicle queue path.
+     *
+     * @param path queue directory
+     */
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Returns the configured wire type name.
+     *
+     * @return wire type name or {@code null} if defaulting
+     */
     public String getWireType() {
         return wireType;
     }
 
+    /**
+     * Sets the wire type name to use when building queues.
+     *
+     * @param wireType wire type name
+     */
     public void setWireType(String wireType) {
         this.wireType = wireType;
     }

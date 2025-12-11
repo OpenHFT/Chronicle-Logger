@@ -36,6 +36,9 @@ public abstract class AbstractChronicleAppender
     private String path;
     private String wireType;
 
+    /**
+     * Creates an appender with no writer configured.
+     */
     protected AbstractChronicleAppender() {
         this.filterAttachable = new FilterAttachableImpl<>();
         this.name = null;
@@ -46,6 +49,13 @@ public abstract class AbstractChronicleAppender
     }
 
     // Custom logging options
+
+    /**
+     * Converts a Logback {@link Level} to the corresponding Chronicle level.
+     *
+     * @param level Logback level
+     * @return Chronicle log level
+     */
     public static ChronicleLogLevel toChronicleLogLevel(final Level level) {
         switch (level.levelInt) {
             case Level.DEBUG_INT:
@@ -63,19 +73,40 @@ public abstract class AbstractChronicleAppender
         }
     }
 
+    /**
+     * Returns the queue path configured for this appender.
+     *
+     * @return queue path
+     */
     public String getPath() {
         return this.path;
     }
 
+    /**
+     * Sets the queue directory to write to.
+     *
+     * @param path queue directory
+     */
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Returns the configured wire type name.
+     *
+     * @return wire type name or {@code null} for default
+     */
     public String getWireType() {
         return wireType;
     }
 
     // Chronicle implementation
+
+    /**
+     * Sets the wire type name for new queues.
+     *
+     * @param wireType wire type name
+     */
     public void setWireType(String wireType) {
         this.wireType = wireType;
     }

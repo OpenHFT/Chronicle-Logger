@@ -39,33 +39,71 @@ public class LogAppenderConfig {
     /** Name of the {@link RollCycles} to use when rolling files. */
     private String rollCycle;
 
+    /**
+     * Creates an empty configuration with default values.
+     */
     public LogAppenderConfig() {
     }
 
+    /**
+     * Returns the configured block size in bytes.
+     *
+     * @return block size
+     */
     public int getBlockSize() {
         return this.blockSize;
     }
 
+    /**
+     * Sets the queue block size in bytes.
+     *
+     * @param blockSize size of each queue block
+     */
     public void setBlockSize(int blockSize) {
         this.blockSize = blockSize;
     }
 
+    /**
+     * Returns the configured write buffer capacity.
+     *
+     * @return buffer capacity in bytes
+     */
     public long getBufferCapacity() {
         return this.bufferCapacity;
     }
 
+    /**
+     * Sets the write buffer capacity.
+     *
+     * @param bufferCapacity capacity in bytes
+     */
     public void setBufferCapacity(long bufferCapacity) {
         this.bufferCapacity = bufferCapacity;
     }
 
+    /**
+     * Returns the roll cycle name to use.
+     *
+     * @return roll cycle enum name, or {@code null} when unset
+     */
     public String getRollCycle() {
         return rollCycle;
     }
 
+    /**
+     * Sets the roll cycle name.
+     *
+     * @param rollCycle roll cycle enum name
+     */
     public void setRollCycle(String rollCycle) {
         this.rollCycle = rollCycle;
     }
 
+    /**
+     * Lists the property keys this configuration recognises.
+     *
+     * @return recognised property names
+     */
     public String[] keys() {
         return KEYS;
     }
@@ -94,6 +132,9 @@ public class LogAppenderConfig {
     /**
      * Reads configuration values from a {@link Properties} object.
      * Only keys starting with {@code prefix}, when supplied, are considered.
+     *
+     * @param properties property source
+     * @param prefix     prefix to strip, or {@code null} to read all keys
      */
     public void setProperties(@NotNull final Properties properties, @Nullable final String prefix) {
         for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
@@ -112,6 +153,9 @@ public class LogAppenderConfig {
 
     /**
      * Sets a single property by reflection. Unknown properties are ignored.
+     *
+     * @param propName  property name (after any prefix has been removed)
+     * @param propValue string value to assign
      */
     public void setProperty(@NotNull final String propName, final String propValue) {
         try {

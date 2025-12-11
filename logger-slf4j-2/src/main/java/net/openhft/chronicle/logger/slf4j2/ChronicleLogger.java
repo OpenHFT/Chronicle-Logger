@@ -14,11 +14,20 @@ import net.openhft.chronicle.logger.ChronicleLogWriter;
  * package.  The logging semantics and configuration remain the same as the
  * original SLF4J&nbsp;1.x implementation.
  */
-@SuppressWarnings({"deprecation","serial"})
+@SuppressWarnings({"deprecation", "serial"})
 public final class ChronicleLogger extends org.slf4j.helpers.MarkerIgnoringBase {
 
+    /**
+     * Serial version for SLF4J logger adapter.
+     */
     private static final long serialVersionUID = 1L;
+    /**
+     * Minimum level this logger will emit.
+     */
     private final ChronicleLogLevel level;
+    /**
+     * Writer used to publish log events.
+     */
     private final ChronicleLogWriter writer;
 
     ChronicleLogger(final ChronicleLogWriter writer, final String name, final ChronicleLogLevel level) {

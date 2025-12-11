@@ -28,6 +28,9 @@ public class ChronicleAppender extends AbstractChronicleAppender {
 
     private LogAppenderConfig config;
 
+    /**
+     * Creates an appender with default Chronicle configuration and caller/MDC capture enabled.
+     */
     public ChronicleAppender() {
         super();
 
@@ -45,6 +48,11 @@ public class ChronicleAppender extends AbstractChronicleAppender {
         return this.config;
     }
 
+    /**
+     * Sets the Chronicle writer configuration.
+     *
+     * @param config writer configuration
+     */
     @DefaultClass(LogAppenderConfig.class)
     public void setChronicleConfig(final LogAppenderConfig config) {
         this.config = config;
@@ -59,18 +67,39 @@ public class ChronicleAppender extends AbstractChronicleAppender {
     }
 
     // Custom logging options
+
+    /**
+     * Whether caller data is written to the Chronicle log.
+     *
+     * @return {@code true} if caller data is included
+     */
     public boolean isIncludeCallerData() {
         return this.includeCallerData;
     }
 
+    /**
+     * Enables or disables writing caller data.
+     *
+     * @param logCallerData {@code true} to include caller data
+     */
     public void setIncludeCallerData(boolean logCallerData) {
         this.includeCallerData = logCallerData;
     }
 
+    /**
+     * Whether MDC entries are written to the Chronicle log.
+     *
+     * @return {@code true} if MDC is included
+     */
     public boolean isIncludeMappedDiagnosticContext() {
         return this.includeMDC;
     }
 
+    /**
+     * Enables or disables writing MDC.
+     *
+     * @param logMDC {@code true} to include MDC data
+     */
     public void setIncludeMappedDiagnosticContext(boolean logMDC) {
         this.includeMDC = logMDC;
     }

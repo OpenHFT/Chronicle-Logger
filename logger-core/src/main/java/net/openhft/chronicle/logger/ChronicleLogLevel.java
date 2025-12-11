@@ -19,10 +19,25 @@ import org.jetbrains.annotations.NotNull;
  * A higher value represents a more severe event.
  */
 public enum ChronicleLogLevel {
+    /**
+     * Serious failures that require immediate attention.
+     */
     ERROR(50, "ERROR"),
+    /**
+     * Recoverable problems that may need action.
+     */
     WARN(40, "WARN"),
+    /**
+     * General operational information.
+     */
     INFO(30, "INFO"),
+    /**
+     * Diagnostic detail for developers.
+     */
     DEBUG(20, "DEBUG"),
+    /**
+     * High-volume trace events.
+     */
     TRACE(10, "TRACE");
 
     /**
@@ -84,6 +99,9 @@ public enum ChronicleLogLevel {
 
     /**
      * Tests whether this level is at least as severe as the given level.
+     *
+     * @param presumablyLowerLevel level to compare against
+     * @return {@code true} when this level's intensity is greater than or equal to the argument
      */
     public boolean isHigherOrEqualTo(final ChronicleLogLevel presumablyLowerLevel) {
         return levelInt >= presumablyLowerLevel.levelInt;

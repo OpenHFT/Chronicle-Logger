@@ -36,6 +36,18 @@ public class Lo4J2PerfTest {
             LoggerFactory.getLogger("perf-file")
     };
 
+    /**
+     * Default constructor required by JMH.
+     */
+    public Lo4J2PerfTest() {
+    }
+
+    /**
+     * Executes the benchmark from the command line.
+     *
+     * @param args JVM arguments (unused)
+     * @throws RunnerException if the benchmark fails
+     */
     public static void main(String[] args) throws RunnerException {
 
         Options opt = new OptionsBuilder()
@@ -63,6 +75,9 @@ public class Lo4J2PerfTest {
         return path + "chronicle-log4j2-bench";
     }
 
+    /**
+     * Benchmarks Chronicle logging of a simple message.
+     */
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -70,6 +85,9 @@ public class Lo4J2PerfTest {
         loggers[CHRONICLE_INDEX].debug("Test {} {} " + 1, 2, 3);
     }
 
+    /**
+     * Benchmarks Chronicle logging when a throwable is attached.
+     */
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -77,6 +95,9 @@ public class Lo4J2PerfTest {
         loggers[CHRONICLE_INDEX].debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
     }
 
+    /**
+     * Benchmarks file-based logging of a simple message.
+     */
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -84,6 +105,9 @@ public class Lo4J2PerfTest {
         loggers[FILE_INDEX].debug("Test {} {} " + 1, 2, 3);
     }
 
+    /**
+     * Benchmarks file-based logging when a throwable is attached.
+     */
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -91,6 +115,9 @@ public class Lo4J2PerfTest {
         loggers[FILE_INDEX].debug("Throwable test 2", new UnsupportedOperationException("Exception message"));
     }
 
+    /**
+     * Cleans up benchmark output directories after execution.
+     */
     @TearDown
     public void tearDown() {
         IOTools.deleteDirWithFiles(rootPath());

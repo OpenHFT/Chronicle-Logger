@@ -33,6 +33,15 @@ public class ChronicleAppender extends AbstractChronicleAppender {
 
     private final ChronicleCfg config;
 
+    /**
+     * Creates an appender with the provided settings.
+     *
+     * @param name     appender name
+     * @param filter   optional filter chain
+     * @param path     Chronicle queue path
+     * @param wireType optional wire type name
+     * @param config   Chronicle queue configuration
+     */
     public ChronicleAppender(final String name, final Filter filter, final String path, final String wireType, final ChronicleCfg config) {
         super(name, filter, path, wireType);
 

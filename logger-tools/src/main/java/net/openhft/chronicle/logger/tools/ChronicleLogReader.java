@@ -51,6 +51,14 @@ public class ChronicleLogReader {
 
     /**
      * Simple {@link ChronicleLogProcessor} implementation. Prints formatted message to stdout
+     *
+     * @param timestamp  log event time in milliseconds
+     * @param level      log level
+     * @param loggerName logger name
+     * @param threadName emitting thread
+     * @param message    log message pattern
+     * @param throwable  optional throwable attached to the event
+     * @param args       arguments applied to the message pattern
      */
     public static void printf(
             long timestamp,

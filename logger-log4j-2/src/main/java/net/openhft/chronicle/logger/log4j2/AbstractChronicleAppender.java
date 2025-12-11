@@ -39,6 +39,14 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
 
     private ChronicleLogWriter writer;
 
+    /**
+     * Constructs an appender with the supplied Log4j plugin attributes.
+     *
+     * @param name     appender name
+     * @param filter   filter chain
+     * @param path     Chronicle queue path
+     * @param wireType optional wire type name
+     */
     AbstractChronicleAppender(String name, Filter filter, String path, String wireType) {
         super(name, filter, null, true, null);
 
@@ -48,6 +56,13 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
     }
 
     // Custom logging options
+
+    /**
+     * Converts a Log4j 2 level to a Chronicle level.
+     *
+     * @param level Log4j level
+     * @return matching Chronicle level
+     */
     static ChronicleLogLevel toChronicleLogLevel(final Level level) {
         if (level.intLevel() == Level.DEBUG.intLevel()) {
             return ChronicleLogLevel.DEBUG;
@@ -68,19 +83,40 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
         throw new IllegalArgumentException(level.intLevel() + " not a valid level value");
     }
 
+    /**
+     * Returns the Chronicle queue path.
+     *
+     * @return queue path
+     */
     public String getPath() {
         return this.path;
     }
 
+    /**
+     * Sets the Chronicle queue path.
+     *
+     * @param path queue path
+     */
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Returns the configured wire type name.
+     *
+     * @return wire type name or {@code null} when defaulting
+     */
     public String getWireType() {
         return wireType;
     }
 
     // Chronicle implementation
+
+    /**
+     * Sets the wire type name to use when building queues.
+     *
+     * @param wireType wire type name
+     */
     public void setWireType(String wireType) {
         this.wireType = wireType;
     }
@@ -92,6 +128,12 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
      */
     protected abstract ChronicleLogWriter createWriter();
 
+    /**
+     * Writes a single Log4j event using the provided Chronicle writer.
+     *
+     * @param event  event to log
+     * @param writer target Chronicle writer
+     */
     protected abstract void doAppend(@NotNull final LogEvent event, @NotNull final ChronicleLogWriter writer);
 
     @Override
@@ -146,6 +188,11 @@ public abstract class AbstractChronicleAppender extends AbstractAppender {
 
         /**
          * Builds a configuration from plugin attributes.
+         *
+         * @param blockSize      queue block size in bytes
+         * @param bufferCapacity buffer size in bytes
+         * @param rollCycle      roll cycle name
+         * @return configuration carrying the supplied attributes
          */
         @PluginFactory
         public static ChronicleCfg create(
