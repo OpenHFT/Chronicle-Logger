@@ -5,10 +5,10 @@ package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.core.io.IOTools;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +16,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-@Ignore(/*Long running performance test*/)
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Disabled("Long running performance test")
 public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty(
                 "chronicle.logger.properties",
@@ -28,7 +31,7 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
         reloadChronicleLoggerFactory();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         IOTools.deleteDirWithFiles(basePath());
     }
@@ -41,6 +44,9 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
         final String testId = "perf-chronicle";
         final Logger clogger = LoggerFactory.getLogger(testId);
         final long items = 1000000;
+
+        assertNotNull(clogger, "logger instance should be created for performance test");
+        assertTrue(clogger.isInfoEnabled(), "logger info enabled");
 
         warmup(clogger);
 
@@ -72,6 +78,9 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
         final long items = 1000000;
         final String strFmt = StringUtils.leftPad("> v1={}, v2={}, v3={}", 32, 'X');
 
+        assertNotNull(clogger, "logger instance should be created for performance test");
+        assertTrue(clogger.isInfoEnabled(), "logger info enabled");
+
         warmup(clogger);
 
         for (int n = 0; n < 10; n++) {
@@ -98,6 +107,9 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
         final int RUNS = 1000000;
         final int THREADS = 10;
 
+        assertTrue(RUNS > 0, "runs > 0");
+        assertTrue(THREADS > 0, "threads > 0");
+
         for (int size : new int[]{64, 128, 256}) {
             {
                 final long start = System.nanoTime();
@@ -108,7 +120,7 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
                 }
 
                 es.shutdown();
-                es.awaitTermination(5, TimeUnit.SECONDS);
+                assertTrue(es.awaitTermination(5, TimeUnit.SECONDS), "executor terminated");
 
                 final long time = System.nanoTime() - start;
 

@@ -4,16 +4,16 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
 
-    @Before
+    @BeforeEach
     public void setup() {
         System.setProperty(
                 "logback.configurationFile",
@@ -27,13 +27,12 @@ public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
         final String appenderName = "CONFIG-BINARY-CHRONICLE";
 
         final ch.qos.logback.classic.Logger logger = getLoggerContext().getLogger(loggerName);
-        assertNotNull(logger);
+        assertNotNull(logger, "logger instance should be retrieved from context");
 
         final ch.qos.logback.core.Appender<ILoggingEvent> appender = logger.getAppender(appenderName);
-        assertNotNull(appender);
-        assertTrue(appender instanceof ChronicleAppender);
+        assertNotNull(appender, "appender should be attached to logger");
+        ChronicleAppender ba = assertInstanceOf(ChronicleAppender.class, appender, "appender type");
 
-        ChronicleAppender ba = (ChronicleAppender) appender;
-        assertEquals(128, ba.getChronicleConfig().getBlockSize());
+        assertEquals(128, ba.getChronicleConfig().getBlockSize(), "blockSize should match configured value from XML");
     }
 }
