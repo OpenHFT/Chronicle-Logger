@@ -4,20 +4,16 @@
 package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.logger.ChronicleLogConfig;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ChronicleLoggingConfigTest {
     @Test
     public void testLoadClasspathIndexed() {
         System.setProperty("chronicle.logger.properties", "chronicle.logger.properties");
-        assertLoadsValidConfig();
-    }
-
-    private void assertLoadsValidConfig() {
         ChronicleLogConfig config = ChronicleLogConfig.load();
-        assertNotNull("unable to load config", config);
-        assertNotNull("is not a valid config", config.getAppenderConfig());
+        assertNotNull(config, "load config");
+        assertNotNull(config.getAppenderConfig(), "config has appender config");
     }
 }

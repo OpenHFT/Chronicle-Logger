@@ -5,15 +5,15 @@ package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Verifies that {@link ChronicleLogger} filters levels correctly and forwards
@@ -23,13 +23,13 @@ public class ChronicleLoggerBehaviourTest {
 
     private String originalThreadName;
 
-    @Before
+    @BeforeEach
     public void captureThreadName() {
         originalThreadName = Thread.currentThread().getName();
         Thread.currentThread().setName("slf4j-behaviour-test");
     }
 
-    @After
+    @AfterEach
     public void restoreThreadName() {
         Thread.currentThread().setName(originalThreadName);
     }
@@ -39,16 +39,16 @@ public class ChronicleLoggerBehaviourTest {
         RecordingWriter writer = new RecordingWriter();
         ChronicleLogger logger = new ChronicleLogger(writer, "behaviour-logger", ChronicleLogLevel.INFO);
 
-        assertFalse("trace should be disabled at INFO threshold", logger.isTraceEnabled());
-        assertFalse("debug should be disabled at INFO threshold", logger.isDebugEnabled());
-        assertTrue(logger.isInfoEnabled());
-        assertTrue(logger.isWarnEnabled());
-        assertTrue(logger.isErrorEnabled());
+        assertFalse(logger.isTraceEnabled(), "trace should be disabled at INFO threshold");
+        assertFalse(logger.isDebugEnabled(), "debug should be disabled at INFO threshold");
+        assertTrue(logger.isInfoEnabled(), "info should be enabled at INFO threshold");
+        assertTrue(logger.isWarnEnabled(), "warn should be enabled at INFO threshold");
+        assertTrue(logger.isErrorEnabled(), "error should be enabled at INFO threshold");
 
         // below threshold: no events
         logger.trace("trace skipped");
         logger.debug("debug skipped");
-        assertEquals(0, writer.events.size());
+        assertEquals(0, writer.events.size(), "events below threshold");
 
         logger.info("info message");
         logger.info("info one arg {}", 42);
@@ -60,48 +60,48 @@ public class ChronicleLoggerBehaviourTest {
         logger.error("error arg and throwable {}", "payload", new RuntimeException("kaboom"));
 
         List<LoggedEvent> events = writer.events;
-        assertEquals("seven events expected", 7, events.size());
+        assertEquals(7, events.size(), "seven events expected");
 
         LoggedEvent first = events.get(0);
-        assertEquals(ChronicleLogLevel.INFO, first.level);
-        assertEquals("behaviour-logger", first.loggerName);
-        assertEquals("slf4j-behaviour-test", first.threadName);
-        assertEquals("info message", first.message);
-        assertNull(first.throwable);
-        assertEquals(0, first.args.length);
+        assertEquals(ChronicleLogLevel.INFO, first.level, "event[0] level");
+        assertEquals("behaviour-logger", first.loggerName, "event[0] loggerName");
+        assertEquals("slf4j-behaviour-test", first.threadName, "event[0] threadName");
+        assertEquals("info message", first.message, "event[0] message");
+        assertNull(first.throwable, "event[0] throwable");
+        assertEquals(0, first.args.length, "event[0] args");
 
         LoggedEvent second = events.get(1);
-        assertEquals("info one arg {}", second.message);
-        assertArrayEquals(new Object[]{42}, second.args);
-        assertNull(second.throwable);
+        assertEquals("info one arg {}", second.message, "event[1] message");
+        assertArrayEquals(new Object[]{42}, second.args, "event[1] args");
+        assertNull(second.throwable, "event[1] throwable");
 
         LoggedEvent third = events.get(2);
-        assertEquals("info two args {} {}", third.message);
-        assertArrayEquals(new Object[]{"lhs", "rhs"}, third.args);
+        assertEquals("info two args {} {}", third.message, "event[2] message");
+        assertArrayEquals(new Object[]{"lhs", "rhs"}, third.args, "event[2] args");
 
         LoggedEvent fourth = events.get(3);
-        assertEquals(ChronicleLogLevel.WARN, fourth.level);
-        assertEquals("warn with throwable", fourth.message);
-        assertEquals(warningThrowable, fourth.throwable);
-        assertEquals(0, fourth.args.length);
+        assertEquals(ChronicleLogLevel.WARN, fourth.level, "event[3] level");
+        assertEquals("warn with throwable", fourth.message, "event[3] message");
+        assertEquals(warningThrowable, fourth.throwable, "event[3] throwable");
+        assertEquals(0, fourth.args.length, "event[3] args");
 
         LoggedEvent fifth = events.get(4);
-        assertEquals("warn contextual {}", fifth.message);
-        assertArrayEquals(new Object[]{"ctx"}, fifth.args);
-        assertTrue(fifth.throwable instanceof IllegalArgumentException);
-        assertEquals("warn-ctx", fifth.throwable.getMessage());
+        assertEquals("warn contextual {}", fifth.message, "event[4] message");
+        assertArrayEquals(new Object[]{"ctx"}, fifth.args, "event[4] args");
+        assertInstanceOf(IllegalArgumentException.class, fifth.throwable, "event[4] throwable type");
+        assertEquals("warn-ctx", fifth.throwable.getMessage(), "event[4] throwable message");
 
         LoggedEvent sixth = events.get(5);
-        assertEquals(ChronicleLogLevel.ERROR, sixth.level);
-        assertEquals("error varargs {} {}", sixth.message);
-        assertArrayEquals(new Object[]{1, 2}, sixth.args);
-        assertNull(sixth.throwable);
+        assertEquals(ChronicleLogLevel.ERROR, sixth.level, "event[5] level");
+        assertEquals("error varargs {} {}", sixth.message, "event[5] message");
+        assertArrayEquals(new Object[]{1, 2}, sixth.args, "event[5] args");
+        assertNull(sixth.throwable, "event[5] throwable");
 
         LoggedEvent seventh = events.get(6);
-        assertEquals("error arg and throwable {}", seventh.message);
-        assertArrayEquals(new Object[]{"payload"}, seventh.args);
-        assertTrue(seventh.throwable instanceof RuntimeException);
-        assertEquals("kaboom", seventh.throwable.getMessage());
+        assertEquals("error arg and throwable {}", seventh.message, "event[6] message");
+        assertArrayEquals(new Object[]{"payload"}, seventh.args, "event[6] args");
+        assertInstanceOf(RuntimeException.class, seventh.throwable, "event[6] throwable type");
+        assertEquals("kaboom", seventh.throwable.getMessage(), "event[6] throwable message");
     }
 
     private static final class RecordingWriter implements ChronicleLogWriter {

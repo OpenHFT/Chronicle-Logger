@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.logging.LogManager;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JulHandlerTestBase extends JulTestBase {
 
@@ -39,8 +39,8 @@ public class JulHandlerTestBase extends JulTestBase {
         String cfgPath = System.getProperty("resources.path");
         File cfgFile = new File(cfgPath, id + ".properties");
 
-        assertNotNull(cfgPath);
-        assertTrue(cfgFile.exists());
+        assertNotNull(cfgPath, "resources.path");
+        assertTrue(cfgFile.exists(), "config exists: " + cfgFile);
 
         LogManager manager = LogManager.getLogManager();
         manager.reset();

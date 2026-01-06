@@ -8,8 +8,11 @@ import ch.qos.logback.classic.LoggerContext;
 import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.logger.LogAppenderConfig;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LogbackChronicleProgrammaticConfigTest extends LogbackTestBase {
 
@@ -23,10 +26,11 @@ public class LogbackChronicleProgrammaticConfigTest extends LogbackTestBase {
         appender.setChronicleConfig(new LogAppenderConfig());
         appender.setContext(context);
         appender.start();
+        assertTrue(appender.isStarted(), "appender started");
 
         Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
         logger.addAppender(appender);
 
-        logger.info("Hello World");
+        assertDoesNotThrow(() -> logger.info("Hello World"), "log through configured appender");
     }
 }
