@@ -4,9 +4,9 @@
 package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.logger.ChronicleLogConfig;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ChronicleLoggingConfigTest {
     @Test
@@ -17,7 +17,7 @@ public class ChronicleLoggingConfigTest {
 
     private void assertLoadsValidConfig() {
         ChronicleLogConfig config = ChronicleLogConfig.load();
-        assertNotNull("unable to load config", config);
-        assertNotNull("is not a valid config", config.getAppenderConfig());
+        assertNotNull(config, "unable to load config");
+        assertNotNull(config.getAppenderConfig(), "is not a valid config");
     }
 }

@@ -5,15 +5,15 @@ package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Verifies that {@link ChronicleLogger} filters levels correctly and forwards
@@ -23,13 +23,13 @@ public class ChronicleLoggerBehaviourTest {
 
     private String originalThreadName;
 
-    @Before
+    @BeforeEach
     public void captureThreadName() {
         originalThreadName = Thread.currentThread().getName();
         Thread.currentThread().setName("slf4j-behaviour-test");
     }
 
-    @After
+    @AfterEach
     public void restoreThreadName() {
         Thread.currentThread().setName(originalThreadName);
     }
@@ -39,8 +39,8 @@ public class ChronicleLoggerBehaviourTest {
         RecordingWriter writer = new RecordingWriter();
         ChronicleLogger logger = new ChronicleLogger(writer, "behaviour-logger", ChronicleLogLevel.INFO);
 
-        assertFalse("trace should be disabled at INFO threshold", logger.isTraceEnabled());
-        assertFalse("debug should be disabled at INFO threshold", logger.isDebugEnabled());
+        assertFalse(logger.isTraceEnabled(), "trace should be disabled at INFO threshold");
+        assertFalse(logger.isDebugEnabled(), "debug should be disabled at INFO threshold");
         assertTrue(logger.isInfoEnabled());
         assertTrue(logger.isWarnEnabled());
         assertTrue(logger.isErrorEnabled());

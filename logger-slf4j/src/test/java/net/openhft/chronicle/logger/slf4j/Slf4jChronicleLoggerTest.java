@@ -5,17 +5,15 @@ package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
-import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.StaticLoggerBinder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
 
@@ -33,7 +31,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty(
                 "chronicle.logger.properties",
@@ -43,7 +41,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         getChronicleLoggerFactory().reload();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
 
         IOTools.deleteDirWithFiles(basePath());
@@ -64,18 +62,18 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         Logger l3 = LoggerFactory.getLogger("logger_1");
 
         assertNotNull(l1);
-        assertEquals("Expected ChronicleLogger but got " + l1.getClass(), "ChronicleLogger", l1.getClass().getSimpleName());
+        assertEquals("ChronicleLogger", l1.getClass().getSimpleName(), "Expected ChronicleLogger but got " + l1.getClass());
 
         assertNotNull(l2);
-        assertEquals("Expected ChronicleLogger but got " + l2.getClass(), "ChronicleLogger", l2.getClass().getSimpleName());
+        assertEquals("ChronicleLogger", l2.getClass().getSimpleName(), "Expected ChronicleLogger but got " + l2.getClass());
 
         assertNotNull(l3);
-        assertEquals("Expected ChronicleLogger but got " + l3.getClass(), "ChronicleLogger", l3.getClass().getSimpleName());
+        assertEquals("ChronicleLogger", l3.getClass().getSimpleName(), "Expected ChronicleLogger but got " + l3.getClass());
 
         Logger l4 = LoggerFactory.getLogger("readwrite");
 
         assertNotNull(l4);
-        assertEquals("Expected ChronicleLogger but got " + l4.getClass(), "ChronicleLogger", l4.getClass().getSimpleName());
+        assertEquals("ChronicleLogger", l4.getClass().getSimpleName(), "Expected ChronicleLogger but got " + l4.getClass());
 
         assertEquals(l1, l2);
         assertNotEquals(l1, l3);
@@ -87,10 +85,10 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         // The testLogging() method provides comprehensive verification of logging behavior.
 
         // Verify that loggers are enabled at appropriate levels via SLF4J API
-        assertTrue("L1 should have debug enabled", l1.isDebugEnabled());
-        assertTrue("L2 should have debug enabled", l2.isDebugEnabled());
-        assertTrue("L3 should have info enabled", l3.isInfoEnabled());
-        assertTrue("L4 should have debug enabled", l4.isDebugEnabled());
+        assertTrue(l1.isDebugEnabled(), "L1 should have debug enabled");
+        assertTrue(l2.isDebugEnabled(), "L2 should have debug enabled");
+        assertTrue(l3.isInfoEnabled(), "L3 should have info enabled");
+        assertTrue(l4.isDebugEnabled(), "L4 should have debug enabled");
 
         // Verify logger names via SLF4J API
         assertEquals("slf4j-chronicle", l1.getName());
@@ -121,7 +119,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
                 if (level.isHigherOrEqualTo(ChronicleLogLevel.DEBUG)) {
                     try (DocumentContext dc = tailer.readingDocument()) {
                         Wire wire = dc.wire();
-                        assertNotNull("log not found for " + level, wire);
+                        assertNotNull(wire, "log not found for " + level);
                         assertTrue(wire.read("ts").int64() <= currentTimeMillis());
                         assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                         assertEquals(threadId, wire.read("threadName").text());

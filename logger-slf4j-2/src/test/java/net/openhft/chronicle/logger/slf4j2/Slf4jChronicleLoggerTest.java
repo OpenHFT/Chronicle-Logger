@@ -10,9 +10,9 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
 
@@ -32,7 +32,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty(
                 "chronicle.logger.properties",
@@ -42,7 +42,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         getChronicleLoggerFactory().reload();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
 
         IOTools.deleteDirWithFiles(basePath());
@@ -50,9 +50,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
 
     @Test
     public void testLoggerFactory() {
-        assertEquals(
-                getChronicleLoggerFactory().getClass(),
-                ChronicleLoggerFactory.class);
+        assertSame(getChronicleLoggerFactory().getClass(), ChronicleLoggerFactory.class);
     }
 
     @Test
