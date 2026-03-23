@@ -5,10 +5,10 @@ package net.openhft.chronicle.logger.slf4j2;
 
 import net.openhft.chronicle.core.io.IOTools;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +26,10 @@ import java.util.concurrent.TimeUnit;
  * <li>multi-thread throughput across ten threads.</li>
  * </ul>
  */
-@Ignore
+@Disabled("Manual performance benchmark; excluded from the regular unit-test suite")
 public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty(
                 "chronicle.logger.properties",
@@ -38,7 +38,7 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
         getChronicleLoggerFactory().reload();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         IOTools.deleteDirWithFiles(basePath());
     }
