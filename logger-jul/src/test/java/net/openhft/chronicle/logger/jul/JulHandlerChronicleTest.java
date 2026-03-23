@@ -11,9 +11,9 @@ import net.openhft.chronicle.threads.DiskSpaceMonitor;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests that {@link ChronicleHandler} writes JUL events to a Chronicle Queue.
@@ -39,13 +39,13 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         // DiskSpaceMonitor interferes with this test
         DiskSpaceMonitor.INSTANCE.close();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         IOTools.deleteDirWithFiles(rootPath());
     }
@@ -60,7 +60,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
         assertNotNull(logger.getHandlers());
         assertEquals(1, logger.getHandlers().length);
 
-        assertEquals(ChronicleHandler.class, logger.getHandlers()[0].getClass());
+        assertSame(ChronicleHandler.class, logger.getHandlers()[0].getClass());
     }
 
     @Test

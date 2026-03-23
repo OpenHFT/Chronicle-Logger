@@ -12,9 +12,9 @@ import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JulLoggerChronicleTest extends JulLoggerTestBase {
 
@@ -40,7 +40,7 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
         assertNotNull(logger);
         assertTrue(logger instanceof ChronicleLogger);
         if (!(logger instanceof ChronicleLogger.Null))
-            assertEquals(expectedLoggerType, logger.getClass());
+            assertSame(expectedLoggerType, logger.getClass());
         assertEquals(loggerId, logger.getName());
         assertNotNull(((ChronicleLogger) logger).writer());
         assertEquals(level, logger.getLevel());
@@ -52,13 +52,13 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         setupLogger(getClass());
         Files.createDirectories(Paths.get(basePath()));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         IOTools.deleteDirWithFiles(basePath());
     }

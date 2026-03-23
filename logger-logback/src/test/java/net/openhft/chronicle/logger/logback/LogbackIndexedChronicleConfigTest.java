@@ -4,16 +4,16 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
 
-    @Before
+    @BeforeEach
     public void setup() {
         System.setProperty(
                 "logback.configurationFile",

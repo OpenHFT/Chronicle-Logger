@@ -8,8 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.LogManager;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JulHandlerTestBase extends JulTestBase {
 

@@ -8,7 +8,7 @@ import ch.qos.logback.classic.LoggerContext;
 import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.logger.LogAppenderConfig;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 public class LogbackChronicleProgrammaticConfigTest extends LogbackTestBase {

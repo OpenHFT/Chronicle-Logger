@@ -13,16 +13,16 @@ import net.openhft.chronicle.wire.WireType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JclChronicleLoggerTest extends JclTestBase {
 
@@ -31,7 +31,7 @@ public class JclChronicleLoggerTest extends JclTestBase {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         System.setProperty(
                 "chronicle.logger.properties",
@@ -40,7 +40,7 @@ public class JclChronicleLoggerTest extends JclTestBase {
         Files.createDirectories(Paths.get(basePath()));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         LogFactory.getFactory().release();
         IOTools.deleteDirWithFiles(basePath());
@@ -48,9 +48,7 @@ public class JclChronicleLoggerTest extends JclTestBase {
 
     @Test
     public void testLoggerFactory() {
-        assertEquals(
-                ChronicleLoggerFactory.class,
-                LogFactory.getFactory().getClass());
+        assertSame(ChronicleLoggerFactory.class, LogFactory.getFactory().getClass());
     }
 
     @Test
@@ -61,16 +59,16 @@ public class JclChronicleLoggerTest extends JclTestBase {
         Log l4 = LogFactory.getLog("readwrite");
 
         assertNotNull(l1);
-        assertEquals(ChronicleLogger.class, l1.getClass());
+        assertSame(ChronicleLogger.class, l1.getClass());
 
         assertNotNull(l2);
-        assertEquals(ChronicleLogger.class, l2.getClass());
+        assertSame(ChronicleLogger.class, l2.getClass());
 
         assertNotNull(l3);
-        assertEquals(ChronicleLogger.class, l3.getClass());
+        assertSame(ChronicleLogger.class, l3.getClass());
 
         assertNotNull(l4);
-        assertEquals(ChronicleLogger.class, l4.getClass());
+        assertSame(ChronicleLogger.class, l4.getClass());
 
         assertEquals(l1, l2);
         assertNotEquals(l1, l3);

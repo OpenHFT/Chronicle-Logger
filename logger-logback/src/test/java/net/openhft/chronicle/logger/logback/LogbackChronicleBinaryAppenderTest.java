@@ -9,9 +9,9 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Validates that the Logback binary appender records each field in the
@@ -35,7 +35,7 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         System.setProperty(
                 "logback.configurationFile",
@@ -43,7 +43,7 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
                         + "/logback-chronicle-binary-appender.xml");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         IOTools.deleteDirWithFiles(rootPath());
     }

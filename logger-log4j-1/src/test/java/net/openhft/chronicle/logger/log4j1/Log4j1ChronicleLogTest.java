@@ -11,8 +11,8 @@ import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Log4j1ChronicleLogTest extends Log4j1TestBase {
 
@@ -29,7 +29,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
         return ChronicleQueue.singleBuilder(basePath(testId)).wireType(wt).build();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         IOTools.deleteDirWithFiles(rootPath());
     }
