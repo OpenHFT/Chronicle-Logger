@@ -9,7 +9,7 @@ import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.WireType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * CLI regression tests for {@link ChroniCat} and {@link ChroniTail}.
@@ -66,7 +66,7 @@ public class ChronicleCliToolsTest {
                 System.setOut(originalOut);
             }
             String output = out.toString("UTF-8");
-            assertTrue("expected formatted message in ChroniCat output", output.contains("test event lhs rhs"));
+            assertTrue(output.contains("test event lhs rhs"), "expected formatted message in ChroniCat output");
         } finally {
             IOTools.deleteDirWithFiles(queuePath.toString());
         }

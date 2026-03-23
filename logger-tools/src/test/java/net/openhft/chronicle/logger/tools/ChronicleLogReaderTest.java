@@ -6,13 +6,13 @@ package net.openhft.chronicle.logger.tools;
 import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.wire.WireType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ChronicleLogReaderTest {
-    @Before
+    @BeforeEach
     public void setup() {
         System.setProperty(
                 "logback.configurationFile",
