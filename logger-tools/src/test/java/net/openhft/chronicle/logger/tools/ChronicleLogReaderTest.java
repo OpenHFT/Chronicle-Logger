@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ChronicleLogReaderTest {
+class ChronicleLogReaderTest {
     @BeforeEach
-    public void setup() {
+    void setup() {
         System.setProperty(
                 "logback.configurationFile",
                 System.getProperty("resources.path")
@@ -21,7 +21,7 @@ public class ChronicleLogReaderTest {
     }
 
     @Test
-    public void readTest() {
+    void readTest() {
         final Logger logger = LoggerFactory.getLogger("binary-chronicle");
         logger.info("test {} {} {}", 1, 100L, 100.123D);
         logger.info("test {} {} {}", 2, 100L, 100.123D);

@@ -27,10 +27,10 @@ import java.util.concurrent.TimeUnit;
  * </ul>
  */
 @Disabled("Manual performance benchmark; excluded from the regular unit-test suite")
-public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
+class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         System.setProperty(
                 "chronicle.logger.properties",
                 "chronicle.logger.perf.properties");
@@ -39,13 +39,13 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         IOTools.deleteDirWithFiles(basePath());
     }
 
     // Single Thread
     @Test
-    public void testSingleThreadLogging1() {
+    void testSingleThreadLogging1() {
         Thread.currentThread().setName("perf-plain");
 
         final String testId = "perf-chronicle";
@@ -74,7 +74,7 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
     }
 
     @Test
-    public void testSingleThreadLogging2() {
+    void testSingleThreadLogging2() {
         Thread.currentThread().setName("perf-plain");
 
         final String testId = "perf-chronicle";
@@ -102,7 +102,7 @@ public class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
 
     // Multi Thread
     @Test
-    public void testMultiThreadLogging() throws InterruptedException {
+    void testMultiThreadLogging() throws InterruptedException {
         warmup(LoggerFactory.getLogger("perf-chronicle"));
 
         final int RUNS = 1000000;

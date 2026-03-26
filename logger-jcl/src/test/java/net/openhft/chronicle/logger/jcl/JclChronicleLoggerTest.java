@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 import static java.lang.System.currentTimeMillis;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JclChronicleLoggerTest extends JclTestBase {
+class JclChronicleLoggerTest extends JclTestBase {
 
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
@@ -32,7 +32,7 @@ public class JclChronicleLoggerTest extends JclTestBase {
     }
 
     @BeforeEach
-    public void setUp() throws IOException {
+    void setUp() throws IOException {
         System.setProperty(
                 "chronicle.logger.properties",
                 "chronicle.logger.properties"
@@ -41,18 +41,18 @@ public class JclChronicleLoggerTest extends JclTestBase {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         LogFactory.getFactory().release();
         IOTools.deleteDirWithFiles(basePath());
     }
 
     @Test
-    public void testLoggerFactory() {
+    void testLoggerFactory() {
         assertSame(ChronicleLoggerFactory.class, LogFactory.getFactory().getClass());
     }
 
     @Test
-    public void testLogger() {
+    void testLogger() {
         Log l1 = LogFactory.getLog("jcl-chronicle");
         Log l2 = LogFactory.getLog("jcl-chronicle");
         Log l3 = LogFactory.getLog("logger_1");
@@ -102,7 +102,7 @@ public class JclChronicleLoggerTest extends JclTestBase {
     }
 
     @Test
-    public void testLogging() throws IOException {
+    void testLogging() throws IOException {
         final String testId = "readwrite";
         final String threadId = testId + "-th";
         final Log logger = LogFactory.getLog(testId);
@@ -122,7 +122,7 @@ public class JclChronicleLoggerTest extends JclTestBase {
                 if (level.isHigherOrEqualTo(ChronicleLogLevel.DEBUG)) {
                     try (DocumentContext dc = tailer.readingDocument()) {
                         Wire wire = dc.wire();
-                        assertNotNull("log not found for " + level, wire);
+                        assertNotNull(wire, "log not found for " + level);
                         assertTrue(wire.read("ts").int64() <= currentTimeMillis());
                         assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                         assertEquals(threadId, wire.read("threadName").text());

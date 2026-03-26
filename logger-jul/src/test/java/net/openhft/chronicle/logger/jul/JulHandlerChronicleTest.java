@@ -26,13 +26,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests that {@link ChronicleHandler} writes JUL events to a Chronicle Queue.
- *
+ * <p>
  * The LogManager loads a properties file to register the handler. The global
  * {@link DiskSpaceMonitor} is closed before the tests run and the temporary
  * queue directory is removed after each test.
  */
 
-public class JulHandlerChronicleTest extends JulHandlerTestBase {
+class JulHandlerChronicleTest extends JulHandlerTestBase {
 
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
@@ -40,18 +40,18 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
     }
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         // DiskSpaceMonitor interferes with this test
         DiskSpaceMonitor.INSTANCE.close();
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         IOTools.deleteDirWithFiles(rootPath());
     }
 
     @Test
-    public void testConfiguration() throws IOException {
+    void testConfiguration() throws IOException {
         setupLogManager("binary-cfg");
         Logger logger = Logger.getLogger("binary-cfg");
         assertEquals(Level.INFO, logger.getLevel());
@@ -64,7 +64,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
     }
 
     @Test
-    public void testAppender() throws IOException {
+    void testAppender() throws IOException {
         final String testId = "binary-chronicle";
 
         setupLogManager(testId);
@@ -81,7 +81,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
             for (ChronicleLogLevel level : LOG_LEVELS) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
-                    assertNotNull("log not found for " + level, wire);
+                    assertNotNull(wire, "log not found for " + level);
                     assertTrue(wire.read("ts").int64() <= currentTimeMillis());
                     assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                     assertEquals(threadId, wire.read("threadName").text());

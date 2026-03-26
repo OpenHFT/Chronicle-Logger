@@ -10,7 +10,7 @@ import java.util.logging.LogManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JulHandlerTestBase extends JulTestBase {
+class JulHandlerTestBase extends JulTestBase {
 
     protected static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");

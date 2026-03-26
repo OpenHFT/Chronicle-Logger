@@ -22,7 +22,7 @@ import java.nio.file.Paths;
 import static java.lang.System.currentTimeMillis;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Slf4jBridgeChronicleLogTest extends Log4j1TestBase {
+class Slf4jBridgeChronicleLogTest extends Log4j1TestBase {
 
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId, WireType wt) {
@@ -30,12 +30,12 @@ public class Slf4jBridgeChronicleLogTest extends Log4j1TestBase {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         IOTools.deleteDirWithFiles(rootPath());
     }
 
     @Test
-    public void slf4jLogsReachChronicleAppender() throws Exception {
+    void slf4jLogsReachChronicleAppender() throws Exception {
         final String testId = "chronicle";
         final String threadId = testId + "-th";
         final Logger logger = LoggerFactory.getLogger(testId);

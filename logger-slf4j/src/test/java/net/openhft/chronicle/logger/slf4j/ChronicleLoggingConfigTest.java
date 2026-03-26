@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ChronicleLoggingConfigTest {
+class ChronicleLoggingConfigTest {
     @Test
-    public void testLoadClasspathIndexed() {
+    void testLoadClasspathIndexed() {
         System.setProperty("chronicle.logger.properties", "chronicle.logger.properties");
         assertLoadsValidConfig();
     }

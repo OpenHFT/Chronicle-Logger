@@ -29,14 +29,14 @@ import static org.junit.jupiter.api.Assertions.*;
  * Validates that the Logback binary appender records each field in the
  * chronicle queue and handles exceptions correctly.
  */
-public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
+class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         System.setProperty(
                 "logback.configurationFile",
                 System.getProperty("resources.path")
@@ -44,7 +44,7 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         IOTools.deleteDirWithFiles(rootPath());
     }
 
@@ -55,7 +55,7 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
      * @throws IOException if the queue directory cannot be created
      */
     @Test
-    public void testBinaryAppender() throws IOException {
+    void testBinaryAppender() throws IOException {
         final String testId = "binary-chronicle";
         final String threadId = testId + "-th";
 
@@ -71,11 +71,11 @@ public class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
         }
 
         try (final ChronicleQueue cq = getChronicleQueue(testId);
-            net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer()) {
+             net.openhft.chronicle.queue.ExcerptTailer tailer = cq.createTailer()) {
             for (ChronicleLogLevel level : LOG_LEVELS) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
-                    assertNotNull("log not found for " + level, wire);
+                    assertNotNull(wire, "log not found for " + level);
                     assertTrue(wire.read("ts").int64() <= currentTimeMillis());
                     assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                     assertEquals(threadId, wire.read("threadName").text());

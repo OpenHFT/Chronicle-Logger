@@ -23,24 +23,24 @@ import java.util.List;
 import static java.lang.System.currentTimeMillis;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultChronicleLogWriterTest {
+class DefaultChronicleLogWriterTest {
 
     String baseBath;
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         IOTools.deleteDirWithFiles(this.baseBath);
     }
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         Path path = Paths.get(OS.getTarget(), "chronicle-logger-" + Time.uniqueId());
         Files.createDirectories(path);
         this.baseBath = path.toString();
     }
 
     @Test
-    public void testWrite() {
+    void testWrite() {
         try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(this.baseBath).build()) {
             ChronicleLogWriter lw = new DefaultChronicleLogWriter(cq);
             lw.write(

@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * CLI regression tests for {@link ChroniCat} and {@link ChroniTail}.
  */
-public class ChronicleCliToolsTest {
+class ChronicleCliToolsTest {
 
     @Test
-    public void chroniCatPrintsUsageWhenNoArgumentsProvided() throws UnsupportedEncodingException {
+    void chroniCatPrintsUsageWhenNoArgumentsProvided() throws UnsupportedEncodingException {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -40,7 +40,7 @@ public class ChronicleCliToolsTest {
     }
 
     @Test
-    public void chroniCatPrintsRecordsFromQueue() throws IOException {
+    void chroniCatPrintsRecordsFromQueue() throws IOException {
         Path queuePath = Files.createTempDirectory("chroni-cat");
         try {
             try (ChronicleQueue queue = ChronicleQueue.singleBuilder(queuePath).wireType(WireType.BINARY_LIGHT).build()) {
@@ -73,7 +73,7 @@ public class ChronicleCliToolsTest {
     }
 
     @Test
-    public void chroniCatPrintsStackTraceWhenWireTypeMissing() throws UnsupportedEncodingException {
+    void chroniCatPrintsStackTraceWhenWireTypeMissing() throws UnsupportedEncodingException {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -87,7 +87,7 @@ public class ChronicleCliToolsTest {
     }
 
     @Test
-    public void chroniTailPrintsUsageWhenNoArgumentsProvided() throws UnsupportedEncodingException {
+    void chroniTailPrintsUsageWhenNoArgumentsProvided() throws UnsupportedEncodingException {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));

@@ -19,23 +19,23 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifies that {@link ChronicleLogger} filters levels correctly and forwards
  * arguments plus throwables with the expected shape.
  */
-public class ChronicleLoggerBehaviourTest {
+class ChronicleLoggerBehaviourTest {
 
     private String originalThreadName;
 
     @BeforeEach
-    public void captureThreadName() {
+    void captureThreadName() {
         originalThreadName = Thread.currentThread().getName();
         Thread.currentThread().setName("slf4j-behaviour-test");
     }
 
     @AfterEach
-    public void restoreThreadName() {
+    void restoreThreadName() {
         Thread.currentThread().setName(originalThreadName);
     }
 
     @Test
-    public void filtersLevelsAndPreservesArguments() {
+    void filtersLevelsAndPreservesArguments() {
         RecordingWriter writer = new RecordingWriter();
         ChronicleLogger logger = new ChronicleLogger(writer, "behaviour-logger", ChronicleLogLevel.INFO);
 
@@ -60,7 +60,7 @@ public class ChronicleLoggerBehaviourTest {
         logger.error("error arg and throwable {}", "payload", new RuntimeException("kaboom"));
 
         List<LoggedEvent> events = writer.events;
-        assertEquals("seven events expected", 7, events.size());
+        assertEquals(7, events.size(), "seven events expected");
 
         LoggedEvent first = events.get(0);
         assertEquals(ChronicleLogLevel.INFO, first.level);

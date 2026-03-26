@@ -10,10 +10,10 @@ import java.util.ServiceLoader;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Slf4jProviderHealthCheckTest {
+class Slf4jProviderHealthCheckTest {
 
     @Test
-    public void chronicleProviderIsOnClasspath() {
+    void chronicleProviderIsOnClasspath() {
         boolean found = false;
         for (SLF4JServiceProvider provider : ServiceLoader.load(SLF4JServiceProvider.class)) {
             provider.initialize();
