@@ -19,6 +19,7 @@
     <packaging>pom</packaging>
 
     <properties>
+        <license.year>2013-2026</license.year>
         <jacoco.line.coverage>0.80</jacoco.line.coverage>
         <jacoco.branch.coverage>0.70</jacoco.branch.coverage>
     </properties>
