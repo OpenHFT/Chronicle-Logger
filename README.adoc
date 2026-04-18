@@ -174,7 +174,7 @@ We provide log4j1 appender `net.openhft.chronicle.logger.log4j1.ChronicleAppende
 [source, xml]
 ----
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
-<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+<log4j:configuration xmlns:log4j='https://jakarta.apache.org/log4j/'>
 
     <!-- ******************************************************************* -->
     <!--                                                                     -->

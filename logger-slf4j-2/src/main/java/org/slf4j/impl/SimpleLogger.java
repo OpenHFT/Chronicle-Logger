@@ -81,7 +81,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * <li>{@code org.slf4j.simpleLogger.dateTimeFormat} - The date and time
  * format to be used in the output messages. The pattern describing the date and
  * time format is defined by <a href=
- * "http://docs.oracle.com/javase/1.5.0/docs/api/java/text/SimpleDateFormat.html">
+ * "https://docs.oracle.com/javase/1.5.0/docs/api/java/text/SimpleDateFormat.html">
  * {@code SimpleDateFormat}</a>. If the format is not specified or is
  * invalid, the number of milliseconds since start up will be output.</li>
  *
@@ -141,7 +141,7 @@ import org.slf4j.spi.LocationAwareLogger;
  *
  * <p>
  * This implementation is heavily inspired by
- * <a href="http://commons.apache.org/logging/">Apache Commons Logging</a>'s
+ * <a href="https://commons.apache.org/logging/">Apache Commons Logging</a>'s
  * SimpleLog.
  *
  * <p>
