@@ -79,8 +79,8 @@ Intel Core i7-6700K
 
 All config files for bindings support limited variable interpolation where the variables are replaced with the 
 corresponding values from the same configuration file or the system properties. We have one predefined variable, `pid`,
-so `${pid}`  will replaced by current process id. System properties have the precedence in placeholder replacement 
-so they can be overriden.
+so `${pid}`  will be replaced by current process id. System properties have the precedence in placeholder replacement 
+so they can be overridden.
 
 The following can be configured for each logger:
 
@@ -108,7 +108,7 @@ If set, these will override the default Chronicle Queue configuration. _Use with
 
 The chronicle-logger-slf4j is an implementation of SLF4J API > 1.7.x.
 
-To configure this sl4j binding you need to specify the location of a properties files (file-system or classpath) 
+To configure this SLF4J binding you need to specify the location of a properties files (file-system or classpath) 
 via system properties:
 
 [source]
