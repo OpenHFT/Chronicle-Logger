@@ -28,7 +28,7 @@ image::https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-lo
 
 Today most programs require the logging of large amounts of data, especially in trading systems where this is a 
 regulatory requirement. Loggers can affect your system performance, therefore logging is sometimes kept to a minimum.
-With Chronicle Logger we aim to minimize logging overhead, freeing your system to focus on the business logic.
+With Chronicle Logger we aim to minimise logging overhead, freeing your system to focus on the business logic.
 
 Chronicle logger supports most of the standard logging API’s including: 
 

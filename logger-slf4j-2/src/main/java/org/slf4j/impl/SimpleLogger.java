@@ -46,7 +46,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * <p>
  * Simple implementation of {@link Logger} that sends all enabled log messages,
  * for all defined loggers, to the console ({@code System.err}). The following
- * system properties are supported to configure the behavior of this logger:
+ * system properties are supported to configure the behaviour of this logger:
  *
  *
  * <ul>

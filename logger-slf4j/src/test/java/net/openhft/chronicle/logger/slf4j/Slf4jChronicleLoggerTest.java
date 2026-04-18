@@ -84,7 +84,7 @@ public class Slf4jChronicleLoggerTest extends Slf4jTestBase {
 
         // Note: Detailed assertions on Chronicle-specific methods (getLevel, getWriter, etc.)
         // are skipped here because they have different visibility in SLF4J 1.x vs 2.x.
-        // The testLogging() method provides comprehensive verification of logging behavior.
+        // The testLogging() method provides comprehensive verification of logging behaviour.
 
         // Verify that loggers are enabled at appropriate levels via SLF4J API
         assertTrue("L1 should have debug enabled", l1.isDebugEnabled());
