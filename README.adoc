@@ -30,7 +30,7 @@ Today most programs require the logging of large amounts of data, especially in 
 regulatory requirement. Loggers can affect your system performance, therefore logging is sometimes kept to a minimum.
 With Chronicle Logger we aim to minimise logging overhead, freeing your system to focus on the business logic.
 
-Chronicle logger supports most of the standard logging API’s including: 
+Chronicle logger supports most of the standard logging API's including: 
 
 * <<chronicle-logger-slf4j, SLF4J>>
 * <<chronicle-logger-logback, Logback>>
