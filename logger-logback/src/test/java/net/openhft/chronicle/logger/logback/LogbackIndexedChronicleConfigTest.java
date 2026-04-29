@@ -4,17 +4,17 @@
 package net.openhft.chronicle.logger.logback;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
+class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         System.setProperty(
                 "logback.configurationFile",
                 System.getProperty("resources.path") + "/logback-chronicle-config.xml"
@@ -22,7 +22,7 @@ public class LogbackIndexedChronicleConfigTest extends LogbackTestBase {
     }
 
     @Test
-    public void testBinaryIndexedChronicleAppenderConfig() throws IOException {
+    void testBinaryIndexedChronicleAppenderConfig() throws IOException {
         final String loggerName = "config-binary-chronicle";
         final String appenderName = "CONFIG-BINARY-CHRONICLE";
 

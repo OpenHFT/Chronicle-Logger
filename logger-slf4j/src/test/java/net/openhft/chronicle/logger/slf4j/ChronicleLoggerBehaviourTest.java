@@ -5,42 +5,42 @@ package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.ChronicleLogWriter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Verifies that {@link ChronicleLogger} filters levels correctly and forwards
  * arguments plus throwables with the expected shape.
  */
-public class ChronicleLoggerBehaviourTest {
+class ChronicleLoggerBehaviourTest {
 
     private String originalThreadName;
 
-    @Before
-    public void captureThreadName() {
+    @BeforeEach
+    void captureThreadName() {
         originalThreadName = Thread.currentThread().getName();
         Thread.currentThread().setName("slf4j-behaviour-test");
     }
 
-    @After
-    public void restoreThreadName() {
+    @AfterEach
+    void restoreThreadName() {
         Thread.currentThread().setName(originalThreadName);
     }
 
     @Test
-    public void filtersLevelsAndPreservesArguments() {
+    void filtersLevelsAndPreservesArguments() {
         RecordingWriter writer = new RecordingWriter();
         ChronicleLogger logger = new ChronicleLogger(writer, "behaviour-logger", ChronicleLogLevel.INFO);
 
-        assertFalse("trace should be disabled at INFO threshold", logger.isTraceEnabled());
-        assertFalse("debug should be disabled at INFO threshold", logger.isDebugEnabled());
+        assertFalse(logger.isTraceEnabled(), "trace should be disabled at INFO threshold");
+        assertFalse(logger.isDebugEnabled(), "debug should be disabled at INFO threshold");
         assertTrue(logger.isInfoEnabled());
         assertTrue(logger.isWarnEnabled());
         assertTrue(logger.isErrorEnabled());
@@ -60,7 +60,7 @@ public class ChronicleLoggerBehaviourTest {
         logger.error("error arg and throwable {}", "payload", new RuntimeException("kaboom"));
 
         List<LoggedEvent> events = writer.events;
-        assertEquals("seven events expected", 7, events.size());
+        assertEquals(7, events.size(), "seven events expected");
 
         LoggedEvent first = events.get(0);
         assertEquals(ChronicleLogLevel.INFO, first.level);

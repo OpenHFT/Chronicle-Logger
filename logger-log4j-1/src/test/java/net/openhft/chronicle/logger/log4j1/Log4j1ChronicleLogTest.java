@@ -11,8 +11,8 @@ import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,22 +20,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class Log4j1ChronicleLogTest extends Log4j1TestBase {
+class Log4j1ChronicleLogTest extends Log4j1TestBase {
 
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId, WireType wt) {
         return ChronicleQueue.singleBuilder(basePath(testId)).wireType(wt).build();
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         IOTools.deleteDirWithFiles(rootPath());
     }
 
     @Test
-    public void testBinaryAppender() throws IOException {
+    void testBinaryAppender() throws IOException {
         final String testId = "chronicle";
         final String threadId = testId + "-th";
         final Logger logger = Logger.getLogger(testId);
@@ -53,7 +53,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
             for (ChronicleLogLevel level : LOG_LEVELS) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
-                    assertNotNull("log not found for " + level, wire);
+                    assertNotNull(wire, "log not found for " + level);
                     assertTrue(wire.read("ts").int64() <= currentTimeMillis());
                     assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                     assertEquals(threadId, wire.read("threadName").text());
@@ -107,7 +107,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
     }
 
     @Test
-    public void testJsonAppender() {
+    void testJsonAppender() {
         final String testId = "json-chronicle";
         final String threadId = testId + "-th";
         final Logger logger = Logger.getLogger(testId);
@@ -123,7 +123,7 @@ public class Log4j1ChronicleLogTest extends Log4j1TestBase {
             for (ChronicleLogLevel level : LOG_LEVELS) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
-                    assertNotNull("log not found for " + level, wire);
+                    assertNotNull(wire, "log not found for " + level);
                     assertTrue(wire.read("ts").int64() <= currentTimeMillis());
                     assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                     assertEquals(threadId, wire.read("threadName").text());

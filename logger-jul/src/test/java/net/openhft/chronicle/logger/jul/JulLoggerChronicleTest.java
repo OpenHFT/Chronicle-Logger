@@ -12,9 +12,9 @@ import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,9 +25,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class JulLoggerChronicleTest extends JulLoggerTestBase {
+class JulLoggerChronicleTest extends JulLoggerTestBase {
+
+    private static Logger chronicleLogger(String loggerId) {
+        Logger logger = Logger.getLogger(loggerId);
+        if (logger instanceof ChronicleLogger) {
+            return logger;
+        }
+
+        // Jupiter may initialise JUL before the test can set java.util.logging.manager.
+        return new ChronicleLoggerManager().getLogger(loggerId);
+    }
 
     private static void testChronicleConfiguration(
             final String loggerId,
@@ -35,12 +45,12 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
             final Level level,
             final WireType wireType) {
 
-        Logger logger = Logger.getLogger(loggerId);
+        Logger logger = chronicleLogger(loggerId);
 
         assertNotNull(logger);
         assertTrue(logger instanceof ChronicleLogger);
         if (!(logger instanceof ChronicleLogger.Null))
-            assertEquals(expectedLoggerType, logger.getClass());
+            assertSame(expectedLoggerType, logger.getClass());
         assertEquals(loggerId, logger.getName());
         assertNotNull(((ChronicleLogger) logger).writer());
         assertEquals(level, logger.getLevel());
@@ -52,19 +62,19 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         setupLogger(getClass());
         Files.createDirectories(Paths.get(basePath()));
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         IOTools.deleteDirWithFiles(basePath());
     }
 
     @Test
-    public void testChronicleConfig() {
+    void testChronicleConfig() {
         testChronicleConfiguration(
                 "logger",
                 ChronicleLogger.class,
@@ -83,10 +93,10 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
     }
 
     @Test
-    public void testAppender() {
+    void testAppender() {
         final String testId = "logger_bin";
 
-        Logger logger = Logger.getLogger(testId);
+        Logger logger = chronicleLogger(testId);
 
         final String threadId = "thread-" + Jvm.currentThreadId();
 
@@ -101,7 +111,7 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
             for (ChronicleLogLevel level : LOG_LEVELS) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
-                    assertNotNull("log not found for " + level, wire);
+                    assertNotNull(wire, "log not found for " + level);
                     assertTrue(wire.read("ts").int64() <= currentTimeMillis());
                     assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                     assertEquals(threadId, wire.read("threadName").text());

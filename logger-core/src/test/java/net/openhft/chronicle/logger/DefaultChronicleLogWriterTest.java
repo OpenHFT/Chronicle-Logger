@@ -10,9 +10,9 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,26 +21,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultChronicleLogWriterTest {
+class DefaultChronicleLogWriterTest {
 
     String baseBath;
 
-    @After
-    public void cleanup() {
+    @AfterEach
+    void cleanup() {
         IOTools.deleteDirWithFiles(this.baseBath);
     }
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         Path path = Paths.get(OS.getTarget(), "chronicle-logger-" + Time.uniqueId());
         Files.createDirectories(path);
         this.baseBath = path.toString();
     }
 
     @Test
-    public void testWrite() {
+    void testWrite() {
         try (final ChronicleQueue cq = ChronicleQueue.singleBuilder(this.baseBath).build()) {
             ChronicleLogWriter lw = new DefaultChronicleLogWriter(cq);
             lw.write(

@@ -5,18 +5,17 @@ package net.openhft.chronicle.logger.slf4j;
 
 import net.openhft.chronicle.logger.ChronicleLogConfig;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class Slf4jChronicleConfigurationTest extends Slf4jTestBase {
+class Slf4jChronicleConfigurationTest extends Slf4jTestBase {
 
     @Test
-    public void testLoadProperties() {
+    void testLoadProperties() {
         final String cfgPath = "chronicle.logger.properties";
         final ChronicleLogConfig cfg = ChronicleLogConfig.load(cfgPath);
 
@@ -41,7 +40,7 @@ public class Slf4jChronicleConfigurationTest extends Slf4jTestBase {
     }
 
     @Test
-    public void testLoadConfig() {
+    void testLoadConfig() {
         final Properties properties = new Properties();
         properties.setProperty("chronicle.logger.root.cfg.blockSize", "256");
 

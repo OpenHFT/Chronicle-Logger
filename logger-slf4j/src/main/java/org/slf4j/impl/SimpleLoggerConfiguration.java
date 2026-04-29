@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 import org.slf4j.helpers.Reporter;
-import org.slf4j.helpers.Util;
 import org.slf4j.impl.OutputChoice.OutputChoiceType;
 
 /**

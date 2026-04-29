@@ -12,8 +12,8 @@ import net.openhft.chronicle.wire.Wire;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,22 +21,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class Log4j2BinaryTest extends Log4j2TestBase {
+class Log4j2BinaryTest extends Log4j2TestBase {
 
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         IOTools.deleteDirWithFiles(rootPath());
     }
 
     @Test
-    public void testConfig() {
+    void testConfig() {
         // needs to be initialised before trying to get the appender, otherwise we end up in a loop
         final Logger logger = LogManager.getLogger(OS.class);
         final String appenderName = "CONF-CHRONICLE";
@@ -53,7 +53,7 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
     }
 
     @Test
-    public void testIndexedAppender() throws IOException {
+    void testIndexedAppender() throws IOException {
         final String testId = "chronicle";
         final String threadId = testId + "-th";
         final Logger logger = LogManager.getLogger(testId);
@@ -72,7 +72,7 @@ public class Log4j2BinaryTest extends Log4j2TestBase {
             for (ChronicleLogLevel level : LOG_LEVELS) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
-                    assertNotNull("log not found for " + level, wire);
+                    assertNotNull(wire, "log not found for " + level);
                     assertTrue(wire.read("ts").int64() <= currentTimeMillis());
                     assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                     assertEquals(threadId, wire.read("threadName").text());
