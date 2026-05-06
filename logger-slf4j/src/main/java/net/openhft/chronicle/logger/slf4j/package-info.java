@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+ * Copyright 2013-2026 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 /**
  * SLF4J&nbsp;1.7.x binding backed by Chronicle logging.

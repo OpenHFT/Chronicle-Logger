@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+ * Copyright 2013-2026 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 /**
  * Log4j 2.x appenders for Chronicle Logger.
