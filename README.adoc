@@ -1,16 +1,10 @@
 = Chronicle Logger
-:toc:
-:lang: en-GB
-:source-highlighter: rouge
 Chronicle Software
 :toc:
-:icons: font
 :lang: en-GB
-:toclevels: 2
-:css-signature: demo
 :source-highlighter: rouge
 
-image:https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger/badge.svg[caption="",link=https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger]
+image:https://img.shields.io/maven-central/v/net.openhft/chronicle-logger.svg[caption="",link=https://central.sonatype.com/artifact/net.openhft/chronicle-logger]
 image:https://javadoc.io/badge2/net.openhft/chronicle-logger/javadoc.svg[link="https://www.javadoc.io/doc/net.openhft/chronicle-logger/latest/index.html"]
 // image:https://javadoc-badge.appspot.com/net.openhft/chronicle-wire.svg?label=javadoc[JavaDoc, link=https://www.javadoc.io/doc/net.openhft/chronicle-logger]
 image:https://img.shields.io/github/license/OpenHFT/Chronicle-Logger[GitHub]
@@ -26,8 +20,8 @@ toc::[]
 === Version
 
 [#image-maven]
-[caption="",link=https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger]
-image::https://maven-badges.herokuapp.com/maven-central/net.openhft/chronicle-logger/badge.svg[]
+[caption="",link=https://central.sonatype.com/artifact/net.openhft/chronicle-logger]
+image::https://img.shields.io/maven-central/v/net.openhft/chronicle-logger.svg[]
 
 == Overview
 
@@ -35,7 +29,7 @@ Today most programs require the logging of large amounts of data, especially in 
 Loggers can affect your system performance, therefore logging is sometimes kept to a minimum.
 With Chronicle Logger we aim to minimise logging overhead, freeing your system to focus on the business logic.
 
-Chronicle logger supports most of the standard logging APIs including:
+Chronicle logger supports most of the standard logging API's including:
 
 * <<chronicle-logger-slf4j, SLF4J>>
 * <<chronicle-logger-logback, Logback>>
@@ -84,7 +78,7 @@ Intel Core i7-6700K
 == Bindings
 
 All config files for bindings support limited variable interpolation where the variables are replaced with the corresponding values from the same configuration file or the system properties.
-We have one predefined variable, `pid`, so `${pid}`  will replaced by current process id.
+We have one predefined variable, `pid`, so `${pid}`  will be replaced by current process id.
 System properties have the precedence in placeholder replacement so they can be overridden.
 
 The following can be configured for each logger:
@@ -126,7 +120,7 @@ The chronicle-logger-slf4j is an implementation of SLF4J API > 1.7.x.
 
 For SLF4J 2.x projects use `chronicle-logger-slf4j-2`; keep `chronicle-logger-slf4j` only when you deliberately stay on SLF4J 1.7.x. Legacy SLF4J call sites can be bridged without code changes by adding `slf4j-reload4j` (routes SLF4J to Log4J 1.x) or the Log4J 2 SLF4J binding (routes SLF4J to Log4J 2); ensure exactly one provider is on the classpath to avoid NOP fallbacks.
 
-To configure this sl4j binding you need to specify the location of a properties files (file-system or classpath) via system properties:
+To configure this SLF4J binding you need to specify the location of a properties files (file-system or classpath) via system properties:
 
 [source]
 ----
@@ -190,7 +184,7 @@ We provide log4j1 appender `net.openhft.chronicle.logger.log4j1.ChronicleAppende
 [source,xml]
 ----
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
-<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+<log4j:configuration xmlns:log4j='https://jakarta.apache.org/log4j/'>
 
     <!-- ******************************************************************* -->
     <!--                                                                     -->

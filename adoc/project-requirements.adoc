@@ -10,7 +10,7 @@ This document outlines the functional requirements for all modules within this r
 == General Requirements
 
 * Provide high performance log persistence via Chronicle Queue.
-* Support storing log messages in binary format to maximize throughput.
+* Support storing log messages in binary format to maximise throughput.
 * Allow configuration of log path, log level and Chronicle Queue settings via properties or XML.
 * Ensure consistent API and configuration approach across all bindings.
 * Include tools for reading log messages from Chronicle Queue.
@@ -63,7 +63,7 @@ This document outlines the functional requirements for all modules within this r
 
 == Non-functional Requirements
 * All modules must compile on Java 8 or later.
-* Logging operations should minimize latency and avoid unnecessary allocations.
+* Logging operations should minimise latency and avoid unnecessary allocations.
 * Binary log format must remain compatible across modules.
 
 == Conclusion

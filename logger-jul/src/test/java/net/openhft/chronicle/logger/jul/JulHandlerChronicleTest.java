@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+ * Copyright 2013-2026 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 package net.openhft.chronicle.logger.jul;
 
@@ -11,9 +11,9 @@ import net.openhft.chronicle.threads.DiskSpaceMonitor;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests that {@link ChronicleHandler} writes JUL events to a Chronicle Queue.
@@ -31,26 +31,26 @@ import static org.junit.Assert.*;
  * {@link DiskSpaceMonitor} is closed before the tests run and the temporary
  * queue directory is removed after each test.
  */
-public class JulHandlerChronicleTest extends JulHandlerTestBase {
+class JulHandlerChronicleTest extends JulHandlerTestBase {
 
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         // DiskSpaceMonitor interferes with this test
         DiskSpaceMonitor.INSTANCE.close();
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         IOTools.deleteDirWithFiles(rootPath());
     }
 
     @Test
-    public void testConfiguration() throws IOException {
+    void testConfiguration() throws IOException {
         setupLogManager("binary-cfg");
         Logger logger = Logger.getLogger("binary-cfg");
         assertEquals(Level.INFO, logger.getLevel());
@@ -59,11 +59,11 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
         assertNotNull(logger.getHandlers());
         assertEquals(1, logger.getHandlers().length);
 
-        assertEquals(ChronicleHandler.class, logger.getHandlers()[0].getClass());
+        assertSame(ChronicleHandler.class, logger.getHandlers()[0].getClass());
     }
 
     @Test
-    public void testAppender() throws IOException {
+    void testAppender() throws IOException {
         final String testId = "binary-chronicle";
 
         setupLogManager(testId);
@@ -80,7 +80,7 @@ public class JulHandlerChronicleTest extends JulHandlerTestBase {
             for (ChronicleLogLevel level : LOG_LEVELS) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     Wire wire = dc.wire();
-                    assertNotNull("log not found for " + level, wire);
+                    assertNotNull(wire, "log not found for " + level);
                     assertTrue(wire.read("ts").int64() <= currentTimeMillis());
                     assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                     assertEquals(threadId, wire.read("threadName").text());

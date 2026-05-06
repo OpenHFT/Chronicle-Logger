@@ -51,3 +51,6 @@ local.properties
 ### Queue files
 *.cq4t
 *.cq4
+
+### Generated benchmark artifacts
+/benchmark/dependency-reduced-pom.xml

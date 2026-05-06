@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+ * Copyright 2013-2026 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 package net.openhft.chronicle.logger.jcl;
 
@@ -13,26 +13,26 @@ import net.openhft.chronicle.wire.WireType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class JclChronicleLoggerTest extends JclTestBase {
+class JclChronicleLoggerTest extends JclTestBase {
 
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         System.setProperty(
                 "chronicle.logger.properties",
                 "chronicle.logger.properties"
@@ -40,38 +40,36 @@ public class JclChronicleLoggerTest extends JclTestBase {
         Files.createDirectories(Paths.get(basePath()));
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         LogFactory.getFactory().release();
         IOTools.deleteDirWithFiles(basePath());
     }
 
     @Test
-    public void testLoggerFactory() {
-        assertEquals(
-                ChronicleLoggerFactory.class,
-                LogFactory.getFactory().getClass());
+    void testLoggerFactory() {
+        assertSame(ChronicleLoggerFactory.class, LogFactory.getFactory().getClass());
     }
 
     @Test
-    public void testLogger() {
+    void testLogger() {
         Log l1 = LogFactory.getLog("jcl-chronicle");
         Log l2 = LogFactory.getLog("jcl-chronicle");
         Log l3 = LogFactory.getLog("logger_1");
 
         assertNotNull(l1);
-        assertEquals(ChronicleLogger.class, l1.getClass());
+        assertSame(ChronicleLogger.class, l1.getClass());
 
         assertNotNull(l2);
-        assertEquals(ChronicleLogger.class, l2.getClass());
+        assertSame(ChronicleLogger.class, l2.getClass());
 
         assertNotNull(l3);
-        assertEquals(ChronicleLogger.class, l3.getClass());
+        assertSame(ChronicleLogger.class, l3.getClass());
 
         Log l4 = LogFactory.getLog("readwrite");
 
         assertNotNull(l4);
-        assertEquals(ChronicleLogger.class, l4.getClass());
+        assertSame(ChronicleLogger.class, l4.getClass());
 
         assertEquals(l1, l2);
         assertNotEquals(l1, l3);
@@ -105,7 +103,7 @@ public class JclChronicleLoggerTest extends JclTestBase {
     }
 
     @Test
-    public void testLogging() throws IOException {
+    void testLogging() throws IOException {
         final String testId = "readwrite";
         final String threadId = testId + "-th";
         final Log logger = LogFactory.getLog(testId);
@@ -125,7 +123,7 @@ public class JclChronicleLoggerTest extends JclTestBase {
                 if (level.isHigherOrEqualTo(ChronicleLogLevel.DEBUG)) {
                     try (DocumentContext dc = tailer.readingDocument()) {
                         Wire wire = dc.wire();
-                        assertNotNull("log not found for " + level, wire);
+                        assertNotNull(wire, "log not found for " + level);
                         assertTrue(wire.read("ts").int64() <= currentTimeMillis());
                         assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                         assertEquals(threadId, wire.read("threadName").text());

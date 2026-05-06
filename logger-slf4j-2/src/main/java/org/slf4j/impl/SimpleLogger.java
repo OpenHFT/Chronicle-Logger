@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+ * Copyright 2013-2026 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 /*
  * Copyright (c) 2004-2022 QOS.ch Sarl (Switzerland)
@@ -46,7 +46,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * <p>
  * Simple implementation of {@link Logger} that sends all enabled log messages,
  * for all defined loggers, to the console ({@code System.err}). The following
- * system properties are supported to configure the behavior of this logger:
+ * system properties are supported to configure the behaviour of this logger:
  *
  *
  * <ul>
@@ -81,7 +81,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * <li>{@code org.slf4j.simpleLogger.dateTimeFormat} - The date and time
  * format to be used in the output messages. The pattern describing the date and
  * time format is defined by <a href=
- * "http://docs.oracle.com/javase/1.5.0/docs/api/java/text/SimpleDateFormat.html">
+ * "https://docs.oracle.com/javase/1.5.0/docs/api/java/text/SimpleDateFormat.html">
  * {@code SimpleDateFormat}</a>. If the format is not specified or is
  * invalid, the number of milliseconds since start up will be output.</li>
  *
@@ -141,7 +141,7 @@ import org.slf4j.spi.LocationAwareLogger;
  *
  * <p>
  * This implementation is heavily inspired by
- * <a href="http://commons.apache.org/logging/">Apache Commons Logging</a>'s
+ * <a href="https://commons.apache.org/logging/">Apache Commons Logging</a>'s
  * SimpleLog.
  *
  * <p>

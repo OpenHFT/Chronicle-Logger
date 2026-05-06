@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+ * Copyright 2013-2026 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 package net.openhft.chronicle.logger.jul;
 
@@ -9,10 +9,9 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.logging.LogManager;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class JulHandlerTestBase extends JulTestBase {
+class JulHandlerTestBase extends JulTestBase {
 
     protected static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");

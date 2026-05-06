@@ -1,8 +1,9 @@
 /*
- * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+ * Copyright 2013-2026 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 package net.openhft.chronicle.logger;
 
+import net.openhft.chronicle.core.io.ClosedIllegalStateException;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.wire.DocumentContext;
@@ -11,6 +12,7 @@ import net.openhft.chronicle.wire.WireType;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 /**
  * Writes log entries to a {@link ChronicleQueue}.
@@ -76,27 +78,42 @@ public class DefaultChronicleLogWriter implements ChronicleLogWriter {
             final String message,
             final Throwable throwable,
             final Object... args) {
-        if (REENTRANCY_FLAG.get()) {
-            if (throwable == null) {
-                System.out.printf("%s|%s|%s|%s|%s%n",
-                        tsFormatter.get().format(timestamp),
-                        level.toString(),
-                        threadName,
-                        loggerName,
-                        message);
-
-            } else {
-                System.out.printf("%s|%s|%s|%s|%s|%s%n",
-                        tsFormatter.get().format(timestamp),
-                        level.toString(),
-                        threadName,
-                        loggerName,
-                        message,
-                        throwable);
-            }
+        if (REENTRANCY_FLAG.get() || cq.isClosed()) {
+            printLogMessage(level, timestamp, threadName, loggerName, message, throwable, args);
             return;
         }
         REENTRANCY_FLAG.set(true);
+        try {
+            writeToQueue(level, timestamp, threadName, loggerName, message, throwable, args);
+        } catch (ClosedIllegalStateException t) {
+            printLogMessage(level, timestamp, threadName, loggerName, message, throwable, args);
+        }
+    }
+
+    private static void printLogMessage(ChronicleLogLevel level, long timestamp, String threadName, String loggerName, String message, Throwable throwable, Object[] args) {
+        if (throwable == null) {
+            System.err.printf("%s [%s] %s %s - %s%s%n",
+                    tsFormatter.get().format(timestamp),
+                    threadName,
+                    level.toString(),
+                    loggerName,
+                    message,
+                    Arrays.toString(args));
+
+        } else {
+            System.err.printf("%s [%s] %s %s - %s%s - %s%n",
+                    tsFormatter.get().format(timestamp),
+                    threadName,
+                    level.toString(),
+                    loggerName,
+                    message,
+                    Arrays.toString(args),
+                    throwable);
+            throwable.printStackTrace(System.err);
+        }
+    }
+
+    private void writeToQueue(ChronicleLogLevel level, long timestamp, String threadName, String loggerName, String message, Throwable throwable, Object[] args) {
         try (ExcerptAppender appender = cq.createAppender();
              final DocumentContext dc = appender.writingDocument()) {
             Wire wire = dc.wire();

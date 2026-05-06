@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+ * Copyright 2013-2026 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 package net.openhft.chronicle.logger.tools;
 
@@ -9,7 +9,7 @@ import net.openhft.chronicle.logger.ChronicleLogWriter;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.WireType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,15 +18,15 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * CLI regression tests for {@link ChroniCat} and {@link ChroniTail}.
  */
-public class ChronicleCliToolsTest {
+class ChronicleCliToolsTest {
 
     @Test
-    public void chroniCatPrintsUsageWhenNoArgumentsProvided() throws UnsupportedEncodingException {
+    void chroniCatPrintsUsageWhenNoArgumentsProvided() throws UnsupportedEncodingException {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -40,7 +40,7 @@ public class ChronicleCliToolsTest {
     }
 
     @Test
-    public void chroniCatPrintsRecordsFromQueue() throws IOException {
+    void chroniCatPrintsRecordsFromQueue() throws IOException {
         Path queuePath = Files.createTempDirectory("chroni-cat");
         try {
             try (ChronicleQueue queue = ChronicleQueue.singleBuilder(queuePath).wireType(WireType.BINARY_LIGHT).build()) {
@@ -66,14 +66,14 @@ public class ChronicleCliToolsTest {
                 System.setOut(originalOut);
             }
             String output = out.toString("UTF-8");
-            assertTrue("expected formatted message in ChroniCat output", output.contains("test event lhs rhs"));
+            assertTrue(output.contains("test event lhs rhs"), "expected formatted message in ChroniCat output");
         } finally {
             IOTools.deleteDirWithFiles(queuePath.toString());
         }
     }
 
     @Test
-    public void chroniCatPrintsStackTraceWhenWireTypeMissing() throws UnsupportedEncodingException {
+    void chroniCatPrintsStackTraceWhenWireTypeMissing() throws UnsupportedEncodingException {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -87,7 +87,7 @@ public class ChronicleCliToolsTest {
     }
 
     @Test
-    public void chroniTailPrintsUsageWhenNoArgumentsProvided() throws UnsupportedEncodingException {
+    void chroniTailPrintsUsageWhenNoArgumentsProvided() throws UnsupportedEncodingException {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
