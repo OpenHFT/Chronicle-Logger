@@ -6,13 +6,15 @@ package net.openhft.chronicle.logger.jcl;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.apache.commons.logging.Log;
 
+import java.nio.file.FileSystems;
+
 class JclTestBase {
 
     static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     static String basePath() {
         String path = System.getProperty("java.io.tmpdir");
-        String sep = System.getProperty("file.separator");
+        String sep = FileSystems.getDefault().getSeparator();
 
         if (!path.endsWith(sep)) {
             path += sep;
@@ -22,7 +24,7 @@ class JclTestBase {
     }
 
     static String basePath(String loggerName) {
-        return basePath() + System.getProperty("file.separator") + loggerName;
+        return basePath() + FileSystems.getDefault().getSeparator() + loggerName;
     }
 
     static void log(Log logger, ChronicleLogLevel level, String message) {

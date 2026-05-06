@@ -1,0 +1,59 @@
+= Chronicle Logger Testing Strategy
+:toc:
+:sectnums:
+:lang: en-GB
+:source-highlighter: rouge
+
+This document summarises how Chronicle Logger and its bindings are tested.
+It complements the `CLG-*` requirements in `project-requirements.adoc` and the behavioural summary in `functional-requirements.adoc`.
+
+== Objectives
+
+Testing for Chronicle Logger aims to:
+
+* verify the functional requirements (`CLG-FN-*`) for logger-core, bindings and tools;
+* exercise non-functional requirements (`CLG-NF-P-*`, `CLG-NF-O-*`) around throughput, latency and fail-fast behaviour;
+* ensure integrations with Chronicle Queue remain stable across supported JDKs and dependency upgrades.
+
+== Unit and Integration Tests
+
+Unit and integration tests live in the individual module subprojects:
+
+* `logger-core` – writer and manager behaviour (for example `DefaultChronicleLogWriterTest`);
+* `logger-slf4j` and `logger-slf4j-2` – SLF4J bindings (for example `ChronicleLoggerBehaviourTest`, `ChronicleLoggingConfigTest`, `Slf4jChronicleLoggerTest`), plus SLF4J provider health checks to fail fast on missing or conflicting providers;
+* `logger-logback`, `logger-log4j-1`, `logger-log4j-2` and `logger-jul`, `logger-jcl` – framework-specific bindings and configuration tests (for example `LogbackChronicleBinaryAppenderTest`, `LogbackChronicleProgrammaticConfigTest`, `Log4j1ChronicleLogTest`, `Slf4jBridgeChronicleLogTest`, `Log4j2BinaryTest`, `JulHandlerChronicleTest`);
+* `logger-tools` – CLI tools tests (for example `ChronicleLogReaderTest`, `ChronicleCliToolsTest`).
+
+These tests cover:
+
+* round-tripping structured log events through Chronicle Queue;
+* configuration resolution from system properties and framework configuration files;
+* basic error handling when queue paths are missing or unwritable.
+
+== Benchmark and Performance Tests
+
+Performance and latency requirements (`CLG-NF-P-*`) are exercised primarily via the `benchmark` module and binding-specific performance tests such as:
+
+* `Slf4jChronicleLoggerPerfTest` and its SLF4J 2.x equivalent;
+* any JMH-based benchmarks defined under the `benchmark` module.
+
+These benchmarks measure:
+
+* steady-state append throughput for representative bindings;
+* tail latency under mixed log levels and roll-cycle configurations.
+
+Results are used to detect regressions before releases and to validate targets documented in `project-requirements.adoc`.
+
+== Traceability
+
+`project-requirements.adoc` and `functional-requirements.adoc` describe the `CLG-*` requirements and reference test and benchmark classes.
+When new behaviours are added or existing ones change, keep the following in sync:
+
+* add or update `CLG-*` entries in `project-requirements.adoc`;
+* extend `functional-requirements.adoc` with the relevant test classes;
+* add or update unit, integration or benchmark tests in the appropriate submodule.
+
+Legacy SLF4J call sites are exercised via bridges (`slf4j-reload4j` for SLF4J→Log4j1, and Log4j2’s SLF4J binding for SLF4J→Log4j2) to keep unchanged code paths working while SLF4J 2.x is the default.
+Document the active bridge in each suite to avoid provider ambiguity.
+
+All tests should pass under the shared quality profiles (`mvn -P quality clean verify`) on the supported JDK matrix before shipping changes.

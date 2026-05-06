@@ -151,8 +151,7 @@ public class ChronicleHandlerConfig {
         if (val == null) {
             return defaultValue;
         }
-        Level l = Level.parse(val.trim());
-        return l != null ? l : defaultValue;
+        return Level.parse(val.trim());
     }
 
     /**

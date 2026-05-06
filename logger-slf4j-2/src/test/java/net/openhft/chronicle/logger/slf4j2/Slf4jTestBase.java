@@ -10,13 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.impl.ChronicleServiceProvider;
 
+import java.nio.file.FileSystems;
+
 class Slf4jTestBase {
 
     static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     static String basePath() {
         String path = System.getProperty("java.io.tmpdir");
-        String sep = System.getProperty("file.separator");
+        String sep = FileSystems.getDefault().getSeparator();
 
         if (!path.endsWith(sep)) {
             path += sep;
@@ -27,7 +29,7 @@ class Slf4jTestBase {
 
     static String basePath(String loggerName) {
         return basePath()
-                + System.getProperty("file.separator")
+                + FileSystems.getDefault().getSeparator()
                 + loggerName;
     }
 
@@ -72,15 +74,15 @@ class Slf4jTestBase {
         return (ChronicleLoggerFactory) provider.getLoggerFactory();
     }
 
-    protected final class RunnableLogger implements Runnable {
+    protected static final class RunnableLogger implements Runnable {
         private final Logger logger;
         private final int runs;
         private final String fmt;
-        private final String fmtBase = " > val1={}, val2={}, val3={}";
 
         public RunnableLogger(int runs, int pad, String loggerName) {
             this.logger = LoggerFactory.getLogger(loggerName);
             this.runs = runs;
+            String fmtBase = " > val1={}, val2={}, val3={}";
             this.fmt = StringUtils.rightPad(fmtBase, pad + fmtBase.length() - (4 + 8 + 8), "X");
         }
 

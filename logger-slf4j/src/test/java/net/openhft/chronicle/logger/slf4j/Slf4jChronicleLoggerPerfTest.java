@@ -25,7 +25,7 @@ class Slf4jChronicleLoggerPerfTest extends Slf4jTestBase {
                 "chronicle.logger.properties",
                 "chronicle.logger.perf.properties");
 
-        getChronicleLoggerFactory().reload();
+        reloadChronicleLoggerFactory();
     }
 
     @AfterEach

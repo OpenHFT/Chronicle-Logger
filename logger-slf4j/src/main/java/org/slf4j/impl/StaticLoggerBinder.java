@@ -44,7 +44,7 @@ public class StaticLoggerBinder implements org.slf4j.spi.LoggerFactoryBinder {
      *
      * @return the StaticLoggerBinder singleton
      */
-    public static final StaticLoggerBinder getSingleton() {
+    public static StaticLoggerBinder getSingleton() {
         return SINGLETON;
     }
 

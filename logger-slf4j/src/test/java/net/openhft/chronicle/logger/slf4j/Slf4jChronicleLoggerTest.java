@@ -38,7 +38,7 @@ class Slf4jChronicleLoggerTest extends Slf4jTestBase {
                 "chronicle.logger.properties"
         );
 
-        getChronicleLoggerFactory().reload();
+        reloadChronicleLoggerFactory();
     }
 
     @AfterEach
@@ -179,6 +179,7 @@ class Slf4jChronicleLoggerTest extends Slf4jTestBase {
                 assertNull(wire);
             }
 
+            //noinspection LoggingPlaceholderCountMatchesArgumentCount
             logger.warn("Test object", new Object());
 
             try (DocumentContext dc = tailer.readingDocument()) {

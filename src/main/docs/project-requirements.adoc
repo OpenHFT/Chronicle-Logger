@@ -1,20 +1,23 @@
 = Chronicle Logger Requirements Catalogue
 :toc:
 :lang: en-GB
+:source-highlighter: rouge
 
 // -------------------------------------------------------------------
 // Legend
 // -------------------------------------------------------------------
 // Requirement identifiers follow the Nine-Box taxonomy:
-//   <Scope>-<Tag>-NNN, where Scope = CLG (Chronicle Logger)
-//   Tag   = FN | NF-P | NF-S | NF-O | DOC | OPS | TEST | RISK
-//   NNN   = zero-padded sequence per tag.
+// <Scope>-<Tag>-NNN, where Scope = CLG (Chronicle Logger)
+// Tag   = FN | NF-P | NF-S | NF-O | DOC | OPS | TEST | RISK
+// NNN   = zero-padded sequence per tag.
 // Text must remain ASCII per AGENTS.md guidance.
 // -------------------------------------------------------------------
 
 == Scope
 
 Chronicle Logger provides Chronicle Queue backed appenders, bridges, and tools for popular Java logging frameworks (SLF4J 1.x and 2.x, Logback, Log4J 1/2, Commons Logging, JUL).
+SLF4J 2.x is the default API; SLF4J 1.x remains supported via the legacy binding and explicit bridges (for example `slf4j-reload4j` for Log4J 1.x).
+Mixing API/provider versions is unsupported and must be prevented in tests and documentation.
 The requirements below define the contracts, quality targets, and operational obligations that all modules must meet.
 
 == Functional Requirements
@@ -32,8 +35,8 @@ supporting per-logger overrides for path, level, wire type, and append mode. |In
 tests supply temp properties files and validate resolved settings per logger.
 |CLG-FN-003 |Each binding (SLF4J 1.x, SLF4J 2.x, JUL, JCL, Logback, Log4J 1, Log4J 2)
 shall honour its native configuration entry points while delegating writes
-through `ChronicleLogWriter`. |Framework-specific tests assert that configuration
-files enable Chronicle appenders and produce Chronicle Queue output.
+through `ChronicleLogWriter`. Legacy SLF4J call sites shall be serviceable via documented bridges while `logger-slf4j-2` remains the default provider. |Framework-specific tests assert that configuration
+files enable Chronicle appenders and produce Chronicle Queue output; bridge tests assert SLF4J callers still reach Chronicle appenders.
 |CLG-FN-004 |Logger tools (`ChroniCat`, `ChroniTail`, `ChronicleLogReader`) shall
 read binary Chronicle logs, display tail output, and stream entries to custom
 processors without data loss. |CLI smoke tests replay fixture queues; unit tests
@@ -54,9 +57,9 @@ shall achieve >= 1.2 million events per second on a 3.2 GHz x86-64 host with
 Chronicle Queue BINARY_LIGHT. |JMH `Throughput` benchmark in `benchmark` module;
 flagged if throughput drops by > 10 percent relative to baseline.
 |CLG-NF-P-002 |Tail latency (99.9 percentile) for append operations with async
-queue roll shall remain <= 750 microseconds under mixed INFO/WARN traffic. |Benchmark
+queue roll shall remain <= 750 µs under mixed INFO/WARN traffic. |Benchmark
 module scenario combining timed roll cycle and mixed levels.
-|CLG-NF-P-003 |`ChronicleLogReader` shall consume existing queues at >= 500k events
+|link:decision-log.adoc#CLG-NF-P-003[CLG-NF-P-003] |`ChronicleLogReader` shall consume existing queues at >= 500k events
 per second while remaining allocation-neutral. |Micro benchmark comparing reader
 performance to baseline sample queues.
 |===
@@ -73,7 +76,7 @@ message content is not evaluated.
 |CLG-NF-O-001 |All modules must support JDK 8 through the current LTS release,
 with automated builds running `mvn -q verify` on each supported JDK. |CI matrix
 build status; release checklist captures JDK versions.
-|CLG-NF-O-002 |Components shall emit operational warnings via standard logging
+|link:decision-log.adoc#CLG-OPS-002[CLG-NF-O-002] |Components shall emit operational warnings via standard logging
 channels when Chronicle Queue paths are missing or unwritable, and fail fast
 rather than silently downgrading. |Negative-path tests create read-only
 directories and assert warning plus exception semantics.
@@ -103,7 +106,7 @@ failing the pipeline if throughput or latency deviates beyond documented thresho
 [cols="1,5",options="header"]
 |===
 |ID |Requirement
-|CLG-DOC-001 |Keep `architecture-overview.adoc` aligned with current module
+|link:decision-log.adoc#CLG-DOC-001[CLG-DOC-001] |Keep `architecture-overview.adoc` aligned with current module
 structure, configuration flow, and decision references.
 |CLG-DOC-002 |Update this requirements catalogue and cross-link new entries when
 decisions in `decision-log.adoc` change behaviour or support matrices.

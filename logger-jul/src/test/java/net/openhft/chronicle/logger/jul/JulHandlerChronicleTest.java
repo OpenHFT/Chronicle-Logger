@@ -31,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * {@link DiskSpaceMonitor} is closed before the tests run and the temporary
  * queue directory is removed after each test.
  */
-
 class JulHandlerChronicleTest extends JulHandlerTestBase {
 
     @NotNull

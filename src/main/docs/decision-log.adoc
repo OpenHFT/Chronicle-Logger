@@ -1,4 +1,21 @@
-=== CLG-DOC-001 Adopt Nine-Box Requirements Catalogue
+= Chronicle Logger - Decision Log
+:toc:
+:sectnums:
+:lang: en-GB
+:source-highlighter: rouge
+
+This file captures component-specific architectural and operational decisions for the Chronicle Logger module.
+Identifiers follow the `<Scope>-<Tag>-NNN` pattern with scope `CLG` (Chronicle Logger).
+
+== Decision Index
+
+* link:#CLG-DOC-001[CLG-DOC-001 Adopt Nine-Box Requirements Catalogue]
+* link:#CLG-OPS-002[CLG-OPS-002 Enforce Explicit Queue Path Configuration]
+* link:#CLG-NF-P-003[CLG-NF-P-003 Chronicle Log Reader Allocation Budget]
+* link:#CLG-FN-006[CLG-FN-006 Default to SLF4J 2.x with Legacy Bridges]
+
+[[CLG-DOC-001]]
+== CLG-DOC-001 Adopt Nine-Box Requirements Catalogue
 
 Date:: 2025-10-17
 Context::
@@ -17,7 +34,8 @@ Impact & Consequences::
 Notes/Links::
 * link:project-requirements.adoc[Requirements Catalogue]
 
-=== CLG-OPS-002 Enforce Explicit Queue Path Configuration
+[[CLG-OPS-002]]
+== CLG-OPS-002 Enforce Explicit Queue Path Configuration
 
 Date:: 2025-10-17
 Context::
@@ -36,7 +54,8 @@ Impact & Consequences::
 Notes/Links::
 * link:project-requirements.adoc#clg-nf-o-002[CLG-NF-O-002]
 
-=== CLG-NF-P-003 Chronicle Log Reader Allocation Budget
+[[CLG-NF-P-003]]
+== CLG-NF-P-003 Chronicle Log Reader Allocation Budget
 
 Date:: 2025-10-17
 Context::
@@ -51,3 +70,27 @@ Impact & Consequences::
 * Reader implementation audited; benchmarks now gate memory usage.
 Notes/Links::
 * link:project-requirements.adoc#clg-nf-p-003[CLG-NF-P-003]
+
+[[CLG-FN-006]]
+== CLG-FN-006 Default to SLF4J 2.x with Legacy Bridges
+
+Date:: 2025-11-20
+Context::
+* SLF4J 2.x replaces `StaticLoggerBinder` discovery with `SLF4JServiceProvider`.
+* Chronicle Logger ships both `logger-slf4j` (SLF4J 1.x) and `logger-slf4j-2` (SLF4J 2.x) along with Log4j 1/2 bindings.
+* Existing applications and tests call SLF4J APIs and expect Log4j appenders; migrating code immediately is not always feasible.
+Decision Statement::
+* Make SLF4J 2.x the default API and provider via `logger-slf4j-2`.
+* Preserve SLF4J 1.x support via the legacy binding and documented bridges (`slf4j-reload4j` for Log4J 1.x, Log4J 2 SLF4J binding for Log4j2), so unchanged SLF4J callers continue to reach Chronicle appenders.
+Alternatives Considered::
+* Drop SLF4J 1.x outright - simplest surface area but breaks existing deployments.
+* Maintain a dual-purpose `logger-slf4j` with both binder and provider - increases user confusion and classpath conflicts.
+Rationale for Decision::
+* Aligns with upstream SLF4J direction while offering a migration path for legacy code.
+* Reduces classpath conflict risk by keeping bindings separate and bridges explicit.
+Impact & Consequences::
+* Tests now include SLF4J provider health checks and bridge coverage.
+* Documentation must warn against mixing API/provider versions and point to the correct module per SLF4J generation.
+Notes/Links::
+* link:project-requirements.adoc#clg-fn-003[CLG-FN-003]
+* link:architecture-overview.adoc[Architecture Overview]

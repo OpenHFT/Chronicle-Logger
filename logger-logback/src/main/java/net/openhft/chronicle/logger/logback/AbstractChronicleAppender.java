@@ -84,9 +84,8 @@ public abstract class AbstractChronicleAppender
      * Creates the Chronicle writer used to store events.
      *
      * @return a log writer bound to the configured queue
-     * @throws IOException if the writer cannot be created
      */
-    protected abstract ChronicleLogWriter createWriter() throws IOException;
+    protected abstract ChronicleLogWriter createWriter();
 
     /**
      * Logs a single event using the supplied writer.
@@ -137,13 +136,8 @@ public abstract class AbstractChronicleAppender
             addError("Appender " + getName() + " has configuration errors and is not started!");
 
         } else {
-            try {
-                this.writer = createWriter();
-                this.started = true;
-            } catch (IOException e) {
-                this.writer = null;
-                addError("Appender " + getName() + " " + e.getMessage());
-            }
+            this.writer = createWriter();
+            this.started = true;
         }
     }
 

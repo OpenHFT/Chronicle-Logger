@@ -56,7 +56,6 @@ class JclChronicleLoggerTest extends JclTestBase {
         Log l1 = LogFactory.getLog("jcl-chronicle");
         Log l2 = LogFactory.getLog("jcl-chronicle");
         Log l3 = LogFactory.getLog("logger_1");
-        Log l4 = LogFactory.getLog("readwrite");
 
         assertNotNull(l1);
         assertSame(ChronicleLogger.class, l1.getClass());
@@ -66,6 +65,8 @@ class JclChronicleLoggerTest extends JclTestBase {
 
         assertNotNull(l3);
         assertSame(ChronicleLogger.class, l3.getClass());
+
+        Log l4 = LogFactory.getLog("readwrite");
 
         assertNotNull(l4);
         assertSame(ChronicleLogger.class, l4.getClass());
@@ -77,26 +78,26 @@ class JclChronicleLoggerTest extends JclTestBase {
 
         ChronicleLogger cl1 = (ChronicleLogger) l1;
 
-        assertEquals(cl1.level(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl1.name(), "jcl-chronicle");
+        assertEquals(ChronicleLogLevel.DEBUG, cl1.level());
+        assertEquals("jcl-chronicle", cl1.name());
         assertTrue(cl1.writer() instanceof DefaultChronicleLogWriter);
         assertEquals(WireType.BINARY_LIGHT, ((DefaultChronicleLogWriter) cl1.writer()).getWireType());
 
         ChronicleLogger cl2 = (ChronicleLogger) l2;
-        assertEquals(cl2.level(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl2.name(), "jcl-chronicle");
+        assertEquals(ChronicleLogLevel.DEBUG, cl2.level());
+        assertEquals("jcl-chronicle", cl2.name());
         assertTrue(cl2.writer() instanceof DefaultChronicleLogWriter);
         assertEquals(WireType.BINARY_LIGHT, ((DefaultChronicleLogWriter) cl2.writer()).getWireType());
 
         ChronicleLogger cl3 = (ChronicleLogger) l3;
-        assertEquals(cl3.level(), ChronicleLogLevel.INFO);
-        assertEquals(cl3.name(), "logger_1");
+        assertEquals(ChronicleLogLevel.INFO, cl3.level());
+        assertEquals("logger_1", cl3.name());
         assertTrue(cl3.writer() instanceof DefaultChronicleLogWriter);
         assertEquals(WireType.JSON, ((DefaultChronicleLogWriter) cl3.writer()).getWireType());
 
         ChronicleLogger cl4 = (ChronicleLogger) l4;
-        assertEquals(cl4.level(), ChronicleLogLevel.DEBUG);
-        assertEquals(cl4.name(), "readwrite");
+        assertEquals(ChronicleLogLevel.DEBUG, cl4.level());
+        assertEquals("readwrite", cl4.name());
         assertTrue(cl4.writer() instanceof DefaultChronicleLogWriter);
         assertEquals(WireType.BINARY_LIGHT, ((DefaultChronicleLogWriter) cl4.writer()).getWireType());
     }
@@ -112,7 +113,7 @@ class JclChronicleLoggerTest extends JclTestBase {
         Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
-            log(logger, level, "level is " + level.toString());
+            log(logger, level, "level is " + level);
         }
 
         try (final ChronicleQueue cq = getChronicleQueue(testId)) {
@@ -127,7 +128,7 @@ class JclChronicleLoggerTest extends JclTestBase {
                         assertEquals(level, wire.read("level").asEnum(ChronicleLogLevel.class));
                         assertEquals(threadId, wire.read("threadName").text());
                         assertEquals(testId, wire.read("loggerName").text());
-                        assertEquals("level is " + level.toString(), wire.read("message").text());
+                        assertEquals("level is " + level, wire.read("message").text());
                         assertFalse(wire.hasMore());
                     }
                 }

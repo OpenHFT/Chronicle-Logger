@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -15,24 +16,24 @@ import java.util.Properties;
 
 /**
  * Reads logger settings from a properties file.
- *
+ * <p>
  * The loader checks the system property {@code chronicle.logger.properties} and
  * then the files {@code chronicle-logger.properties} and
  * {@code config/chronicle-logger.properties} on the class path. Each value may
  * contain {@code ${name}} placeholders that reference other keys or system
  * properties. The token {@code ${pid}} expands to the process id.
- *
+ * <p>
  * Configuration example:
- *
+ * <p>
  * # default
  * chronicle.logger.base = ${java.io.tmpdir}/chronicle/${pid}
- *
+ * <p>
  * # logger : root
  * chronicle.logger.root.path      = ${chronicle.logger.base}/root
  * chronicle.logger.root.level     = debug
  * chronicle.logger.root.shortName = false
  * chronicle.logger.root.append    = false
- *
+ * <p>
  * # logger : Logger1
  * chronicle.logger.Logger1.path = ${chronicle.logger.base}/logger_1
  * chronicle.logger.Logger1.level = info
@@ -105,10 +106,12 @@ public class ChronicleLogConfig {
         if (in != null) {
             Properties properties = new Properties();
 
-            try {
-                properties.load(in);
-                in.close();
-            } catch (IOException ignored) {
+            try (InputStream input = in) {
+                properties.load(input);
+            } catch (IOException e) {
+                System.err.printf("Failed to load Chronicle logger configuration: %s%n",
+                        e.getMessage());
+                return null;
             }
 
             return load(interpolate(properties));
@@ -117,7 +120,7 @@ public class ChronicleLogConfig {
             System.err.printf(
                     "Unable to configure chronicle-logger:"
                             + " configuration file not found in default locations (%s)"
-                            + " or System property (%s) is not defined \n",
+                            + " or System property (%s) is not defined%n",
                     DEFAULT_CFG_LOCATIONS.toString(),
                     KEY_PROPERTIES_FILE);
         }
@@ -165,7 +168,7 @@ public class ChronicleLogConfig {
                 return Thread.currentThread().getContextClassLoader().getResourceAsStream(cfgPath);
 
             } else if (cfgFile.canRead()) {
-                return new FileInputStream(cfgFile);
+                return Files.newInputStream(cfgFile.toPath());
             }
         }
 
@@ -243,7 +246,8 @@ public class ChronicleLogConfig {
     }
 
     public Boolean getBoolean(final String shortName) {
-        return getBoolean(shortName, null);
+        String prop = getString(shortName);
+        return "true".equalsIgnoreCase(prop);
     }
 
     public Boolean getBoolean(final String shortName, boolean defval) {
@@ -253,7 +257,7 @@ public class ChronicleLogConfig {
 
     public Boolean getBoolean(final String loggerName, final String shortName) {
         String prop = getString(loggerName, shortName);
-        return (prop != null) ? "true".equalsIgnoreCase(prop) : null;
+        return "true".equalsIgnoreCase(prop);
     }
 
     public Boolean getBoolean(final String loggerName, final String shortName, boolean defval) {

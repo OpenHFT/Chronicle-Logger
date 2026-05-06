@@ -16,7 +16,7 @@ import java.io.IOException;
 
 /**
  * Base Log4j 1.x appender for Chronicle.
- *
+ * <p>
  * The class manages filter handling and delegates the actual write
  * operation to a {@link ChronicleLogWriter} created by
  * {@link #createWriter()}.
@@ -62,11 +62,7 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
     @Override
     public void activateOptions() {
         if (path != null) {
-            try {
-                this.writer = createWriter();
-            } catch (IOException e) {
-                LogLog.warn("Exception [" + name + "].", e);
-            }
+            this.writer = createWriter();
         } else {
             LogLog.warn("path option not set for appender [" + name + "].");
         }
@@ -173,6 +169,8 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
                     case Filter.ACCEPT:
                         f = null;
                         break;
+                    default:
+                        break;
                 }
             }
 
@@ -200,9 +198,8 @@ public abstract class AbstractChronicleAppender implements Appender, OptionHandl
      * Creates the {@link ChronicleLogWriter} used by this appender.
      *
      * @return the writer instance
-     * @throws IOException if the queue cannot be opened
      */
-    protected abstract ChronicleLogWriter createWriter() throws IOException;
+    protected abstract ChronicleLogWriter createWriter();
 
     /**
      * Closes the writer when the appender is stopped.

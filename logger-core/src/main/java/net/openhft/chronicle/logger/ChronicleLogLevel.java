@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  * A higher value represents a more severe event.
  */
-
 public enum ChronicleLogLevel {
     ERROR(50, "ERROR"),
     WARN(40, "WARN"),

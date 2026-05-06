@@ -8,13 +8,15 @@ import net.openhft.chronicle.logger.ChronicleLogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.FileSystems;
+
 public class LogbackTestBase {
 
     static final ChronicleLogLevel[] LOG_LEVELS = ChronicleLogLevel.values();
 
     static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");
-        String sep = System.getProperty("file.separator");
+        String sep = FileSystems.getDefault().getSeparator();
 
         if (!path.endsWith(sep)) {
             path += sep;
@@ -25,7 +27,7 @@ public class LogbackTestBase {
 
     static String basePath(String type) {
         return rootPath()
-                + System.getProperty("file.separator")
+                + FileSystems.getDefault().getSeparator()
                 + type;
     }
 

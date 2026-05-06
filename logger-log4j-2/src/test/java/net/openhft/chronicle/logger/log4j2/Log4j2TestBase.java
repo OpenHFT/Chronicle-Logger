@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
+import java.nio.file.FileSystems;
 
 public class Log4j2TestBase {
 
@@ -15,7 +16,7 @@ public class Log4j2TestBase {
 
     static String rootPath() {
         String path = System.getProperty("java.io.tmpdir");
-        String sep = System.getProperty("file.separator");
+        String sep = FileSystems.getDefault().getSeparator();
 
         if (!path.endsWith(sep)) {
             path += sep;

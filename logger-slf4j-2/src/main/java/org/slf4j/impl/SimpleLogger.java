@@ -170,7 +170,7 @@ public class SimpleLogger extends LegacyAbstractLogger {
     protected static final int LOG_LEVEL_WARN = LocationAwareLogger.WARN_INT;
     protected static final int LOG_LEVEL_ERROR = LocationAwareLogger.ERROR_INT;
 
-    static char SP = ' ';
+    static final char SP = ' ';
     static final String TID_PREFIX = "tid=";
 
     // The OFF level can only be used in configuration files to disable logging.
@@ -249,7 +249,7 @@ public class SimpleLogger extends LegacyAbstractLogger {
         while ((levelString == null) && (indexOfLastDot > -1)) {
             tempName = tempName.substring(0, indexOfLastDot);
             levelString = CONFIG_PARAMS.getStringProperty(SimpleLogger.LOG_KEY_PREFIX + tempName, null);
-            indexOfLastDot = String.valueOf(tempName).lastIndexOf(".");
+            indexOfLastDot = tempName.lastIndexOf(".");
         }
         return levelString;
     }
@@ -423,9 +423,9 @@ public class SimpleLogger extends LegacyAbstractLogger {
         if (CONFIG_PARAMS.showShortLogName) {
             if (shortLogName == null)
                 shortLogName = computeShortName();
-            buf.append(String.valueOf(shortLogName)).append(" - ");
+            buf.append(shortLogName).append(" - ");
         } else if (CONFIG_PARAMS.showLogName) {
-            buf.append(String.valueOf(name)).append(" - ");
+            buf.append(name).append(" - ");
         }
 
         if (markers != null) {
