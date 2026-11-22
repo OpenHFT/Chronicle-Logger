@@ -5,6 +5,7 @@ package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IOTools;
+import net.openhft.chronicle.core.io.BackgroundResourceReleaser;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
@@ -23,23 +24,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.LogManager;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JulLoggerChronicleTest extends JulLoggerTestBase {
+    private ChronicleLoggerManager loggerManager;
+    private String originalThreadName;
 
-    private static Logger chronicleLogger(String loggerId) {
-        Logger logger = Logger.getLogger(loggerId);
-        if (logger instanceof ChronicleLogger) {
-            return logger;
-        }
-
-        // Jupiter may initialise JUL before the test can set java.util.logging.manager.
-        return new ChronicleLoggerManager().getLogger(loggerId);
+    private Logger chronicleLogger(String loggerId) {
+        return loggerManager.getLogger(loggerId);
     }
 
-    private static void testChronicleConfiguration(
+    private void testChronicleConfiguration(
             final String loggerId,
             final Class<? extends ChronicleLogger> expectedLoggerType,
             final Level level,
@@ -64,13 +62,39 @@ class JulLoggerChronicleTest extends JulLoggerTestBase {
 
     @BeforeEach
     void setUp() throws IOException {
+        originalThreadName = Thread.currentThread().getName();
         setupLogger(getClass());
+        LogManager global = LogManager.getLogManager();
+        // Jupiter may initialise JUL before java.util.logging.manager is set.
+        // Retain the fallback manager so its cached writers are also released.
+        loggerManager = global instanceof ChronicleLoggerManager
+                ? (ChronicleLoggerManager) global : new ChronicleLoggerManager();
+        loggerManager.reset();
         Files.createDirectories(Paths.get(basePath()));
     }
 
     @AfterEach
     void tearDown() {
-        IOTools.deleteDirWithFiles(basePath());
+        try {
+            if (loggerManager != null)
+                loggerManager.reset();
+            BackgroundResourceReleaser.releasePendingResources();
+            IOTools.deleteDirWithFilesOrThrow(basePath());
+        } finally {
+            Thread.currentThread().setName(originalThreadName);
+        }
+    }
+
+    @Test
+    void fallbackManagerReopensWritersAfterFixtureCleanup() throws IOException {
+        loggerManager.reset();
+        loggerManager = new ChronicleLoggerManager();
+        testAppender();
+        tearDown();
+        setUp();
+        loggerManager.reset();
+        loggerManager = new ChronicleLoggerManager();
+        testAppender();
     }
 
     @Test
@@ -171,6 +195,5 @@ class JulLoggerChronicleTest extends JulLoggerTestBase {
             }
         }
 
-        IOTools.deleteDirWithFiles(basePath(testId));
     }
 }
