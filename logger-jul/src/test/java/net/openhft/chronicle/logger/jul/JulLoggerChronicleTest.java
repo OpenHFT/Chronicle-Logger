@@ -1,24 +1,11 @@
 /*
- * Copyright 2014-2020 chronicle.software
- *
- *       https://chronicle.software
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2013-2026 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 package net.openhft.chronicle.logger.jul;
 
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IOTools;
+import net.openhft.chronicle.core.io.BackgroundResourceReleaser;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
 import net.openhft.chronicle.queue.ChronicleQueue;
@@ -38,20 +25,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.LogManager;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
-@Ignore("see https://github.com/OpenHFT/Chronicle-Logger/issues/99")
 public class JulLoggerChronicleTest extends JulLoggerTestBase {
+    private ChronicleLoggerManager loggerManager;
+    private String originalThreadName;
 
-    private static void testChronicleConfiguration(
+    private Logger chronicleLogger(String loggerId) {
+        return loggerManager.getLogger(loggerId);
+    }
+
+    private void testChronicleConfiguration(
             final String loggerId,
             final Class<? extends ChronicleLogger> expectedLoggerType,
             final Level level,
             final WireType wireType) {
 
-        Logger logger = Logger.getLogger(loggerId);
+        Logger logger = chronicleLogger(loggerId);
 
         assertNotNull(logger);
         assertTrue(logger instanceof ChronicleLogger);
@@ -66,27 +59,44 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
-
     }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
 
     @Before
     public void setUp() throws IOException {
+        originalThreadName = Thread.currentThread().getName();
         setupLogger(getClass());
+        LogManager global = LogManager.getLogManager();
+        // Jupiter may initialise JUL before java.util.logging.manager is set.
+        // Retain the fallback manager so its cached writers are also released.
+        loggerManager = global instanceof ChronicleLoggerManager
+                ? (ChronicleLoggerManager) global : new ChronicleLoggerManager();
+        loggerManager.reset();
         Files.createDirectories(Paths.get(basePath()));
     }
 
     @After
     public void tearDown() {
-        IOTools.deleteDirWithFiles(basePath());
+        try {
+            if (loggerManager != null)
+                loggerManager.reset();
+            BackgroundResourceReleaser.releasePendingResources();
+            IOTools.deleteDirWithFilesOrThrow(basePath());
+        } finally {
+            Thread.currentThread().setName(originalThreadName);
+        }
     }
 
-    // *************************************************************************
-    //
-    // *************************************************************************
+    @Test
+    public void fallbackManagerReopensWritersAfterFixtureCleanup() throws IOException {
+        loggerManager.reset();
+        loggerManager = new ChronicleLoggerManager();
+        testAppender();
+        tearDown();
+        setUp();
+        loggerManager.reset();
+        loggerManager = new ChronicleLoggerManager();
+        testAppender();
+    }
 
     @Test
     public void testChronicleConfig() {
@@ -111,7 +121,7 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
     public void testAppender() {
         final String testId = "logger_bin";
 
-        Logger logger = Logger.getLogger(testId);
+        Logger logger = chronicleLogger(testId);
 
         final String threadId = "thread-" + Jvm.currentThreadId();
 
@@ -186,6 +196,5 @@ public class JulLoggerChronicleTest extends JulLoggerTestBase {
             }
         }
 
-        IOTools.deleteDirWithFiles(basePath(testId));
     }
 }
