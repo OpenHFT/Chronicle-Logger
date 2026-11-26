@@ -3,7 +3,6 @@
  */
 package net.openhft.chronicle.logger.log4j1;
 
-import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
@@ -11,13 +10,7 @@ import net.openhft.chronicle.wire.Wire;
 import net.openhft.chronicle.wire.WireType;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.junit.jupiter.api.RepeatedTest;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,19 +22,11 @@ class Log4j1ChronicleLogTest extends Log4j1TestBase {
         return ChronicleQueue.singleBuilder(basePath(testId)).wireType(wt).build();
     }
 
-    @AfterEach
-    void tearDown() {
-        IOTools.deleteDirWithFiles(rootPath());
-    }
-
-    @Test
-    void testBinaryAppender() throws IOException {
+    @RepeatedTest(2)
+    void testBinaryAppender() {
         final String testId = "chronicle";
         final String threadId = testId + "-th";
         final Logger logger = Logger.getLogger(testId);
-        Path dir = Paths.get(basePath(testId));
-        IOTools.deleteDirWithFiles(dir.toFile());
-        Files.createDirectories(dir);
         Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
@@ -103,10 +88,9 @@ class Log4j1ChronicleLogTest extends Log4j1TestBase {
                 assertNull(wire);
             }
         }
-        IOTools.deleteDirWithFiles(basePath(testId));
     }
 
-    @Test
+    @RepeatedTest(2)
     void testJsonAppender() {
         final String testId = "json-chronicle";
         final String threadId = testId + "-th";
@@ -173,6 +157,5 @@ class Log4j1ChronicleLogTest extends Log4j1TestBase {
                 assertNull(wire);
             }
         }
-        IOTools.deleteDirWithFiles(basePath(testId));
     }
 }
