@@ -73,27 +73,9 @@ class Slf4jTestBase {
         throw new IllegalStateException("Unsupported ChronicleLoggerFactory: " + factory.getClass());
     }
 
-    /**
-     * @return the ChronicleLoggerFactory singleton
-     * Works with both SLF4J 1.x (StaticLoggerBinder) and 2.x (ServiceProvider)
-     */
+    // Return the factory used by the loggers, rather than creating a separate provider.
     Object getChronicleLoggerFactory() {
-        try {
-            // Try SLF4J 2.x approach first (ServiceProvider)
-            Class<?> providerClass = Class.forName("org.slf4j.impl.ChronicleServiceProvider");
-            Object provider = providerClass.getDeclaredConstructor().newInstance();
-            providerClass.getMethod("initialize").invoke(provider);
-            return providerClass.getMethod("getLoggerFactory").invoke(provider);
-        } catch (Exception e) {
-            // Fall back to SLF4J 1.x approach (StaticLoggerBinder)
-            try {
-                Class<?> binderClass = Class.forName("org.slf4j.impl.StaticLoggerBinder");
-                Object binder = binderClass.getMethod("getSingleton").invoke(null);
-                return binderClass.getMethod("getLoggerFactory").invoke(binder);
-            } catch (Exception ex) {
-                throw new RuntimeException("Unable to get ChronicleLoggerFactory via SLF4J 1.x or 2.x", ex);
-            }
-        }
+        return LoggerFactory.getILoggerFactory();
     }
 
     protected static final class RunnableLogger implements Runnable {
