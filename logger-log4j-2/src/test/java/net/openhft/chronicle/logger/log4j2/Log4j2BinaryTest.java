@@ -4,7 +4,6 @@
 package net.openhft.chronicle.logger.log4j2;
 
 import net.openhft.chronicle.core.OS;
-import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.wire.DocumentContext;
@@ -12,13 +11,8 @@ import net.openhft.chronicle.wire.Wire;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,11 +22,6 @@ class Log4j2BinaryTest extends Log4j2TestBase {
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
-    }
-
-    @AfterEach
-    void tearDown() {
-        IOTools.deleteDirWithFiles(rootPath());
     }
 
     @Test
@@ -52,16 +41,13 @@ class Log4j2BinaryTest extends Log4j2TestBase {
         assertEquals(256, ba.getChronicleConfig().getBufferCapacity());
     }
 
-    @Test
-    void testIndexedAppender() throws IOException {
+    @RepeatedTest(2)
+    void testIndexedAppender() {
         final String testId = "chronicle";
         final String threadId = testId + "-th";
         final Logger logger = LogManager.getLogger(testId);
 
         Thread.currentThread().setName(threadId);
-        Path dir = Paths.get(basePath(testId));
-        IOTools.deleteDirWithFiles(dir.toFile());
-        Files.createDirectories(dir);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
             log(logger, level, "level is {}", level);
@@ -122,6 +108,5 @@ class Log4j2BinaryTest extends Log4j2TestBase {
                 assertNull(wire);
             }
         }
-        IOTools.deleteDirWithFiles(basePath(testId));
     }
 }

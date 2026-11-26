@@ -8,7 +8,6 @@ import net.openhft.chronicle.logger.slf4j2.ChronicleLoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.ChronicleServiceProvider;
 
 import java.nio.file.FileSystems;
 
@@ -69,9 +68,7 @@ class Slf4jTestBase {
      * @return the ChronicleLoggerFactory singleton
      */
     ChronicleLoggerFactory getChronicleLoggerFactory() {
-        ChronicleServiceProvider provider = new ChronicleServiceProvider();
-        provider.initialize();
-        return (ChronicleLoggerFactory) provider.getLoggerFactory();
+        return (ChronicleLoggerFactory) LoggerFactory.getILoggerFactory();
     }
 
     protected static final class RunnableLogger implements Runnable {

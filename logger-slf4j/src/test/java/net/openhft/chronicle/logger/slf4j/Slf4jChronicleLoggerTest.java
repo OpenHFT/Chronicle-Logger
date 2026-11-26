@@ -3,6 +3,7 @@
  */
 package net.openhft.chronicle.logger.slf4j;
 
+import net.openhft.chronicle.core.io.BackgroundResourceReleaser;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
@@ -11,6 +12,7 @@ import net.openhft.chronicle.wire.Wire;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,8 @@ import static java.lang.System.currentTimeMillis;
 import static org.junit.jupiter.api.Assertions.*;
 
 class Slf4jChronicleLoggerTest extends Slf4jTestBase {
+    private String originalThreadName;
+    private String originalProperties;
 
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
@@ -32,19 +36,36 @@ class Slf4jChronicleLoggerTest extends Slf4jTestBase {
     }
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
+        originalThreadName = Thread.currentThread().getName();
+        originalProperties = System.getProperty("chronicle.logger.properties");
         System.setProperty(
                 "chronicle.logger.properties",
                 "chronicle.logger.properties"
         );
 
-        reloadChronicleLoggerFactory();
+        releaseAndDeleteFixture();
+        Files.createDirectories(Paths.get(basePath()));
     }
 
     @AfterEach
     void tearDown() {
+        try {
+            releaseAndDeleteFixture();
+        } finally {
+            Thread.currentThread().setName(originalThreadName);
+            if (originalProperties == null)
+                System.clearProperty("chronicle.logger.properties");
+            else
+                System.setProperty("chronicle.logger.properties", originalProperties);
+        }
+    }
 
+    private void releaseAndDeleteFixture() {
+        reloadChronicleLoggerFactory();
+        BackgroundResourceReleaser.releasePendingResources();
         IOTools.deleteDirWithFiles(basePath());
+        assertFalse(Files.exists(Paths.get(basePath())), "Logger fixture remains after factory reload");
     }
 
     @Test
@@ -97,14 +118,11 @@ class Slf4jChronicleLoggerTest extends Slf4jTestBase {
         assertEquals("readwrite", l4.getName());
     }
 
-    @Test
-    void testLogging() throws IOException {
+    @RepeatedTest(2)
+    void testLogging() {
         final String testId = "readwrite";
         final String threadId = testId + "-th";
         final Logger logger = LoggerFactory.getLogger(testId);
-
-        IOTools.deleteDirWithFiles(basePath(testId));
-        Files.createDirectories(Paths.get(basePath(testId)));
 
         Thread.currentThread().setName(threadId);
 

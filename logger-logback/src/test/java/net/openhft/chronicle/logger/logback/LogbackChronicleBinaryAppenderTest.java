@@ -3,6 +3,9 @@
  */
 package net.openhft.chronicle.logger.logback;
 
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import net.openhft.chronicle.core.io.BackgroundResourceReleaser;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.queue.ChronicleQueue;
@@ -11,13 +14,12 @@ import net.openhft.chronicle.wire.Wire;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,34 +37,54 @@ class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
         return ChronicleQueue.singleBuilder(basePath(testId)).build();
     }
 
+    private String originalThreadName;
+    private String originalConfiguration;
+
     @BeforeEach
-    void setup() {
-        System.setProperty(
-                "logback.configurationFile",
-                System.getProperty("resources.path")
-                        + "/logback-chronicle-binary-appender.xml");
+    void setup() throws IOException, JoranException {
+        originalThreadName = Thread.currentThread().getName();
+        originalConfiguration = System.getProperty("logback.configurationFile");
+        String configuration = System.getProperty("resources.path")
+                + "/logback-chronicle-binary-appender.xml";
+        System.setProperty("logback.configurationFile", configuration);
+        releaseAndDeleteFixture();
+        Files.createDirectories(Paths.get(rootPath()));
+        JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext(getLoggerContext());
+        configurator.doConfigure(configuration);
     }
 
     @AfterEach
     void tearDown() {
+        try {
+            releaseAndDeleteFixture();
+        } finally {
+            Thread.currentThread().setName(originalThreadName);
+            if (originalConfiguration == null)
+                System.clearProperty("logback.configurationFile");
+            else
+                System.setProperty("logback.configurationFile", originalConfiguration);
+        }
+    }
+
+    private void releaseAndDeleteFixture() {
+        // Reset closes appenders before their queue files are removed.
+        getLoggerContext().reset();
+        BackgroundResourceReleaser.releasePendingResources();
         IOTools.deleteDirWithFiles(rootPath());
+        assertFalse(Files.exists(Paths.get(rootPath())), "Logger fixture was not deleted");
     }
 
     /**
      * Writes log events and confirms that each queue entry contains the
      * expected fields and throwable data.
-     *
-     * @throws IOException if the queue directory cannot be created
      */
-    @Test
-    void testBinaryAppender() throws IOException {
+    @RepeatedTest(2)
+    void testBinaryAppender() {
         final String testId = "binary-chronicle";
         final String threadId = testId + "-th";
 
         final Logger logger = LoggerFactory.getLogger(testId);
-        Path dir = Paths.get(basePath(testId));
-        IOTools.deleteDirWithFiles(dir.toFile());
-        Files.createDirectories(dir);
 
         Thread.currentThread().setName(threadId);
 
@@ -134,6 +156,5 @@ class LogbackChronicleBinaryAppenderTest extends LogbackTestBase {
                 assertNull(wire);
             }
         }
-        IOTools.deleteDirWithFiles(basePath(testId));
     }
 }
