@@ -3,6 +3,7 @@
  */
 package net.openhft.chronicle.logger.jcl;
 
+import net.openhft.chronicle.core.io.BackgroundResourceReleaser;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.logger.ChronicleLogLevel;
 import net.openhft.chronicle.logger.DefaultChronicleLogWriter;
@@ -15,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -25,6 +27,8 @@ import static java.lang.System.currentTimeMillis;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JclChronicleLoggerTest extends JclTestBase {
+    private String originalThreadName;
+    private String originalProperties;
 
     @NotNull
     private static ChronicleQueue getChronicleQueue(String testId) {
@@ -33,17 +37,35 @@ class JclChronicleLoggerTest extends JclTestBase {
 
     @BeforeEach
     void setUp() throws IOException {
+        originalThreadName = Thread.currentThread().getName();
+        originalProperties = System.getProperty("chronicle.logger.properties");
         System.setProperty(
                 "chronicle.logger.properties",
                 "chronicle.logger.properties"
         );
+        releaseAndDeleteFixture();
         Files.createDirectories(Paths.get(basePath()));
     }
 
     @AfterEach
     void tearDown() {
+        try {
+            releaseAndDeleteFixture();
+        } finally {
+            Thread.currentThread().setName(originalThreadName);
+            if (originalProperties == null)
+                System.clearProperty("chronicle.logger.properties");
+            else
+                System.setProperty("chronicle.logger.properties", originalProperties);
+        }
+    }
+
+    private static void releaseAndDeleteFixture() {
+        // The factory caches writers whose queues must close before their files are removed.
         LogFactory.getFactory().release();
+        BackgroundResourceReleaser.releasePendingResources();
         IOTools.deleteDirWithFiles(basePath());
+        assertFalse(Files.exists(Paths.get(basePath())), "Logger fixture remains after factory release");
     }
 
     @Test
@@ -102,14 +124,13 @@ class JclChronicleLoggerTest extends JclTestBase {
         assertEquals(WireType.BINARY_LIGHT, ((DefaultChronicleLogWriter) cl4.writer()).getWireType());
     }
 
-    @Test
+    // The second invocation must use fresh writers and contain no records from the first.
+    @RepeatedTest(2)
     void testLogging() throws IOException {
         final String testId = "readwrite";
         final String threadId = testId + "-th";
         final Log logger = LogFactory.getLog(testId);
 
-        IOTools.deleteDirWithFiles(basePath(testId));
-        Files.createDirectories(Paths.get(basePath(testId)));
         Thread.currentThread().setName(threadId);
 
         for (ChronicleLogLevel level : LOG_LEVELS) {
@@ -174,7 +195,5 @@ class JclChronicleLoggerTest extends JclTestBase {
                 assertNull(wire);
             }
         }
-
-        IOTools.deleteDirWithFiles(basePath(testId));
     }
 }
