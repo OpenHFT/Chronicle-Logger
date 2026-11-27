@@ -15,7 +15,7 @@
     </parent>
 
     <artifactId>chronicle-logger</artifactId>
-    <version>2026.1-SNAPSHOT</version>
+    <version>2026.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
